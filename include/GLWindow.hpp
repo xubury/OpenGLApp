@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Shader.hpp"
 
 class GLWindow {
    public:
@@ -25,6 +26,11 @@ class GLWindow {
 
     GLFWwindow* m_window;
     bool m_initilaized;
+
+    uint32_t m_VBO;
+    uint32_t m_VAO;
+
+    Shader m_shader;
 };
 
 #endif
