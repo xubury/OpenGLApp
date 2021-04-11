@@ -3,35 +3,30 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Shader.hpp"
+#include <string>
 
 class RenderWindow {
    public:
-    RenderWindow();
+    RenderWindow(int width, int height, const std::string& title);
     ~RenderWindow();
-    void run();
 
-   private:
-    bool initialize();
-    void update();
-    void render();
+    void initialize(int width, int height, const std::string& title);
+
+    void clear();
+    void swapBuffers();
+
     void pollEvents();
     bool shouldClose();
     void processInput();
 
     void close();
 
+   private:
     static void errorCallback(int error, const char* description);
     static void framebufferSizeCB(GLFWwindow* window, int width, int height);
 
     GLFWwindow* m_window;
-    bool m_initilaized;
-
-    uint32_t m_VBO;
-    uint32_t m_VAO;
-    uint32_t m_EBO;
-
-    Shader m_shader;
+    static bool m_initilaized;
 };
 
 #endif

@@ -1,7 +1,8 @@
-#include "RenderWindow.hpp"
+#include "Application.hpp"
+#include <iostream>
 
 int main() {
-    RenderWindow window;
+    Application window(800, 600, "OpenGL");
     window.run();
     return 0;
 }

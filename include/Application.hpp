@@ -1,0 +1,24 @@
+#ifndef APPLICATION_HPP
+#define APPLICATION_HPP
+
+#include <string>
+#include "RenderWindow.hpp"
+#include "Shader.hpp"
+#include "Cube.hpp"
+
+class Application {
+   public:
+    Application(int width, int height, const std::string &title);
+
+    void run();
+
+    void update();
+    void render();
+
+   private:
+    RenderWindow m_window;
+    Shader m_shader;
+    Cube m_cube;
+};
+
+#endif
