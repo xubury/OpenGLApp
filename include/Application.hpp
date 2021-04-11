@@ -2,8 +2,10 @@
 #define APPLICATION_HPP
 
 #include <string>
+#include "ResourceManager.hpp"
 #include "RenderWindow.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 #include "Cube.hpp"
 
 class Application {
@@ -19,6 +21,7 @@ class Application {
     RenderWindow m_window;
     Shader m_shader;
     Cube m_cube;
+    ResourceManager<Texture, std::string> m_textureManager;
 };
 
 #endif

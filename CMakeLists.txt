@@ -10,7 +10,7 @@ find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 
 
-add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp src/RenderWindow.cpp src/Shader.cpp src/Drawable.cpp src/Cube.cpp)
+add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp src/RenderWindow.cpp src/Shader.cpp src/Texture.cpp src/Drawable.cpp src/Cube.cpp)
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 
