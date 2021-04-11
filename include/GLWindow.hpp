@@ -29,6 +29,7 @@ class GLWindow {
 
     uint32_t m_VBO;
     uint32_t m_VAO;
+    uint32_t m_EBO;
 
     Shader m_shader;
 };

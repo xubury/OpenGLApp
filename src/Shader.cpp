@@ -66,7 +66,7 @@ void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
     if (type != "PROGRAM") {
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success) {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog.data());
+            glGetShaderInfoLog(shader, 1024, NULL, (GLchar*)infoLog.data());
             std::cout
                 << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n"
                 << infoLog
@@ -77,7 +77,7 @@ void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
     } else {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {
-            glGetProgramInfoLog(shader, 1024, NULL, infoLog.data());
+            glGetProgramInfoLog(shader, 1024, NULL, (GLchar*)infoLog.data());
             std::cout
                 << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n"
                 << infoLog
@@ -86,4 +86,16 @@ void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
                 << std::endl;
         }
     }
+}
+
+void Shader::setBool(const std::string& name, bool value) const {
+    glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+}
+
+void Shader::setInt(const std::string& name, int value) const {
+    glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+}
+
+void Shader::setFloat(const std::string& name, int value) const {
+    glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
