@@ -37,6 +37,8 @@ void RenderWindow::initialize(int width, int height, const std::string& title) {
         std::cout << "Failed to initialize GLAD." << std::endl;
         return;
     }
+    glEnable(GL_DEPTH_TEST);
+
     m_initilaized = true;
     return;
 }
@@ -59,7 +61,7 @@ void RenderWindow::processEvents() {
 
 void RenderWindow::clear() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void RenderWindow::swapBuffers() { glfwSwapBuffers(m_window); }

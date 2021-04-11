@@ -1,5 +1,8 @@
 #include "Application.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 Application::Application(int width, int height, const std::string& title)
@@ -17,11 +20,28 @@ Application::Application(int width, int height, const std::string& title)
     glBindTexture(GL_TEXTURE_2D, m_textureManager.get("container").id);
 }
 
-void Application::update() {}
+float angle = 0;
+void Application::update() {
+    angle += 1.f;
+    angle = (int)angle % 360;
+}
 
 void Application::render() {
     m_window.clear();
     m_shader.use();
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600,
+                                  0.1f, 100.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    // pass transformation matrices to the shader
+    m_shader.setMat4("projection", projection);
+    m_shader.setMat4("view", view);
+    glm::mat4 model = glm::mat4(1.0f);
+    model =
+        glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+    m_shader.setMat4("model", model);
+
     m_cube.draw(m_window);
     m_window.swapBuffers();
 }
