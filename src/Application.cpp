@@ -43,6 +43,12 @@ void Application::render() {
     m_shader.setMat4("model", model);
 
     m_cube.draw(m_window);
+    Cube cube2;
+    model =
+        glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+    m_shader.setMat4("model", model);
+    m_cube.draw(m_window);
+
     m_window.swapBuffers();
 }
 

@@ -7,11 +7,14 @@
 #include "Drawable.hpp"
 
 class Vertex;
+
 class VertexBuffer : public Drawable {
    public:
     VertexBuffer();
 
     std::size_t size() const;
+
+    bool isAvailable() const;
 
     bool update(const std::vector<Vertex> &vertices);
 

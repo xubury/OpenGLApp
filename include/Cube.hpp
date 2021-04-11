@@ -15,7 +15,7 @@ class Cube : public Drawable {
     virtual void draw(RenderTarget &target) const override;
 
    private:
-    VertexBuffer m_buffer;
+    static VertexBuffer m_buffer;
 };
 
 #endif

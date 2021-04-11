@@ -59,11 +59,6 @@ void RenderWindow::processEvents() {
     processInput();
 }
 
-void RenderWindow::clear() {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
 void RenderWindow::swapBuffers() { glfwSwapBuffers(m_window); }
 
 bool RenderWindow::shouldClose() { return glfwWindowShouldClose(m_window); }

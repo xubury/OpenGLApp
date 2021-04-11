@@ -5,8 +5,10 @@
 #include "RenderTarget.hpp"
 #include "Vertex.hpp"
 
+VertexBuffer Cube::m_buffer;
+
 Cube::Cube() {
-    if (m_initilaized) return;
+    if (m_buffer.isAvailable()) return;
 
     Vertex vertices[] = {{{-0.5f, -0.5f, -0.5f}, {0, 0, 0}, {0.0f, 0.0f}},
                          {{0.5f, -0.5f, -0.5f}, {0, 0, 0}, {1.0f, 0.0f}},
@@ -44,6 +46,7 @@ Cube::Cube() {
                          {{0.5f, 0.5f, 0.5f}, {0, 0, 0}, {1.0f, 0.0f}},
                          {{-0.5f, 0.5f, 0.5f}, {0, 0, 0}, {0.0f, 0.0f}},
                          {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0.0f, 1.0f}}};
+
     m_buffer.update(vertices, 36);
 }
 

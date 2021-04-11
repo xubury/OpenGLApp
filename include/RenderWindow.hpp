@@ -14,11 +14,12 @@ class RenderWindow : public RenderTarget {
 
     void initialize(int width, int height, const std::string& title);
 
-    void clear();
+    void processEvents();
+
+    bool shouldClose();
+
     void swapBuffers();
 
-    void processEvents();
-    bool shouldClose();
     void processInput();
 
     void close();
