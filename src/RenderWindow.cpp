@@ -1,24 +1,26 @@
 #include <iostream>
-#include "GLWindow.hpp"
+#include "RenderWindow.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void GLWindow::framebufferSizeCB(GLFWwindow*, int width, int height) {
+void RenderWindow::framebufferSizeCB(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void GLWindow::errorCallback(int error, const char* description) {
+void RenderWindow::errorCallback(int error, const char* description) {
     std::cerr << "Error: " << description << ", Code: " << error << std::endl;
 }
 
-GLWindow::GLWindow() : m_window(nullptr), m_initilaized(false) { initialize(); }
+RenderWindow::RenderWindow() : m_window(nullptr), m_initilaized(false) {
+    initialize();
+}
 
-GLWindow::~GLWindow() {
+RenderWindow::~RenderWindow() {
     if (m_initilaized) close();
 }
 
-bool GLWindow::initialize() {
+bool RenderWindow::initialize() {
     if (m_initilaized) return true;
 
     glfwSetErrorCallback(errorCallback);
@@ -111,19 +113,19 @@ bool GLWindow::initialize() {
     return true;
 }
 
-void GLWindow::processInput() {
+void RenderWindow::processInput() {
     if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(m_window, true);
 }
 
-void GLWindow::pollEvents() {
+void RenderWindow::pollEvents() {
     glfwPollEvents();
     processInput();
 }
 
-void GLWindow::update() {}
+void RenderWindow::update() {}
 
-void GLWindow::render() {
+void RenderWindow::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -134,9 +136,9 @@ void GLWindow::render() {
     glfwSwapBuffers(m_window);
 }
 
-bool GLWindow::shouldClose() { return glfwWindowShouldClose(m_window); }
+bool RenderWindow::shouldClose() { return glfwWindowShouldClose(m_window); }
 
-void GLWindow::run() {
+void RenderWindow::run() {
     if (!m_initilaized) {
         return;
     }
@@ -151,4 +153,4 @@ void GLWindow::run() {
     close();
 }
 
-void GLWindow::close() { glfwTerminate(); }
+void RenderWindow::close() { glfwTerminate(); }

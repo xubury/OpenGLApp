@@ -1,7 +1,7 @@
-#include "GLWindow.hpp"
+#include "RenderWindow.hpp"
 
 int main() {
-    GLWindow window;
+    RenderWindow window;
     window.run();
     return 0;
 }

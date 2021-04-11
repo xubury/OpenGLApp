@@ -1,14 +1,14 @@
-#ifndef GL_WINDOW_HPP
-#define GL_WINDOW_HPP
+#ifndef RENDER_WINDOW_HPP
+#define RENDER_WINDOW_HPP
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.hpp"
 
-class GLWindow {
+class RenderWindow {
    public:
-    GLWindow();
-    ~GLWindow();
+    RenderWindow();
+    ~RenderWindow();
     void run();
 
    private:
