@@ -5,7 +5,9 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-class RenderWindow {
+#include "RenderTarget.hpp"
+
+class RenderWindow : public RenderTarget {
    public:
     RenderWindow(int width, int height, const std::string& title);
     ~RenderWindow();

@@ -1,12 +1,12 @@
 #ifndef DRAWABLE_HPP
 #define DRAWABLE_HPP
 
-class RenderWindow;
+class RenderTarget;
 
 class Drawable {
    public:
     Drawable();
-    virtual void draw(RenderWindow &window) const = 0;
+    virtual void draw(RenderTarget &target) const = 0;
 
    protected:
     bool m_initilaized;

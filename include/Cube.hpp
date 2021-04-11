@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "Drawable.hpp"
+#include "VertexBuffer.hpp"
 
 class Cube : public Drawable {
    public:
@@ -11,12 +12,10 @@ class Cube : public Drawable {
 
     virtual ~Cube() = default;
 
-    virtual void draw(RenderWindow &window) const override;
+    virtual void draw(RenderTarget &target) const override;
 
    private:
-    static uint32_t m_VBO;
-    static uint32_t m_VAO;
-    static uint32_t m_EBO;
+    VertexBuffer m_buffer;
 };
 
 #endif

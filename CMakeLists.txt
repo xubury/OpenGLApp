@@ -15,6 +15,8 @@ add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
     src/Shader.cpp 
     src/Texture.cpp 
     src/Drawable.cpp 
+    src/VertexBuffer.cpp
+    src/RenderTarget.cpp
     src/Cube.cpp)
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
