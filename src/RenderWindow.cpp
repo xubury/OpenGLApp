@@ -52,7 +52,7 @@ void RenderWindow::processInput() {
         glfwSetWindowShouldClose(m_window, true);
 }
 
-void RenderWindow::pollEvents() {
+void RenderWindow::processEvents() {
     glfwPollEvents();
     processInput();
 }

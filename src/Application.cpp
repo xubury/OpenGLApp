@@ -46,7 +46,7 @@ void Application::render() {
 
 void Application::run() {
     while (!m_window.shouldClose()) {
-        m_window.pollEvents();
+        m_window.processEvents();
         update();
         render();
     }
