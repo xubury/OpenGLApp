@@ -50,9 +50,18 @@ RenderWindow::RenderWindow(int width, int height, const std::string& title) {
 
 RenderWindow::~RenderWindow() { close(); }
 
+// FIXME: process input outside the window
 void RenderWindow::processInput() {
     if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(m_window, true);
+    if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
+        getCamera().move(Camera::Movement::FORWARD, 0.1f);
+    if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
+        getCamera().move(Camera::Movement::BACKWRAD, 0.1f);
+    if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
+        getCamera().move(Camera::Movement::LEFT, 0.1f);
+    if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
+        getCamera().move(Camera::Movement::RIGHT, 0.1f);
 }
 
 void RenderWindow::processEvents() {

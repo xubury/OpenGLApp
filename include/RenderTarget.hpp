@@ -2,6 +2,7 @@
 #define RENDER_TARGET_HPP
 
 #include <glm/glm.hpp>
+#include "Camera.hpp"
 
 class Drawable;
 
@@ -15,7 +16,9 @@ class RenderTarget {
 
     bool create();
 
-    void setView(const glm::mat4 &view);
+    void setCamera(const Camera &camera);
+
+    Camera &getCamera();
 
     void draw(const Drawable &drawable, const RenderStates &states);
 
@@ -24,7 +27,8 @@ class RenderTarget {
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
    private:
-    glm::mat4 m_view;
+    Camera m_camera;
+
     uint32_t m_VAO;
 };
 

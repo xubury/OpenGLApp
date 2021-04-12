@@ -25,3 +25,7 @@ void RenderStates::setupTexture() const {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texture->id());
 }
+
+void RenderStates::setupView(const glm::mat4 &view) const {
+    m_shader->setMat4("view", view);
+}

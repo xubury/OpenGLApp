@@ -7,6 +7,7 @@
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "Cube.hpp"
+#include "Camera.hpp"
 
 class Application {
    public:

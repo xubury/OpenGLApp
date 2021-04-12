@@ -8,7 +8,7 @@
 #include "VertexBuffer.hpp"
 #include "Vertex.hpp"
 
-RenderTarget::RenderTarget() : m_view(1.0f), m_VAO(0) {}
+RenderTarget::RenderTarget() : m_VAO(0) {}
 
 bool RenderTarget::create() {
     if (!m_VAO) glGenVertexArrays(1, &m_VAO);
@@ -19,7 +19,9 @@ bool RenderTarget::create() {
     return true;
 }
 
-void RenderTarget::setView(const glm::mat4 &view) { m_view = view; }
+void RenderTarget::setCamera(const Camera &camera) { m_camera = camera; }
+
+Camera &RenderTarget::getCamera() { return m_camera; }
 
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
@@ -46,6 +48,8 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     states.setupShader();
     states.setupTranform();
     states.setupTexture();
+    states.setupView(m_camera.getView());
+
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
     VertexBuffer::bind(nullptr);
 }

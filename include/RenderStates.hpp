@@ -26,6 +26,8 @@ class RenderStates {
 
     void setupTexture() const;
 
+    void setupView(const glm::mat4 &view) const;
+
    private:
     const Shader *m_shader;
     glm::mat4 m_transform;
