@@ -39,6 +39,7 @@ void Application::render() {
     RenderStates states;
     states.setShader(m_shader);
     states.setTexture(m_textureManager.get("container"));
+    states.setView(m_camera.getView());
     m_cube1.draw(m_window, states);
 
     states.setTexture(m_textureManager.get("awesomeface"));
@@ -49,6 +50,28 @@ void Application::render() {
 
 void Application::run() {
     while (!m_window.shouldClose()) {
+        Event event;
+        while (m_window.pollEvent(event)) {
+            if (event.type == Event::KeyPressed) {
+                switch (event.key.code) {
+                    case GLFW_KEY_W:
+                        m_camera.move(Camera::Movement::FORWARD, 0.1f);
+                        break;
+                    case GLFW_KEY_S:
+                        m_camera.move(Camera::Movement::BACKWRAD, 0.1f);
+                        break;
+                    case GLFW_KEY_A:
+                        m_camera.move(Camera::Movement::LEFT, 0.1f);
+                        break;
+                    case GLFW_KEY_D:
+                        m_camera.move(Camera::Movement::RIGHT, 0.1f);
+                        break;
+                    case GLFW_KEY_ESCAPE:
+                        m_window.setShouldClose();
+                        break;
+                }
+            }
+        }
         m_window.processEvents();
         update();
         render();

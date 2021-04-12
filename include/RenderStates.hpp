@@ -17,6 +17,8 @@ class RenderStates {
 
     void setTexture(const Texture &texture);
 
+    void setView(const glm::mat4 &view);
+
    private:
     friend class RenderTarget;
 
@@ -26,12 +28,13 @@ class RenderStates {
 
     void setupTexture() const;
 
-    void setupView(const glm::mat4 &view) const;
+    void setupView() const;
 
    private:
     const Shader *m_shader;
     glm::mat4 m_transform;
     const Texture *m_texture;
+    glm::mat4 m_view;
 };
 
 #endif

@@ -1,7 +1,6 @@
 #include <iostream>
 #include "RenderWindow.hpp"
-
-bool RenderWindow::m_initilaized = false;
+#include "Event.hpp"
 
 void RenderWindow::framebufferSizeCB(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);
@@ -11,19 +10,41 @@ void RenderWindow::errorCallback(int error, const char* description) {
     std::cerr << "Error: " << description << ", Code: " << error << std::endl;
 }
 
-void RenderWindow::initialize(int width, int height, const std::string& title) {
-    if (!m_initilaized) {
-        glfwSetErrorCallback(errorCallback);
-        if (!glfwInit()) {
-            std::cout << "Failed to initialize glfw." << std::endl;
-            return;
-        }
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    } else {
-        close();
+void RenderWindow::keyCallback(GLFWwindow* window, int key, int, int action,
+                               int mods) {
+    Event event;
+    event.key.code = key;
+    if (action == GLFW_RELEASE) {
+        event.type = Event::KeyReleased;
+    } else if (action == GLFW_PRESS) {
+        event.type = Event::KeyPressed;
     }
+
+    switch (mods) {
+        case GLFW_MOD_SHIFT:
+            event.key.shift = true;
+            break;
+        case GLFW_MOD_CONTROL:
+            event.key.control = true;
+            break;
+        case GLFW_MOD_ALT:
+            event.key.alt = true;
+            break;
+        default:
+            break;
+    }
+    auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
+    if (win) win->pushEvent(event);
+}
+void RenderWindow::initialize(int width, int height, const std::string& title) {
+    glfwSetErrorCallback(errorCallback);
+    if (!glfwInit()) {
+        std::cout << "Failed to initialize glfw." << std::endl;
+        return;
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (m_window == NULL) {
@@ -33,6 +54,8 @@ void RenderWindow::initialize(int width, int height, const std::string& title) {
     }
     glfwMakeContextCurrent(m_window);
     glfwSetFramebufferSizeCallback(m_window, framebufferSizeCB);
+    glfwSetWindowUserPointer(m_window, this);
+    glfwSetKeyCallback(m_window, keyCallback);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;
         return;
@@ -40,7 +63,6 @@ void RenderWindow::initialize(int width, int height, const std::string& title) {
     glEnable(GL_DEPTH_TEST);
 
     create();
-    m_initilaized = true;
     return;
 }
 
@@ -50,27 +72,33 @@ RenderWindow::RenderWindow(int width, int height, const std::string& title) {
 
 RenderWindow::~RenderWindow() { close(); }
 
-// FIXME: process input outside the window
-void RenderWindow::processInput() {
-    if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(m_window, true);
-    if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
-        getCamera().move(Camera::Movement::FORWARD, 0.1f);
-    if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
-        getCamera().move(Camera::Movement::BACKWRAD, 0.1f);
-    if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
-        getCamera().move(Camera::Movement::LEFT, 0.1f);
-    if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
-        getCamera().move(Camera::Movement::RIGHT, 0.1f);
-}
-
-void RenderWindow::processEvents() {
-    glfwPollEvents();
-    processInput();
-}
+void RenderWindow::processEvents() { glfwPollEvents(); }
 
 void RenderWindow::swapBuffers() { glfwSwapBuffers(m_window); }
 
 bool RenderWindow::shouldClose() { return glfwWindowShouldClose(m_window); }
 
+void RenderWindow::setShouldClose(bool close) {
+    glfwSetWindowShouldClose(m_window, close);
+}
+
 void RenderWindow::close() { glfwTerminate(); }
+
+bool RenderWindow::pollEvent(Event& event) { return popEvent(event, false); }
+
+void RenderWindow::pushEvent(const Event& event) { m_events.push(event); }
+
+bool RenderWindow::popEvent(Event& event, bool block) {
+    if (m_events.empty()) {
+        processEvents();
+        if (block) {
+            // TODO: block mode
+        }
+    }
+    if (m_events.size()) {
+        event = m_events.front();
+        m_events.pop();
+        return true;
+    }
+    return false;
+}

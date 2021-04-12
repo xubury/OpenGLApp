@@ -3,8 +3,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <queue>
 #include <string>
 
+#include "Event.hpp"
 #include "RenderTarget.hpp"
 
 class RenderWindow : public RenderTarget {
@@ -18,18 +20,28 @@ class RenderWindow : public RenderTarget {
 
     bool shouldClose();
 
-    void swapBuffers();
+    void setShouldClose(bool close = true);
 
-    void processInput();
+    void swapBuffers();
 
     void close();
 
+    bool pollEvent(Event& event);
+
    private:
+    void pushEvent(const Event& event);
+
+    bool popEvent(Event& event, bool block);
+
     static void errorCallback(int error, const char* description);
+
     static void framebufferSizeCB(GLFWwindow* window, int width, int height);
 
+    static void keyCallback(GLFWwindow* window, int key, int scanCode,
+                            int action, int mods);
+
     GLFWwindow* m_window;
-    static bool m_initilaized;
+    std::queue<Event> m_events;
 };
 
 #endif

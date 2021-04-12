@@ -15,6 +15,8 @@ void RenderStates::setTransform(const glm::mat4 &transform) {
 
 void RenderStates::setTexture(const Texture &texture) { m_texture = &texture; }
 
+void RenderStates::setView(const glm::mat4 &view) { m_view = view; }
+
 void RenderStates::setupShader() const { m_shader->use(); }
 
 void RenderStates::setupTranform() const {
@@ -26,6 +28,4 @@ void RenderStates::setupTexture() const {
     glBindTexture(GL_TEXTURE_2D, m_texture->id());
 }
 
-void RenderStates::setupView(const glm::mat4 &view) const {
-    m_shader->setMat4("view", view);
-}
+void RenderStates::setupView() const { m_shader->setMat4("view", m_view); }

@@ -19,10 +19,6 @@ bool RenderTarget::create() {
     return true;
 }
 
-void RenderTarget::setCamera(const Camera &camera) { m_camera = camera; }
-
-Camera &RenderTarget::getCamera() { return m_camera; }
-
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
 }
@@ -48,7 +44,7 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     states.setupShader();
     states.setupTranform();
     states.setupTexture();
-    states.setupView(m_camera.getView());
+    states.setupView();
 
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
     VertexBuffer::bind(nullptr);
