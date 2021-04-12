@@ -57,7 +57,7 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
         std::cout << "Failed to initialize glfw." << std::endl;
-        return;
+        exit(-1);
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -67,7 +67,7 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     if (context == NULL) {
         std::cout << "Failed to create GLFW window." << std::endl;
         glfwTerminate();
-        return;
+        exit(-1);
     }
     glfwMakeContextCurrent(context);
 
@@ -79,7 +79,7 @@ GlContext::GlContext(int width, int height, const std::string& title) {
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;
-        return;
+        exit(-1);
     }
     glEnable(GL_DEPTH_TEST);
 }
