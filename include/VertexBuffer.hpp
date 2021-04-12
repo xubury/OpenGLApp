@@ -20,7 +20,7 @@ class VertexBuffer : public Drawable {
 
     bool update(const Vertex *vertices, std::size_t cnt);
 
-    void draw(RenderTarget &target) const;
+    void draw(RenderTarget &target, RenderStates states) const;
 
     static void bind(const VertexBuffer *vertexBuffer);
 

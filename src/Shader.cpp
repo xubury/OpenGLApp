@@ -58,7 +58,7 @@ void Shader::load(const std::string& vertexPath,
     glDeleteShader(fragment);
 }
 
-void Shader::use() { glUseProgram(id); }
+void Shader::use() const { glUseProgram(id); }
 
 void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
     int success;

@@ -5,6 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+#include "RenderStates.hpp"
+
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {
     m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
@@ -15,9 +17,6 @@ Application::Application(int width, int height, const std::string& title)
 
     m_shader.setInt("texture0", 0);
     m_shader.setInt("texture1", 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_textureManager.get("container").id);
 }
 
 float angle = 0;
@@ -40,14 +39,19 @@ void Application::render() {
     glm::mat4 model = glm::mat4(1.0f);
     model =
         glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-    m_shader.setMat4("model", model);
 
-    m_cube.draw(m_window);
+    RenderStates states;
+    states.setShader(m_shader);
+    states.setTransform(model);
+    states.setTexture(m_textureManager.get("container"));
+    m_cube.draw(m_window, states);
+
     Cube cube2;
     model =
         glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-    m_shader.setMat4("model", model);
-    m_cube.draw(m_window);
+    states.setTransform(model);
+    states.setTexture(m_textureManager.get("awesomeface"));
+    cube2.draw(m_window, states);
 
     m_window.swapBuffers();
 }

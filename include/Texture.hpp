@@ -5,7 +5,11 @@
 
 class Texture {
    public:
-    int id;
     bool loadFromFile(const std::string& path, int type);
+
+    uint32_t id() const;
+
+   private:
+    uint32_t m_id;
 };
 #endif

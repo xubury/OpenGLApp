@@ -3,13 +3,11 @@
 
 class RenderTarget;
 
+class RenderStates;
+
 class Drawable {
    public:
-    Drawable();
-    virtual void draw(RenderTarget &target) const = 0;
-
-   protected:
-    bool m_initilaized;
+    virtual void draw(RenderTarget &target, RenderStates states) const = 0;
 };
 
 #endif

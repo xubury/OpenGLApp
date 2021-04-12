@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 
 class Drawable;
+
+class RenderStates;
+
 class VertexBuffer;
 
 class RenderTarget {
@@ -14,9 +17,9 @@ class RenderTarget {
 
     void setView(const glm::mat4 &view);
 
-    void draw(const Drawable &drawable);
+    void draw(const Drawable &drawable, const RenderStates &states);
 
-    void draw(const VertexBuffer &buffer);
+    void draw(const VertexBuffer &buffer, const RenderStates &states);
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 

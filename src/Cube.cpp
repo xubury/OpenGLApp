@@ -3,6 +3,7 @@
 
 #include "Cube.hpp"
 #include "RenderTarget.hpp"
+#include "RenderStates.hpp"
 #include "Vertex.hpp"
 
 VertexBuffer Cube::m_buffer;
@@ -50,4 +51,6 @@ Cube::Cube() {
     m_buffer.create(vertices, 36);
 }
 
-void Cube::draw(RenderTarget &target) const { target.draw(m_buffer); }
+void Cube::draw(RenderTarget &target, RenderStates states) const {
+    target.draw(m_buffer, states);
+}

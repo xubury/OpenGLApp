@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <iostream>
 
+#include "RenderStates.hpp"
 #include "Drawable.hpp"
 #include "VertexBuffer.hpp"
 #include "Vertex.hpp"
@@ -20,9 +21,12 @@ bool RenderTarget::create() {
 
 void RenderTarget::setView(const glm::mat4 &view) { m_view = view; }
 
-void RenderTarget::draw(const Drawable &drawable) { drawable.draw(*this); }
+void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
+    drawable.draw(*this, states);
+}
 
-void RenderTarget::draw(const VertexBuffer &buffer) {
+void RenderTarget::draw(const VertexBuffer &buffer,
+                        const RenderStates &states) {
     VertexBuffer::bind(&buffer);
     glBindVertexArray(m_VAO);
     // position attribute
@@ -38,6 +42,10 @@ void RenderTarget::draw(const VertexBuffer &buffer) {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           (void *)(offsetof(Vertex, texCoords)));
     glEnableVertexAttribArray(2);
+
+    states.setupShader();
+    states.setupTranform();
+    states.setupTexture();
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
     VertexBuffer::bind(nullptr);
 }
