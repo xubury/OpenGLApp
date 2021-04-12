@@ -6,6 +6,8 @@
 #include "Texture.hpp"
 #include "Camera.hpp"
 
+const RenderStates RenderStates::Default;
+
 RenderStates::RenderStates() {}
 
 void RenderStates::setShader(const Shader &shader) { m_shader = &shader; }

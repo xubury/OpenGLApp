@@ -23,6 +23,8 @@ class RenderStates {
 
     void setupShader() const;
 
+    static const RenderStates Default;
+
    private:
     void setupTranform() const;
 

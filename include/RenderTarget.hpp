@@ -4,9 +4,9 @@
 #include <glm/glm.hpp>
 #include "Camera.hpp"
 
-class Drawable;
+#include "RenderStates.hpp"
 
-class RenderStates;
+class Drawable;
 
 class VertexBuffer;
 
@@ -14,9 +14,11 @@ class RenderTarget {
    public:
     RenderTarget();
 
-    void draw(const Drawable &drawable, const RenderStates &states);
+    void draw(const Drawable &drawable,
+              const RenderStates &states = RenderStates::Default);
 
-    void draw(const VertexBuffer &buffer, const RenderStates &states);
+    void draw(const VertexBuffer &buffer,
+              const RenderStates &states = RenderStates::Default);
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
