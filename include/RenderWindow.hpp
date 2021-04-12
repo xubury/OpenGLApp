@@ -40,6 +40,8 @@ class RenderWindow : public RenderTarget {
     static void keyCallback(GLFWwindow* window, int key, int scanCode,
                             int action, int mods);
 
+    static void mouseMovementCallback(GLFWwindow* window, double x, double y);
+
     GLFWwindow* m_window;
     std::queue<Event> m_events;
 };

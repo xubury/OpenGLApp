@@ -9,6 +9,7 @@ class Event {
         bool control;
         bool shift;
     };
+
     struct MouseMoveEvent {
         int x;
         int y;
@@ -17,7 +18,9 @@ class Event {
         KeyEvent key;
         MouseMoveEvent mouseMove;
     };
+
     enum EventType { KeyPressed, KeyReleased, MouseMoved };
+
     EventType type;
 };
 

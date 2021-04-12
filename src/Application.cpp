@@ -9,7 +9,8 @@
 
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title),
-      m_camera(width, height, glm::vec3(0.f, 0.f, 3.f)) {
+      m_camera(width, height, glm::vec3(0.f, 0.f, 3.f)),
+      m_isFirstMouse(true) {
     m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
     m_textureManager.load("awesomeface", "resources/textures/awesomeface.png",
                           GL_RGBA);
@@ -66,6 +67,17 @@ void Application::run() {
                         m_window.setShouldClose();
                         break;
                 }
+            } else if (event.type == Event::MouseMoved) {
+                glm::vec2 currentMousePos =
+                    glm::vec2(event.mouseMove.x, event.mouseMove.y);
+                if (m_isFirstMouse) {
+                    m_isFirstMouse = false;
+                } else {
+                    glm::vec2 offset = currentMousePos - m_lastMousePos;
+                    m_camera.rotate(offset.x * MOUSE_SENSITIVITY,
+                                    -offset.y * MOUSE_SENSITIVITY);
+                }
+                m_lastMousePos = currentMousePos;
             }
         }
         m_window.processEvents();

@@ -36,6 +36,17 @@ void RenderWindow::keyCallback(GLFWwindow* window, int key, int, int action,
     auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
     if (win) win->pushEvent(event);
 }
+
+void RenderWindow::mouseMovementCallback(GLFWwindow* window, double x,
+                                         double y) {
+    Event event;
+    event.type = Event::MouseMoved;
+    event.mouseMove.x = x;
+    event.mouseMove.y = y;
+    auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
+    if (win) win->pushEvent(event);
+}
+
 void RenderWindow::initialize(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
@@ -53,9 +64,13 @@ void RenderWindow::initialize(int width, int height, const std::string& title) {
         return;
     }
     glfwMakeContextCurrent(m_window);
-    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCB);
+
     glfwSetWindowUserPointer(m_window, this);
+
+    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCB);
     glfwSetKeyCallback(m_window, keyCallback);
+    glfwSetCursorPosCallback(m_window, mouseMovementCallback);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;
         return;
