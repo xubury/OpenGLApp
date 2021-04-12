@@ -15,6 +15,7 @@ class Application {
     void run();
 
     void update();
+
     void render();
 
    private:
