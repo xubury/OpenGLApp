@@ -8,7 +8,8 @@
 #include "RenderStates.hpp"
 
 Application::Application(int width, int height, const std::string& title)
-    : m_window(width, height, title) {
+    : m_window(width, height, title),
+      m_camera(width, height, glm::vec3(0.f, 0.f, 3.f)) {
     m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
     m_textureManager.load("awesomeface", "resources/textures/awesomeface.png",
                           GL_RGBA);
@@ -30,16 +31,11 @@ void Application::update() {
 void Application::render() {
     m_window.clear();
     m_shader.use();
-    glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600,
-                                  0.1f, 100.0f);
-    // pass transformation matrices to the shader
-    m_shader.setMat4("projection", projection);
 
     RenderStates states;
     states.setShader(m_shader);
     states.setTexture(m_textureManager.get("container"));
-    states.setView(m_camera.getView());
+    states.setCamera(m_camera);
     m_cube1.draw(m_window, states);
 
     states.setTexture(m_textureManager.get("awesomeface"));

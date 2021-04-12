@@ -7,6 +7,8 @@ class Shader;
 
 class Texture;
 
+class Camera;
+
 class RenderStates {
    public:
     RenderStates();
@@ -17,7 +19,7 @@ class RenderStates {
 
     void setTexture(const Texture &texture);
 
-    void setView(const glm::mat4 &view);
+    void setCamera(const Camera &projectionView);
 
     void setupShader() const;
 
@@ -26,13 +28,13 @@ class RenderStates {
 
     void setupTexture() const;
 
-    void setupView() const;
+    void setupCamera() const;
 
    private:
     const Shader *m_shader;
     glm::mat4 m_transform;
     const Texture *m_texture;
-    glm::mat4 m_view;
+    const Camera *m_camera;
 };
 
 #endif
