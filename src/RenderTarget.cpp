@@ -8,15 +8,11 @@
 #include "VertexBuffer.hpp"
 #include "Vertex.hpp"
 
-RenderTarget::RenderTarget() : m_VAO(0) {}
-
-bool RenderTarget::create() {
+RenderTarget::RenderTarget() : m_VAO(0) {
     if (!m_VAO) glGenVertexArrays(1, &m_VAO);
     if (!m_VAO) {
         std::cerr << "Could not create vertex buffer." << std::endl;
-        return false;
     }
-    return true;
 }
 
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {

@@ -14,8 +14,6 @@ class RenderTarget {
    public:
     RenderTarget();
 
-    bool create();
-
     void draw(const Drawable &drawable, const RenderStates &states);
 
     void draw(const VertexBuffer &buffer, const RenderStates &states);

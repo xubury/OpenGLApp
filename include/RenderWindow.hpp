@@ -1,48 +1,29 @@
 #ifndef RENDER_WINDOW_HPP
 #define RENDER_WINDOW_HPP
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <queue>
 #include <string>
 
+#include "GlContext.hpp"
 #include "Event.hpp"
 #include "RenderTarget.hpp"
 
-extern GLFWwindow* g_glContext;
-
-class RenderWindow : public RenderTarget {
+class RenderWindow : public GlContext, public RenderTarget {
    public:
     RenderWindow(int width, int height, const std::string& title);
+
     ~RenderWindow();
 
-    void initialize(int width, int height, const std::string& title);
-
     void processEvents();
-
-    bool shouldClose();
-
-    void setShouldClose(bool close = true);
-
-    void swapBuffers();
-
-    void close();
 
     bool pollEvent(Event& event);
 
    private:
+    friend class GlContext;
+
     void pushEvent(const Event& event);
 
     bool popEvent(Event& event, bool block);
-
-    static void errorCallback(int error, const char* description);
-
-    static void framebufferSizeCB(GLFWwindow* window, int width, int height);
-
-    static void keyCallback(GLFWwindow* window, int key, int scanCode,
-                            int action, int mods);
-
-    static void mouseMovementCallback(GLFWwindow* window, double x, double y);
 
     std::queue<Event> m_events;
 };

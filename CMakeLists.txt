@@ -11,6 +11,7 @@ find_package(glm REQUIRED)
 
 
 add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
+    src/GlContext.cpp
     src/RenderWindow.cpp 
     src/Shader.cpp 
     src/Texture.cpp 
