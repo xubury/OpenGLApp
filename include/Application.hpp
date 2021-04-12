@@ -20,7 +20,8 @@ class Application {
    private:
     RenderWindow m_window;
     Shader m_shader;
-    Cube m_cube;
+    Cube m_cube1;
+    Cube m_cube2;
     ResourceManager<Texture, std::string> m_textureManager;
 };
 

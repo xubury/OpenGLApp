@@ -4,9 +4,10 @@
 #include <stdint.h>
 
 #include "Drawable.hpp"
+#include "Transform.hpp"
 #include "VertexBuffer.hpp"
 
-class Cube : public Drawable {
+class Cube : public Drawable, public Transform {
    public:
     Cube();
 
