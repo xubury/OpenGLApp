@@ -19,6 +19,7 @@ add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
     src/RenderStates.cpp
     src/Transform.cpp
     src/Camera.cpp
+    src/Keyboard.cpp
     src/Cube.cpp)
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)

@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+#include "Keyboard.hpp"
 #include "RenderStates.hpp"
 
 Application::Application(int width, int height, const std::string& title)
@@ -51,19 +52,19 @@ void Application::run() {
         while (m_window.pollEvent(event)) {
             if (event.type == Event::KeyPressed) {
                 switch (event.key.code) {
-                    case GLFW_KEY_W:
+                    case Keybaord::W:
                         m_camera.move(Camera::Movement::FORWARD, 0.1f);
                         break;
-                    case GLFW_KEY_S:
+                    case Keybaord::S:
                         m_camera.move(Camera::Movement::BACKWRAD, 0.1f);
                         break;
-                    case GLFW_KEY_A:
+                    case Keybaord::A:
                         m_camera.move(Camera::Movement::LEFT, 0.1f);
                         break;
-                    case GLFW_KEY_D:
+                    case Keybaord::D:
                         m_camera.move(Camera::Movement::RIGHT, 0.1f);
                         break;
-                    case GLFW_KEY_ESCAPE:
+                    case Keybaord::ESCAPE:
                         m_window.setShouldClose();
                         break;
                 }

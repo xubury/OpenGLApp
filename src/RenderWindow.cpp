@@ -2,6 +2,8 @@
 #include "RenderWindow.hpp"
 #include "Event.hpp"
 
+GLFWwindow* g_glContext;
+
 void RenderWindow::framebufferSizeCB(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -30,6 +32,8 @@ void RenderWindow::keyCallback(GLFWwindow* window, int key, int, int action,
         case GLFW_MOD_ALT:
             event.key.alt = true;
             break;
+        case GLFW_MOD_SUPER:
+            event.key.system = true;
         default:
             break;
     }
@@ -57,19 +61,19 @@ void RenderWindow::initialize(int width, int height, const std::string& title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (m_window == NULL) {
+    g_glContext = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    if (g_glContext == NULL) {
         std::cout << "Failed to create GLFW window." << std::endl;
         glfwTerminate();
         return;
     }
-    glfwMakeContextCurrent(m_window);
+    glfwMakeContextCurrent(g_glContext);
 
-    glfwSetWindowUserPointer(m_window, this);
+    glfwSetWindowUserPointer(g_glContext, this);
 
-    glfwSetFramebufferSizeCallback(m_window, framebufferSizeCB);
-    glfwSetKeyCallback(m_window, keyCallback);
-    glfwSetCursorPosCallback(m_window, mouseMovementCallback);
+    glfwSetFramebufferSizeCallback(g_glContext, framebufferSizeCB);
+    glfwSetKeyCallback(g_glContext, keyCallback);
+    glfwSetCursorPosCallback(g_glContext, mouseMovementCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;
@@ -89,12 +93,12 @@ RenderWindow::~RenderWindow() { close(); }
 
 void RenderWindow::processEvents() { glfwPollEvents(); }
 
-void RenderWindow::swapBuffers() { glfwSwapBuffers(m_window); }
+void RenderWindow::swapBuffers() { glfwSwapBuffers(g_glContext); }
 
-bool RenderWindow::shouldClose() { return glfwWindowShouldClose(m_window); }
+bool RenderWindow::shouldClose() { return glfwWindowShouldClose(g_glContext); }
 
 void RenderWindow::setShouldClose(bool close) {
-    glfwSetWindowShouldClose(m_window, close);
+    glfwSetWindowShouldClose(g_glContext, close);
 }
 
 void RenderWindow::close() { glfwTerminate(); }

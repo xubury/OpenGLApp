@@ -8,6 +8,7 @@ class Event {
         bool alt;
         bool control;
         bool shift;
+        bool system;
     };
 
     struct MouseMoveEvent {

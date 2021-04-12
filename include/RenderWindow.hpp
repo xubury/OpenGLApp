@@ -9,6 +9,8 @@
 #include "Event.hpp"
 #include "RenderTarget.hpp"
 
+extern GLFWwindow* g_glContext;
+
 class RenderWindow : public RenderTarget {
    public:
     RenderWindow(int width, int height, const std::string& title);
@@ -42,7 +44,6 @@ class RenderWindow : public RenderTarget {
 
     static void mouseMovementCallback(GLFWwindow* window, double x, double y);
 
-    GLFWwindow* m_window;
     std::queue<Event> m_events;
 };
 
