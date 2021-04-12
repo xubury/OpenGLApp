@@ -10,6 +10,8 @@ class RenderTarget {
    public:
     RenderTarget();
 
+    bool create();
+
     void setView(const glm::mat4 &view);
 
     void draw(const Drawable &drawable);

@@ -39,6 +39,7 @@ void RenderWindow::initialize(int width, int height, const std::string& title) {
     }
     glEnable(GL_DEPTH_TEST);
 
+    create();
     m_initilaized = true;
     return;
 }

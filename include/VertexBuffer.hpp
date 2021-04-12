@@ -14,9 +14,9 @@ class VertexBuffer : public Drawable {
 
     std::size_t size() const;
 
-    bool isAvailable() const;
+    bool empty() const;
 
-    bool update(const std::vector<Vertex> &vertices);
+    bool create(const Vertex *vertices, std::size_t cnt);
 
     bool update(const Vertex *vertices, std::size_t cnt);
 

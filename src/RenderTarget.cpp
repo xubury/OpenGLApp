@@ -1,6 +1,7 @@
 #include "RenderTarget.hpp"
 
 #include <glad/glad.h>
+#include <iostream>
 
 #include "Drawable.hpp"
 #include "VertexBuffer.hpp"
@@ -8,16 +9,21 @@
 
 RenderTarget::RenderTarget() : m_view(1.0f), m_VAO(0) {}
 
+bool RenderTarget::create() {
+    if (!m_VAO) glGenVertexArrays(1, &m_VAO);
+    if (!m_VAO) {
+        std::cerr << "Could not create vertex buffer." << std::endl;
+        return false;
+    }
+    return true;
+}
+
 void RenderTarget::setView(const glm::mat4 &view) { m_view = view; }
 
 void RenderTarget::draw(const Drawable &drawable) { drawable.draw(*this); }
 
 void RenderTarget::draw(const VertexBuffer &buffer) {
     VertexBuffer::bind(&buffer);
-    if (m_VAO == 0) {
-        glGenVertexArrays(1, &m_VAO);
-    }
-
     glBindVertexArray(m_VAO);
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
@@ -32,9 +38,7 @@ void RenderTarget::draw(const VertexBuffer &buffer) {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           (void *)(offsetof(Vertex, texCoords)));
     glEnableVertexAttribArray(2);
-
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
-
     VertexBuffer::bind(nullptr);
 }
 

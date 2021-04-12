@@ -8,7 +8,7 @@
 VertexBuffer Cube::m_buffer;
 
 Cube::Cube() {
-    if (m_buffer.isAvailable()) return;
+    if (m_buffer.size()) return;
 
     Vertex vertices[] = {{{-0.5f, -0.5f, -0.5f}, {0, 0, 0}, {0.0f, 0.0f}},
                          {{0.5f, -0.5f, -0.5f}, {0, 0, 0}, {1.0f, 0.0f}},
@@ -47,7 +47,7 @@ Cube::Cube() {
                          {{-0.5f, 0.5f, 0.5f}, {0, 0, 0}, {0.0f, 0.0f}},
                          {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0.0f, 1.0f}}};
 
-    m_buffer.update(vertices, 36);
+    m_buffer.create(vertices, 36);
 }
 
 void Cube::draw(RenderTarget &target) const { target.draw(m_buffer); }
