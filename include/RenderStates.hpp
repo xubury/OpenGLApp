@@ -19,11 +19,9 @@ class RenderStates {
 
     void setView(const glm::mat4 &view);
 
-   private:
-    friend class RenderTarget;
-
     void setupShader() const;
 
+   private:
     void setupTranform() const;
 
     void setupTexture() const;

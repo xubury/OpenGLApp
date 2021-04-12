@@ -42,9 +42,6 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     glEnableVertexAttribArray(2);
 
     states.setupShader();
-    states.setupTranform();
-    states.setupTexture();
-    states.setupView();
 
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
     VertexBuffer::bind(nullptr);
