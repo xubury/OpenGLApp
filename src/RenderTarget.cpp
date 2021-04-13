@@ -52,9 +52,9 @@ void RenderTarget::draw(const VertexBuffer &buffer,
                           (void *)(offsetof(Vertex, texCoords)));
     glEnableVertexAttribArray(2);
 
-    setupShader(states.shader);
-    setupTranform(states.transform);
-    setupTexture(states.texture);
+    applyShader(states.shader);
+    applyTransform(states.transform);
+    applyTexture(states.texture);
 
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
     VertexBuffer::bind(nullptr);
@@ -65,18 +65,18 @@ void RenderTarget::clear(float r, float g, float b, float a) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderTarget::setupShader(const Shader *shader) {
+void RenderTarget::applyShader(const Shader *shader) {
     m_shader = shader;
     m_shader->use();
     m_shader->setMat4("projection", m_camera->getProjection());
     m_shader->setMat4("view", m_camera->getView());
 }
 
-void RenderTarget::setupTranform(const glm::mat4 &transform) const {
+void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->setMat4("model", transform);
 }
 
-void RenderTarget::setupTexture(const Texture *texture) const {
+void RenderTarget::applyTexture(const Texture *texture) const {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->id());
 }

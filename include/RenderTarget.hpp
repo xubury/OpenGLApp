@@ -38,11 +38,11 @@ class RenderTarget {
     ~RenderTarget();
 
    private:
-    void setupShader(const Shader *shader);
+    void applyShader(const Shader *shader);
 
-    void setupTranform(const glm::mat4 &transform) const;
+    void applyTransform(const glm::mat4 &transform) const;
 
-    void setupTexture(const Texture *texture) const;
+    void applyTexture(const Texture *texture) const;
 
     uint32_t m_VAO;
 
