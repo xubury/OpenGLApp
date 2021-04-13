@@ -1,6 +1,6 @@
+#include <glad/glad.h>
 #include "RenderTarget.hpp"
 
-#include <glad/glad.h>
 #include <iostream>
 
 #include "RenderStates.hpp"

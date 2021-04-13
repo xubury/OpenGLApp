@@ -3,9 +3,12 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <iostream>
 
+ActionMap<int> Camera::cameraMovement;
+
 Camera::Camera(float width, float height, const glm::vec3 &position,
                const glm::vec3 &worldUp, float yaw, float pitch)
-    : m_width(width),
+    : ActionTarget(cameraMovement),
+      m_width(width),
       m_height(height),
       m_position(position),
       m_front(glm::vec3(0.f, 0.f, -1.0f)),
@@ -14,7 +17,33 @@ Camera::Camera(float width, float height, const glm::vec3 &position,
       m_pitch(pitch),
       m_zoom(ZOOM),
       m_nearZ(0.1f),
-      m_farZ(100.f) {
+      m_farZ(100.f),
+      m_isFirstMouse(true) {
+    cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
+    cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
+    cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
+    cameraMovement.map(Movement::RIGHT, Keyboard::Key::D);
+
+    bind(Movement::FORWARD,
+         [this](const Event &) { this->move(Movement::FORWARD, 0.1f); });
+    bind(Movement::BACKWRAD,
+         [this](const Event &) { this->move(Movement::BACKWRAD, 0.1f); });
+    bind(Movement::LEFT,
+         [this](const Event &) { this->move(Movement::LEFT, 0.1f); });
+    bind(Movement::RIGHT,
+         [this](const Event &) { this->move(Movement::RIGHT, 0.1f); });
+    bind(Action(Event::EventType::MouseMoved), [this](const Event &event) {
+        glm::vec2 currentMousePos =
+            glm::vec2(event.mouseMove.x, event.mouseMove.y);
+        if (m_isFirstMouse) {
+            m_isFirstMouse = false;
+        } else {
+            glm::vec2 offset = currentMousePos - m_lastMousePos;
+            rotate(offset.x * MOUSE_SENSITIVITY, -offset.y * MOUSE_SENSITIVITY);
+        }
+        m_lastMousePos = currentMousePos;
+    });
+
     update();
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());

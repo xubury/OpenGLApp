@@ -9,8 +9,6 @@
 #include "Cube.hpp"
 #include "Camera.hpp"
 
-inline const float MOUSE_SENSITIVITY = 0.1f;
-
 class Application {
    public:
     Application(int width, int height, const std::string &title);
@@ -28,8 +26,6 @@ class Application {
     Cube m_cube2;
     Camera m_camera;
     ResourceManager<Texture, std::string> m_textureManager;
-    glm::vec2 m_lastMousePos;
-    bool m_isFirstMouse;
 };
 
 #endif

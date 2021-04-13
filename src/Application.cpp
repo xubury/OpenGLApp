@@ -10,8 +10,7 @@
 
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title),
-      m_camera(width, height, glm::vec3(0.f, 0.f, 3.f)),
-      m_isFirstMouse(true) {
+      m_camera(width, height, glm::vec3(0.f, 0.f, 3.f)) {
     m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
     m_textureManager.load("awesomeface", "resources/textures/awesomeface.png",
                           GL_RGBA);
@@ -52,35 +51,16 @@ void Application::run() {
         while (m_window.pollEvent(event)) {
             if (event.type == Event::KeyPressed) {
                 switch (event.key.code) {
-                    case Keybaord::W:
-                        m_camera.move(Camera::Movement::FORWARD, 0.1f);
-                        break;
-                    case Keybaord::S:
-                        m_camera.move(Camera::Movement::BACKWRAD, 0.1f);
-                        break;
-                    case Keybaord::A:
-                        m_camera.move(Camera::Movement::LEFT, 0.1f);
-                        break;
-                    case Keybaord::D:
-                        m_camera.move(Camera::Movement::RIGHT, 0.1f);
-                        break;
-                    case Keybaord::ESCAPE:
+                    case Keyboard::ESCAPE:
                         m_window.setShouldClose();
                         break;
+                    default:
+                        break;
                 }
-            } else if (event.type == Event::MouseMoved) {
-                glm::vec2 currentMousePos =
-                    glm::vec2(event.mouseMove.x, event.mouseMove.y);
-                if (m_isFirstMouse) {
-                    m_isFirstMouse = false;
-                } else {
-                    glm::vec2 offset = currentMousePos - m_lastMousePos;
-                    m_camera.rotate(offset.x * MOUSE_SENSITIVITY,
-                                    -offset.y * MOUSE_SENSITIVITY);
-                }
-                m_lastMousePos = currentMousePos;
             }
+            m_camera.processEvent(event);
         }
+        m_camera.processEvents();
         update();
         render();
     }

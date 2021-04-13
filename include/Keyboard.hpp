@@ -3,7 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
-class Keybaord {
+class Keyboard {
    public:
     enum Key {
         UNKNOWN = GLFW_KEY_UNKNOWN,

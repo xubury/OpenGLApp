@@ -1,10 +1,12 @@
 #ifndef EVENT_HPP
 #define EVENT_HPP
 
+#include "Keyboard.hpp"
+
 class Event {
    public:
     struct KeyEvent {
-        int code;
+        Keyboard::Key code;
         bool alt;
         bool control;
         bool shift;

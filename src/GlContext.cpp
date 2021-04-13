@@ -18,7 +18,7 @@ void GlContext::errorCallback(int error, const char* description) {
 void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
                             int mods) {
     Event event;
-    event.key.code = key;
+    event.key.code = (Keyboard::Key)key;
     if (action == GLFW_RELEASE) {
         event.type = Event::KeyReleased;
     } else if (action == GLFW_PRESS) {

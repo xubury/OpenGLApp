@@ -17,9 +17,7 @@ class GlContext {
 
     static GLFWwindow* context();
 
-   private:
-    friend class RenderWindow;
-
+   protected:
     GlContext(int width, int height, const std::string& title);
 
     ~GlContext();

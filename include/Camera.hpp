@@ -2,15 +2,18 @@
 #define CAMERA_HPP
 
 #include <glm/glm.hpp>
+#include "ActionTarget.hpp"
 
 inline const float YAW = -90.f;
 inline const float PITCH = 0.f;
 inline const float SPEED = 2.5f;
 inline const float ZOOM = 45.f;
+inline const float MOUSE_SENSITIVITY = 0.1f;
 
-class Camera {
+class Camera : public ActionTarget<int> {
    public:
-    enum class Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
+    enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
+    static ActionMap<int> cameraMovement;
 
    public:
     Camera(float width, float height,
@@ -57,6 +60,9 @@ class Camera {
     glm::mat4 m_projection;
     glm::mat4 m_view;
     void update();
+
+    glm::vec2 m_lastMousePos;
+    bool m_isFirstMouse;
 };
 
 #endif
