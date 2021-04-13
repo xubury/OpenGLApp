@@ -17,6 +17,7 @@ Application::Application(int width, int height, const std::string& title)
     m_textureManager.load("container", "resources/textures/container.jpg",
                           GL_RGB);
 
+    // set the GL_TEXTUREX correspondence
     m_shader.setInt("texture0", 0);
     m_shader.setInt("texture1", 1);
     m_cube2.translate(glm::vec3(1.0, 0.f, 0.f));
@@ -31,7 +32,6 @@ void Application::update() {
 
 void Application::render() {
     m_window.clear();
-    m_shader.use();
 
     RenderStates states;
     states.setShader(m_shader);

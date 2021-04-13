@@ -12,6 +12,8 @@ class VertexBuffer : public Drawable {
    public:
     VertexBuffer();
 
+    ~VertexBuffer();
+
     std::size_t size() const;
 
     bool empty() const;

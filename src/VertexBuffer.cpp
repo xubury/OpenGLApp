@@ -8,6 +8,8 @@
 
 VertexBuffer::VertexBuffer() : m_VBO(0), m_size(0) {}
 
+VertexBuffer::~VertexBuffer() { glDeleteBuffers(1, &m_VBO); }
+
 std::size_t VertexBuffer::size() const { return m_size; }
 
 bool VertexBuffer::empty() const { return m_size == 0; }

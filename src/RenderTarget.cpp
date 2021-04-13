@@ -15,6 +15,8 @@ RenderTarget::RenderTarget() : m_VAO(0) {
     }
 }
 
+RenderTarget::~RenderTarget() { glDeleteVertexArrays(1, &m_VAO); }
+
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
 }

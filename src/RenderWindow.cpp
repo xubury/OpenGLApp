@@ -6,7 +6,19 @@
 RenderWindow::RenderWindow(int width, int height, const std::string& title)
     : GlContext(width, height, title) {}
 
-RenderWindow::~RenderWindow() {}
+RenderWindow::~RenderWindow() { close(); }
+
+void RenderWindow::swapBuffers() { glfwSwapBuffers(m_context); }
+
+bool RenderWindow::shouldClose() { return glfwWindowShouldClose(m_context); }
+
+void RenderWindow::setShouldClose(bool close) {
+    glfwSetWindowShouldClose(m_context, close);
+}
+
+void RenderWindow::close() { glfwTerminate(); }
+
+GLFWwindow* RenderWindow::context() { return m_context; }
 
 void RenderWindow::processEvents() { glfwPollEvents(); }
 

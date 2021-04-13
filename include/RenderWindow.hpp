@@ -16,6 +16,16 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     bool pollEvent(Event& event);
 
+    bool shouldClose();
+
+    void setShouldClose(bool close = true);
+
+    void swapBuffers();
+
+    void close();
+
+    static GLFWwindow* context();
+
    private:
     friend class GlContext;
 

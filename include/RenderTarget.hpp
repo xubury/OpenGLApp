@@ -15,6 +15,8 @@ class RenderTarget {
    public:
     RenderTarget();
 
+    ~RenderTarget();
+
     void draw(const Drawable &drawable,
               const RenderStates &states = RenderStates::Default);
 

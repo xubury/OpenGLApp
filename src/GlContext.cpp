@@ -53,8 +53,6 @@ void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     if (win) win->pushEvent(event);
 }
 
-GLFWwindow* GlContext::context() { return m_context; }
-
 GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
@@ -85,15 +83,3 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     }
     glEnable(GL_DEPTH_TEST);
 }
-
-GlContext::~GlContext() { close(); }
-
-void GlContext::swapBuffers() { glfwSwapBuffers(m_context); }
-
-bool GlContext::shouldClose() { return glfwWindowShouldClose(m_context); }
-
-void GlContext::setShouldClose(bool close) {
-    glfwSetWindowShouldClose(m_context, close);
-}
-
-void GlContext::close() { glfwTerminate(); }

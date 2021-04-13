@@ -6,21 +6,10 @@
 class GLFWwindow;
 
 class GlContext {
-   public:
-    bool shouldClose();
-
-    void setShouldClose(bool close = true);
-
-    void swapBuffers();
-
-    void close();
-
-    static GLFWwindow* context();
-
    protected:
     GlContext(int width, int height, const std::string& title);
 
-    ~GlContext();
+    virtual ~GlContext() = default;
 
     static GLFWwindow* m_context;
 
