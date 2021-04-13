@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 
 #include "RenderStates.hpp"
+#include "GlContext.hpp"
 
 class Drawable;
 

@@ -4,6 +4,7 @@
 #include <string>
 
 class GLFWwindow;
+
 class GlContext {
    public:
     bool shouldClose();
@@ -14,12 +15,16 @@ class GlContext {
 
     void close();
 
-    static GLFWwindow* context;
+    static GLFWwindow* context();
 
-   protected:
+   private:
+    friend class RenderWindow;
+
     GlContext(int width, int height, const std::string& title);
 
     ~GlContext();
+
+    static GLFWwindow* m_context;
 
    private:
     static void errorCallback(int error, const char* description);

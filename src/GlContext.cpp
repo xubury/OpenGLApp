@@ -5,7 +5,7 @@
 #include "Event.hpp"
 #include "RenderWindow.hpp"
 
-GLFWwindow* GlContext::context;
+GLFWwindow* GlContext::m_context;
 
 void GlContext::framebufferSizeCB(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);
@@ -53,6 +53,8 @@ void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     if (win) win->pushEvent(event);
 }
 
+GLFWwindow* GlContext::context() { return m_context; }
+
 GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
@@ -63,19 +65,19 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    context = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (context == NULL) {
+    m_context = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    if (m_context == NULL) {
         std::cout << "Failed to create GLFW window." << std::endl;
         glfwTerminate();
         exit(-1);
     }
-    glfwMakeContextCurrent(context);
+    glfwMakeContextCurrent(m_context);
 
-    glfwSetWindowUserPointer(context, this);
+    glfwSetWindowUserPointer(m_context, this);
 
-    glfwSetFramebufferSizeCallback(context, framebufferSizeCB);
-    glfwSetKeyCallback(context, keyCallback);
-    glfwSetCursorPosCallback(context, mouseMovementCallback);
+    glfwSetFramebufferSizeCallback(m_context, framebufferSizeCB);
+    glfwSetKeyCallback(m_context, keyCallback);
+    glfwSetCursorPosCallback(m_context, mouseMovementCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;
@@ -86,12 +88,12 @@ GlContext::GlContext(int width, int height, const std::string& title) {
 
 GlContext::~GlContext() { close(); }
 
-void GlContext::swapBuffers() { glfwSwapBuffers(context); }
+void GlContext::swapBuffers() { glfwSwapBuffers(m_context); }
 
-bool GlContext::shouldClose() { return glfwWindowShouldClose(context); }
+bool GlContext::shouldClose() { return glfwWindowShouldClose(m_context); }
 
 void GlContext::setShouldClose(bool close) {
-    glfwSetWindowShouldClose(context, close);
+    glfwSetWindowShouldClose(m_context, close);
 }
 
 void GlContext::close() { glfwTerminate(); }
