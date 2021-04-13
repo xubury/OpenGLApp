@@ -52,6 +52,6 @@ Cube::Cube() {
 }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {
-    states.setTransform(getTransform());
+    states.transform = getTransform();
     target.draw(m_buffer, states);
 }

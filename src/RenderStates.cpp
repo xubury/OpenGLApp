@@ -6,36 +6,6 @@
 #include "Texture.hpp"
 #include "Camera.hpp"
 
+RenderStates::RenderStates() : transform(1.0f) {}
+
 const RenderStates RenderStates::Default;
-
-RenderStates::RenderStates() {}
-
-void RenderStates::setShader(const Shader &shader) { m_shader = &shader; }
-
-void RenderStates::setTransform(const glm::mat4 &transform) {
-    m_transform = transform;
-}
-
-void RenderStates::setTexture(const Texture &texture) { m_texture = &texture; }
-
-void RenderStates::setCamera(const Camera &camera) { m_camera = &camera; }
-
-void RenderStates::setupShader() const {
-    m_shader->use();
-    setupTranform();
-    setupTexture();
-    setupCamera();
-}
-void RenderStates::setupTranform() const {
-    m_shader->setMat4("model", m_transform);
-}
-
-void RenderStates::setupTexture() const {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_texture->id());
-}
-
-void RenderStates::setupCamera() const {
-    m_shader->setMat4("projection", m_camera->getProjection());
-    m_shader->setMat4("view", m_camera->getView());
-}

@@ -9,8 +9,7 @@
 #include "RenderStates.hpp"
 
 Application::Application(int width, int height, const std::string& title)
-    : m_window(width, height, title),
-      m_camera(width, height, glm::vec3(0.f, 0.f, 3.f)) {
+    : m_window(width, height, title) {
     m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
     m_textureManager.load("awesomeface", "resources/textures/awesomeface.png",
                           GL_RGBA);
@@ -21,6 +20,8 @@ Application::Application(int width, int height, const std::string& title)
     m_shader.setInt("texture0", 0);
     m_shader.setInt("texture1", 1);
     m_cube2.translate(glm::vec3(1.0, 0.f, 0.f));
+    m_window.setCamera(std::make_unique<ControlCamera>(
+        width, height, glm::vec3(0.f, 0.f, 3.f)));
 }
 
 void Application::update() {
@@ -34,12 +35,11 @@ void Application::render() {
     m_window.clear();
 
     RenderStates states;
-    states.setShader(m_shader);
-    states.setTexture(m_textureManager.get("container"));
-    states.setCamera(m_camera);
+    states.shader = &m_shader;
+    states.texture = &m_textureManager.get("container");
     m_cube1.draw(m_window, states);
 
-    states.setTexture(m_textureManager.get("awesomeface"));
+    states.texture = &m_textureManager.get("awesomeface");
     m_cube2.draw(m_window, states);
 
     m_window.swapBuffers();
@@ -58,9 +58,9 @@ void Application::run() {
                         break;
                 }
             }
-            m_camera.processEvent(event);
+            m_window.processEvent(event);
         }
-        m_camera.processEvents();
+        m_window.processEvents();
         update();
         render();
     }

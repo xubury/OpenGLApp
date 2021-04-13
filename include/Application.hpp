@@ -24,7 +24,6 @@ class Application {
     Shader m_shader;
     Cube m_cube1;
     Cube m_cube2;
-    Camera m_camera;
     ResourceManager<Texture, std::string> m_textureManager;
 };
 

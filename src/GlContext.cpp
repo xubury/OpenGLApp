@@ -7,7 +7,13 @@
 
 GLFWwindow* GlContext::m_context;
 
-void GlContext::framebufferSizeCB(GLFWwindow*, int width, int height) {
+void GlContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
+    Event event;
+    event.type = Event::EventType::RESIZED;
+    event.size.width = width;
+    event.size.height = height;
+    auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
+    if (win) win->pushEvent(event);
     glViewport(0, 0, width, height);
 }
 
@@ -18,12 +24,12 @@ void GlContext::errorCallback(int error, const char* description) {
 void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
                             int mod) {
     Event event;
-    event.key.code = (Keyboard::Key)key;
     if (action == GLFW_RELEASE) {
-        event.type = Event::KEY_RElEASED;
+        event.type = Event::EventType::KEY_RElEASED;
     } else if (action == GLFW_PRESS) {
-        event.type = Event::KEY_PRESSED;
+        event.type = Event::EventType::KEY_PRESSED;
     }
+    event.key.code = (Keyboard::Key)key;
 
     switch (mod) {
         case GLFW_MOD_SHIFT:
@@ -46,7 +52,7 @@ void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
 
 void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     Event event;
-    event.type = Event::MOUSE_MOVED;
+    event.type = Event::EventType::MOUSE_MOVED;
     event.mouseMove.x = x;
     event.mouseMove.y = y;
     auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
@@ -56,9 +62,9 @@ void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
 void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
                                     int mod) {
     Event event;
+    event.type = type == GLFW_PRESS ? Event::EventType::MOUSE_BUTTON_PRESSED
+                                    : Event::EventType::MOUSE_BUTTON_RELEASED;
     event.mouseButton.button = (Mouse::Button)button;
-    event.type = type == GLFW_PRESS ? Event::MOUSE_BUTTON_PRESSED
-                                    : Event::MOUSE_BUTTON_RELEASED;
     switch (mod) {
         case GLFW_MOD_SHIFT:
             event.key.shift = true;

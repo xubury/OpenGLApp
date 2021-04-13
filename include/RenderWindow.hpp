@@ -27,7 +27,7 @@ class RenderWindow : public GlContext, public RenderTarget {
    private:
     friend class GlContext;
 
-    void processEvents();
+    void pollEvents();
 
     void pushEvent(const Event& event);
 

@@ -6,6 +6,11 @@
 
 class Event {
    public:
+    struct SizeEvent {
+        uint32_t width;
+        uint32_t height;
+    };
+
     struct KeyEvent {
         Keyboard::Key code;
         bool alt;
@@ -37,6 +42,7 @@ class Event {
     };
 
     union {
+        SizeEvent size;
         KeyEvent key;
         MouseMoveEvent mouseMove;
         MouseButtonEvent mouseButton;
@@ -44,6 +50,7 @@ class Event {
     };
 
     enum EventType {
+        RESIZED,
         KEY_PRESSED,
         KEY_RElEASED,
         MOUSE_MOVED,

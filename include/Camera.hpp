@@ -1,6 +1,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include <memory>
 #include <glm/glm.hpp>
 #include "ActionTarget.hpp"
 
@@ -10,16 +11,17 @@ inline const float SPEED = 2.5f;
 inline const float ZOOM = 45.f;
 inline const float MOUSE_SENSITIVITY = 0.1f;
 
-class Camera : public ActionTarget<int> {
+class Camera {
    public:
-    enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
-    static ActionMap<int> cameraMovement;
+    static const Camera Default;
 
    public:
     Camera(float width, float height,
            const glm::vec3 &position = glm::vec3(0.f),
            const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f), float yaw = YAW,
            float pitch = PITCH);
+
+    virtual ~Camera() = default;
 
     glm::mat4 getProjection() const;
 
@@ -33,17 +35,15 @@ class Camera : public ActionTarget<int> {
 
     float getAspect() const;
 
-    void move(Movement dir, float val);
-
-    void rotate(float yaw, float pitch, bool constraintPitch = true);
-
-    void zoom(float zoom);
-
     void setSize(float width, float height);
 
     void setNearFar(float near, float far);
 
-   private:
+    virtual bool processEvent(const Event &event) const;
+
+    virtual void processEvents() const;
+
+   protected:
     float m_width;
     float m_height;
     glm::vec3 m_position;
@@ -60,7 +60,29 @@ class Camera : public ActionTarget<int> {
     glm::mat4 m_projection;
     glm::mat4 m_view;
     void update();
+};
 
+#include <iostream>
+
+class ControlCamera : public Camera, protected ActionTarget<int> {
+   public:
+    ControlCamera(float width, float height,
+                  const glm::vec3 &position = glm::vec3(0.f),
+                  const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f),
+                  float yaw = YAW, float pitch = PITCH);
+    enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
+
+    void move(Movement dir, float val);
+
+    void rotate(float yaw, float pitch, bool constraintPitch = true);
+
+    void zoom(float zoom);
+
+    virtual bool processEvent(const Event &event) const override;
+    virtual void processEvents() const override;
+
+   private:
+    static ActionMap<int> cameraMovement;
     glm::vec2 m_lastMousePos;
     bool m_isFirstMouse;
 };

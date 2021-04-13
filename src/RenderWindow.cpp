@@ -19,7 +19,7 @@ void RenderWindow::setShouldClose(bool close) {
 
 void RenderWindow::close() { glfwTerminate(); }
 
-void RenderWindow::processEvents() { glfwPollEvents(); }
+void RenderWindow::pollEvents() { glfwPollEvents(); }
 
 bool RenderWindow::pollEvent(Event& event) { return popEvent(event, false); }
 
@@ -27,7 +27,7 @@ void RenderWindow::pushEvent(const Event& event) { m_events.push(event); }
 
 bool RenderWindow::popEvent(Event& event, bool block) {
     if (m_events.empty()) {
-        processEvents();
+        pollEvents();
         if (block) {
             // TODO: block mode
         }
