@@ -4,10 +4,10 @@
 #include <stdint.h>
 
 #include "Drawable.hpp"
-#include "Transform.hpp"
+#include "Transformable.hpp"
 #include "VertexBuffer.hpp"
 
-class Cube : public Drawable, public Transform {
+class Cube : public Drawable, public Transformable {
    public:
     Cube();
     virtual ~Cube() = default;

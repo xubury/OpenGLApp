@@ -18,7 +18,7 @@ add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
     src/VertexBuffer.cpp
     src/RenderTarget.cpp
     src/RenderStates.cpp
-    src/Transform.cpp
+    src/Transformable.cpp
     src/Camera.cpp
     src/Keyboard.cpp
     src/Mouse.cpp
