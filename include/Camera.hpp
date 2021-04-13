@@ -18,7 +18,8 @@ class Camera {
     enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
 
    public:
-    Camera(int width, int height, const glm::vec3 &position = glm::vec3(0.f),
+    Camera(int x, int y, int width, int height,
+           const glm::vec3 &position = glm::vec3(0.f),
            const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f), float yaw = YAW,
            float pitch = PITCH);
 
@@ -27,6 +28,10 @@ class Camera {
     glm::mat4 getProjection() const;
 
     glm::mat4 getView() const;
+
+    int getX() const;
+
+    int getY() const;
 
     int getWidth() const;
 
@@ -55,6 +60,8 @@ class Camera {
     virtual void processEvents() const;
 
    private:
+    int m_x;
+    int m_y;
     int m_width;
     int m_height;
     glm::vec3 m_position;
@@ -75,7 +82,7 @@ class Camera {
 
 class ControlCamera : public Camera, protected ActionTarget<int> {
    public:
-    ControlCamera(int width, int height,
+    ControlCamera(int x, int y, int width, int height,
                   const glm::vec3 &position = glm::vec3(0.f),
                   const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f),
                   float yaw = YAW, float pitch = PITCH);

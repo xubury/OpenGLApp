@@ -35,7 +35,8 @@ void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
 
 void RenderTarget::draw(const VertexBuffer &buffer,
                         const RenderStates &states) {
-    glViewport(0, 0, m_camera->getWidth(), m_camera->getHeight());
+    glViewport(m_camera->getX(), m_camera->getY(), m_camera->getWidth(),
+               m_camera->getHeight());
     VertexBuffer::bind(&buffer);
     glBindVertexArray(m_VAO);
     // position attribute

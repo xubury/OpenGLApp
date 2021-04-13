@@ -21,7 +21,7 @@ Application::Application(int width, int height, const std::string& title)
     m_shader.setInt("texture1", 1);
     m_cube2.translate(glm::vec3(1.0, 0.f, 0.f));
     m_window.setCamera(std::make_unique<ControlCamera>(
-        width, height, glm::vec3(0.f, 0.f, 3.f)));
+        0, 0, width, height, glm::vec3(0.f, 0.f, 3.f)));
 }
 
 void Application::update() {

@@ -2,11 +2,13 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-const Camera Camera::Default = Camera(1, 1);
+const Camera Camera::Default = Camera(0, 0, 1, 1);
 
-Camera::Camera(int width, int height, const glm::vec3 &position,
+Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position,
                const glm::vec3 &worldUp, float yaw, float pitch)
-    : m_width(width),
+    : m_x(x),
+      m_y(y),
+      m_width(width),
       m_height(height),
       m_position(position),
       m_front(glm::vec3(0.f, 0.f, -1.0f)),
@@ -24,6 +26,10 @@ Camera::Camera(int width, int height, const glm::vec3 &position,
 glm::mat4 Camera::getProjection() const { return m_projection; }
 
 glm::mat4 Camera::getView() const { return m_view; }
+
+int Camera::getX() const { return m_x; }
+
+int Camera::getY() const { return m_y; }
 
 int Camera::getWidth() const { return m_width; }
 
@@ -103,9 +109,10 @@ void Camera::update() {
 
 ActionMap<int> ControlCamera::cameraMovement;
 
-ControlCamera::ControlCamera(int width, int height, const glm::vec3 &position,
+ControlCamera::ControlCamera(int x, int y, int width, int height,
+                             const glm::vec3 &position,
                              const glm::vec3 &worldUp, float yaw, float pitch)
-    : Camera(width, height, position, worldUp, yaw, pitch),
+    : Camera(x, y, width, height, position, worldUp, yaw, pitch),
       ActionTarget(cameraMovement) {
     cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
     cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
