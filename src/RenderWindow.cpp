@@ -8,17 +8,17 @@ RenderWindow::RenderWindow(int width, int height, const std::string& title)
 
 RenderWindow::~RenderWindow() { close(); }
 
-void RenderWindow::swapBuffers() { glfwSwapBuffers(m_context); }
+void RenderWindow::swapBuffers() { glfwSwapBuffers(glfwGetCurrentContext()); }
 
-bool RenderWindow::shouldClose() { return glfwWindowShouldClose(m_context); }
+bool RenderWindow::shouldClose() {
+    return glfwWindowShouldClose(glfwGetCurrentContext());
+}
 
 void RenderWindow::setShouldClose(bool close) {
-    glfwSetWindowShouldClose(m_context, close);
+    glfwSetWindowShouldClose(glfwGetCurrentContext(), close);
 }
 
 void RenderWindow::close() { glfwTerminate(); }
-
-GLFWwindow* RenderWindow::context() { return m_context; }
 
 void RenderWindow::processEvents() { glfwPollEvents(); }
 

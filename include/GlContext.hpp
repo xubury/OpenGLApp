@@ -11,17 +11,20 @@ class GlContext {
 
     virtual ~GlContext() = default;
 
+   private:
     static GLFWwindow* m_context;
 
-   private:
     static void errorCallback(int error, const char* description);
 
     static void framebufferSizeCB(GLFWwindow* window, int width, int height);
 
     static void keyCallback(GLFWwindow* window, int key, int scanCode,
-                            int action, int mods);
+                            int action, int mod);
 
     static void mouseMovementCallback(GLFWwindow* window, double x, double y);
+
+    static void mouseButtonCallback(GLFWwindow* window, int button, int type,
+                                    int mod);
 };
 
 #endif

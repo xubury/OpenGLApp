@@ -24,8 +24,6 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     void close();
 
-    static GLFWwindow* context();
-
    private:
     friend class GlContext;
 

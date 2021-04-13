@@ -43,7 +43,6 @@ Camera::Camera(float width, float height, const glm::vec3 &position,
         }
         m_lastMousePos = currentMousePos;
     });
-
     update();
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());

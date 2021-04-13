@@ -2,5 +2,5 @@
 #include "Keyboard.hpp"
 
 bool Keyboard::isKeyPressed(Key key) {
-    return glfwGetKey(RenderWindow::context(), key) == GLFW_PRESS;
+    return glfwGetKey(glfwGetCurrentContext(), key) == GLFW_PRESS;
 }

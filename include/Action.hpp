@@ -9,7 +9,9 @@ class Action {
 
     Action(const Event::EventType &event);
 
-    Action(const Keyboard::Key &key, int type = Type::RealTime | Type::Pressed);
+    Action(Keyboard::Key key, int type = Type::RealTime | Type::Pressed);
+
+    Action(Mouse::Button button, int type = Type::RealTime | Type::Pressed);
 
     bool test() const;
 

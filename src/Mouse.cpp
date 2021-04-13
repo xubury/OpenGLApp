@@ -1,0 +1,16 @@
+#include "Mouse.hpp"
+#include "RenderWindow.hpp"
+
+bool Mouse::isButtonPressed(Button button) {
+    return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;
+}
+
+glm::vec2 Mouse::getPosition() {
+    glm::dvec2 pos;
+    glfwGetCursorPos(glfwGetCurrentContext(), &pos.x, &pos.y);
+    return pos;
+}
+
+void Mouse::setPosition(const glm::vec2 &pos) {
+    glfwSetCursorPos(glfwGetCurrentContext(), pos.x, pos.y);
+}

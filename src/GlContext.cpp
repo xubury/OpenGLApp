@@ -16,7 +16,7 @@ void GlContext::errorCallback(int error, const char* description) {
 }
 
 void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
-                            int mods) {
+                            int mod) {
     Event event;
     event.key.code = (Keyboard::Key)key;
     if (action == GLFW_RELEASE) {
@@ -25,7 +25,7 @@ void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
         event.type = Event::KeyPressed;
     }
 
-    switch (mods) {
+    switch (mod) {
         case GLFW_MOD_SHIFT:
             event.key.shift = true;
             break;
@@ -53,6 +53,31 @@ void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     if (win) win->pushEvent(event);
 }
 
+void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
+                                    int mod) {
+    Event event;
+    event.mouseButton.button = (Mouse::Button)button;
+    event.type = type == GLFW_PRESS ? Event::MouseButtonPressed
+                                    : Event::MouseButtonReleased;
+    switch (mod) {
+        case GLFW_MOD_SHIFT:
+            event.key.shift = true;
+            break;
+        case GLFW_MOD_CONTROL:
+            event.key.control = true;
+            break;
+        case GLFW_MOD_ALT:
+            event.key.alt = true;
+            break;
+        case GLFW_MOD_SUPER:
+            event.key.system = true;
+        default:
+            break;
+    }
+    auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
+    if (win) win->pushEvent(event);
+}
+
 GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
@@ -76,6 +101,7 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetFramebufferSizeCallback(m_context, framebufferSizeCB);
     glfwSetKeyCallback(m_context, keyCallback);
     glfwSetCursorPosCallback(m_context, mouseMovementCallback);
+    glfwSetMouseButtonCallback(m_context, mouseButtonCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;
