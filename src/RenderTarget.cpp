@@ -64,14 +64,12 @@ void RenderTarget::clear(float r, float g, float b, float a) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderTarget::applyShader(const Shader *shader) {
-    m_shader = shader;
+void RenderTarget::applyShader(const Shader *shader) { m_shader = shader; }
+
+void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->use();
     m_shader->setMat4("projection", m_camera->getProjection());
     m_shader->setMat4("view", m_camera->getView());
-}
-
-void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->setMat4("model", transform);
 }
 
