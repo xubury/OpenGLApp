@@ -5,13 +5,13 @@
 
 class Action {
    public:
-    enum Type { RealTime = 1, Pressed = 1 << 1, Released = 1 << 2 };
+    enum Type { REAL_TIME = 1, PRESSED = 1 << 1, RELEASED = 1 << 2 };
 
     Action(const Event::EventType &event);
 
-    Action(Keyboard::Key key, int type = Type::RealTime | Type::Pressed);
+    Action(Keyboard::Key key, int type = Type::REAL_TIME | Type::PRESSED);
 
-    Action(Mouse::Button button, int type = Type::RealTime | Type::Pressed);
+    Action(Mouse::Button button, int type = Type::REAL_TIME | Type::PRESSED);
 
     bool test() const;
 

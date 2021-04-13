@@ -49,7 +49,7 @@ void Application::run() {
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {
-            if (event.type == Event::KeyPressed) {
+            if (event.type == Event::KEY_PRESSED) {
                 switch (event.key.code) {
                     case Keyboard::ESCAPE:
                         m_window.setShouldClose();

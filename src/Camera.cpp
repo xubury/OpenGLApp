@@ -32,7 +32,7 @@ Camera::Camera(float width, float height, const glm::vec3 &position,
          [this](const Event &) { this->move(Movement::LEFT, 0.1f); });
     bind(Movement::RIGHT,
          [this](const Event &) { this->move(Movement::RIGHT, 0.1f); });
-    bind(Action(Event::EventType::MouseMoved), [this](const Event &event) {
+    bind(Action(Event::EventType::MOUSE_MOVED), [this](const Event &event) {
         glm::vec2 currentMousePos =
             glm::vec2(event.mouseMove.x, event.mouseMove.y);
         if (m_isFirstMouse) {

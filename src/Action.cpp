@@ -1,41 +1,41 @@
 #include "Action.hpp"
 
-Action::Action(const Event::EventType &event) : m_type(Type::Pressed) {
+Action::Action(const Event::EventType &event) : m_type(Type::PRESSED) {
     m_event.type = event;
 }
 
 Action::Action(Keyboard::Key key, int type) : m_type(type) {
     m_event.key.code = key;
-    m_event.type = Event::EventType::KeyPressed;
+    m_event.type = Event::EventType::KEY_PRESSED;
 }
 
 Action::Action(Mouse::Button button, int type) : m_type(type) {
     m_event.mouseButton.button = button;
-    m_event.type = Event::EventType::MouseButtonPressed;
+    m_event.type = Event::EventType::MOUSE_BUTTON_PRESSED;
 }
 
 bool Action::operator==(const Event &event) const {
     bool res = false;
     // TODO: add code for handling other event
     switch (event.type) {
-        case Event::EventType::KeyPressed: {
-            if (m_type & Type::Pressed &&
-                m_event.type == Event::EventType::KeyPressed)
+        case Event::EventType::KEY_PRESSED: {
+            if (m_type & Type::PRESSED &&
+                m_event.type == Event::EventType::KEY_PRESSED)
                 res = event.key.code == m_event.key.code;
         } break;
-        case Event::EventType::KeyReleased: {
-            if (m_type & Type::Released &&
-                m_event.type == Event::EventType::KeyPressed)
+        case Event::EventType::KEY_RElEASED: {
+            if (m_type & Type::RELEASED &&
+                m_event.type == Event::EventType::KEY_PRESSED)
                 res = event.key.code == m_event.key.code;
         } break;
-        case Event::EventType::MouseButtonPressed: {
-            if (m_type & Type::Pressed &&
-                m_event.type == Event::EventType::MouseButtonPressed)
+        case Event::EventType::MOUSE_BUTTON_PRESSED: {
+            if (m_type & Type::PRESSED &&
+                m_event.type == Event::EventType::MOUSE_BUTTON_PRESSED)
                 res = event.mouseButton.button == m_event.mouseButton.button;
         } break;
-        case Event::EventType::MouseButtonReleased: {
-            if (m_type & Type::Released &&
-                m_event.type == Event::EventType::MouseButtonReleased)
+        case Event::EventType::MOUSE_BUTTON_RELEASED: {
+            if (m_type & Type::RELEASED &&
+                m_event.type == Event::EventType::MOUSE_BUTTON_RELEASED)
                 res = event.mouseButton.button == m_event.mouseButton.button;
         } break;
         default:
@@ -48,12 +48,12 @@ bool Action::operator==(const Event &event) const {
 bool Action::test() const {
     bool res = false;
     // TODO:other detect (joystick) need to be implemented
-    if (m_event.type == Event::EventType::KeyPressed) {
-        if (m_type & Type::Pressed) {
+    if (m_event.type == Event::EventType::KEY_PRESSED) {
+        if (m_type & Type::PRESSED) {
             res = Keyboard::isKeyPressed(m_event.key.code);
         }
-    } else if (m_event.type == Event::EventType::MouseButtonPressed) {
-        if (m_type & Type::Pressed) {
+    } else if (m_event.type == Event::EventType::MOUSE_BUTTON_PRESSED) {
+        if (m_type & Type::PRESSED) {
             res = Mouse::isButtonPressed(m_event.mouseButton.button);
         }
     }

@@ -20,9 +20,9 @@ void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
     Event event;
     event.key.code = (Keyboard::Key)key;
     if (action == GLFW_RELEASE) {
-        event.type = Event::KeyReleased;
+        event.type = Event::KEY_RElEASED;
     } else if (action == GLFW_PRESS) {
-        event.type = Event::KeyPressed;
+        event.type = Event::KEY_PRESSED;
     }
 
     switch (mod) {
@@ -46,7 +46,7 @@ void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
 
 void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     Event event;
-    event.type = Event::MouseMoved;
+    event.type = Event::MOUSE_MOVED;
     event.mouseMove.x = x;
     event.mouseMove.y = y;
     auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
@@ -57,8 +57,8 @@ void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
                                     int mod) {
     Event event;
     event.mouseButton.button = (Mouse::Button)button;
-    event.type = type == GLFW_PRESS ? Event::MouseButtonPressed
-                                    : Event::MouseButtonReleased;
+    event.type = type == GLFW_PRESS ? Event::MOUSE_BUTTON_PRESSED
+                                    : Event::MOUSE_BUTTON_RELEASED;
     switch (mod) {
         case GLFW_MOD_SHIFT:
             event.key.shift = true;
@@ -81,7 +81,7 @@ void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
 void GlContext::mouseWheelCallback(GLFWwindow* window, double xOffset,
                                    double yOffset) {
     Event event;
-    event.type = Event::MouseWheelScrolled;
+    event.type = Event::MOUSE_WHEEL_SCROLLED;
     event.mouseWheel.xOffset = xOffset;
     event.mouseWheel.yOffset = yOffset;
 
