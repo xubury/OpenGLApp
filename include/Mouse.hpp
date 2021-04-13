@@ -16,11 +16,9 @@ class Mouse {
         BUTTON_COUNT
     };
 
-    enum Wheel { VERTICAL_WHEEL, HORIZONTAL_WHEEL };
-
     static bool isButtonPressed(Button button);
 
-    static glm::vec2 getPosition();
+    static glm::dvec2 getPosition();
 
     static void setPosition(const glm::vec2 &pos);
 };

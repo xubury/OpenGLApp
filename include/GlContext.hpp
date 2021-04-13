@@ -27,6 +27,9 @@ class GlContext {
 
     static void mouseButtonCallback(GLFWwindow* window, int button, int type,
                                     int mod);
+
+    static void mouseWheelCallback(GLFWwindow* window, double xOffset,
+                                   double yOffset);
 };
 
 #endif

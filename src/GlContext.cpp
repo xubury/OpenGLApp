@@ -78,6 +78,19 @@ void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
     if (win) win->pushEvent(event);
 }
 
+void GlContext::mouseWheelCallback(GLFWwindow* window, double xOffset,
+                                   double yOffset) {
+    Event event;
+    event.type = Event::MouseWheelScrolled;
+    event.mouseWheel.xOffset = xOffset;
+    event.mouseWheel.yOffset = yOffset;
+
+    glfwGetCursorPos(glfwGetCurrentContext(), &event.mouseWheel.x,
+                     &event.mouseWheel.y);
+    auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
+    if (win) win->pushEvent(event);
+}
+
 GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
@@ -102,6 +115,7 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetKeyCallback(m_context, keyCallback);
     glfwSetCursorPosCallback(m_context, mouseMovementCallback);
     glfwSetMouseButtonCallback(m_context, mouseButtonCallback);
+    glfwSetScrollCallback(m_context, mouseWheelCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD." << std::endl;

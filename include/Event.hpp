@@ -15,24 +15,32 @@ class Event {
     };
 
     struct MouseMoveEvent {
-        int x;
-        int y;
+        double x;
+        double y;
     };
 
     struct MouseButtonEvent {
         Mouse::Button button;
-        int x;
-        int y;
+        double x;
+        double y;
         bool alt;
         bool control;
         bool shift;
         bool system;
     };
 
+    struct MouseWheelEvent {
+        double xOffset;
+        double yOffset;
+        double x;
+        double y;
+    };
+
     union {
         KeyEvent key;
         MouseMoveEvent mouseMove;
         MouseButtonEvent mouseButton;
+        MouseWheelEvent mouseWheel;
     };
 
     enum EventType {
@@ -40,7 +48,8 @@ class Event {
         KeyReleased,
         MouseMoved,
         MouseButtonPressed,
-        MouseButtonReleased
+        MouseButtonReleased,
+        MouseWheelScrolled
     };
 
     EventType type;
