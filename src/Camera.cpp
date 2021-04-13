@@ -4,7 +4,7 @@
 
 const Camera Camera::Default = Camera(1, 1);
 
-Camera::Camera(float width, float height, const glm::vec3 &position,
+Camera::Camera(int width, int height, const glm::vec3 &position,
                const glm::vec3 &worldUp, float yaw, float pitch)
     : m_width(width),
       m_height(height),
@@ -25,9 +25,9 @@ glm::mat4 Camera::getProjection() const { return m_projection; }
 
 glm::mat4 Camera::getView() const { return m_view; }
 
-float Camera::getWidth() const { return m_width; }
+int Camera::getWidth() const { return m_width; }
 
-float Camera::getHeight() const { return m_height; }
+int Camera::getHeight() const { return m_height; }
 
 float Camera::getFOV() const { return m_zoom; }
 
@@ -35,7 +35,7 @@ float Camera::getNearZ() const { return m_nearZ; }
 
 float Camera::getFarZ() const { return m_farZ; }
 
-float Camera::getAspect() const { return m_width / m_height; }
+float Camera::getAspect() const { return (float)m_width / m_height; }
 
 void Camera::move(Movement dir, float val) {
     if (dir == Movement::FORWARD) {
@@ -103,8 +103,7 @@ void Camera::update() {
 
 ActionMap<int> ControlCamera::cameraMovement;
 
-ControlCamera::ControlCamera(float width, float height,
-                             const glm::vec3 &position,
+ControlCamera::ControlCamera(int width, int height, const glm::vec3 &position,
                              const glm::vec3 &worldUp, float yaw, float pitch)
     : Camera(width, height, position, worldUp, yaw, pitch),
       ActionTarget(cameraMovement) {
