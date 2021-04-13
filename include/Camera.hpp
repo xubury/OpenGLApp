@@ -70,8 +70,6 @@ class Camera {
     void update();
 };
 
-#include <iostream>
-
 class ControlCamera : public Camera, protected ActionTarget<int> {
    public:
     ControlCamera(float width, float height,

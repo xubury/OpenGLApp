@@ -1,7 +1,6 @@
 #include "Camera.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include <iostream>
 
 const Camera Camera::Default = Camera(1, 1);
 
