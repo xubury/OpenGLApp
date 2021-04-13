@@ -15,6 +15,8 @@ class Camera {
    public:
     static const Camera Default;
 
+    enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
+
    public:
     Camera(float width, float height,
            const glm::vec3 &position = glm::vec3(0.f),
@@ -39,11 +41,17 @@ class Camera {
 
     void setNearFar(float near, float far);
 
+    void move(Movement dir, float val);
+
+    void rotate(float yaw, float pitch, bool constraintPitch = true);
+
+    void zoom(float zoom);
+
     virtual bool processEvent(const Event &event) const;
 
     virtual void processEvents() const;
 
-   protected:
+   private:
     float m_width;
     float m_height;
     glm::vec3 m_position;
@@ -70,15 +78,9 @@ class ControlCamera : public Camera, protected ActionTarget<int> {
                   const glm::vec3 &position = glm::vec3(0.f),
                   const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f),
                   float yaw = YAW, float pitch = PITCH);
-    enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
-
-    void move(Movement dir, float val);
-
-    void rotate(float yaw, float pitch, bool constraintPitch = true);
-
-    void zoom(float zoom);
 
     virtual bool processEvent(const Event &event) const override;
+
     virtual void processEvents() const override;
 
    private:

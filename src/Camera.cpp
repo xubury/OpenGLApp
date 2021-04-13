@@ -34,7 +34,7 @@ float Camera::getFarZ() const { return m_farZ; }
 
 float Camera::getAspect() const { return m_width / m_height; }
 
-void ControlCamera::move(Movement dir, float val) {
+void Camera::move(Movement dir, float val) {
     if (dir == Movement::FORWARD) {
         m_position += m_front * val;
     } else if (dir == Movement::BACKWRAD) {
@@ -47,7 +47,7 @@ void ControlCamera::move(Movement dir, float val) {
     update();
 }
 
-void ControlCamera::rotate(float yaw, float pitch, bool constraintPitch) {
+void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
     m_yaw += yaw;
     m_pitch += pitch;
     if (constraintPitch) {
@@ -60,7 +60,7 @@ void ControlCamera::rotate(float yaw, float pitch, bool constraintPitch) {
     update();
 }
 
-void ControlCamera::zoom(float zoom) {
+void Camera::zoom(float zoom) {
     m_zoom -= zoom;
     if (m_zoom < 1.f)
         m_zoom = 1.f;
