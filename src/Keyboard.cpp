@@ -1,4 +1,3 @@
-#include "RenderWindow.hpp"
 #include "Keyboard.hpp"
 
 bool Keyboard::isKeyPressed(Key key) {

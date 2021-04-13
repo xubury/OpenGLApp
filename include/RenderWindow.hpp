@@ -5,8 +5,8 @@
 #include <string>
 
 #include "GlContext.hpp"
-#include "Event.hpp"
 #include "RenderTarget.hpp"
+#include "Event.hpp"
 
 class RenderWindow : public GlContext, public RenderTarget {
    public:

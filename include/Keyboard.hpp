@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_HPP
 #define KEYBOARD_HPP
 
-#include <GLFW/glfw3.h>
+#include "GlContext.hpp"
 
 class Keyboard {
    public:
@@ -107,8 +107,7 @@ class Keyboard {
         F13 = GLFW_KEY_F13,
         F14 = GLFW_KEY_F14,
         F15 = GLFW_KEY_F15,
-        PAUSE = GLFW_KEY_PAUSE,
-        KEY_COUNT
+        PAUSE = GLFW_KEY_PAUSE
     };
 
     static bool isKeyPressed(Key key);

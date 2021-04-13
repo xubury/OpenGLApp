@@ -1,5 +1,4 @@
 #include "Mouse.hpp"
-#include "RenderWindow.hpp"
 
 bool Mouse::isButtonPressed(Button button) {
     return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;

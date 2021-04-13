@@ -2,10 +2,8 @@
 #define RENDER_TARGET_HPP
 
 #include <glm/glm.hpp>
-#include "Camera.hpp"
 
-#include "RenderStates.hpp"
-#include "GlContext.hpp"
+#include "Drawable.hpp"
 
 class Drawable;
 

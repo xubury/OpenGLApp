@@ -3,7 +3,7 @@
 
 class RenderTarget;
 
-class RenderStates;
+#include "RenderStates.hpp"
 
 class Drawable {
    public:

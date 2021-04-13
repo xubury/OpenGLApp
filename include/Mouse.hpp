@@ -1,8 +1,9 @@
 #ifndef MOUSE_HPP
 #define MOUSE_HPP
 
-#include <GLFW/glfw3.h>
-#include <glm/fwd.hpp>
+#include "GlContext.hpp"
+
+#include <glm/glm.hpp>
 
 class Mouse {
    public:

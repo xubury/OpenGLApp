@@ -1,7 +1,7 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
 #include "GlContext.hpp"
+
+#include <iostream>
+
 #include "Event.hpp"
 #include "RenderWindow.hpp"
 
