@@ -14,12 +14,12 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     ~RenderWindow();
 
-    void processEvents();
-
     bool pollEvent(Event& event);
 
    private:
     friend class GlContext;
+
+    void processEvents();
 
     void pushEvent(const Event& event);
 

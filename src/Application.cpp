@@ -81,7 +81,6 @@ void Application::run() {
                 m_lastMousePos = currentMousePos;
             }
         }
-        m_window.processEvents();
         update();
         render();
     }
