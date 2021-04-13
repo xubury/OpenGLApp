@@ -57,6 +57,9 @@ void Application::run() {
                     default:
                         break;
                 }
+            } else if (event.type == Event::EventType::RESIZED) {
+                m_window.getCamera()->setSize(event.size.width,
+                                              event.size.height);
             }
             m_window.processEvent(event);
         }

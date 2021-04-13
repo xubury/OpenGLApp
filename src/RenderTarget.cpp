@@ -9,7 +9,7 @@
 #include "Vertex.hpp"
 
 RenderTarget::RenderTarget() : m_VAO(0), m_camera(new Camera(Camera::Default)) {
-    if (!m_VAO) glGenVertexArrays(1, &m_VAO);
+    glGenVertexArrays(1, &m_VAO);
     if (!m_VAO) {
         std::cerr << "Could not create vertex buffer." << std::endl;
     }
@@ -17,7 +17,7 @@ RenderTarget::RenderTarget() : m_VAO(0), m_camera(new Camera(Camera::Default)) {
 
 RenderTarget::~RenderTarget() { glDeleteVertexArrays(1, &m_VAO); }
 
-const Camera *RenderTarget::getCamera() { return m_camera.get(); }
+Camera *RenderTarget::getCamera() { return m_camera.get(); }
 
 void RenderTarget::setCamera(std::unique_ptr<Camera> camera) {
     m_camera = std::move(camera);
@@ -35,6 +35,7 @@ void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
 
 void RenderTarget::draw(const VertexBuffer &buffer,
                         const RenderStates &states) {
+    glViewport(0, 0, m_camera->getWidth(), m_camera->getHeight());
     VertexBuffer::bind(&buffer);
     glBindVertexArray(m_VAO);
     // position attribute

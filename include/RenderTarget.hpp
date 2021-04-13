@@ -24,7 +24,7 @@ class RenderTarget {
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
-    const Camera *getCamera();
+    Camera *getCamera();
 
     void setCamera(std::unique_ptr<Camera> camera);
 

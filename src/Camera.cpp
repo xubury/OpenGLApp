@@ -25,6 +25,10 @@ glm::mat4 Camera::getProjection() const { return m_projection; }
 
 glm::mat4 Camera::getView() const { return m_view; }
 
+float Camera::getWidth() const { return m_width; }
+
+float Camera::getHeight() const { return m_height; }
+
 float Camera::getFOV() const { return m_zoom; }
 
 float Camera::getNearZ() const { return m_nearZ; }

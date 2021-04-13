@@ -29,6 +29,10 @@ class Camera {
 
     glm::mat4 getView() const;
 
+    float getWidth() const;
+
+    float getHeight() const;
+
     float getFOV() const;
 
     float getNearZ() const;

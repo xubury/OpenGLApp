@@ -14,7 +14,6 @@ void GlContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
     event.size.height = height;
     auto win = static_cast<RenderWindow*>(glfwGetWindowUserPointer(window));
     if (win) win->pushEvent(event);
-    glViewport(0, 0, width, height);
 }
 
 void GlContext::errorCallback(int error, const char* description) {
