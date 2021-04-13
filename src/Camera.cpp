@@ -128,6 +128,8 @@ ControlCamera::ControlCamera(float width, float height,
         }
         m_lastMousePos = currentMousePos;
     });
+    bind(Action(Event::EventType::MOUSE_WHEEL_SCROLLED),
+         [this](const Event &event) { zoom(event.mouseWheel.yOffset); });
 }
 
 bool ControlCamera::processEvent(const Event &event) const {
