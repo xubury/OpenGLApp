@@ -1,20 +1,11 @@
 #ifndef MOUSE_HPP
 #define MOUSE_HPP
 
-#include "Window/GlContext.hpp"
-
 #include <glm/glm.hpp>
 
 class Mouse {
    public:
-    enum Button {
-        LEFT = GLFW_MOUSE_BUTTON_1,
-        RIGHT = GLFW_MOUSE_BUTTON_2,
-        MIDDLE = GLFW_MOUSE_BUTTON_3,
-        XBUTTON1 = GLFW_MOUSE_BUTTON_4,
-        XBUTTON2 = GLFW_MOUSE_BUTTON_5,
-        BUTTON_COUNT
-    };
+    enum Button { LEFT = 0, RIGHT = 1, MIDDLE = 2, XBUTTON1 = 3, XBUTTON2 = 4 };
 
     static bool isButtonPressed(Button button);
 
