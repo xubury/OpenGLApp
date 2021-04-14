@@ -1,7 +1,7 @@
 #ifndef MOUSE_HPP
 #define MOUSE_HPP
 
-#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Mouse {
    public:

@@ -1,11 +1,6 @@
 #include "Application.hpp"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-
-#include "Window/Keyboard.hpp"
 
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {
