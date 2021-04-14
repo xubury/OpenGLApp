@@ -8,7 +8,15 @@
 class Shader {
    public:
     uint32_t id;
+
+    Shader() = default;
+
+    Shader(const Shader&) = delete;
+
+    Shader& operator=(const Shader&) = delete;
+
     void load(const std::string& vertexPath, const std::string& fragmentPath);
+
     void use() const;
 
     void setBool(const std::string& name, bool value) const;

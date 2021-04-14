@@ -5,6 +5,12 @@
 
 class Texture {
    public:
+    Texture() = default;
+
+    Texture(const Texture&) = delete;
+
+    Texture& operator=(const Texture&) = delete;
+
     bool loadFromFile(const std::string& path, int type);
 
     uint32_t id() const;

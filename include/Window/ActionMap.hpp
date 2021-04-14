@@ -2,7 +2,7 @@
 #define ACTION_MAP_HPP
 
 #include <unordered_map>
-#include "Action.hpp"
+#include "Window/Action.hpp"
 
 template <typename T = int>
 class ActionMap {

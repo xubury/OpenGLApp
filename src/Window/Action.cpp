@@ -1,4 +1,4 @@
-#include "Action.hpp"
+#include "Window/Action.hpp"
 
 Action::Action(const Event::EventType &event) : m_type(Type::PRESSED) {
     m_event.type = event;

@@ -16,6 +16,10 @@ class Camera;
 
 class RenderTarget {
    public:
+    RenderTarget(const RenderTarget &) = delete;
+
+    RenderTarget &operator=(const RenderTarget &) = delete;
+
     void draw(const Drawable &drawable,
               const RenderStates &states = RenderStates::Default);
 

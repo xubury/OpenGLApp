@@ -23,7 +23,7 @@ add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
     src/Window/GlContext.cpp
     src/Window/Keyboard.cpp
     src/Window/Mouse.cpp
-    src/Action.cpp)
+    src/Window/Action.cpp)
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 

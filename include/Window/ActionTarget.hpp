@@ -5,7 +5,7 @@
 #include <list>
 #include <utility>
 
-#include "ActionMap.hpp"
+#include "Window/ActionMap.hpp"
 
 template <typename T>
 class ActionTarget {
