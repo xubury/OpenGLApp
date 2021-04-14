@@ -52,6 +52,10 @@ void Camera::move(Movement dir, float val) {
         m_position -= m_right * val;
     } else if (dir == Movement::RIGHT) {
         m_position += m_right * val;
+    } else if (dir == Movement::UPWARD) {
+        m_position += m_up * val;
+    } else if (dir == Movement::DOWNWARD) {
+        m_position -= m_up * val;
     }
     update();
 }
@@ -118,6 +122,8 @@ ControlCamera::ControlCamera(int x, int y, int width, int height,
     cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
     cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
     cameraMovement.map(Movement::RIGHT, Keyboard::Key::D);
+    cameraMovement.map(Movement::UPWARD, Keyboard::Key::SPACE);
+    cameraMovement.map(Movement::DOWNWARD, Keyboard::Key::LCONTROL);
 
     bind(Movement::FORWARD,
          [this](const Event &) { this->move(Movement::FORWARD, 0.1f); });
@@ -127,6 +133,10 @@ ControlCamera::ControlCamera(int x, int y, int width, int height,
          [this](const Event &) { this->move(Movement::LEFT, 0.1f); });
     bind(Movement::RIGHT,
          [this](const Event &) { this->move(Movement::RIGHT, 0.1f); });
+    bind(Movement::UPWARD,
+         [this](const Event &) { this->move(Movement::UPWARD, 0.1f); });
+    bind(Movement::DOWNWARD,
+         [this](const Event &) { this->move(Movement::DOWNWARD, 0.1f); });
     bind(Action(Event::EventType::MOUSE_MOVED), [this](const Event &event) {
         glm::vec2 currentMousePos =
             glm::vec2(event.mouseMove.x, event.mouseMove.y);

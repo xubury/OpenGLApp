@@ -15,7 +15,7 @@ class Camera {
    public:
     static const Camera Default;
 
-    enum Movement { FORWARD, BACKWRAD, LEFT, RIGHT };
+    enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
    public:
     Camera(int x, int y, int width, int height,
