@@ -3,6 +3,8 @@
 
 Transformable::Transformable() : m_transform(1.0f) {}
 
+Transformable::~Transformable() {}
+
 void Transformable::transform(const glm::mat4 &transform) {
     m_transform = transform * m_transform;
 }

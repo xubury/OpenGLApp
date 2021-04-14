@@ -2,10 +2,13 @@
 #define TRANSFORMABLE_HPP
 
 #include <glm/glm.hpp>
+#include <iostream>
 
 class Transformable {
    public:
     Transformable();
+
+    virtual ~Transformable() = 0;
 
     void transform(const glm::mat4 &transform);
 

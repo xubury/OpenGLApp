@@ -10,7 +10,6 @@
 class Cube : public Drawable, public Transformable {
    public:
     Cube();
-    virtual ~Cube() = default;
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
