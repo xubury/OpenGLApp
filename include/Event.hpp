@@ -1,8 +1,8 @@
 #ifndef EVENT_HPP
 #define EVENT_HPP
 
-#include "Keyboard.hpp"
-#include "Mouse.hpp"
+#include "Input/Keyboard.hpp"
+#include "Input/Mouse.hpp"
 
 class Event {
    public:

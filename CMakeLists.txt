@@ -20,8 +20,8 @@ add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
     src/RenderStates.cpp
     src/Transformable.cpp
     src/Camera.cpp
-    src/Keyboard.cpp
-    src/Mouse.cpp
+    src/Input/Keyboard.cpp
+    src/Input/Mouse.cpp
     src/Action.cpp
     src/Cube.cpp)
 

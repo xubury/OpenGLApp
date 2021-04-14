@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-#include "Keyboard.hpp"
+#include "Input/Keyboard.hpp"
 #include "RenderStates.hpp"
 
 Application::Application(int width, int height, const std::string& title)
