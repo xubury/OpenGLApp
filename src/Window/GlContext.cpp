@@ -1,9 +1,8 @@
-#include "GlContext.hpp"
+#include "Window/GlContext.hpp"
+#include "Window/Event.hpp"
+#include "Graphic/RenderWindow.hpp"
 
 #include <iostream>
-
-#include "Event.hpp"
-#include "RenderWindow.hpp"
 
 GLFWwindow* GlContext::m_context;
 

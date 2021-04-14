@@ -4,7 +4,7 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-#include "Drawable.hpp"
+#include "Graphic/Drawable.hpp"
 #include "Camera.hpp"
 
 class Drawable;

@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_HPP
 #define KEYBOARD_HPP
 
-#include "GlContext.hpp"
+#include "Window/GlContext.hpp"
 
 class Keyboard {
    public:

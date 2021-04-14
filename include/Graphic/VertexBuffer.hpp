@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <vector>
 
-#include "Drawable.hpp"
+#include "Graphic/Drawable.hpp"
 
 class Vertex;
 

@@ -5,8 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-#include "Input/Keyboard.hpp"
-#include "RenderStates.hpp"
+#include "Window/Keyboard.hpp"
 
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {

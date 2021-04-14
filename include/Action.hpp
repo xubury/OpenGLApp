@@ -1,7 +1,7 @@
 #ifndef ACTION_HPP
 #define ACTION_HPP
 
-#include "Event.hpp"
+#include "Window/Event.hpp"
 
 class Action {
    public:

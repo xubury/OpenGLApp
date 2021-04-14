@@ -1,6 +1,7 @@
+#include "Graphic/RenderWindow.hpp"
+#include "Window/Event.hpp"
+
 #include <iostream>
-#include "RenderWindow.hpp"
-#include "Event.hpp"
 
 RenderWindow::RenderWindow(int width, int height, const std::string& title)
     : GlContext(width, height, title) {}

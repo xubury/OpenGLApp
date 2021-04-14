@@ -11,19 +11,19 @@ find_package(glm REQUIRED)
 
 
 add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
-    src/GlContext.cpp
-    src/RenderWindow.cpp 
-    src/Shader.cpp 
-    src/Texture.cpp 
-    src/VertexBuffer.cpp
-    src/RenderTarget.cpp
-    src/RenderStates.cpp
-    src/Transformable.cpp
-    src/Camera.cpp
-    src/Input/Keyboard.cpp
-    src/Input/Mouse.cpp
-    src/Action.cpp
-    src/Cube.cpp)
+    src/Graphic/Shader.cpp 
+    src/Graphic/Texture.cpp 
+    src/Graphic/VertexBuffer.cpp
+    src/Graphic/RenderWindow.cpp 
+    src/Graphic/RenderTarget.cpp
+    src/Graphic/RenderStates.cpp
+    src/Graphic/Transformable.cpp
+    src/Graphic/Cube.cpp
+    src/Graphic/Camera.cpp
+    src/Window/GlContext.cpp
+    src/Window/Keyboard.cpp
+    src/Window/Mouse.cpp
+    src/Action.cpp)
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 

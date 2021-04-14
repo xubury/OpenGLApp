@@ -1,12 +1,12 @@
-#include "RenderTarget.hpp"
+#include "Graphic/RenderTarget.hpp"
 
 #include <glad/glad.h>
 #include <iostream>
 
-#include "Shader.hpp"
-#include "Texture.hpp"
-#include "VertexBuffer.hpp"
-#include "Vertex.hpp"
+#include "Graphic/Shader.hpp"
+#include "Graphic/Texture.hpp"
+#include "Graphic/VertexBuffer.hpp"
+#include "Graphic/Vertex.hpp"
 
 RenderTarget::RenderTarget() : m_VAO(0), m_camera(new Camera(Camera::Default)) {
     glGenVertexArrays(1, &m_VAO);

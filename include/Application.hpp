@@ -3,11 +3,10 @@
 
 #include <string>
 #include "ResourceManager.hpp"
-#include "RenderWindow.hpp"
-#include "Shader.hpp"
-#include "Texture.hpp"
-#include "Cube.hpp"
-#include "Camera.hpp"
+#include "Graphic/RenderWindow.hpp"
+#include "Graphic/Shader.hpp"
+#include "Graphic/Texture.hpp"
+#include "Graphic/Cube.hpp"
 
 class Application {
    public:

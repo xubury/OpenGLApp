@@ -1,7 +1,7 @@
 #ifndef MOUSE_HPP
 #define MOUSE_HPP
 
-#include "GlContext.hpp"
+#include "Window/GlContext.hpp"
 
 #include <glm/glm.hpp>
 

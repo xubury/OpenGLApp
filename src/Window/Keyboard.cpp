@@ -1,4 +1,4 @@
-#include "Input/Keyboard.hpp"
+#include "Window/Keyboard.hpp"
 
 bool Keyboard::isKeyPressed(Key key) {
     return glfwGetKey(glfwGetCurrentContext(), key) == GLFW_PRESS;
