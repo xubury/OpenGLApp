@@ -5,8 +5,8 @@
 #include <sstream>
 #include <iostream>
 
-void Shader::load(const std::string& vertexPath,
-                  const std::string& fragmentPath) {
+void Shader::loadFromFile(const std::string& vertexPath,
+                          const std::string& fragmentPath) {
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
@@ -31,11 +31,15 @@ void Shader::load(const std::string& vertexPath,
     } catch (std::ifstream::failure& e) {
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
+    compile(vertexCode, fragmentCode);
+}
 
-    const char* vShaderCode = vertexCode.c_str();
-    const char* fShaderCode = fragmentCode.c_str();
+void Shader::compile(const std::string& vertexCode,
+                     const std::string& fragmentCode) {
     // compile shaders
     // vertex shader
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
     uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex, 1, &vShaderCode, NULL);
     glCompileShader(vertex);

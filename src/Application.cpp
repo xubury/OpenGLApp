@@ -4,7 +4,7 @@
 
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {
-    m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
+    m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
     m_textureManager.load("awesomeface", "resources/textures/awesomeface.png",
                           GL_RGBA);
     m_textureManager.load("container", "resources/textures/container.jpg",

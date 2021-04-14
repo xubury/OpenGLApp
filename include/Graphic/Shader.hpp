@@ -15,7 +15,11 @@ class Shader {
 
     Shader& operator=(const Shader&) = delete;
 
-    void load(const std::string& vertexPath, const std::string& fragmentPath);
+    void compile(const std::string& vertexCode,
+                 const std::string& fragmentCode);
+
+    void loadFromFile(const std::string& vertexPath,
+                      const std::string& fragmentPath);
 
     void use() const;
 
