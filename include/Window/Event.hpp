@@ -52,7 +52,7 @@ class Event {
     enum EventType {
         RESIZED,
         KEY_PRESSED,
-        KEY_RElEASED,
+        KEY_RELEASED,
         MOUSE_MOVED,
         MOUSE_BUTTON_PRESSED,
         MOUSE_BUTTON_RELEASED,

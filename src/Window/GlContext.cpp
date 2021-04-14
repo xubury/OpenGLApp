@@ -23,7 +23,7 @@ void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
                             int mod) {
     Event event;
     if (action == GLFW_RELEASE) {
-        event.type = Event::EventType::KEY_RElEASED;
+        event.type = Event::EventType::KEY_RELEASED;
     } else if (action == GLFW_PRESS) {
         event.type = Event::EventType::KEY_PRESSED;
     }

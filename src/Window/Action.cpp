@@ -23,7 +23,7 @@ bool Action::operator==(const Event &event) const {
                 m_event.type == Event::EventType::KEY_PRESSED)
                 res = event.key.code == m_event.key.code;
         } break;
-        case Event::EventType::KEY_RElEASED: {
+        case Event::EventType::KEY_RELEASED: {
             if (m_type & Type::RELEASED &&
                 m_event.type == Event::EventType::KEY_PRESSED)
                 res = event.key.code == m_event.key.code;
