@@ -5,11 +5,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Texture::Texture() : m_id{0} {}
+Texture::Texture() : m_id{0}, m_shininess(64.0f) {}
 
 Texture::~Texture() { glDeleteTextures(TEXTURE_COUNT, m_id); }
 
 uint32_t Texture::id(TextureType type) const { return m_id[type]; }
+
+float Texture::getShininess() const { return m_shininess; }
+
+void Texture::setShininess(float shininess) { m_shininess = shininess; }
 
 bool Texture::loadFromFile(const std::string&) { return true; }
 

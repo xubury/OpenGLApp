@@ -81,6 +81,10 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
 }
 
 void RenderTarget::applyTexture(const Texture *texture) const {
+    // set the GL_TEXTUREX correspondence
+    m_shader->setInt("material.diffuse", 0);
+    m_shader->setInt("material.specular", 1);
+    m_shader->setFloat("material.shininess", texture->getShininess());
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->id(Texture::DIFFUSE));
     glActiveTexture(GL_TEXTURE1);

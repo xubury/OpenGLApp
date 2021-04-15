@@ -18,15 +18,11 @@ Application::Application(int width, int height, const std::string& title)
         .loadTexture("resources/textures/container2_specular.png",
                      Texture::TextureType::SPECULAR, GL_RGBA);
 
-    // set the GL_TEXTUREX correspondence
     m_shader.use();
-    m_shader.setInt("material.diffuse", 0);
-    m_shader.setInt("material.specular", 1);
     m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
     m_shader.setVec3("light.ambient", glm::vec3(0.5f));
     m_shader.setVec3("light.diffuse", glm::vec3(0.5f));
     m_shader.setVec3("light.specular", glm::vec3(1.0f));
-    m_shader.setFloat("material.shininess", 64.0f);
 
     m_cube2.translate(glm::vec3(1.0, 0.f, 0.f));
     m_window.setCamera(std::make_unique<ControlCamera>(
