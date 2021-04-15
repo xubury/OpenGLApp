@@ -20,7 +20,7 @@ struct Light {
     vec3 specular;
 };
 uniform Light light;
-out Light lightViewSpace;
+out Light lightView;
 
 void main() {
     gl_Position = projection * view * model * vec4(aPos, 1.0);
@@ -30,7 +30,7 @@ void main() {
     texCoord = aTexCoord;
     normal = normalize(mat3(transpose(inverse(view * model))) * aNormal);
 
-    lightViewSpace = light;
-    lightViewSpace.position = vec3(view * vec4(light.position, 1.0));
+    lightView = light;
+    lightView.position = vec3(view * vec4(light.position, 1.0));
 }
 
