@@ -30,8 +30,20 @@ void Application::render() {
 
     RenderStates states;
     m_shader.use();
-    m_shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-    m_shader.setVec3("lightWorldPos", glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::vec3 lightColor;
+    lightColor.x = sin(glfwGetTime() * 2.0f);
+    lightColor.y = sin(glfwGetTime() * 0.7f);
+    lightColor.z = sin(glfwGetTime() * 1.3f);
+    glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+    glm::vec3 ambientColor = lightColor * glm::vec3(0.2f);
+    m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
+    m_shader.setVec3("light.ambient", ambientColor);
+    m_shader.setVec3("light.diffuse", diffuseColor);
+    m_shader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    m_shader.setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+    m_shader.setVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+    m_shader.setVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    m_shader.setFloat("material.shininess", 64.0f);
     states.shader = &m_shader;
     states.texture = &m_textureManager.get("container");
     m_cube1.draw(m_window, states);

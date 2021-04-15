@@ -13,8 +13,14 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-uniform vec3 lightWorldPos;
-out vec3 lightPos;
+struct Light {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+uniform Light light;
+out Light lightViewSpace;
 
 void main() {
     gl_Position = projection * view * model * vec4(aPos, 1.0);
@@ -24,6 +30,7 @@ void main() {
     texCoord = aTexCoord;
     normal = normalize(mat3(transpose(inverse(view * model))) * aNormal);
 
-    lightPos = vec3(view * vec4(lightWorldPos, 1.0));
+    lightViewSpace = light;
+    lightViewSpace.position = vec3(view * vec4(light.position, 1.0));
 }
 
