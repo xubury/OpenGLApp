@@ -19,8 +19,7 @@ class Texture {
     // TODO: make a json/xml that store texture resources' path and load from it
     bool loadFromFile(const std::string& path);
 
-    bool loadTexture(const std::string& path, TextureType textureType,
-                     int type);
+    bool loadTexture(const std::string& path, TextureType textureType);
 
     uint32_t id(TextureType type) const;
 

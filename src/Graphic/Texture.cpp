@@ -17,8 +17,7 @@ void Texture::setShininess(float shininess) { m_shininess = shininess; }
 
 bool Texture::loadFromFile(const std::string&) { return true; }
 
-bool Texture::loadTexture(const std::string& path, TextureType textureType,
-                          int type) {
+bool Texture::loadTexture(const std::string& path, TextureType textureType) {
     stbi_set_flip_vertically_on_load(true);
     if (m_id[textureType] == 0) glGenTextures(1, m_id + textureType);
     glBindTexture(GL_TEXTURE_2D, m_id[textureType]);
@@ -29,6 +28,7 @@ bool Texture::loadTexture(const std::string& path, TextureType textureType,
     int texWidth;
     int texHeight;
     int nChannels;
+    int type = nChannels == 3 ? GL_RGB : GL_RGBA;
 
     uint8_t* data =
         stbi_load(path.c_str(), &texWidth, &texHeight, &nChannels, 0);

@@ -9,14 +9,14 @@ Application::Application(int width, int height, const std::string& title)
     m_textureManager.load("container", "");
     m_textureManager.get("awesomeface")
         .loadTexture("resources/textures/awesomeface.png",
-                     Texture::TextureType::DIFFUSE, GL_RGBA);
+                     Texture::TextureType::DIFFUSE);
 
     m_textureManager.get("container")
         .loadTexture("resources/textures/container2.png",
-                     Texture::TextureType::DIFFUSE, GL_RGBA);
+                     Texture::TextureType::DIFFUSE);
     m_textureManager.get("container")
         .loadTexture("resources/textures/container2_specular.png",
-                     Texture::TextureType::SPECULAR, GL_RGBA);
+                     Texture::TextureType::SPECULAR);
 
     m_shader.use();
     m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
