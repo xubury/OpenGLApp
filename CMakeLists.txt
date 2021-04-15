@@ -9,8 +9,7 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 
-
-add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
+set(Graphic_Src 
     src/Graphic/Shader.cpp 
     src/Graphic/Texture.cpp 
     src/Graphic/VertexBuffer.cpp
@@ -19,11 +18,21 @@ add_executable(OpenGLApp libs/glad.c src/main.cpp src/Application.cpp
     src/Graphic/RenderStates.cpp
     src/Graphic/Transformable.cpp
     src/Graphic/Cube.cpp
-    src/Graphic/Camera.cpp
+    src/Graphic/Camera.cpp)
+
+set(Window_Src
     src/Window/GlContext.cpp
     src/Window/Keyboard.cpp
     src/Window/Mouse.cpp
     src/Window/Action.cpp)
+
+
+add_executable(OpenGLApp 
+    libs/glad.c 
+    src/main.cpp
+    src/Application.cpp
+    ${Graphic_Src}
+    ${Window_Src})
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 
