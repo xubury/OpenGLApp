@@ -29,6 +29,9 @@ void Application::render() {
     m_window.clear();
 
     RenderStates states;
+    m_shader.use();
+    m_shader.setVec3("lightColor", glm::vec3(1.0f, 2.0f, 3.0f));
+    m_shader.setVec3("lightPos", glm::vec3(0.0f, 0.0f, 1.0f));
     states.shader = &m_shader;
     states.texture = &m_textureManager.get("container");
     m_cube1.draw(m_window, states);

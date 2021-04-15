@@ -53,6 +53,11 @@ void RenderTarget::draw(const VertexBuffer &buffer,
                           (void *)(offsetof(Vertex, texCoords)));
     glEnableVertexAttribArray(2);
 
+    // normal attribute
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void *)(offsetof(Vertex, normal)));
+    glEnableVertexAttribArray(3);
+
     applyShader(states.shader);
     applyTransform(states.transform);
     applyTexture(states.texture);
