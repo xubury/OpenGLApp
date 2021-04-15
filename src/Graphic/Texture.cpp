@@ -5,12 +5,19 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-uint32_t Texture::id() const { return m_id; }
+Texture::Texture() : m_id{0} {}
 
-bool Texture::loadFromFile(const std::string& path, int type) {
+Texture::~Texture() { glDeleteTextures(TEXTURE_COUNT, m_id); }
+
+uint32_t Texture::id(TextureType type) const { return m_id[type]; }
+
+bool Texture::loadFromFile(const std::string&) { return true; }
+
+bool Texture::loadTexture(const std::string& path, TextureType textureType,
+                          int type) {
     stbi_set_flip_vertically_on_load(true);
-    glGenTextures(1, &m_id);
-    glBindTexture(GL_TEXTURE_2D, m_id);
+    if (m_id[textureType] == 0) glGenTextures(1, m_id + textureType);
+    glBindTexture(GL_TEXTURE_2D, m_id[textureType]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
