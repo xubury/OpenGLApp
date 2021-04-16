@@ -7,7 +7,7 @@
 
 Texture::Texture() : m_id(0) {}
 
-void Texture::destroy() { glDeleteTextures(1, &m_id); }
+Texture::~Texture() { glDeleteTextures(1, &m_id); }
 
 uint32_t Texture::id() const { return m_id; }
 

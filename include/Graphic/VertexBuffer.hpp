@@ -4,14 +4,15 @@
 #include <stdint.h>
 #include <vector>
 
-#include "Graphic/GlResource.hpp"
 #include "Graphic/Drawable.hpp"
 
 class Vertex;
 
-class VertexBuffer : public GlResource, public Drawable {
+class VertexBuffer : public Drawable {
    public:
     VertexBuffer();
+
+    ~VertexBuffer();
 
     VertexBuffer(const VertexBuffer &) = delete;
 
@@ -30,8 +31,6 @@ class VertexBuffer : public GlResource, public Drawable {
     static void bind(const VertexBuffer *vertexBuffer);
 
    private:
-    void destroy() override;
-
     uint32_t m_VBO;
     std::size_t m_size;
 };

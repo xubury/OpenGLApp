@@ -14,7 +14,7 @@ class Cube : public Drawable, public Transformable {
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    static GlBuffer<VertexBuffer> m_buffer;
+    static VertexBuffer m_buffer;
 };
 
 #endif

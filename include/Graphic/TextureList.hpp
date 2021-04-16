@@ -2,8 +2,10 @@
 #define TEXTURE_LIST_HPP
 
 #include <vector>
+#include <memory>
 #include <unordered_map>
 #include "Texture.hpp"
+#include "ResourceManager.hpp"
 
 class TextureList {
    public:
@@ -17,8 +19,9 @@ class TextureList {
     std::size_t size() const;
 
    private:
-    std::vector<GlBuffer<Texture>> m_list;
-    static std::unordered_map<std::string, GlBuffer<Texture>> loadedTexture;
+    std::vector<Texture*> m_list;
+
+    static ResourceManager<std::string, Texture> loadedTexture;
 };
 
 #endif

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <memory>
 
-template <typename RESOURCE, typename IDENTIFIER>
+template <typename IDENTIFIER, typename RESOURCE>
 class ResourceManager {
    public:
     ResourceManager(const ResourceManager &) = delete;
@@ -29,9 +29,9 @@ class ResourceManager {
     std::unordered_map<IDENTIFIER, std::unique_ptr<RESOURCE>> m_map;
 };
 
-template <typename RESOURCE, typename IDENTIFIER>
+template <typename IDENTIFIER, typename RESOURCE>
 template <typename... ARGS>
-RESOURCE &ResourceManager<RESOURCE, IDENTIFIER>::load(const IDENTIFIER &id,
+RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::load(const IDENTIFIER &id,
                                                       ARGS &&...args) {
     std::unique_ptr<RESOURCE> ptr(new RESOURCE);
     if (!ptr->loadFromFile(std::forward<ARGS>(args)...)) {
@@ -44,19 +44,19 @@ RESOURCE &ResourceManager<RESOURCE, IDENTIFIER>::load(const IDENTIFIER &id,
     return *m_map[id];
 }
 
-template <typename RESOURCE, typename IDENTIFIER>
-RESOURCE &ResourceManager<RESOURCE, IDENTIFIER>::get(const IDENTIFIER &id) {
+template <typename IDENTIFIER, typename RESOURCE>
+RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::get(const IDENTIFIER &id) {
     return *m_map.at(id);
 }
 
-template <typename RESOURCE, typename IDENTIFIER>
-bool ResourceManager<RESOURCE, IDENTIFIER>::count(const IDENTIFIER &id) {
+template <typename IDENTIFIER, typename RESOURCE>
+bool ResourceManager<IDENTIFIER, RESOURCE>::count(const IDENTIFIER &id) {
     return m_map.count(id);
 }
 
-template <typename RESOURCE, typename IDENTIFIER>
+template <typename IDENTIFIER, typename RESOURCE>
 template <typename... ARGS>
-RESOURCE &ResourceManager<RESOURCE, IDENTIFIER>::getOrLoad(const IDENTIFIER &id,
+RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::getOrLoad(const IDENTIFIER &id,
                                                            ARGS &&...args) {
     if (m_map.count(id) == 0) {
         return load(id, std::forward<ARGS>(args)...);
@@ -64,8 +64,8 @@ RESOURCE &ResourceManager<RESOURCE, IDENTIFIER>::getOrLoad(const IDENTIFIER &id,
     return get(id);
 }
 
-template <typename RESOURCE, typename IDENTIFIER>
-void ResourceManager<RESOURCE, IDENTIFIER>::clear() {
+template <typename IDENTIFIER, typename RESOURCE>
+void ResourceManager<IDENTIFIER, RESOURCE>::clear() {
     m_map.clear();
 }
 
