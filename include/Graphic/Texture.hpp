@@ -1,7 +1,7 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include "GlResource.hpp"
+#include "Graphic/GlResource.hpp"
 
 #include <string>
 
