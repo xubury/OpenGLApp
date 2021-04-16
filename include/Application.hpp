@@ -2,11 +2,11 @@
 #define APPLICATION_HPP
 
 #include <string>
-#include "ResourceManager.hpp"
-#include "Graphic/RenderWindow.hpp"
-#include "Graphic/Shader.hpp"
-#include "Graphic/TextureList.hpp"
-#include "Graphic/Cube.hpp"
+#include <ResourceManager.hpp>
+#include <Graphic/RenderWindow.hpp>
+#include <Graphic/Shader.hpp>
+#include <Graphic/TextureList.hpp>
+#include <Graphic/Cube.hpp>
 
 class Application {
    public:

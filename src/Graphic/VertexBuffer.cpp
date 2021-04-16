@@ -1,10 +1,10 @@
 #include <glad/glad.h>
 #include <iostream>
 
-#include "Graphic/VertexBuffer.hpp"
-#include "Graphic/Vertex.hpp"
-#include "Graphic/RenderStates.hpp"
-#include "Graphic/RenderTarget.hpp"
+#include <Graphic/VertexBuffer.hpp>
+#include <Graphic/Vertex.hpp>
+#include <Graphic/RenderStates.hpp>
+#include <Graphic/RenderTarget.hpp>
 
 VertexBuffer::VertexBuffer() : m_VBO(0), m_size(0) {}
 

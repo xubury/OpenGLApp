@@ -1,4 +1,4 @@
-#include "Graphic/TextureList.hpp"
+#include <Graphic/TextureList.hpp>
 
 ResourceManager<std::string, Texture> TextureList::loadedTexture;
 

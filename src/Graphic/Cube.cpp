@@ -1,10 +1,10 @@
 #include <glad/glad.h>
 #include <iostream>
 
-#include "Graphic/Cube.hpp"
-#include "Graphic/RenderTarget.hpp"
-#include "Graphic/RenderStates.hpp"
-#include "Graphic/Vertex.hpp"
+#include <Graphic/Cube.hpp>
+#include <Graphic/RenderTarget.hpp>
+#include <Graphic/RenderStates.hpp>
+#include <Graphic/Vertex.hpp>
 
 VertexBuffer Cube::m_buffer;
 

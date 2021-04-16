@@ -1,9 +1,9 @@
 #include <glad/glad.h>
 #include <iostream>
-#include "Graphic/Texture.hpp"
+#include <Graphic/Texture.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 
 Texture::Texture() : m_id(0) {}
 

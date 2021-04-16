@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#include "Graphic/Drawable.hpp"
-#include "Graphic/Transformable.hpp"
-#include "Graphic/VertexBuffer.hpp"
+#include <Graphic/Drawable.hpp>
+#include <Graphic/Transformable.hpp>
+#include <Graphic/VertexBuffer.hpp>
 
 class Cube : public Drawable, public Transformable {
    public:

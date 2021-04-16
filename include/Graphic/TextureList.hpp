@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include "Texture.hpp"
-#include "ResourceManager.hpp"
+#include <Graphic/Texture.hpp>
+#include <ResourceManager.hpp>
 
 class TextureList {
    public:

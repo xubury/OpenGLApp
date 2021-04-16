@@ -4,8 +4,8 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-#include "Graphic/Drawable.hpp"
-#include "Camera.hpp"
+#include <Graphic/Drawable.hpp>
+#include <Graphic/Camera.hpp>
 
 class VertexBuffer;
 class Shader;

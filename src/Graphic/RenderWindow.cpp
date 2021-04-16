@@ -1,5 +1,5 @@
-#include "Graphic/RenderWindow.hpp"
-#include "Window/Event.hpp"
+#include <Graphic/RenderWindow.hpp>
+#include <Window/Event.hpp>
 
 #include <iostream>
 

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <glm/glm.hpp>
-#include "Window/ActionTarget.hpp"
+#include <Window/ActionTarget.hpp>
 
 inline const float YAW = -90.f;
 inline const float PITCH = 0.f;
