@@ -117,7 +117,8 @@ ControlCamera::ControlCamera(int x, int y, int width, int height,
                              const glm::vec3 &position,
                              const glm::vec3 &worldUp, float yaw, float pitch)
     : Camera(x, y, width, height, position, worldUp, yaw, pitch),
-      ActionTarget(cameraMovement) {
+      ActionTarget(cameraMovement),
+      m_isFirstMouse(true) {
     cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
     cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
     cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
