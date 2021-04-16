@@ -74,6 +74,7 @@ void RenderTarget::clear(float r, float g, float b, float a) {
 void RenderTarget::applyShader(const Shader *shader) { m_shader = shader; }
 
 void RenderTarget::applyTransform(const glm::mat4 &transform) const {
+    if (m_shader == nullptr) return;
     m_shader->use();
     m_shader->setMat4("projection", m_camera->getProjection());
     m_shader->setMat4("view", m_camera->getView());
@@ -81,6 +82,7 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
 }
 
 void RenderTarget::applyTexture(const Texture *texture) const {
+    if (texture == nullptr) return;
     // set the GL_TEXTUREX correspondence
     m_shader->setInt("material.diffuse", 0);
     m_shader->setInt("material.specular", 1);
