@@ -17,11 +17,9 @@ RenderTarget::RenderTarget() : m_VAO(0), m_camera(new Camera(Camera::Default)) {
 
 RenderTarget::~RenderTarget() { glDeleteVertexArrays(1, &m_VAO); }
 
-Camera *RenderTarget::getCamera() { return m_camera.get(); }
+Camera &RenderTarget::getCamera() { return *m_camera.get(); }
 
-void RenderTarget::setCamera(std::unique_ptr<Camera> camera) {
-    m_camera = std::move(camera);
-}
+const Camera &RenderTarget::getCamera() const { return *m_camera.get(); }
 
 bool RenderTarget::processEvent(Event &event) const {
     return m_camera->processEvent(event);

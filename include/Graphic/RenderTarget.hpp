@@ -24,9 +24,12 @@ class RenderTarget {
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
-    Camera *getCamera();
+    Camera &getCamera();
 
-    void setCamera(std::unique_ptr<Camera> camera);
+    const Camera &getCamera() const;
+
+    template <typename T, typename... ARGS>
+    void setCamera(ARGS &&...args);
 
     bool processEvent(Event &event) const;
 
@@ -50,5 +53,12 @@ class RenderTarget {
 
     const Shader *m_shader;
 };
+
+template <typename T, typename... ARGS>
+void RenderTarget::setCamera(ARGS &&...args) {
+    static_assert(std::is_base_of<Camera, T>::value,
+                  "T must be derived from Camera");
+    m_camera = std::make_unique<T>(std::forward<ARGS>(args)...);
+}
 
 #endif

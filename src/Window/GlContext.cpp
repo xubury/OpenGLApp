@@ -114,7 +114,6 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwMakeContextCurrent(m_context);
 
     glfwSetWindowUserPointer(m_context, this);
-    glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSetFramebufferSizeCallback(m_context, framebufferSizeCB);
     glfwSetKeyCallback(m_context, keyCallback);

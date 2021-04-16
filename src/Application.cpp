@@ -20,8 +20,8 @@ Application::Application(int width, int height, const std::string& title)
     m_shader.setVec3("light.specular", glm::vec3(1.0f));
 
     m_cube2.translate(glm::vec3(1.0, 0.f, 0.f));
-    m_window.setCamera(std::make_unique<ControlCamera>(
-        0, 0, width, height, glm::vec3(0.f, 0.f, 3.f)));
+    m_window.setCamera<ControlCamera>(0, 0, width, height,
+                                      glm::vec3(0.f, 0.f, 3.f));
 }
 
 void Application::update() {
@@ -59,8 +59,8 @@ void Application::run() {
                         break;
                 }
             } else if (event.type == Event::EventType::RESIZED) {
-                m_window.getCamera()->setSize(event.size.width,
-                                              event.size.height);
+                m_window.getCamera().setSize(event.size.width,
+                                             event.size.height);
             }
             m_window.processEvent(event);
         }
