@@ -10,8 +10,6 @@ class TextureList {
     bool loadFromFile(const std::string& path,
                       Texture::TextureType textureType);
 
-    Texture& operator[](std::size_t id);
-
     Texture& at(std::size_t id);
 
     const Texture& at(std::size_t id) const;

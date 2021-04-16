@@ -17,8 +17,6 @@ bool TextureList::loadFromFile(const std::string &path,
     return false;
 }
 
-Texture &TextureList::operator[](std::size_t id) { return *m_list[id]; }
-
 Texture &TextureList::at(std::size_t id) { return *m_list[id]; }
 
 const Texture &TextureList::at(std::size_t id) const { return *m_list[id]; }
