@@ -5,7 +5,7 @@
 #include <ResourceManager.hpp>
 #include <Graphic/RenderWindow.hpp>
 #include <Graphic/Shader.hpp>
-#include <Graphic/TextureList.hpp>
+#include <Graphic/TextureArray.hpp>
 #include <Graphic/Cube.hpp>
 
 class Application {
@@ -23,7 +23,7 @@ class Application {
     Shader m_shader;
     Cube m_cube1;
     Cube m_cube2;
-    std::unordered_map<std::string, TextureList> m_textureManager;
+    std::unordered_map<std::string, TextureArray> m_textureManager;
 };
 
 #endif

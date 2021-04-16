@@ -5,7 +5,7 @@
 
 class Shader;
 
-class TextureList;
+class TextureArray;
 
 class Camera;
 
@@ -16,7 +16,7 @@ class RenderStates {
 
     const Shader *shader;
     glm::mat4 transform;
-    const TextureList *textures;
+    const TextureArray *textures;
     int textureCount;
     const Camera *camera;
 };

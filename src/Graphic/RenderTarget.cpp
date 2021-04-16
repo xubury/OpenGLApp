@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <Graphic/Shader.hpp>
-#include <Graphic/TextureList.hpp>
+#include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/Vertex.hpp>
 
@@ -81,7 +81,7 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->setMat4("model", transform);
 }
 
-void RenderTarget::applyTexture(const TextureList *textures) const {
+void RenderTarget::applyTexture(const TextureArray *textures) const {
     if (textures == nullptr) return;
     // set the GL_TEXTUREX correspondence
     m_shader->use();

@@ -45,7 +45,7 @@ class RenderTarget {
 
     void applyTransform(const glm::mat4 &transform) const;
 
-    void applyTexture(const TextureList *textures) const;
+    void applyTexture(const TextureArray *textures) const;
 
     uint32_t m_VAO;
 

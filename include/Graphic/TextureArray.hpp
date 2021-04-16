@@ -1,5 +1,5 @@
-#ifndef TEXTURE_LIST_HPP
-#define TEXTURE_LIST_HPP
+#ifndef TEXTURE_ARRAY_HPP
+#define TEXTURE_ARRAY_HPP
 
 #include <vector>
 #include <memory>
@@ -7,7 +7,7 @@
 #include <Graphic/Texture.hpp>
 #include <ResourceManager.hpp>
 
-class TextureList {
+class TextureArray {
    public:
     bool loadFromFile(const std::string& path,
                       Texture::TextureType textureType);
