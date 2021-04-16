@@ -7,12 +7,8 @@
 #include "Graphic/Drawable.hpp"
 #include "Camera.hpp"
 
-class Drawable;
 class VertexBuffer;
 class Shader;
-class Transform;
-class Texture;
-class Camera;
 
 class RenderTarget {
    public:
@@ -46,7 +42,7 @@ class RenderTarget {
 
     void applyTransform(const glm::mat4 &transform) const;
 
-    void applyTexture(const Texture *texture) const;
+    void applyTexture(const TextureList *textures) const;
 
     uint32_t m_VAO;
 

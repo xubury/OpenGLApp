@@ -5,30 +5,21 @@
 
 class Texture {
    public:
-    enum TextureType { DIFFUSE, SPECULAR, TEXTURE_COUNT };
+    enum TextureType { DIFFUSE, SPECULAR };
 
    public:
     Texture();
 
     ~Texture();
 
-    Texture(const Texture&) = delete;
+    bool loadFromFile(const std::string &path, TextureType textureType);
 
-    Texture& operator=(const Texture&) = delete;
+    uint32_t id() const;
 
-    // TODO: make a json/xml that store texture resources' path and load from it
-    bool loadFromFile(const std::string& path);
-
-    bool loadTexture(const std::string& path, TextureType textureType);
-
-    uint32_t id(TextureType type) const;
-
-    float getShininess() const;
-
-    void setShininess(float shininess);
+    TextureType getType() const;
 
    private:
-    uint32_t m_id[TEXTURE_COUNT];
-    float m_shininess;
+    uint32_t m_id;
+    TextureType m_type;
 };
 #endif

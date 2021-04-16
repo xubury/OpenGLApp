@@ -5,18 +5,13 @@
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
-    m_textureManager.load("awesomeface", "");
-    m_textureManager.load("container", "");
-    m_textureManager.get("awesomeface")
-        .loadTexture("resources/textures/awesomeface.png",
-                     Texture::TextureType::DIFFUSE);
-
-    m_textureManager.get("container")
-        .loadTexture("resources/textures/container2.png",
-                     Texture::TextureType::DIFFUSE);
-    m_textureManager.get("container")
-        .loadTexture("resources/textures/container2_specular.png",
-                     Texture::TextureType::SPECULAR);
+    m_textureManager["awesomeface"].loadFromFile(
+        "resources/textures/awesomeface.png", Texture::TextureType::DIFFUSE);
+    m_textureManager["container"].loadFromFile(
+        "resources/textures/container2.png", Texture::TextureType::DIFFUSE);
+    m_textureManager["container"].loadFromFile(
+        "resources/textures/container2_specular.png",
+        Texture::TextureType::SPECULAR);
 
     m_shader.use();
     m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
@@ -42,10 +37,10 @@ void Application::render() {
     RenderStates states;
     m_shader.use();
     states.shader = &m_shader;
-    states.texture = &m_textureManager.get("container");
+    states.textures = &m_textureManager.at("container");
     m_cube1.draw(m_window, states);
 
-    states.texture = &m_textureManager.get("awesomeface");
+    states.textures = &m_textureManager.at("awesomeface");
     m_cube2.draw(m_window, states);
 
     m_window.swapBuffers();

@@ -12,6 +12,7 @@ find_package(glm REQUIRED)
 set(Graphic_Src 
     src/Graphic/Shader.cpp 
     src/Graphic/Texture.cpp 
+    src/Graphic/TextureList.cpp
     src/Graphic/VertexBuffer.cpp
     src/Graphic/RenderWindow.cpp 
     src/Graphic/RenderTarget.cpp

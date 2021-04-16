@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "Graphic/Shader.hpp"
-#include "Graphic/Texture.hpp"
+#include "Graphic/TextureList.hpp"
 #include "Graphic/VertexBuffer.hpp"
 #include "Graphic/Vertex.hpp"
 
@@ -60,9 +60,11 @@ void RenderTarget::draw(const VertexBuffer &buffer,
 
     applyShader(states.shader);
     applyTransform(states.transform);
-    applyTexture(states.texture);
+    applyTexture(states.textures);
 
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+
+    glBindVertexArray(0);
     VertexBuffer::bind(nullptr);
 }
 
@@ -81,14 +83,25 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->setMat4("model", transform);
 }
 
-void RenderTarget::applyTexture(const Texture *texture) const {
-    if (texture == nullptr) return;
+void RenderTarget::applyTexture(const TextureList *textures) const {
+    if (textures == nullptr) return;
     // set the GL_TEXTUREX correspondence
-    m_shader->setInt("material.diffuse", 0);
-    m_shader->setInt("material.specular", 1);
-    m_shader->setFloat("material.shininess", texture->getShininess());
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->id(Texture::DIFFUSE));
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture->id(Texture::SPECULAR));
+    m_shader->use();
+    m_shader->setFloat("material.shininess", 64);
+    uint32_t diffuse = 0;
+    uint32_t specular = 0;
+    std::size_t size = textures->size();
+    for (std::size_t i = 0; i < size; ++i) {
+        std::string name;
+        if (textures->at(i).getType() == Texture::DIFFUSE) {
+            name = "material.diffuse" + std::to_string(diffuse++);
+        } else if (textures->at(i).getType() == Texture::SPECULAR) {
+            name = "material.specular" + std::to_string(specular++);
+        } else {
+            std::cout << "Invalid Texture." << std::endl;
+        }
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, textures->at(i).id());
+        m_shader->setInt(name, i);
+    }
 }
