@@ -1,17 +1,19 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+#include "GlResource.hpp"
+
 #include <string>
 
 class Texture {
    public:
     enum TextureType { DIFFUSE, SPECULAR };
 
-   public:
     Texture();
 
     ~Texture();
 
+   public:
     bool loadFromFile(const std::string &path, TextureType textureType);
 
     uint32_t id() const;

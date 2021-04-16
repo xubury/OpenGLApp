@@ -1,6 +1,6 @@
 #include "Graphic/TextureList.hpp"
 
-std::unordered_map<std::string, Texture> TextureList::loadedTexture;
+std::unordered_map<std::string, GlBuffer<Texture>> TextureList::loadedTexture;
 
 bool TextureList::loadFromFile(const std::string &path,
                                Texture::TextureType textureType) {
@@ -8,8 +8,8 @@ bool TextureList::loadFromFile(const std::string &path,
         m_list.emplace_back(loadedTexture.at(path));
         return true;
     }
-    Texture texture;
-    if (texture.loadFromFile(path, textureType)) {
+    GlBuffer<Texture> texture(new Texture);
+    if (texture->loadFromFile(path, textureType)) {
         m_list.emplace_back(texture);
         loadedTexture.emplace(path, m_list.back());
         return true;
@@ -17,14 +17,10 @@ bool TextureList::loadFromFile(const std::string &path,
     return false;
 }
 
-Texture &TextureList::operator[](std::size_t id) { return m_list[id]; }
+Texture &TextureList::operator[](std::size_t id) { return *m_list[id]; }
 
-Texture &TextureList::at(std::size_t id) { return m_list[id]; }
+Texture &TextureList::at(std::size_t id) { return *m_list[id]; }
 
-const Texture &TextureList::at(std::size_t id) const { return m_list[id]; }
-
-Texture *TextureList::data() { return m_list.data(); }
-
-const Texture *TextureList::data() const { return m_list.data(); }
+const Texture &TextureList::at(std::size_t id) const { return *m_list[id]; }
 
 std::size_t TextureList::size() const { return m_list.size(); }

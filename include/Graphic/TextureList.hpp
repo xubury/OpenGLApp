@@ -7,8 +7,6 @@
 
 class TextureList {
    public:
-    TextureList() = default;
-
     bool loadFromFile(const std::string& path,
                       Texture::TextureType textureType);
 
@@ -18,15 +16,11 @@ class TextureList {
 
     const Texture& at(std::size_t id) const;
 
-    Texture* data();
-
-    const Texture* data() const;
-
     std::size_t size() const;
 
    private:
-    std::vector<Texture> m_list;
-    static std::unordered_map<std::string, Texture> loadedTexture;
+    std::vector<GlBuffer<Texture>> m_list;
+    static std::unordered_map<std::string, GlBuffer<Texture>> loadedTexture;
 };
 
 #endif

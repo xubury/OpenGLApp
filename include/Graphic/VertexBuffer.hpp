@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <vector>
 
+#include "GlResource.hpp"
 #include "Graphic/Drawable.hpp"
 
 class Vertex;
@@ -13,6 +14,10 @@ class VertexBuffer : public Drawable {
     VertexBuffer();
 
     ~VertexBuffer();
+
+    VertexBuffer(const VertexBuffer &) = delete;
+
+    VertexBuffer &operator=(const VertexBuffer &) = delete;
 
     std::size_t size() const;
 

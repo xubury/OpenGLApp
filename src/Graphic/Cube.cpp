@@ -6,10 +6,10 @@
 #include "Graphic/RenderStates.hpp"
 #include "Graphic/Vertex.hpp"
 
-VertexBuffer Cube::m_buffer;
+GlBuffer<VertexBuffer> Cube::m_buffer(new VertexBuffer);
 
 Cube::Cube() {
-    if (m_buffer.size()) return;
+    if (m_buffer.get() && m_buffer->size()) return;
 
     Vertex vertices[] = {
         {{-0.5f, -0.5f, -0.5f}, {0, 0, 0}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
@@ -49,10 +49,10 @@ Cube::Cube() {
         {{-0.5f, 0.5f, 0.5f}, {0, 0, 0}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
         {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}}};
 
-    m_buffer.create(vertices, 36);
+    m_buffer->create(vertices, 36);
 }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {
     states.transform = getTransform();
-    target.draw(m_buffer, states);
+    target.draw(*m_buffer, states);
 }
