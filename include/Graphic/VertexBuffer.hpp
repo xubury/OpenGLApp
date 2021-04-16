@@ -4,16 +4,14 @@
 #include <stdint.h>
 #include <vector>
 
-#include "GlResource.hpp"
+#include "Graphic/GlResource.hpp"
 #include "Graphic/Drawable.hpp"
 
 class Vertex;
 
-class VertexBuffer : public Drawable {
+class VertexBuffer : public GlResource, public Drawable {
    public:
     VertexBuffer();
-
-    ~VertexBuffer();
 
     VertexBuffer(const VertexBuffer &) = delete;
 
@@ -25,14 +23,17 @@ class VertexBuffer : public Drawable {
 
     bool create(const Vertex *vertices, std::size_t cnt);
 
-    bool update(const Vertex *vertices, std::size_t cnt);
+    void update(const Vertex *vertices, std::size_t cnt);
 
-    void draw(RenderTarget &target, RenderStates states) const;
+    void draw(RenderTarget &target, RenderStates states) const override;
 
     static void bind(const VertexBuffer *vertexBuffer);
 
    private:
+    void destroy() override;
+
     uint32_t m_VBO;
     std::size_t m_size;
 };
+
 #endif

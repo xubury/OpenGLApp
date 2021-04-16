@@ -5,15 +5,12 @@
 
 #include <string>
 
-class Texture {
+class Texture : public GlResource {
    public:
     enum TextureType { DIFFUSE, SPECULAR };
 
     Texture();
 
-    ~Texture();
-
-   public:
     bool loadFromFile(const std::string &path, TextureType textureType);
 
     uint32_t id() const;
@@ -21,7 +18,11 @@ class Texture {
     TextureType getType() const;
 
    private:
+    void destroy() override;
+
     uint32_t m_id;
+
     TextureType m_type;
 };
+
 #endif

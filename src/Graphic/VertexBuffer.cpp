@@ -8,7 +8,7 @@
 
 VertexBuffer::VertexBuffer() : m_VBO(0), m_size(0) {}
 
-VertexBuffer::~VertexBuffer() { glDeleteBuffers(1, &m_VBO); }
+void VertexBuffer::destroy() { glDeleteBuffers(1, &m_VBO); }
 
 std::size_t VertexBuffer::size() const { return m_size; }
 
@@ -20,16 +20,16 @@ bool VertexBuffer::create(const Vertex *vertices, std::size_t cnt) {
         std::cerr << "Could not create vertex buffer." << std::endl;
         return false;
     }
-    return update(vertices, cnt);
+    update(vertices, cnt);
+    return true;
 }
 
-bool VertexBuffer::update(const Vertex *vertices, std::size_t cnt) {
+void VertexBuffer::update(const Vertex *vertices, std::size_t cnt) {
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * cnt, vertices,
                  GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     m_size = cnt;
-    return true;
 }
 
 void VertexBuffer::draw(RenderTarget &target, RenderStates states) const {
