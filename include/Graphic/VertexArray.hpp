@@ -27,7 +27,7 @@ class VertexArray : public Drawable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
-    static void bind(const VertexArray *vertexBuffer);
+    void bind() const;
 
    private:
     uint32_t m_VBO;

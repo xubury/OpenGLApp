@@ -28,32 +28,32 @@ void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
 void RenderTarget::draw(const VertexArray &buffer, const RenderStates &states) {
     glViewport(m_camera->getX(), m_camera->getY(), m_camera->getWidth(),
                m_camera->getHeight());
-    Shader::bind(states.shader);
-    VertexArray::bind(&buffer);
 
     applyShader(states.shader);
     applyTransform(states.transform);
     applyTexture(states.textures);
 
-    glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+    m_shader->bind();
+    buffer.bind();
+    m_shader->setupAttribute();
 
-    VertexArray::bind(nullptr);
+    glDrawArrays(GL_TRIANGLES, 0, buffer.size());
 }
 
 void RenderTarget::draw(const VertexElement &element,
                         const RenderStates &states) {
     glViewport(m_camera->getX(), m_camera->getY(), m_camera->getWidth(),
                m_camera->getHeight());
-    Shader::bind(states.shader);
-    VertexElement::bind(&element);
 
     applyShader(states.shader);
     applyTransform(states.transform);
     applyTexture(states.textures);
 
-    glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
+    m_shader->bind();
+    element.bind();
+    m_shader->setupAttribute();
 
-    VertexElement::bind(nullptr);
+    glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
 }
 
 void RenderTarget::clear(float r, float g, float b, float a) {
@@ -64,11 +64,10 @@ void RenderTarget::clear(float r, float g, float b, float a) {
 void RenderTarget::applyShader(const Shader *shader) {
     assert(shader != nullptr);
     m_shader = shader;
-    m_shader->setupAttribute();
+    m_shader->use();
 }
 
 void RenderTarget::applyTransform(const glm::mat4 &transform) const {
-    m_shader->use();
     m_shader->setMat4("projection", m_camera->getProjection());
     m_shader->setMat4("view", m_camera->getView());
     m_shader->setMat4("model", transform);
@@ -77,7 +76,6 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
 void RenderTarget::applyTexture(const TextureArray *textures) const {
     if (textures == nullptr) return;
     // set the GL_TEXTUREX correspondence
-    m_shader->use();
     m_shader->setFloat("material.shininess", 64);
     uint32_t diffuse = 0;
     uint32_t specular = 0;

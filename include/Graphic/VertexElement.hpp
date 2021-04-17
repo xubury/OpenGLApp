@@ -25,11 +25,15 @@ class VertexElement : public Drawable {
                 uint32_t *indices, std::size_t indexSize);
 
     void update(const Vertex *vertices, std::size_t vertexSize,
-                uint32_t *indices, std::size_t indexSize);
+                const uint32_t *indices, std::size_t indexSize);
+
+    void update(const Vertex *vertices, std::size_t vertexSize);
+
+    void update(const uint32_t *indices, std::size_t indexSize);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
-    static void bind(const VertexElement *vertexElement);
+    void bind() const;
 
    private:
     uint32_t m_VBO;

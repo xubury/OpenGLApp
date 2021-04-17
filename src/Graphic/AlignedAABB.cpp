@@ -106,6 +106,7 @@ void AlignedAABB::setBoundingBox(float minX, float minY, float minZ, float maxX,
     m_updatedVertices[7].position[0] = minX;
     m_updatedVertices[7].position[1] = maxY;
     m_updatedVertices[7].position[2] = minZ;
+    m_elements.update(m_updatedVertices, 8);
 }
 
 void AlignedAABB::updateAABB(const glm::mat4 &transform) {
@@ -126,5 +127,4 @@ void AlignedAABB::updateAABB(const glm::mat4 &transform) {
         maxZ = std::max(maxZ, pos.z);
     }
     setBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
-    m_elements.update(m_updatedVertices, 8, s_indices, 36);
 }

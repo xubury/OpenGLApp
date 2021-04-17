@@ -74,14 +74,7 @@ void Shader::compile(const std::string& vertexCode,
     glDeleteShader(fragment);
 }
 
-void Shader::bind(const Shader* shader) {
-    if (shader) {
-        shader->use();
-        glBindVertexArray(shader->m_VAO);
-    } else {
-        glBindVertexArray(shader->m_VAO);
-    }
-}
+void Shader::bind() const { glBindVertexArray(m_VAO); }
 
 void Shader::setupAttribute() const {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

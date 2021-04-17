@@ -18,7 +18,7 @@ class Cube : public Drawable, public Transformable {
     AlignedAABB m_aabb;
 
    private:
-    static VertexArray m_buffer;
+    static VertexArray s_cube;
 };
 
 #endif

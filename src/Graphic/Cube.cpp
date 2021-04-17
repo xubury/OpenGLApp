@@ -6,7 +6,7 @@
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/RenderStates.hpp>
 
-VertexArray Cube::m_buffer;
+VertexArray Cube::s_cube;
 
 Cube::Cube() {
     Vertex vertices[] = {
@@ -47,14 +47,14 @@ Cube::Cube() {
         {{-0.5f, 0.5f, 0.5f}, {0, 0, 0}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
         {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}}};
 
-    if (m_buffer.empty()) {
-        m_buffer.create(vertices, 36);
+    if (s_cube.empty()) {
+        s_cube.create(vertices, 36);
     }
     m_aabb.calculateAABB(vertices, 36);
 }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {
     states.transform = getTransform();
-    target.draw(m_buffer, states);
+    target.draw(s_cube, states);
     target.draw(m_aabb, states);
 }

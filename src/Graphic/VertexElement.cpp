@@ -29,28 +29,29 @@ bool VertexElement::create(const Vertex *vertices, std::size_t vertexSize,
 }
 
 void VertexElement::update(const Vertex *vertices, std::size_t vertexSize,
-                           uint32_t *indices, std::size_t indexSize) {
+                           const uint32_t *indices, std::size_t indexSize) {
+    update(vertices, vertexSize);
+    update(indices, indexSize);
+    m_size = indexSize;
+}
+
+void VertexElement::update(const Vertex *vertices, std::size_t vertexSize) {
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertexSize, vertices,
                  GL_STATIC_DRAW);
+}
+
+void VertexElement::update(const uint32_t *indices, std::size_t indexSize) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexSize, indices,
                  GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    m_size = indexSize;
 }
 
 void VertexElement::draw(RenderTarget &target, RenderStates states) const {
     target.draw(*this, states);
 }
 
-void VertexElement::bind(const VertexElement *vertexElement) {
-    if (vertexElement != nullptr) {
-        glBindBuffer(GL_ARRAY_BUFFER, vertexElement->m_VBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexElement->m_EBO);
-    } else {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
+void VertexElement::bind() const {
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 }

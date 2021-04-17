@@ -28,7 +28,6 @@ void VertexArray::update(const Vertex *vertices, std::size_t cnt) {
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * cnt, vertices,
                  GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
     m_size = cnt;
 }
 
@@ -36,9 +35,4 @@ void VertexArray::draw(RenderTarget &target, RenderStates states) const {
     target.draw(*this, states);
 }
 
-void VertexArray::bind(const VertexArray *vertexBuffer) {
-    if (vertexBuffer != nullptr)
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->m_VBO);
-    else
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
+void VertexArray::bind() const { glBindBuffer(GL_ARRAY_BUFFER, m_VBO); }
