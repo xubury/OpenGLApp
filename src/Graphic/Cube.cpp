@@ -50,7 +50,7 @@ Cube::Cube() {
     if (s_cube.empty()) {
         s_cube.create(vertices, 36);
     }
-    m_aabb.initializeAABB(vertices, 36);
+    m_aabb.initialize(vertices, 36);
 }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {

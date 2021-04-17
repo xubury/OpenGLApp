@@ -1,9 +1,9 @@
-#include <Graphic/AlignedAABB.hpp>
+#include <Graphic/BoundingBox.hpp>
 #include <Graphic/Shader.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-AlignedAABB::AlignedAABB()
+BoundingBox::BoundingBox()
     : m_updatedVertices{{{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
                         {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
                         {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
@@ -18,12 +18,12 @@ AlignedAABB::AlignedAABB()
     m_elements.create(m_updatedVertices, 8, indices, 36);
 }
 
-void AlignedAABB::draw(RenderTarget &target, RenderStates states) const {
+void BoundingBox::draw(RenderTarget &target, RenderStates states) const {
     states.shader = &DebugShader::debugShader;
     target.draw(m_elements, states);
 }
 
-void AlignedAABB::initializeAABB(Vertex *vertex, int cnt) {
+void BoundingBox::initialize(Vertex *vertex, int cnt) {
     float minX = std::numeric_limits<float>::max();
     float minY = std::numeric_limits<float>::max();
     float minZ = std::numeric_limits<float>::max();
@@ -69,11 +69,11 @@ void AlignedAABB::initializeAABB(Vertex *vertex, int cnt) {
     m_originalPosition[7].x = minX;
     m_originalPosition[7].y = maxY;
     m_originalPosition[7].z = minZ;
-    setBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+    update(minX, minY, minZ, maxX, maxY, maxZ);
 }
 
-void AlignedAABB::setBoundingBox(float minX, float minY, float minZ, float maxX,
-                                 float maxY, float maxZ) {
+void BoundingBox::update(float minX, float minY, float minZ, float maxX,
+                         float maxY, float maxZ) {
     m_updatedVertices[0].position[0] = minX;
     m_updatedVertices[0].position[1] = minY;
     m_updatedVertices[0].position[2] = maxZ;
@@ -108,7 +108,7 @@ void AlignedAABB::setBoundingBox(float minX, float minY, float minZ, float maxX,
     m_elements.update(m_updatedVertices, 8);
 }
 
-void AlignedAABB::updateAABB(const glm::mat4 &transform) {
+void BoundingBox::update(const glm::mat4 &transform) {
     glm::mat3 rotate = transform;
     glm::vec3 min(std::numeric_limits<float>::max());
     glm::vec3 max(std::numeric_limits<float>::min());
@@ -123,5 +123,5 @@ void AlignedAABB::updateAABB(const glm::mat4 &transform) {
     }
     min = min + glm::vec3(transform[3]);
     max = max + glm::vec3(transform[3]);
-    setBoundingBox(min.x, min.y, min.z, max.x, max.y, max.z);
+    update(min.x, min.y, min.z, max.x, max.y, max.z);
 }

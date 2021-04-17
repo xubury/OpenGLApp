@@ -7,7 +7,7 @@
 #include <Graphic/Transformable.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
-#include <Graphic/AlignedAABB.hpp>
+#include <Graphic/BoundingBox.hpp>
 
 class Cube : public Drawable, public Transformable {
    public:
@@ -15,7 +15,7 @@ class Cube : public Drawable, public Transformable {
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
-    AlignedAABB m_aabb;
+    BoundingBox m_aabb;
 
    private:
     static VertexBuffer s_cube;

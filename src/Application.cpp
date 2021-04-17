@@ -31,8 +31,8 @@ void Application::update() {
     glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(1.f),
                                    glm::vec3(0.0f, 0.0f, 1.0f));
     m_cube2.transform(rotate);
-    m_cube1.m_aabb.updateAABB(m_cube1.getTransform());
-    m_cube2.m_aabb.updateAABB(m_cube2.getTransform());
+    m_cube1.m_aabb.update(m_cube1.getTransform());
+    m_cube2.m_aabb.update(m_cube2.getTransform());
 }
 
 void Application::render() {
