@@ -40,7 +40,6 @@ class VertexBuffer : public Drawable {
 
 template <typename T>
 bool VertexBuffer::create(const T vertices, std::size_t cnt) {
-    static_assert(std::is_pointer<T>::value, "Expected a pointer");
     if (!m_VBO) glGenBuffers(1, &m_VBO);
     if (!m_VBO) {
         std::cerr << "Could not create vertex buffer." << std::endl;

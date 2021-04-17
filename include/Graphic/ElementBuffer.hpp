@@ -47,7 +47,6 @@ class ElementBuffer : public Drawable {
 template <typename T>
 bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
                            uint32_t *indices, std::size_t indexCnt) {
-    static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glGenBuffers(1, &m_EBO);
     glGenBuffers(1, &m_VBO);
     if (!m_VBO || !m_EBO) {
@@ -60,7 +59,6 @@ bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
 template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
                            uint32_t *indices, std::size_t indexCnt) {
-    static_assert(std::is_pointer<T>::value, "Expected a pointer");
     update(vertices, vertexCnt);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexCnt, indices,
