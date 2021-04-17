@@ -19,6 +19,7 @@ set(Graphic_Src
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
     src/Graphic/Transformable.cpp
+    src/Graphic/AlignedAABB.cpp
     src/Graphic/Cube.cpp
     src/Graphic/Camera.cpp)
 

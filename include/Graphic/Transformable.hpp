@@ -20,6 +20,8 @@ class Transformable {
 
     glm::mat4 getTransform() const;
 
+    glm::vec3 getPosition() const;
+
    private:
     glm::mat4 m_transform;
 };

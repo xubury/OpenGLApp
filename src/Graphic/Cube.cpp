@@ -5,7 +5,6 @@
 #include <Graphic/Shader.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/RenderStates.hpp>
-#include <Graphic/Vertex.hpp>
 
 VertexArray Cube::m_buffer;
 
@@ -48,28 +47,14 @@ Cube::Cube() {
         {{-0.5f, 0.5f, 0.5f}, {0, 0, 0}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
         {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}}};
 
-    Vertex vertices2[] = {
-        {{-0.5f, -0.5f, 0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{0.5f, -0.5f, 0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{0.5f, 0.5f, 0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{-0.5f, 0.5f, 0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{-0.5f, -0.5f, -0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{0.5f, -0.5f, -0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{0.5f, 0.5f, -0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-        {{-0.5f, 0.5f, -0.5f}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    };
-
-    uint32_t indices[] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1, 7, 6, 5, 5, 4, 7,
-                          4, 0, 3, 3, 7, 4, 4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
     if (m_buffer.empty()) {
         m_buffer.create(vertices, 36);
     }
-    m_aabbs.create(vertices2, 8, indices, 36);
+    m_aabb.calculateAABB(vertices, 36);
 }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {
     states.transform = getTransform();
     target.draw(m_buffer, states);
-    states.shader = &DebugShader::debugShader;
-    target.draw(m_aabbs, states);
+    target.draw(m_aabb, states);
 }

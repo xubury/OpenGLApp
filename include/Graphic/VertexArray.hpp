@@ -4,9 +4,8 @@
 #include <stdint.h>
 #include <vector>
 
+#include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
-
-class Vertex;
 
 class VertexArray : public Drawable {
    public:

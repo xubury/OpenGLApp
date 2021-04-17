@@ -18,3 +18,8 @@ void Transformable::rotate(float angle, const glm::vec3 &axis) {
 }
 
 glm::mat4 Transformable::getTransform() const { return m_transform; }
+
+glm::vec3 Transformable::getPosition() const {
+    glm::vec3 pos(m_transform[2]);
+    return pos;
+}
