@@ -21,9 +21,7 @@ class AlignedAABB : public Drawable {
     ElementBuffer m_elements;
     glm::vec3 m_originalPosition[8];
     glm::vec3 m_translate;
-
     Vertex m_updatedVertices[8];
-    static uint32_t s_indices[36];
 };
 
 #endif

@@ -3,9 +3,6 @@
 #include <Graphic/RenderTarget.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-uint32_t AlignedAABB::s_indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
-                                       7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
-                                       4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
 AlignedAABB::AlignedAABB()
     : m_updatedVertices{{{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
                         {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
@@ -15,7 +12,10 @@ AlignedAABB::AlignedAABB()
                         {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
                         {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
                         {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}}} {
-    m_elements.create(m_updatedVertices, 8, s_indices, 36);
+    uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
+                            7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
+                            4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
+    m_elements.create(m_updatedVertices, 8, indices, 36);
 }
 
 void AlignedAABB::draw(RenderTarget &target, RenderStates states) const {
