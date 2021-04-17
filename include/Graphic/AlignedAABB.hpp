@@ -19,10 +19,10 @@ class AlignedAABB : public Drawable {
 
    private:
     VertexElement m_elements;
-    glm::vec3 m_localPosition[8];
-    glm::vec3 m_position;
+    glm::vec3 m_originalPosition[8];
+    glm::vec3 m_translate;
 
-    static Vertex s_worldVertices[8];
+    static Vertex s_updatedVertices[8];
     static uint32_t s_indices[36];
 };
 
