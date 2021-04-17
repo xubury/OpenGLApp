@@ -8,14 +8,7 @@
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/Vertex.hpp>
 
-RenderTarget::RenderTarget() : m_VAO(0), m_camera(new Camera(Camera::Default)) {
-    glGenVertexArrays(1, &m_VAO);
-    if (!m_VAO) {
-        std::cerr << "Could not create vertex buffer." << std::endl;
-    }
-}
-
-RenderTarget::~RenderTarget() { glDeleteVertexArrays(1, &m_VAO); }
+RenderTarget::RenderTarget() : m_camera(new Camera(Camera::Default)) {}
 
 Camera &RenderTarget::getCamera() { return *m_camera.get(); }
 
@@ -36,25 +29,6 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     glViewport(m_camera->getX(), m_camera->getY(), m_camera->getWidth(),
                m_camera->getHeight());
     VertexBuffer::bind(&buffer);
-    glBindVertexArray(m_VAO);
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1);
-
-    // texture coord
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *)(offsetof(Vertex, texCoords)));
-    glEnableVertexAttribArray(2);
-
-    // normal attribute
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *)(offsetof(Vertex, normal)));
-    glEnableVertexAttribArray(3);
 
     applyShader(states.shader);
     applyTransform(states.transform);
@@ -62,7 +36,6 @@ void RenderTarget::draw(const VertexBuffer &buffer,
 
     glDrawArrays(GL_TRIANGLES, 0, buffer.size());
 
-    glBindVertexArray(0);
     VertexBuffer::bind(nullptr);
 }
 
@@ -71,10 +44,13 @@ void RenderTarget::clear(float r, float g, float b, float a) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderTarget::applyShader(const Shader *shader) { m_shader = shader; }
+void RenderTarget::applyShader(const Shader *shader) {
+    assert(m_shader != nullptr);
+    m_shader = shader;
+    m_shader->setupAttribute();
+}
 
 void RenderTarget::applyTransform(const glm::mat4 &transform) const {
-    if (m_shader == nullptr) return;
     m_shader->use();
     m_shader->setMat4("projection", m_camera->getProjection());
     m_shader->setMat4("view", m_camera->getView());
@@ -82,7 +58,7 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
 }
 
 void RenderTarget::applyTexture(const TextureArray *textures) const {
-    if (textures == nullptr) return;
+    assert(textures != nullptr);
     // set the GL_TEXTUREX correspondence
     m_shader->use();
     m_shader->setFloat("material.shininess", 64);

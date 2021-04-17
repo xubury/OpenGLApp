@@ -38,7 +38,7 @@ class RenderTarget {
    protected:
     RenderTarget();
 
-    ~RenderTarget();
+    virtual ~RenderTarget() = default;
 
    private:
     void applyShader(const Shader *shader);
@@ -46,8 +46,6 @@ class RenderTarget {
     void applyTransform(const glm::mat4 &transform) const;
 
     void applyTexture(const TextureArray *textures) const;
-
-    uint32_t m_VAO;
 
     std::unique_ptr<Camera> m_camera;
 

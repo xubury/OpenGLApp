@@ -1,9 +1,19 @@
 #include <Graphic/Shader.hpp>
 #include <glad/glad.h>
+#include <Graphic/Vertex.hpp>
 
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+Shader::Shader() {
+    glGenVertexArrays(1, &m_VAO);
+    if (!m_VAO) {
+        std::cerr << "Could not create vertex buffer." << std::endl;
+    }
+}
+
+Shader::~Shader() { glDeleteVertexArrays(1, &m_VAO); }
 
 void Shader::loadFromFile(const std::string& vertexPath,
                           const std::string& fragmentPath) {
@@ -60,6 +70,28 @@ void Shader::compile(const std::string& vertexCode,
     // necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+}
+
+void Shader::setupAttribute() const {
+    glBindVertexArray(m_VAO);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+
+    // texture coord
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*)(offsetof(Vertex, texCoords)));
+    glEnableVertexAttribArray(2);
+
+    // normal attribute
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*)(offsetof(Vertex, normal)));
+    glEnableVertexAttribArray(3);
 }
 
 void Shader::use() const { glUseProgram(id); }

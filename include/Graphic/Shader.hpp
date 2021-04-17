@@ -9,7 +9,9 @@ class Shader {
    public:
     uint32_t id;
 
-    Shader() = default;
+    Shader();
+
+    ~Shader();
 
     Shader(const Shader&) = delete;
 
@@ -20,6 +22,8 @@ class Shader {
 
     void loadFromFile(const std::string& vertexPath,
                       const std::string& fragmentPath);
+
+    virtual void setupAttribute() const;
 
     void use() const;
 
@@ -32,6 +36,9 @@ class Shader {
     void setVec3(const std::string& name, const glm::vec3& value) const;
 
     void setMat4(const std::string& name, const glm::mat4& value) const;
+
+   protected:
+    uint32_t m_VAO;
 
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
