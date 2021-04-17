@@ -22,7 +22,7 @@ class AlignedAABB : public Drawable {
     glm::vec3 m_originalPosition[8];
     glm::vec3 m_translate;
 
-    static Vertex s_updatedVertices[8];
+    Vertex m_updatedVertices[8];
     static uint32_t s_indices[36];
 };
 

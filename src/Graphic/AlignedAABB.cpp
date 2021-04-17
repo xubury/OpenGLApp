@@ -6,19 +6,16 @@
 uint32_t AlignedAABB::s_indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
                                        7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
                                        4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
-
-Vertex AlignedAABB::s_updatedVertices[8] = {
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}}};
-
-AlignedAABB::AlignedAABB() {
-    m_elements.create(s_updatedVertices, 8, s_indices, 36);
+AlignedAABB::AlignedAABB()
+    : m_updatedVertices{{{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}},
+                        {{0, 0, 0}, {0, 1.0f, 0}, {0, 0}, {0, 0, 0}}} {
+    m_elements.create(m_updatedVertices, 8, s_indices, 36);
 }
 
 void AlignedAABB::draw(RenderTarget &target, RenderStates states) const {
@@ -78,37 +75,37 @@ void AlignedAABB::calculateAABB(Vertex *vertex, int cnt) {
 
 void AlignedAABB::setBoundingBox(float minX, float minY, float minZ, float maxX,
                                  float maxY, float maxZ) {
-    s_updatedVertices[0].position[0] = minX;
-    s_updatedVertices[0].position[1] = minY;
-    s_updatedVertices[0].position[2] = maxZ;
+    m_updatedVertices[0].position[0] = minX;
+    m_updatedVertices[0].position[1] = minY;
+    m_updatedVertices[0].position[2] = maxZ;
 
-    s_updatedVertices[1].position[0] = maxX;
-    s_updatedVertices[1].position[1] = minY;
-    s_updatedVertices[1].position[2] = maxZ;
+    m_updatedVertices[1].position[0] = maxX;
+    m_updatedVertices[1].position[1] = minY;
+    m_updatedVertices[1].position[2] = maxZ;
 
-    s_updatedVertices[2].position[0] = maxX;
-    s_updatedVertices[2].position[1] = maxY;
-    s_updatedVertices[2].position[2] = maxZ;
+    m_updatedVertices[2].position[0] = maxX;
+    m_updatedVertices[2].position[1] = maxY;
+    m_updatedVertices[2].position[2] = maxZ;
 
-    s_updatedVertices[3].position[0] = minX;
-    s_updatedVertices[3].position[1] = maxY;
-    s_updatedVertices[3].position[2] = maxZ;
+    m_updatedVertices[3].position[0] = minX;
+    m_updatedVertices[3].position[1] = maxY;
+    m_updatedVertices[3].position[2] = maxZ;
 
-    s_updatedVertices[4].position[0] = minX;
-    s_updatedVertices[4].position[1] = minY;
-    s_updatedVertices[4].position[2] = minZ;
+    m_updatedVertices[4].position[0] = minX;
+    m_updatedVertices[4].position[1] = minY;
+    m_updatedVertices[4].position[2] = minZ;
 
-    s_updatedVertices[5].position[0] = maxX;
-    s_updatedVertices[5].position[1] = minY;
-    s_updatedVertices[5].position[2] = minZ;
+    m_updatedVertices[5].position[0] = maxX;
+    m_updatedVertices[5].position[1] = minY;
+    m_updatedVertices[5].position[2] = minZ;
 
-    s_updatedVertices[6].position[0] = maxX;
-    s_updatedVertices[6].position[1] = maxY;
-    s_updatedVertices[6].position[2] = minZ;
+    m_updatedVertices[6].position[0] = maxX;
+    m_updatedVertices[6].position[1] = maxY;
+    m_updatedVertices[6].position[2] = minZ;
 
-    s_updatedVertices[7].position[0] = minX;
-    s_updatedVertices[7].position[1] = maxY;
-    s_updatedVertices[7].position[2] = minZ;
+    m_updatedVertices[7].position[0] = minX;
+    m_updatedVertices[7].position[1] = maxY;
+    m_updatedVertices[7].position[2] = minZ;
 }
 
 void AlignedAABB::updateAABB(const glm::mat4 &transform) {
@@ -129,5 +126,5 @@ void AlignedAABB::updateAABB(const glm::mat4 &transform) {
         maxZ = std::max(maxZ, pos.z);
     }
     setBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
-    m_elements.update(s_updatedVertices, 8, s_indices, 36);
+    m_elements.update(m_updatedVertices, 8, s_indices, 36);
 }
