@@ -7,15 +7,15 @@
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
 
-class VertexArray : public Drawable {
+class VertexBuffer : public Drawable {
    public:
-    VertexArray();
+    VertexBuffer();
 
-    ~VertexArray();
+    ~VertexBuffer();
 
-    VertexArray(const VertexArray &) = delete;
+    VertexBuffer(const VertexBuffer &) = delete;
 
-    VertexArray &operator=(const VertexArray &) = delete;
+    VertexBuffer &operator=(const VertexBuffer &) = delete;
 
     std::size_t size() const;
 

@@ -7,15 +7,15 @@
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
 
-class VertexElement : public Drawable {
+class ElementBuffer : public Drawable {
    public:
-    VertexElement();
+    ElementBuffer();
 
-    ~VertexElement();
+    ~ElementBuffer();
 
-    VertexElement(const VertexElement &) = delete;
+    ElementBuffer(const ElementBuffer &) = delete;
 
-    VertexElement &operator=(const VertexElement &) = delete;
+    ElementBuffer &operator=(const ElementBuffer &) = delete;
 
     std::size_t size() const;
 

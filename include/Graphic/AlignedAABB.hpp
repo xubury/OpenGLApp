@@ -1,7 +1,7 @@
 #ifndef ALIGNED_ABB_HPP
 #define ALIGNED_ABB_HPP
 
-#include <Graphic/VertexElement.hpp>
+#include <Graphic/ElementBuffer.hpp>
 #include <Graphic/Drawable.hpp>
 
 class AlignedAABB : public Drawable {
@@ -18,7 +18,7 @@ class AlignedAABB : public Drawable {
     void updateAABB(const glm::mat4 &transform);
 
    private:
-    VertexElement m_elements;
+    ElementBuffer m_elements;
     glm::vec3 m_originalPosition[8];
     glm::vec3 m_translate;
 

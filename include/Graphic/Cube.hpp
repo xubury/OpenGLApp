@@ -5,8 +5,8 @@
 
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Transformable.hpp>
-#include <Graphic/VertexArray.hpp>
-#include <Graphic/VertexElement.hpp>
+#include <Graphic/VertexBuffer.hpp>
+#include <Graphic/ElementBuffer.hpp>
 #include <Graphic/AlignedAABB.hpp>
 
 class Cube : public Drawable, public Transformable {
@@ -18,7 +18,7 @@ class Cube : public Drawable, public Transformable {
     AlignedAABB m_aabb;
 
    private:
-    static VertexArray s_cube;
+    static VertexBuffer s_cube;
 };
 
 #endif

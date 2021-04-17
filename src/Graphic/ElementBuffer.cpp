@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 #include <iostream>
 
-#include <Graphic/Vertex.hpp>
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/RenderTarget.hpp>
 
