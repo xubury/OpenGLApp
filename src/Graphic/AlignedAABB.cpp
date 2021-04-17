@@ -19,12 +19,11 @@ AlignedAABB::AlignedAABB()
 }
 
 void AlignedAABB::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = glm::translate(states.transform, m_translate);
     states.shader = &DebugShader::debugShader;
     target.draw(m_elements, states);
 }
 
-void AlignedAABB::calculateAABB(Vertex *vertex, int cnt) {
+void AlignedAABB::initializeAABB(Vertex *vertex, int cnt) {
     float minX = std::numeric_limits<float>::max();
     float minY = std::numeric_limits<float>::max();
     float minZ = std::numeric_limits<float>::max();
@@ -110,21 +109,19 @@ void AlignedAABB::setBoundingBox(float minX, float minY, float minZ, float maxX,
 }
 
 void AlignedAABB::updateAABB(const glm::mat4 &transform) {
-    m_translate = transform[3];
-    float minX = std::numeric_limits<float>::max();
-    float minY = std::numeric_limits<float>::max();
-    float minZ = std::numeric_limits<float>::max();
-    float maxX = std::numeric_limits<float>::min();
-    float maxY = std::numeric_limits<float>::min();
-    float maxZ = std::numeric_limits<float>::min();
+    glm::mat3 rotate = transform;
+    glm::vec3 min(std::numeric_limits<float>::max());
+    glm::vec3 max(std::numeric_limits<float>::min());
     for (int i = 0; i < 8; ++i) {
-        glm::vec3 pos = glm::mat3(transform) * m_originalPosition[i];
-        minX = std::min(minX, pos.x);
-        minY = std::min(minY, pos.y);
-        minZ = std::min(minZ, pos.z);
-        maxX = std::max(maxX, pos.x);
-        maxY = std::max(maxY, pos.y);
-        maxZ = std::max(maxZ, pos.z);
+        glm::vec3 pos = rotate * m_originalPosition[i];
+        min.x = std::min(min.x, pos.x);
+        min.y = std::min(min.y, pos.y);
+        min.z = std::min(min.z, pos.z);
+        max.x = std::max(max.x, pos.x);
+        max.y = std::max(max.y, pos.y);
+        max.z = std::max(max.z, pos.z);
     }
-    setBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+    min = min + glm::vec3(transform[3]);
+    max = max + glm::vec3(transform[3]);
+    setBoundingBox(min.x, min.y, min.z, max.x, max.y, max.z);
 }

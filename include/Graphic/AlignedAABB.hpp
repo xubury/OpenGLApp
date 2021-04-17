@@ -10,7 +10,7 @@ class AlignedAABB : public Drawable {
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
-    void calculateAABB(Vertex *vertex, int cnt);
+    void initializeAABB(Vertex *vertex, int cnt);
 
     void setBoundingBox(float minX, float minY, float minZ, float maxX,
                         float maxY, float maxZ);
@@ -20,7 +20,6 @@ class AlignedAABB : public Drawable {
    private:
     ElementBuffer m_elements;
     glm::vec3 m_originalPosition[8];
-    glm::vec3 m_translate;
     Vertex m_updatedVertices[8];
 };
 
