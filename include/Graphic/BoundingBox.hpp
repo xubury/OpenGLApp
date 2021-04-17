@@ -20,7 +20,7 @@ class BoundingBox : public Drawable {
    private:
     ElementBuffer m_elements;
     glm::vec3 m_originalPosition[8];
-    Vertex m_updatedVertices[8];
+    DebugVertex m_updatedVertices[8];
 };
 
 #endif

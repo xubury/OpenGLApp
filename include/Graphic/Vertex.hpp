@@ -10,4 +10,9 @@ struct Vertex {
     glm::vec3 normal;
 };
 
+struct DebugVertex {
+    glm::vec3 position;
+    glm::vec3 color;
+};
+
 #endif

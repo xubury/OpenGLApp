@@ -1,8 +1,10 @@
 #ifndef VERTEX_ELEMENT_HPP
 #define VERTEX_ELEMENT_HPP
 
+#include <glad/glad.h>
 #include <stdint.h>
 #include <vector>
+#include <iostream>
 
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
@@ -21,15 +23,16 @@ class ElementBuffer : public Drawable {
 
     bool empty() const;
 
-    bool create(const Vertex *vertices, std::size_t vertexSize,
-                uint32_t *indices, std::size_t indexSize);
+    template <typename T>
+    bool create(const T vertices, std::size_t vertexCnt, uint32_t *indices,
+                std::size_t indexCnt);
 
-    void update(const Vertex *vertices, std::size_t vertexSize,
-                const uint32_t *indices, std::size_t indexSize);
+    template <typename T>
+    void update(const T vertices, std::size_t vertexCnt, uint32_t *indices,
+                std::size_t indexCnt);
 
-    void update(const Vertex *vertices, std::size_t vertexSize);
-
-    void update(const uint32_t *indices, std::size_t indexSize);
+    template <typename T>
+    void update(const T vertices, std::size_t vertexCnt);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -40,5 +43,38 @@ class ElementBuffer : public Drawable {
     uint32_t m_EBO;
     std::size_t m_size;
 };
+
+template <typename T>
+bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
+                           uint32_t *indices, std::size_t indexCnt) {
+    static_assert(std::is_pointer<T>::value, "Expected a pointer");
+    glGenBuffers(1, &m_EBO);
+    glGenBuffers(1, &m_VBO);
+    if (!m_VBO || !m_EBO) {
+        std::cerr << "Could not create vertex buffer array." << std::endl;
+        return false;
+    }
+    update(vertices, vertexCnt, indices, indexCnt);
+    return true;
+}
+template <typename T>
+void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
+                           uint32_t *indices, std::size_t indexCnt) {
+    static_assert(std::is_pointer<T>::value, "Expected a pointer");
+    update(vertices, vertexCnt);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexCnt, indices,
+                 GL_STATIC_DRAW);
+    m_size = indexCnt;
+}
+
+template <typename T>
+void ElementBuffer::update(const T vertices, std::size_t vertexCnt) {
+    static_assert(std::is_pointer<T>::value, "Expected a pointer");
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER,
+                 vertexCnt * sizeof(typename std::remove_pointer<T>::type),
+                 vertices, GL_STATIC_DRAW);
+}
 
 #endif
