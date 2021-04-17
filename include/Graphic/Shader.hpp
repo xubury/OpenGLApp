@@ -23,6 +23,8 @@ class Shader {
     void loadFromFile(const std::string& vertexPath,
                       const std::string& fragmentPath);
 
+    static void bind(const Shader* shader);
+
     virtual void setupAttribute() const;
 
     void use() const;
@@ -42,6 +44,12 @@ class Shader {
 
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
+};
+
+class DebugShader : public Shader {
+   public:
+    void setupAttribute() const override;
+    static DebugShader debugShader;
 };
 
 #endif

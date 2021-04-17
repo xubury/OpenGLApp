@@ -1,5 +1,5 @@
-#ifndef VERTEX_BUFFER_HPP
-#define VERTEX_BUFFER_HPP
+#ifndef VERTEX_ARRAY_HPP
+#define VERTEX_ARRAY_HPP
 
 #include <stdint.h>
 #include <vector>
@@ -8,15 +8,15 @@
 
 class Vertex;
 
-class VertexBuffer : public Drawable {
+class VertexArray : public Drawable {
    public:
-    VertexBuffer();
+    VertexArray();
 
-    ~VertexBuffer();
+    ~VertexArray();
 
-    VertexBuffer(const VertexBuffer &) = delete;
+    VertexArray(const VertexArray &) = delete;
 
-    VertexBuffer &operator=(const VertexBuffer &) = delete;
+    VertexArray &operator=(const VertexArray &) = delete;
 
     std::size_t size() const;
 
@@ -28,7 +28,7 @@ class VertexBuffer : public Drawable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
-    static void bind(const VertexBuffer *vertexBuffer);
+    static void bind(const VertexArray *vertexBuffer);
 
    private:
     uint32_t m_VBO;

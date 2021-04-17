@@ -6,17 +6,19 @@
 #include <sstream>
 #include <iostream>
 
-Shader::Shader() {
-    glGenVertexArrays(1, &m_VAO);
-    if (!m_VAO) {
-        std::cerr << "Could not create vertex buffer." << std::endl;
-    }
-}
+DebugShader DebugShader::debugShader;
+
+Shader::Shader() : m_VAO(0) {}
 
 Shader::~Shader() { glDeleteVertexArrays(1, &m_VAO); }
 
 void Shader::loadFromFile(const std::string& vertexPath,
                           const std::string& fragmentPath) {
+    glGenVertexArrays(1, &m_VAO);
+    if (!m_VAO) {
+        std::cerr << "Could not create vertex buffer." << std::endl;
+        return;
+    }
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
@@ -72,26 +74,35 @@ void Shader::compile(const std::string& vertexCode,
     glDeleteShader(fragment);
 }
 
+void Shader::bind(const Shader* shader) {
+    if (shader) {
+        shader->use();
+        glBindVertexArray(shader->m_VAO);
+    } else {
+        glBindVertexArray(shader->m_VAO);
+    }
+}
+
 void Shader::setupAttribute() const {
-    glBindVertexArray(m_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
     // color attribute
+    glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           (void*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1);
 
     // texture coord
+    glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           (void*)(offsetof(Vertex, texCoords)));
-    glEnableVertexAttribArray(2);
 
     // normal attribute
+    glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                           (void*)(offsetof(Vertex, normal)));
-    glEnableVertexAttribArray(3);
 }
 
 void Shader::use() const { glUseProgram(id); }
@@ -143,4 +154,17 @@ void Shader::setVec3(const std::string& name, const glm::vec3& value) const {
 void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
     glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE,
                        &value[0][0]);
+}
+
+void DebugShader::setupAttribute() const {
+    glBindVertexArray(m_VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // position attribute
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+    // color attribute
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*)offsetof(Vertex, color));
 }

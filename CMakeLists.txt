@@ -13,7 +13,8 @@ set(Graphic_Src
     src/Graphic/Shader.cpp 
     src/Graphic/Texture.cpp 
     src/Graphic/TextureArray.cpp
-    src/Graphic/VertexBuffer.cpp
+    src/Graphic/VertexArray.cpp
+    src/Graphic/VertexElement.cpp
     src/Graphic/RenderWindow.cpp 
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp

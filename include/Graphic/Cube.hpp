@@ -5,7 +5,8 @@
 
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Transformable.hpp>
-#include <Graphic/VertexBuffer.hpp>
+#include <Graphic/VertexArray.hpp>
+#include <Graphic/VertexElement.hpp>
 
 class Cube : public Drawable, public Transformable {
    public:
@@ -14,7 +15,8 @@ class Cube : public Drawable, public Transformable {
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    static VertexBuffer m_buffer;
+    static VertexArray m_buffer;
+    VertexElement m_aabbs;
 };
 
 #endif

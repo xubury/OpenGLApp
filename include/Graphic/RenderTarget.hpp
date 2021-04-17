@@ -7,7 +7,8 @@
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Camera.hpp>
 
-class VertexBuffer;
+class VertexArray;
+class VertexElement;
 class Shader;
 
 class RenderTarget {
@@ -19,7 +20,10 @@ class RenderTarget {
     void draw(const Drawable &drawable,
               const RenderStates &states = RenderStates::Default);
 
-    void draw(const VertexBuffer &buffer,
+    void draw(const VertexArray &buffer,
+              const RenderStates &states = RenderStates::Default);
+
+    void draw(const VertexElement &buffer,
               const RenderStates &states = RenderStates::Default);
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
