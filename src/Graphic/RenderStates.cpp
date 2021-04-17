@@ -6,7 +6,13 @@
 #include <Graphic/Texture.hpp>
 #include <Graphic/Camera.hpp>
 
+const RenderStates RenderStates::Default;
+
 RenderStates::RenderStates()
     : shader(nullptr), transform(1.0f), textures(nullptr), camera(nullptr) {}
 
-const RenderStates RenderStates::Default;
+RenderStates::RenderStates(const RenderStates &other)
+    : shader(other.shader),
+      transform(1.0f),
+      textures(other.textures),
+      camera(other.camera) {}

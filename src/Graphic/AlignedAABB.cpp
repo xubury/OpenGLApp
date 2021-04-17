@@ -22,7 +22,7 @@ AlignedAABB::AlignedAABB() {
 }
 
 void AlignedAABB::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = glm::translate(glm::mat4(1.0), m_translate);
+    states.transform = glm::translate(states.transform, m_translate);
     states.shader = &DebugShader::debugShader;
     target.draw(m_elements, states);
 }
