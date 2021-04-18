@@ -15,10 +15,12 @@ uniform mat4 model;
 
 struct Light {
     vec3 position;
+    vec4 direction;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 };
+
 uniform Light light;
 out Light lightView;
 
@@ -32,5 +34,6 @@ void main() {
 
     lightView = light;
     lightView.position = vec3(view * vec4(light.position, 1.0));
+    lightView.direction = view * light.direction;
 }
 

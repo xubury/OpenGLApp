@@ -18,6 +18,7 @@ Application::Application(int width, int height, const std::string& title)
 
     m_shader.use();
     m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
+    m_shader.setVec4("light.direction", glm::vec4(0.0f, 0.0f, -1.0f, 0.f));
     m_shader.setVec3("light.ambient", glm::vec3(0.5f));
     m_shader.setVec3("light.diffuse", glm::vec3(0.5f));
     m_shader.setVec3("light.specular", glm::vec3(1.0f));

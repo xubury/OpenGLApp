@@ -13,6 +13,7 @@ struct Material {
 
 struct Light {
     vec3 position;
+    vec4 direction;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -30,18 +31,24 @@ in Light lightView;
 uniform Material material;
 
 void main() {
+    vec3 lightDir;
+    if (lightView.direction.w < 1e-6) // directional light
+        lightDir = normalize(vec3(lightView.direction));
+    else
+        lightDir = normalize(fragPos - lightView.position);
+
     // ambient
     vec3 ambient = lightView.ambient * texture(material.diffuse0, texCoord).rgb;
 
+        
     // diffuse
-    vec3 lightDir = normalize(lightView.position - fragPos);
-    float diff = max(dot(normal, lightDir), 0.0);
+    float diff = max(dot(normal, -lightDir), 0.0);
     vec3 diffuse = lightView.diffuse * diff 
                    * texture(material.diffuse0, texCoord).rgb;
 
     // specular
     vec3 viewDir = normalize(-fragPos);
-    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 reflectDir = reflect(lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
     vec3 specular = lightView.specular * spec 
                     * texture(material.specular0, texCoord).rgb;
