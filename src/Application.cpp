@@ -17,7 +17,7 @@ Application::Application(int width, int height, const std::string& title)
         Texture::TextureType::SPECULAR);
 
     m_shader.use();
-    m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
+    m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 3.0f));
     m_shader.setVec4("light.direction", glm::vec4(0.0f, 0.0f, -1.0f, 1.f));
     m_shader.setVec3("light.ambient", glm::vec3(0.5f));
     m_shader.setVec3("light.diffuse", glm::vec3(0.5f));
@@ -25,6 +25,8 @@ Application::Application(int width, int height, const std::string& title)
     m_shader.setFloat("light.constant", 1.0f);
     m_shader.setFloat("light.linear", 0.09f);
     m_shader.setFloat("light.quadratic", 0.032f);
+    m_shader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+    m_shader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
 
     glm::vec3 cubePositions[] = {
         glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),

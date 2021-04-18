@@ -16,6 +16,9 @@ uniform mat4 model;
 struct Light {
     vec3 position;
     vec4 direction;
+    
+    float cutOff;
+    float outerCutOff;
 
     vec3 ambient;
     vec3 diffuse;
