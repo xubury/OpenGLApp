@@ -5,7 +5,8 @@
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
-    DebugShader::debugShader.loadFromFile("shader/debug.vs", "shader/debug.fs");
+    DebugShader::debugShader.loadFromFile("shader/debugVertex.glsl",
+                                          "shader/debugFragment.glsl");
 
     m_textureManager["awesomeface"].loadFromFile(
         "resources/textures/awesomeface.png", Texture::TextureType::DIFFUSE);
