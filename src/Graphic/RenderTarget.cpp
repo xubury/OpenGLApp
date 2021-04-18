@@ -8,7 +8,10 @@
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
 
-RenderTarget::RenderTarget() : m_camera(new Camera(Camera::Default)) {}
+RenderTarget::RenderTarget()
+    : m_camera(new Camera(Camera::Default)),
+      m_shader(nullptr),
+      m_textures(nullptr) {}
 
 Camera &RenderTarget::getCamera() { return *m_camera.get(); }
 
@@ -73,24 +76,33 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->setMat4("model", transform);
 }
 
-void RenderTarget::applyTexture(const TextureArray *textures) const {
-    if (textures == nullptr) return;
-    // set the GL_TEXTUREX correspondence
+void RenderTarget::applyTexture(const TextureArray *textures) {
+    if (textures == nullptr || textures == m_textures) return;
+    if (m_textures != nullptr) {
+        // clean up old textures
+        std::size_t size = m_textures->size();
+        for (std::size_t i = 0; i < size; ++i) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+    }
+    m_textures = textures;
     m_shader->setFloat("material.shininess", 64);
     uint32_t diffuse = 0;
     uint32_t specular = 0;
-    std::size_t size = textures->size();
+    std::size_t size = m_textures->size();
     for (std::size_t i = 0; i < size; ++i) {
         std::string name;
-        if (textures->at(i).getType() == Texture::DIFFUSE) {
+        if (m_textures->at(i).getType() == Texture::DIFFUSE) {
             name = "material.diffuse" + std::to_string(diffuse++);
-        } else if (textures->at(i).getType() == Texture::SPECULAR) {
+        } else if (m_textures->at(i).getType() == Texture::SPECULAR) {
             name = "material.specular" + std::to_string(specular++);
         } else {
             std::cout << "Invalid Texture." << std::endl;
         }
         glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, textures->at(i).id());
+        glBindTexture(GL_TEXTURE_2D, m_textures->at(i).id());
+        // set the GL_TEXTUREX correspondence
         m_shader->setInt(name, i);
     }
 }

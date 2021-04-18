@@ -49,11 +49,13 @@ class RenderTarget {
 
     void applyTransform(const glm::mat4 &transform) const;
 
-    void applyTexture(const TextureArray *textures) const;
+    void applyTexture(const TextureArray *textures);
 
     std::unique_ptr<Camera> m_camera;
 
     const Shader *m_shader;
+
+    const TextureArray *m_textures;
 };
 
 template <typename T, typename... ARGS>
