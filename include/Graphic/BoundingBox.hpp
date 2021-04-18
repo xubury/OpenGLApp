@@ -8,7 +8,9 @@ class BoundingBox : public Drawable {
    public:
     BoundingBox();
 
-    virtual void draw(RenderTarget &target, RenderStates states) const override;
+    virtual void draw(
+        RenderTarget &target,
+        RenderStates states = RenderStates::Default) const override;
 
     void initialize(Vertex *vertex, int cnt);
 

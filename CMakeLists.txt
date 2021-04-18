@@ -8,6 +8,8 @@ endif()
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
+find_package(assimp REQUIRED)
+set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
 set(Graphic_Src 
     src/Graphic/Shader.cpp 
@@ -21,6 +23,8 @@ set(Graphic_Src
     src/Graphic/Transformable.cpp
     src/Graphic/BoundingBox.cpp
     src/Graphic/Cube.cpp
+    src/Graphic/Mesh.cpp
+    src/Graphic/Model.cpp
     src/Graphic/Camera.cpp)
 
 set(Window_Src
@@ -40,6 +44,6 @@ add_executable(OpenGLApp
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
-target_link_libraries(OpenGLApp OpenGL::GL X11 pthread Xrandr Xi dl glm glfw)
+target_link_libraries(OpenGLApp OpenGL::GL X11 pthread Xrandr Xi dl glm glfw assimp::assimp)
 
 target_include_directories(OpenGLApp PUBLIC include libs)

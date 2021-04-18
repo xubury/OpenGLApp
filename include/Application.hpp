@@ -5,7 +5,7 @@
 #include <ResourceManager.hpp>
 #include <Graphic/RenderWindow.hpp>
 #include <Graphic/Shader.hpp>
-#include <Graphic/TextureArray.hpp>
+#include <Graphic/Model.hpp>
 #include <Graphic/Cube.hpp>
 
 class Application {
@@ -20,6 +20,7 @@ class Application {
 
    private:
     RenderWindow m_window;
+    Model m_obj;
     Shader m_shader;
     Cube m_cube[10];
     std::unordered_map<std::string, TextureArray> m_textureManager;

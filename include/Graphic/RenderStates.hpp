@@ -13,9 +13,6 @@ class RenderStates {
    public:
     RenderStates();
 
-    // Note: the transform is not copied to avoid the transform accumulation
-    RenderStates(const RenderStates &);
-
     static const RenderStates Default;
 
     const Shader *shader;
