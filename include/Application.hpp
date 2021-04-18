@@ -21,8 +21,7 @@ class Application {
    private:
     RenderWindow m_window;
     Shader m_shader;
-    Cube m_cube1;
-    Cube m_cube2;
+    Cube m_cube[10];
     std::unordered_map<std::string, TextureArray> m_textureManager;
 };
 

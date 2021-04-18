@@ -14,9 +14,14 @@ struct Material {
 struct Light {
     vec3 position;
     vec4 direction;
+
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 // fragPos and normal is in view space for convience.
@@ -31,10 +36,14 @@ in Light lightView;
 uniform Material material;
 
 void main() {
-    vec3 lightDir;
+    bool directional = false;
     if (lightView.direction.w < 1e-6) // directional light
+        directional = true;
+
+    vec3 lightDir;
+    if (directional)
         lightDir = normalize(vec3(lightView.direction));
-    else
+    else 
         lightDir = normalize(fragPos - lightView.position);
 
     // ambient
@@ -52,6 +61,15 @@ void main() {
     float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
     vec3 specular = lightView.specular * spec 
                     * texture(material.specular0, texCoord).rgb;
+
+    if (!directional) {
+        float distance = length(lightView.position - fragPos);
+        float attenuation = 1.0 / (lightView.constant + lightView.linear * distance
+                                  + lightView.quadratic * (distance * distance));
+        ambient *= attenuation;
+        diffuse *= attenuation;
+        specular *= attenuation;
+    }
 
     vec3 result = ambient + diffuse + specular;
 

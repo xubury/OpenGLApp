@@ -18,23 +18,32 @@ Application::Application(int width, int height, const std::string& title)
 
     m_shader.use();
     m_shader.setVec3("light.position", glm::vec3(0.0f, 0.0f, 1.0f));
-    m_shader.setVec4("light.direction", glm::vec4(0.0f, 0.0f, -1.0f, 0.f));
+    m_shader.setVec4("light.direction", glm::vec4(0.0f, 0.0f, -1.0f, 1.f));
     m_shader.setVec3("light.ambient", glm::vec3(0.5f));
     m_shader.setVec3("light.diffuse", glm::vec3(0.5f));
     m_shader.setVec3("light.specular", glm::vec3(1.0f));
+    m_shader.setFloat("light.constant", 1.0f);
+    m_shader.setFloat("light.linear", 0.09f);
+    m_shader.setFloat("light.quadratic", 0.032f);
 
-    m_cube2.translate(glm::vec3(1.0, 0.f, 0.f));
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
+    for (int i = 0; i < 10; ++i) {
+        m_cube[i].translate(cubePositions[i]);
+    }
     m_window.setCamera<ControlCamera>(0, 0, width, height,
                                       glm::vec3(0.f, 0.f, 3.f));
 }
 
 void Application::update() {
-    m_cube1.rotate(1.f, glm::vec3(1.0f, 0.3f, 0.5f));
-    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(1.f),
-                                   glm::vec3(0.0f, 0.0f, 1.0f));
-    m_cube2.transform(rotate);
-    m_cube1.m_aabb.update(m_cube1.getTransform());
-    m_cube2.m_aabb.update(m_cube2.getTransform());
+    for (int i = 0; i < 10; ++i) {
+        m_cube[i].rotate(1.f, glm::vec3(1.0f, 0.3f, 0.5f));
+        m_cube[i].m_aabb.update(m_cube[i].getTransform());
+    }
 }
 
 void Application::render() {
@@ -44,10 +53,10 @@ void Application::render() {
     m_shader.use();
     states.shader = &m_shader;
     states.textures = &m_textureManager.at("container");
-    m_cube1.draw(m_window, states);
 
-    states.textures = &m_textureManager.at("awesomeface");
-    m_cube2.draw(m_window, states);
+    for (int i = 0; i < 10; ++i) {
+        m_cube[i].draw(m_window, states);
+    }
 
     m_window.swapBuffers();
 }
