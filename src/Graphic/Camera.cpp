@@ -23,6 +23,8 @@ Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position,
                                     getNearZ(), getFarZ());
 }
 
+glm::vec3 Camera::getPosition() const { return m_position; }
+
 glm::mat4 Camera::getProjection() const { return m_projection; }
 
 glm::mat4 Camera::getView() const { return m_view; }

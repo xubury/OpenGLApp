@@ -25,6 +25,8 @@ class Camera {
 
     virtual ~Camera() = default;
 
+    glm::vec3 getPosition() const;
+
     glm::mat4 getProjection() const;
 
     glm::mat4 getView() const;

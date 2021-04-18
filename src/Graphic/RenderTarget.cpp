@@ -74,6 +74,7 @@ void RenderTarget::applyTransform(const glm::mat4 &transform) const {
     m_shader->setMat4("projection", m_camera->getProjection());
     m_shader->setMat4("view", m_camera->getView());
     m_shader->setMat4("model", transform);
+    m_shader->setVec3("viewPos", m_camera->getPosition());
 }
 
 void RenderTarget::applyTexture(const TextureArray *textures) {

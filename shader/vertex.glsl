@@ -13,35 +13,13 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-struct Light {
-    vec3 position;
-    vec4 direction;
-    
-    float cutOff;
-    float outerCutOff;
-
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-
-    float constant;
-    float linear;
-    float quadratic;
-};
-
-uniform Light light;
-out Light lightView;
 
 void main() {
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 
-    fragPos = vec3(view * model * vec4(aPos, 1.0));
+    fragPos = vec3(model * vec4(aPos, 1.0));
     color = aColor;
     texCoord = aTexCoord;
-    normal = normalize(mat3(transpose(inverse(view * model))) * aNormal);
-
-    lightView = light;
-    lightView.position = vec3(view * vec4(light.position, 1.0));
-    lightView.direction = view * light.direction;
+    normal = normalize(mat3(transpose(inverse(model))) * aNormal);
 }
 
