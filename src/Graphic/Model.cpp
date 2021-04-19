@@ -1,7 +1,11 @@
 #include <Graphic/Model.hpp>
 #include <Graphic/RenderTarget.hpp>
 
-Model::Model() {}
+ResourceManager<std::string, Model> Model::loadedModels;
+
+void Model::loadModel(const std::string &path) {
+    *this = loadedModels.getOrLoad(path, path);
+}
 
 void Model::draw(RenderTarget &target, RenderStates states) const {
     states.transform = getTransform();
@@ -10,17 +14,18 @@ void Model::draw(RenderTarget &target, RenderStates states) const {
     }
 }
 
-void Model::loadModel(const std::string &path) {
+bool Model::loadFromFile(const std::string &path) {
     Assimp::Importer import;
     const aiScene *scene =
         import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
         std::cerr << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
-        return;
+        return false;
     }
     m_directory = path.substr(0, path.find_last_of('/') + 1);
     processNode(scene->mRootNode, scene);
+    return true;
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene) {

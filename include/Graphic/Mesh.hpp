@@ -21,7 +21,7 @@ class Mesh : public Drawable {
 
     TextureArray m_textures;
 
-    std::unique_ptr<ElementBuffer> m_buffer;
+    std::shared_ptr<ElementBuffer> m_buffer;
 };
 
 #endif
