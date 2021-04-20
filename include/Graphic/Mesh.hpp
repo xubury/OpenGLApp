@@ -14,6 +14,10 @@ class Mesh : public Drawable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
+    const Vertex *getVertex() const;
+
+    std::size_t size() const;
+
    private:
     std::vector<Vertex> m_vertices;
 

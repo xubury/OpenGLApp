@@ -15,3 +15,7 @@ void Mesh::draw(RenderTarget &target, RenderStates states) const {
     states.textures = &m_textures;
     m_buffer->draw(target, states);
 }
+
+const Vertex *Mesh::getVertex() const { return m_vertices.data(); }
+
+std::size_t Mesh::size() const { return m_vertices.size(); }

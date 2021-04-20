@@ -24,12 +24,12 @@ class ElementBuffer : public Drawable {
     bool empty() const;
 
     template <typename T>
-    bool create(const T vertices, std::size_t vertexCnt, uint32_t *indices,
-                std::size_t indexCnt);
+    bool create(const T vertices, std::size_t vertexCnt,
+                const uint32_t *indices, std::size_t indexCnt);
 
     template <typename T>
-    void update(const T vertices, std::size_t vertexCnt, uint32_t *indices,
-                std::size_t indexCnt);
+    void update(const T vertices, std::size_t vertexCnt,
+                const uint32_t *indices, std::size_t indexCnt);
 
     template <typename T>
     void update(const T vertices, std::size_t vertexCnt);
@@ -46,7 +46,7 @@ class ElementBuffer : public Drawable {
 
 template <typename T>
 bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
-                           uint32_t *indices, std::size_t indexCnt) {
+                           const uint32_t *indices, std::size_t indexCnt) {
     glGenBuffers(1, &m_EBO);
     glGenBuffers(1, &m_VBO);
     if (!m_VBO || !m_EBO) {
@@ -58,7 +58,7 @@ bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
 }
 template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
-                           uint32_t *indices, std::size_t indexCnt) {
+                           const uint32_t *indices, std::size_t indexCnt) {
     update(vertices, vertexCnt);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexCnt, indices,

@@ -48,7 +48,8 @@ void Application::update() {
         m_cube[i].rotate(1.f, glm::vec3(1.0f, 0.3f, 0.5f));
         m_cube[i].m_aabb.update(m_cube[i].getTransform());
     }
-    m_obj.rotate(1.f, glm::vec3(0, 1.0f, 0));
+    m_obj.rotate(1.0f, glm::vec3(0, 1.0f, 0));
+    m_obj.m_aabb.update(m_obj.getTransform());
 }
 
 void Application::render() {

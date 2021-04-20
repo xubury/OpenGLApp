@@ -1,6 +1,7 @@
 #ifndef BOUNDING_BOX_HPP
 #define BOUNDING_BOX_HPP
 
+#include <memory>
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/Drawable.hpp>
 
@@ -12,7 +13,7 @@ class BoundingBox : public Drawable {
         RenderTarget &target,
         RenderStates states = RenderStates::Default) const override;
 
-    void initialize(Vertex *vertex, int cnt);
+    void initialize(const Vertex *vertex, int cnt);
 
     void update(float minX, float minY, float minZ, float maxX, float maxY,
                 float maxZ);
@@ -20,9 +21,10 @@ class BoundingBox : public Drawable {
     void update(const glm::mat4 &transform);
 
    private:
-    ElementBuffer m_elements;
-    glm::vec3 m_originalPosition[8];
-    DebugVertex m_updatedVertices[8];
+    std::shared_ptr<ElementBuffer> m_elements;
+    DebugVertex m_vertices[8];
+    glm::vec3 m_min;
+    glm::vec3 m_max;
 };
 
 #endif

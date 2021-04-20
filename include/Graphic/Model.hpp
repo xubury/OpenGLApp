@@ -20,6 +20,8 @@ class Model : public Drawable, public Transformable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
+    BoundingBox m_aabb;
+
    private:
     template <typename, typename>
     friend class ResourceManager;

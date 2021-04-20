@@ -5,6 +5,9 @@ ResourceManager<std::string, Model> Model::loadedModels;
 
 void Model::loadModel(const std::string &path) {
     *this = loadedModels.getOrLoad(path, path);
+    for (const auto &mesh : m_meshes) {
+        m_aabb.initialize(mesh.getVertex(), mesh.size());
+    }
 }
 
 void Model::draw(RenderTarget &target, RenderStates states) const {
@@ -12,6 +15,7 @@ void Model::draw(RenderTarget &target, RenderStates states) const {
     for (const auto &mesh : m_meshes) {
         mesh.draw(target, states);
     }
+    m_aabb.draw(target);
 }
 
 bool Model::loadFromFile(const std::string &path) {
