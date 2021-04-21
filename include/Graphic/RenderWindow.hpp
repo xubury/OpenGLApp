@@ -7,6 +7,7 @@
 #include <Window/GlContext.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <Window/Event.hpp>
+#include <Time.hpp>
 
 class RenderWindow : public GlContext, public RenderTarget {
    public:
@@ -20,9 +21,11 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     void setShouldClose(bool close = true);
 
-    void swapBuffers();
+    void display();
 
     void close();
+
+    void setFramerateLimit(uint32_t fps);
 
    private:
     friend class GlContext;
@@ -34,6 +37,9 @@ class RenderWindow : public GlContext, public RenderTarget {
     bool popEvent(Event& event, bool block);
 
     std::queue<Event> m_events;
+
+    Time m_framerateLimit;
+    Clock m_clock;
 };
 
 #endif

@@ -41,6 +41,7 @@ Application::Application(int width, int height, const std::string& title)
     }
     m_window.setCamera<ControlCamera>(0, 0, width, height,
                                       glm::vec3(0.f, 0.f, 3.f));
+    m_window.setFramerateLimit(60);
 }
 
 void Application::update() {
@@ -64,7 +65,7 @@ void Application::render() {
         m_cube[i].draw(m_window, states);
     }
 
-    m_window.swapBuffers();
+    m_window.display();
 }
 
 void Application::run() {
