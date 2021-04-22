@@ -9,17 +9,7 @@ using Seconds = std::chrono::seconds;
 
 class Time : public MicroSeconds {
    public:
-    template <typename T, typename R>
-    static Time as(R time) {
-        return Time(
-            std::chrono::duration_cast<T>(std::chrono::duration<R>(time)));
-    }
-    Time(MicroSeconds time) : MicroSeconds(time) {}
-
-    Time(MilliSeconds time) : MicroSeconds(time) {}
-
-    Time(Seconds time)
-        : MicroSeconds(std::chrono::duration_cast<MicroSeconds>(time)) {}
+    Time(MicroSeconds time);
 
     template <typename T>
     T as() {
@@ -29,18 +19,20 @@ class Time : public MicroSeconds {
 
 class Clock {
    public:
-    using ClockType = std::chrono::steady_clock;
-    Clock() {}
+    using ClockType = std::chrono::high_resolution_clock;
 
-    Time getElapsedTime() {
-        return std::chrono::duration_cast<MicroSeconds>(ClockType::now() -
-                                                        m_clock);
-    }
+    Time getElapsedTime();
 
-    void restart() { m_clock = ClockType::now(); }
+    void restart();
 
    private:
-    std::chrono::steady_clock::time_point m_clock;
+    ClockType::time_point m_clock;
 };
+
+Time seconds(float amount);
+
+Time milliseconds(int32_t amount);
+
+Time microseconds(int64_t amount);
 
 #endif

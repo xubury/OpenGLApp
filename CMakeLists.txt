@@ -38,6 +38,7 @@ add_executable(OpenGLApp
     libs/glad.c 
     src/main.cpp
     src/Application.cpp
+    src/Time.cpp
     ${Graphic_Src}
     ${Window_Src})
 

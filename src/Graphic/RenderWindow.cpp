@@ -29,8 +29,7 @@ void RenderWindow::setShouldClose(bool close) {
 void RenderWindow::close() { glfwTerminate(); }
 
 void RenderWindow::setFramerateLimit(uint32_t fps) {
-    // FIXME: this is not correct!
-    m_framerateLimit = Time(Time::as<Seconds>(1.0 / fps));
+    m_framerateLimit = seconds(1.0 / fps);
 }
 
 void RenderWindow::pollEvents() { glfwPollEvents(); }
