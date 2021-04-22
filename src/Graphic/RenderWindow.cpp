@@ -5,7 +5,7 @@
 #include <thread>
 
 RenderWindow::RenderWindow(int width, int height, const std::string& title)
-    : GlContext(width, height, title), m_framerateLimit(MicroSeconds(0)) {}
+    : GlContext(width, height, title) {}
 
 RenderWindow::~RenderWindow() { close(); }
 
