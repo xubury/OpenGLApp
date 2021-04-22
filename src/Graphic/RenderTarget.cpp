@@ -40,7 +40,7 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     buffer.bind();
     m_shader->setupAttribute();
 
-    glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+    buffer.drawPrimitive();
 }
 
 void RenderTarget::draw(const ElementBuffer &element,
@@ -56,7 +56,7 @@ void RenderTarget::draw(const ElementBuffer &element,
     element.bind();
     m_shader->setupAttribute();
 
-    glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
+    element.drawPrimitive();
 }
 
 void RenderTarget::clear(float r, float g, float b, float a) {

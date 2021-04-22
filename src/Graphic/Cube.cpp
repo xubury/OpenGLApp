@@ -6,7 +6,7 @@
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/RenderStates.hpp>
 
-VertexBuffer Cube::s_cube;
+VertexBuffer Cube::s_cube(GL_TRIANGLES);
 
 Cube::Cube() {
     Vertex vertices[] = {

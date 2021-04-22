@@ -11,7 +11,7 @@
 
 class ElementBuffer : public Drawable {
    public:
-    ElementBuffer();
+    ElementBuffer(int type);
 
     ~ElementBuffer();
 
@@ -38,10 +38,13 @@ class ElementBuffer : public Drawable {
 
     void bind() const;
 
+    void drawPrimitive() const;
+
    private:
     uint32_t m_VBO;
     uint32_t m_EBO;
     std::size_t m_size;
+    int m_drawType;
 };
 
 template <typename T>

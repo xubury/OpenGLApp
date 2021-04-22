@@ -2,7 +2,7 @@
 #include <Graphic/RenderStates.hpp>
 #include <Graphic/RenderTarget.hpp>
 
-VertexBuffer::VertexBuffer() : m_VBO(0), m_size(0) {}
+VertexBuffer::VertexBuffer(int type) : m_VBO(0), m_size(0), m_drawType(type) {}
 
 VertexBuffer::~VertexBuffer() { glDeleteBuffers(1, &m_VBO); }
 
@@ -15,3 +15,7 @@ void VertexBuffer::draw(RenderTarget &target, RenderStates states) const {
 }
 
 void VertexBuffer::bind() const { glBindBuffer(GL_ARRAY_BUFFER, m_VBO); }
+
+void VertexBuffer::drawPrimitive() const {
+    glDrawArrays(m_drawType, 0, m_size);
+}

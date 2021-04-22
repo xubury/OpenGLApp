@@ -4,7 +4,7 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/RenderTarget.hpp>
 
-ElementBuffer::ElementBuffer() : m_VBO(0), m_EBO(0) {}
+ElementBuffer::ElementBuffer(int type) : m_VBO(0), m_EBO(0), m_drawType(type) {}
 
 ElementBuffer::~ElementBuffer() {
     glDeleteBuffers(1, &m_EBO);
@@ -22,4 +22,8 @@ void ElementBuffer::draw(RenderTarget &target, RenderStates states) const {
 void ElementBuffer::bind() const {
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+}
+
+void ElementBuffer::drawPrimitive() const {
+    glDrawElements(m_drawType, m_size, GL_UNSIGNED_INT, 0);
 }

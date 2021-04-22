@@ -11,7 +11,7 @@
 
 class VertexBuffer : public Drawable {
    public:
-    VertexBuffer();
+    VertexBuffer(int type);
 
     ~VertexBuffer();
 
@@ -33,9 +33,12 @@ class VertexBuffer : public Drawable {
 
     void bind() const;
 
+    void drawPrimitive() const;
+
    private:
     uint32_t m_VBO;
     std::size_t m_size;
+    int m_drawType;
 };
 
 template <typename T>

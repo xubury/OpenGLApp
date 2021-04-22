@@ -74,7 +74,7 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     processTextures(textures, material, aiTextureType_DIFFUSE);
     processTextures(textures, material, aiTextureType_SPECULAR);
-    m_meshes.emplace_back(vertices, indices, textures);
+    m_meshes.emplace_back(mesh->mPrimitiveTypes, vertices, indices, textures);
 }
 
 void Model::processTextures(TextureArray &textures, aiMaterial *mat,

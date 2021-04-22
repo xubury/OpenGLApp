@@ -7,7 +7,7 @@ static const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
                                      4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
 
 BoundingBox::BoundingBox()
-    : m_elements(new ElementBuffer),
+    : m_elements(new ElementBuffer(GL_TRIANGLES)),
       m_vertices{{{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}},
                  {{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}},
                  {{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}},
