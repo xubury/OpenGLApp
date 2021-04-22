@@ -59,6 +59,7 @@ bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
     update(vertices, vertexCnt, indices, indexCnt);
     return true;
 }
+
 template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
                            const uint32_t *indices, std::size_t indexCnt) {
