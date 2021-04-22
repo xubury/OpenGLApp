@@ -1,5 +1,9 @@
 #include <Time.hpp>
 
+const Time Time::Zero;
+
+Time::Time() : MicroSeconds(0) {}
+
 Time::Time(MicroSeconds time) : MicroSeconds(time) {}
 
 Time seconds(float amount) {

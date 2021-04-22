@@ -9,12 +9,16 @@ using Seconds = std::chrono::seconds;
 
 class Time : public MicroSeconds {
    public:
+    Time();
+
     Time(MicroSeconds time);
 
     template <typename T>
     T as() {
         return std::chrono::duration_cast<T>(*this);
     }
+
+    static const Time Zero;
 };
 
 class Clock {
