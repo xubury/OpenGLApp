@@ -23,7 +23,6 @@ class Application {
     Model m_obj;
     Shader m_shader;
     Cube m_cube[10];
-    std::unordered_map<std::string, TextureArray> m_textureManager;
 };
 
 #endif

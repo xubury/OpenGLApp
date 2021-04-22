@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <Graphic/Drawable.hpp>
+#include <Graphic/TextureArray.hpp>
 #include <Graphic/Transformable.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
@@ -17,8 +18,11 @@ class Cube : public Drawable, public Transformable {
 
     BoundingBox m_aabb;
 
+    void setTextures(const TextureArray &textures);
+
    private:
     static VertexBuffer s_cube;
+    TextureArray m_textures;
 };
 
 #endif
