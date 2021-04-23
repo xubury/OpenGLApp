@@ -5,8 +5,6 @@
 Application::Application(int width, int height, const std::string& title)
     : m_window(width, height, title) {
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
-    DebugShader::debugShader.loadFromFile("shader/debugVertex.glsl",
-                                          "shader/debugFragment.glsl");
 
     m_obj.loadModel("resources/models/backpack/backpack.obj");
 

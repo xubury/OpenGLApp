@@ -6,8 +6,6 @@
 #include <sstream>
 #include <iostream>
 
-DebugShader DebugShader::debugShader;
-
 Shader::Shader() : m_VAO(0) {}
 
 Shader::~Shader() { glDeleteVertexArrays(1, &m_VAO); }
@@ -153,9 +151,29 @@ void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
                        &value[0][0]);
 }
 
+DebugShader& DebugShader::instance() {
+    static DebugShader s_instance("shader/debugVertex.glsl",
+                                  "shader/debugFragment.glsl");
+    return s_instance;
+}
+
+DebugShader::DebugShader(const std::string& vertexPath,
+                         const std::string& fragmentPath) {
+    loadFromFile(vertexPath, fragmentPath);
+}
+
+void DebugShader::setDrawingMode(DrawingMode mode) { m_drawingMode = mode; }
+
 void DebugShader::setupAttribute() const {
     glBindVertexArray(m_VAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    switch (m_drawingMode) {
+        case DrawingMode::NORMAL:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            break;
+        case DrawingMode::WIRE_FRAME:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            break;
+    }
     // position attribute
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DebugVertex),

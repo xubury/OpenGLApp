@@ -60,4 +60,5 @@ void Cube::draw(RenderTarget &target, RenderStates states) const {
     states.textures = &m_textures;
     s_cube.draw(target, states);
     m_aabb.draw(target);
+    m_axis.draw(target, states);
 }

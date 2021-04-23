@@ -18,7 +18,8 @@ BoundingBox::BoundingBox()
 }
 
 void BoundingBox::draw(RenderTarget &target, RenderStates states) const {
-    states.shader = &DebugShader::debugShader;
+    DebugShader::instance().setDrawingMode(DebugShader::WIRE_FRAME);
+    states.shader = &DebugShader::instance();
     target.draw(*m_elements, states);
 }
 

@@ -9,6 +9,7 @@
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/BoundingBox.hpp>
+#include <Graphic/Axis.hpp>
 
 class Cube : public Drawable, public Transformable {
    public:
@@ -23,6 +24,7 @@ class Cube : public Drawable, public Transformable {
    private:
     static VertexBuffer s_cube;
     TextureArray m_textures;
+    Axis m_axis;
 };
 
 #endif

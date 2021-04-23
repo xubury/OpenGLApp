@@ -23,6 +23,7 @@ set(Graphic_Src
     src/Graphic/Transformable.cpp
     src/Graphic/BoundingBox.cpp
     src/Graphic/Cube.cpp
+    src/Graphic/Axis.cpp
     src/Graphic/Mesh.cpp
     src/Graphic/Model.cpp
     src/Graphic/Camera.cpp)

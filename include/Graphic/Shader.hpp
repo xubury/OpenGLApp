@@ -50,8 +50,19 @@ class Shader {
 
 class DebugShader : public Shader {
    public:
+    enum DrawingMode { NORMAL, WIRE_FRAME };
+
+   public:
+    static DebugShader& instance();
+
+    void setDrawingMode(DrawingMode mode);
+
     void setupAttribute() const override;
-    static DebugShader debugShader;
+
+   private:
+    DebugShader(const std::string& vertexPath, const std::string& fragmentPath);
+
+    DrawingMode m_drawingMode;
 };
 
 #endif
