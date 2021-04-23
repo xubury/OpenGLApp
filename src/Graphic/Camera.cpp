@@ -98,6 +98,7 @@ void Camera::setNearFar(float near, float far) {
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
 }
+
 bool Camera::processEvent(const Event &) const { return false; }
 
 void Camera::processEvents() const {}
