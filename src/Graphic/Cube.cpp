@@ -51,6 +51,8 @@ Cube::Cube() {
         s_cube.create(vertices, 36);
     }
     m_aabb.initialize(vertices, 36);
+    glm::vec3 size = m_aabb.getLocalBounding();
+    m_axis.create(size.x, size.y, size.z);
 }
 
 void Cube::setTextures(const TextureArray &textures) { m_textures = textures; }

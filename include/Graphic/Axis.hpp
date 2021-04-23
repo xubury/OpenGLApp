@@ -11,7 +11,7 @@ class Arrow : public Drawable {
    public:
     Arrow();
 
-    void create(Dir dir);
+    void create(Dir dir, int size);
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -24,11 +24,12 @@ class Axis : public Drawable {
    public:
     Axis();
 
+    void create(int xSize, int ySize, int zSize);
+
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    static Arrow s_axes[3];
-    static bool s_initialized;
+    Arrow m_axes[3];
 };
 
 #endif
