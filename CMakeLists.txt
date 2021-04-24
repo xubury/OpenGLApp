@@ -12,7 +12,8 @@ find_package(assimp REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
 set(Component_Src
-    src/Transfrom.cpp)
+    src/Component/Transfrom.cpp
+    src/Component/BoundingBox.cpp)
 
 set(Utility_Src 
     src/Utility/Memory.cpp)
@@ -29,7 +30,6 @@ set(Graphic_Src
     src/Graphic/RenderWindow.cpp 
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
-    src/Graphic/BoundingBox.cpp
     src/Graphic/Cube.cpp
     src/Graphic/Axis.cpp
     src/Graphic/Mesh.cpp

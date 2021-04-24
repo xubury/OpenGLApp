@@ -1,7 +1,7 @@
-#include <Graphic/BoundingBox.hpp>
 #include <Graphic/Shader.hpp>
 #include <Graphic/RenderTarget.hpp>
-#include <Transform.hpp>
+#include <Component/Transform.hpp>
+#include <Component/BoundingBox.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 static const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,

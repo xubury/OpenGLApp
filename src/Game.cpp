@@ -1,7 +1,8 @@
 #include <Game.hpp>
 
 #include <iostream>
-#include <Transform.hpp>
+#include <Component/BoundingBox.hpp>
+#include <Component/Transform.hpp>
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();

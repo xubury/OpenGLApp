@@ -7,7 +7,6 @@
 #include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
-#include <Graphic/BoundingBox.hpp>
 #include <ECS/Entity.hpp>
 
 class Cube : public DefaultEntity {

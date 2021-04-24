@@ -6,7 +6,8 @@
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/RenderStates.hpp>
 
-#include <Transform.hpp>
+#include <Component/Transform.hpp>
+#include <Component/BoundingBox.hpp>
 
 VertexBuffer Cube::s_cube(GL_TRIANGLES);
 

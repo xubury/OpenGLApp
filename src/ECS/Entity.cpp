@@ -1,5 +1,5 @@
 #include <ECS/Entity.hpp>
-#include <Transform.hpp>
+#include <Component/Transform.hpp>
 
 ES_INIT_ENTITY(DefaultEntity)
 

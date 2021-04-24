@@ -1,7 +1,7 @@
 #include <Graphic/Model.hpp>
-#include <Graphic/BoundingBox.hpp>
-#include <Transform.hpp>
 #include <Graphic/RenderTarget.hpp>
+#include <Component/BoundingBox.hpp>
+#include <Component/Transform.hpp>
 
 ResourceManager<std::string, ModelResource> ModelResource::loadedModels;
 
