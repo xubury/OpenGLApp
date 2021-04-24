@@ -8,7 +8,3 @@ EntityBase::EntityBase(EntityManager<EntityBase> *manager, uint32_t id)
     manager->addComponent<Transform>(id);
     m_name = "???";
 }
-
-void EntityBase::translate(const glm::vec3 &pos) {
-    component<Transform>()->translate(pos);
-}

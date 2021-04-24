@@ -9,7 +9,7 @@ void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
     Cube* cube = dynamic_cast<Cube*>(m_app.entities.getPtr(id));
     cube->setTextures(textures);
-    cube->translate(pos);
+    cube->component<Transform>()->translate(pos);
 }
 
 void Game::addModel(const std::string& path) {

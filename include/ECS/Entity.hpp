@@ -64,8 +64,7 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     EntityBase(EntityManager<EntityBase> *manager, uint32_t id);
 
-    void translate(const glm::vec3 &pos);
-
+   private:
     std::string m_name;
 };
 
