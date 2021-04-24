@@ -1,14 +1,14 @@
 #include <ECS/Entity.hpp>
 #include <Component/Transform.hpp>
 
-ES_INIT_ENTITY(DefaultEntity)
+ES_INIT_ENTITY(EntityBase)
 
-DefaultEntity::DefaultEntity(EntityManager<DefaultEntity> *manager, uint32_t id)
-    : Entity<DefaultEntity>(manager, id) {
+EntityBase::EntityBase(EntityManager<EntityBase> *manager, uint32_t id)
+    : Entity<EntityBase>(manager, id) {
     manager->addComponent<Transform>(id);
     m_name = "???";
 }
 
-void DefaultEntity::translate(const glm::vec3 &pos) {
+void EntityBase::translate(const glm::vec3 &pos) {
     component<Transform>()->translate(pos);
 }

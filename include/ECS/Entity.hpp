@@ -57,12 +57,12 @@ class Entity {
     ES_INIT_VCOMPONENT(ENTITY) \
     ES_INIT_VSYSTEM(ENTITY)
 
-class DefaultEntity : public Entity<DefaultEntity>, public Drawable {
+class EntityBase : public Entity<EntityBase>, public Drawable {
    public:
-    DefaultEntity(const DefaultEntity &) = delete;
-    DefaultEntity &operator=(const DefaultEntity &) = delete;
+    EntityBase(const EntityBase &) = delete;
+    EntityBase &operator=(const EntityBase &) = delete;
 
-    DefaultEntity(EntityManager<DefaultEntity> *manager, uint32_t id);
+    EntityBase(EntityManager<EntityBase> *manager, uint32_t id);
 
     void translate(const glm::vec3 &pos);
 

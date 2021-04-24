@@ -4,9 +4,9 @@
 #include <Graphic/ModelResource.hpp>
 #include <ECS/Entity.hpp>
 
-class Model : public DefaultEntity {
+class Model : public EntityBase {
    public:
-    Model(EntityManager<DefaultEntity> *manager, uint32_t id);
+    Model(EntityManager<EntityBase> *manager, uint32_t id);
 
     void loadFromFile(const std::string &path);
 

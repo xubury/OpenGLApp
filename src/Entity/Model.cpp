@@ -2,8 +2,8 @@
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
 
-Model::Model(EntityManager<DefaultEntity> *manager, uint32_t id)
-    : DefaultEntity(manager, id) {
+Model::Model(EntityManager<EntityBase> *manager, uint32_t id)
+    : EntityBase(manager, id) {
     manager->addComponent<BoundingBox>(id);
 }
 

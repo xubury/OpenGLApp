@@ -27,9 +27,9 @@ glm::vec3 Transform::getPosition() const {
     return pos;
 }
 
-void TransformSystem::update(EntityManager<DefaultEntity> &, const Time &) {}
+void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
-void TransformSystem::draw(EntityManager<DefaultEntity> &manager,
+void TransformSystem::draw(EntityManager<EntityBase> &manager,
                            RenderTarget &target) const {
     Transform::Handle transform;
     auto view = manager.getByComponents<Transform>(transform);

@@ -26,7 +26,7 @@ class Game {
    private:
     RenderWindow m_window;
     Shader m_shader;
-    Application<DefaultEntity> m_app;
+    Application<EntityBase> m_app;
 };
 
 #endif

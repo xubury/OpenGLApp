@@ -4,7 +4,7 @@
 #include <Graphic/Axis.hpp>
 #include <ECS/ECS.hpp>
 
-class Transform : public Component<Transform, DefaultEntity> {
+class Transform : public Component<Transform, EntityBase> {
    public:
     Transform();
 
@@ -25,15 +25,14 @@ class Transform : public Component<Transform, DefaultEntity> {
     Axis m_axis;
 };
 
-class TransformSystem : public System<Transform, DefaultEntity> {
+class TransformSystem : public System<Transform, EntityBase> {
    public:
     TransformSystem() = default;
 
-    virtual void update(EntityManager<DefaultEntity> &manager,
+    virtual void update(EntityManager<EntityBase> &manager,
                         const Time &deltaTime) override;
 
-    void draw(EntityManager<DefaultEntity> &manager,
-              RenderTarget &target) const;
+    void draw(EntityManager<EntityBase> &manager, RenderTarget &target) const;
 };
 
 #endif

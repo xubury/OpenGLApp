@@ -6,8 +6,7 @@
 #include <Graphic/Drawable.hpp>
 #include <ECS/Entity.hpp>
 
-class BoundingBox : public Drawable,
-                    public Component<BoundingBox, DefaultEntity> {
+class BoundingBox : public Drawable, public Component<BoundingBox, EntityBase> {
    public:
     BoundingBox();
 
@@ -31,15 +30,14 @@ class BoundingBox : public Drawable,
     glm::vec3 m_max;
 };
 
-class BoundingBoxSystem : public System<BoundingBox, DefaultEntity> {
+class BoundingBoxSystem : public System<BoundingBox, EntityBase> {
    public:
     BoundingBoxSystem() = default;
 
-    virtual void update(EntityManager<DefaultEntity> &manager,
+    virtual void update(EntityManager<EntityBase> &manager,
                         const Time &deltaTime) override;
 
-    void draw(EntityManager<DefaultEntity> &manager,
-              RenderTarget &target) const;
+    void draw(EntityManager<EntityBase> &manager, RenderTarget &target) const;
 };
 
 #endif

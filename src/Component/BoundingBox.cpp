@@ -99,7 +99,7 @@ void BoundingBox::update(const glm::mat4 &transform) {
 
 glm::vec3 BoundingBox::getLocalBounding() const { return (m_max - m_min); }
 
-void BoundingBoxSystem::update(EntityManager<DefaultEntity> &manager,
+void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
                                const Time &) {
     BoundingBox::Handle box;
     auto view = manager.getByComponents<BoundingBox>(box);
@@ -109,7 +109,7 @@ void BoundingBoxSystem::update(EntityManager<DefaultEntity> &manager,
     }
 }
 
-void BoundingBoxSystem::draw(EntityManager<DefaultEntity> &manager,
+void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
                              RenderTarget &target) const {
     BoundingBox::Handle box;
     auto view = manager.getByComponents<BoundingBox>(box);
