@@ -1,5 +1,4 @@
 #include <Graphic/TextureArray.hpp>
-#include <iostream>
 
 ResourceManager<std::string, Texture> TextureArray::loadedTexture;
 

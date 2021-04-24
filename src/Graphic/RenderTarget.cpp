@@ -1,7 +1,6 @@
 #include <Graphic/RenderTarget.hpp>
 
 #include <glad/glad.h>
-#include <iostream>
 
 #include <Graphic/Shader.hpp>
 #include <Graphic/TextureArray.hpp>

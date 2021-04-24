@@ -1,7 +1,6 @@
 #include <Graphic/RenderWindow.hpp>
 #include <Window/Event.hpp>
 
-#include <iostream>
 #include <thread>
 
 RenderWindow::RenderWindow(int width, int height, const std::string& title)

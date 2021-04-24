@@ -1,5 +1,4 @@
 #include <glad/glad.h>
-#include <iostream>
 
 #include <Graphic/Cube.hpp>
 #include <Graphic/Shader.hpp>
