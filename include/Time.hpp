@@ -23,6 +23,8 @@ class Time : public MicroSeconds {
 
 class Clock {
    public:
+    Clock();
+
     using ClockType = std::chrono::high_resolution_clock;
 
     Time getElapsedTime();

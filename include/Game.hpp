@@ -13,7 +13,7 @@ class Game {
    public:
     Game(int width, int height, const std::string &title);
 
-    void run();
+    void run(int minFps);
 
     void update(Time &deltaTime);
 

@@ -74,10 +74,10 @@ void Game::render() {
     m_window.display();
 }
 
-void Game::run() {
+void Game::run(int minFps) {
     Clock clock;
     Time timeSinceLastUpdate = Time::Zero;
-    // Time timePerFrame = seconds(1.0 / 60);
+    Time timePerFrame = seconds(1.0 / minFps);
 
     while (!m_window.shouldClose()) {
         Event event;
@@ -98,10 +98,10 @@ void Game::run() {
         }
         m_window.processEvents();
         timeSinceLastUpdate = clock.restart();
-        // while (timeSinceLastUpdate > timePerFrame) {
-        //     timeSinceLastUpdate -= timePerFrame;
-        //     update(timePerFrame);
-        // }
+        while (timeSinceLastUpdate > timePerFrame) {
+            timeSinceLastUpdate -= timePerFrame;
+            update(timePerFrame);
+        }
         update(timeSinceLastUpdate);
         render();
     }

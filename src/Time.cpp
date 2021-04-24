@@ -20,12 +20,15 @@ Time microseconds(int64_t amount) {
     return Time(std::chrono::duration<int64_t, std::micro>(amount));
 }
 
+Clock::Clock() : m_clock(ClockType::now()) {}
+
 Time Clock::getElapsedTime() {
     return std::chrono::duration_cast<MicroSeconds>(ClockType::now() - m_clock);
 }
 
 Time Clock::restart() {
-    Time ret = getElapsedTime();
-    m_clock = ClockType::now();
+    ClockType::time_point now = ClockType::now();
+    Time ret = std::chrono::duration_cast<MicroSeconds>(now - m_clock);
+    m_clock = now;
     return ret;
 }
