@@ -24,4 +24,8 @@ Time Clock::getElapsedTime() {
     return std::chrono::duration_cast<MicroSeconds>(ClockType::now() - m_clock);
 }
 
-void Clock::restart() { m_clock = ClockType::now(); }
+Time Clock::restart() {
+    Time ret = getElapsedTime();
+    m_clock = ClockType::now();
+    return ret;
+}

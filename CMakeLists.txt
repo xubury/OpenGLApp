@@ -11,6 +11,15 @@ find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
+set(Component_Src
+    src/Transfrom.cpp)
+
+set(Utility_Src 
+    src/Utility/Memory.cpp)
+
+set(ECS_Src 
+    src/ECS/Entity.cpp)
+
 set(Graphic_Src 
     src/Graphic/Shader.cpp 
     src/Graphic/Texture.cpp 
@@ -20,7 +29,6 @@ set(Graphic_Src
     src/Graphic/RenderWindow.cpp 
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
-    src/Graphic/Transformable.cpp
     src/Graphic/BoundingBox.cpp
     src/Graphic/Cube.cpp
     src/Graphic/Axis.cpp
@@ -38,8 +46,11 @@ set(Window_Src
 add_executable(OpenGLApp 
     libs/glad.c 
     src/main.cpp
-    src/Application.cpp
+    src/Game.cpp
     src/Time.cpp
+    ${Utility_Src}
+    ${ECS_Src}
+    ${Component_Src}
     ${Graphic_Src}
     ${Window_Src})
 

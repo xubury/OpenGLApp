@@ -24,12 +24,11 @@ class Axis : public Drawable {
    public:
     Axis();
 
-    void create(int xSize, int ySize, int zSize);
-
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    Arrow m_axes[3];
+    static Arrow m_axes[3];
+    static bool s_initialized;
 };
 
 #endif

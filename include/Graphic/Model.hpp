@@ -3,16 +3,15 @@
 
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Mesh.hpp>
-#include <Graphic/BoundingBox.hpp>
-#include <Graphic/Transformable.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <ResourceManager.hpp>
+#include <ECS/Entity.hpp>
 
-class Model : public Drawable, public Transformable {
+class ModelResource : public Drawable {
    public:
-    Model() = default;
+    ModelResource() = default;
 
     // This function check if the model is loaded before.
     // If loaded, take it out and skip the loadFromFile process.
@@ -20,11 +19,11 @@ class Model : public Drawable, public Transformable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
-    BoundingBox m_aabb;
-
    private:
     template <typename, typename>
     friend class ResourceManager;
+
+    friend class Model;
 
     // Costly model load function, will not check if loaded before.
     // Use loadModel for fast loading.
@@ -41,7 +40,19 @@ class Model : public Drawable, public Transformable {
 
     std::string m_directory;
 
-    static ResourceManager<std::string, Model> loadedModels;
+    static ResourceManager<std::string, ModelResource> loadedModels;
+};
+
+class Model : public DefaultEntity {
+   public:
+    Model(EntityManager<DefaultEntity> *manager, uint32_t id);
+
+    void loadFromFile(const std::string &path);
+
+    void draw(RenderTarget &target, RenderStates states) const override;
+
+   private:
+    ModelResource m_model;
 };
 
 #endif

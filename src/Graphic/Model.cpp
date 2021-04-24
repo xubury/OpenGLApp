@@ -1,24 +1,21 @@
 #include <Graphic/Model.hpp>
+#include <Graphic/BoundingBox.hpp>
+#include <Transform.hpp>
 #include <Graphic/RenderTarget.hpp>
 
-ResourceManager<std::string, Model> Model::loadedModels;
+ResourceManager<std::string, ModelResource> ModelResource::loadedModels;
 
-void Model::loadModel(const std::string &path) {
+void ModelResource::loadModel(const std::string &path) {
     *this = loadedModels.getOrLoad(path, path);
-    for (const auto &mesh : m_meshes) {
-        m_aabb.initialize(mesh.getVertex(), mesh.size());
-    }
 }
 
-void Model::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = getTransform();
+void ModelResource::draw(RenderTarget &target, RenderStates states) const {
     for (const auto &mesh : m_meshes) {
         mesh.draw(target, states);
     }
-    m_aabb.draw(target);
 }
 
-bool Model::loadFromFile(const std::string &path) {
+bool ModelResource::loadFromFile(const std::string &path) {
     Assimp::Importer import;
     const aiScene *scene =
         import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -32,7 +29,7 @@ bool Model::loadFromFile(const std::string &path) {
     return true;
 }
 
-void Model::processNode(aiNode *node, const aiScene *scene) {
+void ModelResource::processNode(aiNode *node, const aiScene *scene) {
     for (std::size_t i = 0; i < node->mNumMeshes; ++i) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         processMesh(mesh, scene);
@@ -42,7 +39,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
     }
 }
 
-void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+void ModelResource::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     TextureArray textures;
@@ -77,8 +74,8 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     m_meshes.emplace_back(mesh->mPrimitiveTypes, vertices, indices, textures);
 }
 
-void Model::processTextures(TextureArray &textures, aiMaterial *mat,
-                            aiTextureType type) {
+void ModelResource::processTextures(TextureArray &textures, aiMaterial *mat,
+                                    aiTextureType type) {
     for (std::size_t i = 0; i < mat->GetTextureCount(type); ++i) {
         aiString path;
         mat->GetTexture(type, i, &path);
@@ -95,4 +92,21 @@ void Model::processTextures(TextureArray &textures, aiMaterial *mat,
                 break;
         }
     }
+}
+
+Model::Model(EntityManager<DefaultEntity> *manager, uint32_t id)
+    : DefaultEntity(manager, id) {
+    manager->addComponent<BoundingBox>(id);
+}
+
+void Model::loadFromFile(const std::string &path) {
+    m_model.loadModel(path);
+    for (const auto &mesh : m_model.m_meshes) {
+        component<BoundingBox>()->initialize(mesh.getVertex(), mesh.size());
+    }
+}
+
+void Model::draw(RenderTarget &target, RenderStates states) const {
+    states.transform = component<Transform>()->getTransform();
+    target.draw(m_model, states);
 }

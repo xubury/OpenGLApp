@@ -27,7 +27,7 @@ class Clock {
 
     Time getElapsedTime();
 
-    void restart();
+    Time restart();
 
    private:
     ClockType::time_point m_clock;

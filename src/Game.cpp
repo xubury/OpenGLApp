@@ -1,12 +1,26 @@
-#include <Application.hpp>
+#include <Game.hpp>
 
 #include <iostream>
+#include <Transform.hpp>
 
-Application::Application(int width, int height, const std::string& title)
+void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
+    int id = m_app.entities.create<Cube>();
+    Cube* cube = dynamic_cast<Cube*>(m_app.entities.getPtr(id));
+    cube->setTextures(textures);
+    cube->translate(pos);
+}
+
+void Game::addModel(const std::string& path) {
+    int id = m_app.entities.create<Model>();
+    Model* model = dynamic_cast<Model*>(m_app.entities.getPtr(id));
+    model->loadFromFile(path);
+}
+
+Game::Game(int width, int height, const std::string& title)
     : m_window(width, height, title) {
+    m_app.systems.add<BoundingBoxSystem>();
+    m_app.systems.add<TransformSystem>();
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
-
-    m_obj.loadModel("resources/models/backpack/backpack.obj");
 
     m_shader.use();
     m_shader.setVec3("pointLight.position", glm::vec3(0.0f, 0.0f, 2.0f));
@@ -32,37 +46,37 @@ Application::Application(int width, int height, const std::string& title)
     containerTextures.loadFromFile("resources/textures/container2_specular.png",
                                    Texture::SPECULAR);
     for (int i = 0; i < 10; ++i) {
-        m_cube[i].translate(cubePositions[i]);
-        m_cube[i].setTextures(containerTextures);
+        addCube(cubePositions[i], containerTextures);
     }
+    addModel("resources/models/backpack/backpack.obj");
+
     m_window.setCamera<ControlCamera>(0, 0, width, height,
                                       glm::vec3(0.f, 0.f, 3.f));
     m_window.setFramerateLimit(120);
 }
 
-void Application::update() {
-    for (int i = 0; i < 10; ++i) {
-        m_cube[i].rotate(1.f, glm::vec3(1.0f, 0.3f, 0.5f));
-        m_cube[i].m_aabb.update(m_cube[i].getTransform());
-    }
-    m_obj.rotate(1.0f, glm::vec3(0, 1.0f, 0));
-    m_obj.m_aabb.update(m_obj.getTransform());
-}
+void Game::update(Time& deltaTime) { m_app.update(deltaTime); }
 
-void Application::render() {
+void Game::render() {
     m_window.clear();
 
     RenderStates states;
     states.shader = &m_shader;
-    m_obj.draw(m_window, states);
-    for (int i = 0; i < 10; ++i) {
-        m_cube[i].draw(m_window, states);
+    auto end = m_app.entities.end();
+    for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
+        m_window.draw(m_app.entities.get(*cur), states);
     }
 
+    m_app.systems.system<BoundingBoxSystem>()->draw(m_app.entities, m_window);
+    m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window);
     m_window.display();
 }
 
-void Application::run() {
+void Game::run() {
+    Clock clock;
+    Time timeSinceLastUpdate = Time::Zero;
+    // Time timePerFrame = seconds(1.0 / 60);
+
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {
@@ -81,7 +95,12 @@ void Application::run() {
             m_window.processEvent(event);
         }
         m_window.processEvents();
-        update();
+        timeSinceLastUpdate = clock.restart();
+        // while (timeSinceLastUpdate > timePerFrame) {
+        //     timeSinceLastUpdate -= timePerFrame;
+        //     update(timePerFrame);
+        // }
+        update(timeSinceLastUpdate);
         render();
     }
     m_window.close();

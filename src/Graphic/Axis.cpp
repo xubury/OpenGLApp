@@ -2,6 +2,9 @@
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/Shader.hpp>
 
+Arrow Axis::m_axes[3];
+bool Axis::s_initialized = false;
+
 Arrow::Arrow() : m_cone(GL_TRIANGLE_FAN), m_line(GL_LINE_STRIP) {}
 
 void Arrow::create(Dir dir, int size) {
@@ -42,16 +45,17 @@ void Arrow::draw(RenderTarget& target, RenderStates states) const {
     target.draw(m_line, states);
 }
 
-Axis::Axis() {}
-
-void Axis::create(int xSize, int ySize, int zSize) {
-    m_axes[0].create(Arrow::DIR_X, xSize);
-    m_axes[1].create(Arrow::DIR_Y, ySize);
-    m_axes[2].create(Arrow::DIR_Z, zSize);
+Axis::Axis() {
+    if (!s_initialized) {
+        m_axes[0].create(Arrow::DIR_X, 1);
+        m_axes[1].create(Arrow::DIR_Y, 1);
+        m_axes[2].create(Arrow::DIR_Z, 1);
+    }
 }
 
 void Axis::draw(RenderTarget& target, RenderStates states) const {
     DebugShader::instance().setDrawingMode(DebugShader::NORMAL);
     states.shader = &DebugShader::instance();
+    glClear(GL_DEPTH_BUFFER_BIT);
     for (int i = 0; i < 3; ++i) target.draw(m_axes[i], states);
 }

@@ -1,6 +1,7 @@
 #include <Graphic/BoundingBox.hpp>
 #include <Graphic/Shader.hpp>
 #include <Graphic/RenderTarget.hpp>
+#include <Transform.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 static const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
@@ -97,3 +98,23 @@ void BoundingBox::update(const glm::mat4 &transform) {
 }
 
 glm::vec3 BoundingBox::getLocalBounding() const { return (m_max - m_min); }
+
+void BoundingBoxSystem::update(EntityManager<DefaultEntity> &manager,
+                               const Time &) {
+    BoundingBox::Handle box;
+    auto view = manager.getByComponents<BoundingBox>(box);
+    auto end = view.end();
+    for (auto cur = view.begin(); cur != end; ++cur) {
+        box->update(cur->component<Transform>()->getTransform());
+    }
+}
+
+void BoundingBoxSystem::draw(EntityManager<DefaultEntity> &manager,
+                             RenderTarget &target) const {
+    BoundingBox::Handle box;
+    auto view = manager.getByComponents<BoundingBox>(box);
+    auto end = view.end();
+    for (auto cur = view.begin(); cur != end; ++cur) {
+        box->draw(target);
+    }
+}

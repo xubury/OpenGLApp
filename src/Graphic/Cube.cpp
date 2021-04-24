@@ -6,9 +6,12 @@
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/RenderStates.hpp>
 
+#include <Transform.hpp>
+
 VertexBuffer Cube::s_cube(GL_TRIANGLES);
 
-Cube::Cube() {
+Cube::Cube(EntityManager<DefaultEntity> *manager, uint32_t id)
+    : DefaultEntity(manager, id) {
     Vertex vertices[] = {
         {{-0.5f, -0.5f, -0.5f}, {0, 0, 0}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
         {{0.5f, -0.5f, -0.5f}, {0, 0, 0}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
@@ -50,17 +53,13 @@ Cube::Cube() {
     if (s_cube.empty()) {
         s_cube.create(vertices, 36);
     }
-    m_aabb.initialize(vertices, 36);
-    glm::vec3 size = m_aabb.getLocalBounding();
-    m_axis.create(size.x, size.y, size.z);
+    manager->addComponent<BoundingBox>(id)->initialize(vertices, 36);
 }
 
 void Cube::setTextures(const TextureArray &textures) { m_textures = textures; }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = getTransform();
+    states.transform = component<Transform>()->getTransform();
     states.textures = &m_textures;
     s_cube.draw(target, states);
-    m_aabb.draw(target);
-    m_axis.draw(target, states);
 }

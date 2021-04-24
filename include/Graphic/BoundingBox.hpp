@@ -4,8 +4,10 @@
 #include <memory>
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/Drawable.hpp>
+#include <ECS/Entity.hpp>
 
-class BoundingBox : public Drawable {
+class BoundingBox : public Drawable,
+                    public Component<BoundingBox, DefaultEntity> {
    public:
     BoundingBox();
 
@@ -27,6 +29,17 @@ class BoundingBox : public Drawable {
     DebugVertex m_vertices[8];
     glm::vec3 m_min;
     glm::vec3 m_max;
+};
+
+class BoundingBoxSystem : public System<BoundingBox, DefaultEntity> {
+   public:
+    BoundingBoxSystem() = default;
+
+    virtual void update(EntityManager<DefaultEntity> &manager,
+                        const Time &deltaTime) override;
+
+    void draw(EntityManager<DefaultEntity> &manager,
+              RenderTarget &target) const;
 };
 
 #endif
