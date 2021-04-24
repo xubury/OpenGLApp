@@ -23,7 +23,7 @@ void Transform::rotate(float angle, const glm::vec3 &axis) {
 glm::mat4 Transform::getTransform() const { return m_transform; }
 
 glm::vec3 Transform::getPosition() const {
-    glm::vec3 pos(m_transform[2]);
+    glm::vec3 pos(m_transform[3]);
     return pos;
 }
 
