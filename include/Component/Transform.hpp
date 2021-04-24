@@ -18,6 +18,8 @@ class Transform : public Component<Transform, EntityBase> {
 
     glm::mat4 getTransform() const;
 
+    void setPosition(const glm::vec3 &position);
+
     glm::vec3 getPosition() const;
 
    private:
