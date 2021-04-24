@@ -5,8 +5,6 @@
 #include <ResourceManager.hpp>
 #include <Graphic/RenderWindow.hpp>
 #include <Graphic/Shader.hpp>
-#include <Graphic/Model.hpp>
-#include <Graphic/Cube.hpp>
 #include <ECS/ECS.hpp>
 #include <Time.hpp>
 #include <ECS/Application.hpp>

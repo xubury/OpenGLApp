@@ -1,5 +1,5 @@
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#ifndef MODEL_RESOURCE_HPP
+#define MODEL_RESOURCE_HPP
 
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Mesh.hpp>
@@ -7,7 +7,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <ResourceManager.hpp>
-#include <ECS/Entity.hpp>
 
 class ModelResource : public Drawable {
    public:
@@ -41,18 +40,6 @@ class ModelResource : public Drawable {
     std::string m_directory;
 
     static ResourceManager<std::string, ModelResource> loadedModels;
-};
-
-class Model : public DefaultEntity {
-   public:
-    Model(EntityManager<DefaultEntity> *manager, uint32_t id);
-
-    void loadFromFile(const std::string &path);
-
-    void draw(RenderTarget &target, RenderStates states) const override;
-
-   private:
-    ModelResource m_model;
 };
 
 #endif

@@ -15,6 +15,10 @@ set(Component_Src
     src/Component/Transfrom.cpp
     src/Component/BoundingBox.cpp)
 
+set(Entity_Src
+    src/Entity/Model.cpp
+    src/Entity/Cube.cpp)
+
 set(Utility_Src 
     src/Utility/Memory.cpp)
 
@@ -30,10 +34,9 @@ set(Graphic_Src
     src/Graphic/RenderWindow.cpp 
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
-    src/Graphic/Cube.cpp
     src/Graphic/Axis.cpp
     src/Graphic/Mesh.cpp
-    src/Graphic/Model.cpp
+    src/Graphic/ModelResource.cpp
     src/Graphic/Camera.cpp)
 
 set(Window_Src
@@ -51,6 +54,7 @@ add_executable(OpenGLApp
     ${Utility_Src}
     ${ECS_Src}
     ${Component_Src}
+    ${Entity_Src}
     ${Graphic_Src}
     ${Window_Src})
 

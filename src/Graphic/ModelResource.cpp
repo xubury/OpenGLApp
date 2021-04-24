@@ -1,7 +1,5 @@
-#include <Graphic/Model.hpp>
+#include <Graphic/ModelResource.hpp>
 #include <Graphic/RenderTarget.hpp>
-#include <Component/BoundingBox.hpp>
-#include <Component/Transform.hpp>
 
 ResourceManager<std::string, ModelResource> ModelResource::loadedModels;
 
@@ -92,21 +90,4 @@ void ModelResource::processTextures(TextureArray &textures, aiMaterial *mat,
                 break;
         }
     }
-}
-
-Model::Model(EntityManager<DefaultEntity> *manager, uint32_t id)
-    : DefaultEntity(manager, id) {
-    manager->addComponent<BoundingBox>(id);
-}
-
-void Model::loadFromFile(const std::string &path) {
-    m_model.loadModel(path);
-    for (const auto &mesh : m_model.m_meshes) {
-        component<BoundingBox>()->initialize(mesh.getVertex(), mesh.size());
-    }
-}
-
-void Model::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = component<Transform>()->getTransform();
-    target.draw(m_model, states);
 }

@@ -1,7 +1,7 @@
 #include <glad/glad.h>
-#include <iostream>
 
-#include <Graphic/Cube.hpp>
+#include <Entity/Cube.hpp>
+
 #include <Graphic/Shader.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/RenderStates.hpp>
