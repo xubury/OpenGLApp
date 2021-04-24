@@ -57,7 +57,16 @@ Game::Game(int width, int height, const std::string& title)
     m_window.setFramerateLimit(120);
 }
 
-void Game::update(Time& deltaTime) { m_app.update(deltaTime); }
+void Game::update(Time& deltaTime) {
+    m_app.update(deltaTime);
+
+    auto end = m_app.entities.end();
+    for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
+        m_app.entities.get(*cur).component<Transform>()->rotate(
+            glm::radians(1.0f) * deltaTime.as<MilliSeconds>().count(),
+            glm::vec3(1.0, 2.0f, 3.0f));
+    }
+}
 
 void Game::render() {
     m_window.clear();
