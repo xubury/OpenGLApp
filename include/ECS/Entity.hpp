@@ -2,7 +2,6 @@
 #define ENTITY_HPP
 
 #include <Graphic/Drawable.hpp>
-#include <Graphic/RenderTarget.hpp>
 #include <string>
 
 #include <ECS/System.hpp>

@@ -15,6 +15,7 @@ class VPool {
     virtual ~VPool() = default;
 
     std::size_t size() const;
+
     void resize(std::size_t size);
 
     bool isSet(std::size_t index) const;
@@ -69,8 +70,9 @@ class Pool : public VPool {
     template <typename... ARGS>
     void emplace(std::size_t index, ARGS&&... args);
 
-    VPool::Iterator<T> Begin() const;
-    VPool::Iterator<T> End() const;
+    VPool::Iterator<T> begin() const;
+
+    VPool::Iterator<T> end() const;
 };
 
 template <typename T>
@@ -145,7 +147,7 @@ Pool<T>::~Pool() {
 }
 
 template <typename T>
-VPool::Iterator<T> Pool<T>::Begin() const {
+VPool::Iterator<T> Pool<T>::begin() const {
     std::size_t index = 0;
     std::size_t size = m_memory.size();
 
@@ -155,7 +157,7 @@ VPool::Iterator<T> Pool<T>::Begin() const {
 }
 
 template <typename T>
-VPool::Iterator<T> Pool<T>::End() const {
+VPool::Iterator<T> Pool<T>::end() const {
     return VPool::Iterator<T>(m_memory.size(), *this);
 }
 

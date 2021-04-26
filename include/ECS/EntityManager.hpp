@@ -32,11 +32,9 @@ class EntityManager {
     EntityManager(const EntityManager &) = delete;
     EntityManager &operator=(const EntityManager &) = delete;
 
-    EntityManager() : m_systems(nullptr){};
-    ~EntityManager();
+    EntityManager() = default;
 
-    void setSystems(SystemManager<ENTITY> *systems) { m_systems = systems; }
-    SystemManager<ENTITY> *getSystems() const { return m_systems; }
+    ~EntityManager();
 
     template <typename T = ENTITY, typename... ARGS>
     uint32_t create(ARGS &&...args);
@@ -61,6 +59,7 @@ class EntityManager {
     ENTITY *getPtr(std::size_t id);
 
     Container::const_iterator begin() const;
+
     Container::const_iterator end() const;
 
     template <typename COMPONENT, typename... ARGS>
@@ -85,7 +84,6 @@ class EntityManager {
         ComponentHandle<COMPONENT, ENTITY> &...components);
 
    private:
-    SystemManager<ENTITY> *m_systems;
     // Stores every entity that have been allocated
     std::vector<ENTITY *> m_entitesAllocated;
     // Stores what components does a entity of index has
@@ -209,8 +207,8 @@ inline void EntityManager<ENTITY>::emplace(uint32_t index, ARGS &&...args) {
                 m_componentsEntities[i]->resize(index + 1);
             }
         }
-    } else if (m_entitesAllocated[index] !=
-               nullptr) {  // already in use, free it
+    } else if (m_entitesAllocated[index] != nullptr) {
+        // already in use, free it
         reset(index);
     } else {
         m_entitiesIndexFree.remove(index);

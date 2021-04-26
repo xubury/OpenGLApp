@@ -18,9 +18,7 @@ class Application {
 };
 
 template <typename ENTITY>
-Application<ENTITY>::Application() : systems(entities) {
-    entities.setSystems(&systems);
-}
+Application<ENTITY>::Application() : systems(entities) {}
 
 template <typename ENTITY>
 void Application<ENTITY>::update(const Time &deltaTime) {

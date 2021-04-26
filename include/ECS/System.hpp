@@ -88,7 +88,7 @@ SystemManager<ENTITY>::SystemManager(EntityManager<ENTITY>& manager)
 
 template <typename ENTITY>
 void SystemManager<ENTITY>::updateAll(const Time& deltaTime) {
-    for (auto& pair : m_systems) pair.second->update(m_manager, deltaTime);
+    for (auto& [id, system] : m_systems) system->update(m_manager, deltaTime);
 }
 
 template <typename ENTITY>
