@@ -2,12 +2,6 @@
 
 Transform::Transform() : m_transform(1.0) {}
 
-void Transform::draw(RenderTarget &target) const {
-    RenderStates states;
-    states.transform = m_transform;
-    m_axis.draw(target, states);
-}
-
 void Transform::transform(const glm::mat4 &transform) {
     m_transform = transform * m_transform;
 }
@@ -31,6 +25,10 @@ glm::vec3 Transform::getPosition() const {
     return pos;
 }
 
+Axis TransformSystem::s_axis;
+
+TransformSystem::TransformSystem() { s_axis.create(); }
+
 void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
 void TransformSystem::draw(EntityManager<EntityBase> &manager,
@@ -38,7 +36,9 @@ void TransformSystem::draw(EntityManager<EntityBase> &manager,
     Transform::Handle transform;
     auto view = manager.getByComponents<Transform>(transform);
     auto end = view.end();
+    RenderStates states;
     for (auto cur = view.begin(); cur != end; ++cur) {
-        transform->draw(target);
+        states.transform = transform->getTransform();
+        s_axis.draw(target, states);
     }
 }

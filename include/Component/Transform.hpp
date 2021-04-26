@@ -8,8 +8,6 @@ class Transform : public Component<Transform, EntityBase> {
    public:
     Transform();
 
-    void draw(RenderTarget &target) const;
-
     void transform(const glm::mat4 &transform);
 
     void translate(const glm::vec3 &position);
@@ -24,17 +22,19 @@ class Transform : public Component<Transform, EntityBase> {
 
    private:
     glm::mat4 m_transform;
-    Axis m_axis;
 };
 
 class TransformSystem : public System<Transform, EntityBase> {
    public:
-    TransformSystem() = default;
+    TransformSystem();
 
     virtual void update(EntityManager<EntityBase> &manager,
                         const Time &deltaTime) override;
 
     void draw(EntityManager<EntityBase> &manager, RenderTarget &target) const;
+
+   private:
+    static Axis s_axis;
 };
 
 #endif

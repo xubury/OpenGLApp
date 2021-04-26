@@ -22,12 +22,14 @@ class Arrow : public Drawable {
 
 class Axis : public Drawable {
    public:
-    Axis();
+    Axis() = default;
+
+    void create();
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    static Arrow m_axes[3];
+    static Arrow s_arrows[3];
     static bool s_initialized;
 };
 
