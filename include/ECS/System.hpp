@@ -25,7 +25,7 @@ class VSystem {
 
    protected:
     VSystem() = default;
-    static uint32_t s_family_counter;
+    static uint32_t s_familyCounter;
 };
 
 template <typename COMPONENT, typename ENTITY>
@@ -42,7 +42,7 @@ class System : public VSystem<ENTITY> {
 
 #define ES_INIT_VSYSTEM(ENTITY) \
     template <>                 \
-    uint32_t VSystem<ENTITY>::s_family_counter = 0;
+    uint32_t VSystem<ENTITY>::s_familyCounter = 0;
 
 template <typename ENTITY>
 class SystemManager {
@@ -77,7 +77,7 @@ class SystemManager {
 
 template <typename COMPONENT, typename ENTITY>
 uint32_t System<COMPONENT, ENTITY>::family() {
-    static uint32_t family = VSystem<ENTITY>::s_family_counter++;
+    static uint32_t family = VSystem<ENTITY>::s_familyCounter++;
     assert(family < MAX_COMPONENTS);
     return family;
 }

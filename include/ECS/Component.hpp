@@ -28,7 +28,7 @@ class ComponentHandle {
     ComponentHandle(const EntityManager<ENTITY> *manager, uint32_t entity_id);
 
     const EntityManager<ENTITY> *m_manager;
-    uint32_t m_entity_id;
+    uint32_t m_entityID;
 };
 
 template <typename ENTITY>
@@ -43,16 +43,16 @@ class VComponent {
 
     VComponent();
 
-    static uint32_t s_family_counter;
+    static uint32_t s_familyCounter;
 
    private:
     EntityManager<ENTITY> *m_manager;
-    uint32_t m_owner_id;
+    uint32_t m_ownerID;
 };
 
 #define ES_INIT_VCOMPONENT(ENTITY) \
     template <>                    \
-    uint32_t VComponent<ENTITY>::s_family_counter = 0;
+    uint32_t VComponent<ENTITY>::s_familyCounter = 0;
 
 template <typename COMPONENT, typename ENTITY>
 class Component : public VComponent<ENTITY> {
@@ -75,54 +75,54 @@ inline bool ComponentHandle<COMPONENT, ENTITY>::isValid() const {
 
 template <typename COMPONENT, typename ENTITY>
 ComponentHandle<COMPONENT, ENTITY>::ComponentHandle()
-    : m_manager(nullptr), m_entity_id(-1) {}
+    : m_manager(nullptr), m_entityID(-1) {}
 
 template <typename COMPONENT, typename ENTITY>
 ComponentHandle<COMPONENT, ENTITY>::ComponentHandle(
     const EntityManager<ENTITY> *manager, uint32_t entity_id)
-    : m_manager(manager), m_entity_id(entity_id) {}
+    : m_manager(manager), m_entityID(entity_id) {}
 
 template <typename COMPONENT, typename ENTITY>
 inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() {
     assert(isValid());
-    return m_manager->template getComponentPtr<COMPONENT>(m_entity_id);
+    return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() const {
     assert(isValid());
-    return m_manager->template getComponentPtr<COMPONENT>(m_entity_id);
+    return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() {
     assert(isValid());
-    return m_manager->template getComponentPtr<COMPONENT>(m_entity_id);
+    return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() const {
     assert(isValid());
-    return m_manager->template getComponentPtr<COMPONENT>(m_entity_id);
+    return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename ENTITY>
-VComponent<ENTITY>::VComponent() : m_manager(nullptr), m_owner_id(-1) {}
+VComponent<ENTITY>::VComponent() : m_manager(nullptr), m_ownerID(-1) {}
 
 template <typename ENTITY>
 inline uint32_t VComponent<ENTITY>::ownerID() const {
-    return m_owner_id;
+    return m_ownerID;
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline void Component<COMPONENT, ENTITY>::remove() {
     VComponent<ENTITY>::m_manager->template removeComponent<COMPONENT>(
-        VComponent<ENTITY>::m_owner_id);
+        VComponent<ENTITY>::m_ownerID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline uint32_t Component<COMPONENT, ENTITY>::family() {
-    static uint32_t family = VComponent<ENTITY>::s_family_counter++;
+    static uint32_t family = VComponent<ENTITY>::s_familyCounter++;
     assert(family < MAX_COMPONENTS);
     return family;
 }
