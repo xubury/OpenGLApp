@@ -114,20 +114,20 @@ void Camera::update() {
     m_view = glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-ActionMap<int> ControlCamera::cameraMovement;
+ActionMap<Camera::Movement> ControlCamera::s_cameraMovement;
 
 ControlCamera::ControlCamera(int x, int y, int width, int height,
                              const glm::vec3 &position,
                              const glm::vec3 &worldUp, float yaw, float pitch)
     : Camera(x, y, width, height, position, worldUp, yaw, pitch),
-      ActionTarget(cameraMovement),
+      ActionTarget(s_cameraMovement),
       m_isFirstMouse(true) {
-    cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
-    cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
-    cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
-    cameraMovement.map(Movement::RIGHT, Keyboard::Key::D);
-    cameraMovement.map(Movement::UPWARD, Keyboard::Key::SPACE);
-    cameraMovement.map(Movement::DOWNWARD, Keyboard::Key::LCONTROL);
+    s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
+    s_cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
+    s_cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
+    s_cameraMovement.map(Movement::RIGHT, Keyboard::Key::D);
+    s_cameraMovement.map(Movement::UPWARD, Keyboard::Key::SPACE);
+    s_cameraMovement.map(Movement::DOWNWARD, Keyboard::Key::LCONTROL);
 
     bind(Movement::FORWARD,
          [this](const Event &) { this->move(Movement::FORWARD, 0.1f); });

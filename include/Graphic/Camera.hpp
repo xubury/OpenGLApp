@@ -82,7 +82,7 @@ class Camera {
     void update();
 };
 
-class ControlCamera : public Camera, protected ActionTarget<int> {
+class ControlCamera : public Camera, protected ActionTarget<Camera::Movement> {
    public:
     ControlCamera(int x, int y, int width, int height,
                   const glm::vec3 &position = glm::vec3(0.f),
@@ -94,7 +94,7 @@ class ControlCamera : public Camera, protected ActionTarget<int> {
     virtual void processEvents() const override;
 
    private:
-    static ActionMap<int> cameraMovement;
+    static ActionMap<Camera::Movement> s_cameraMovement;
     glm::vec2 m_lastMousePos;
     bool m_isFirstMouse;
 };
