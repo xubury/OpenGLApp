@@ -61,6 +61,11 @@ add_executable(OpenGLApp
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
-target_link_libraries(OpenGLApp OpenGL::GL X11 pthread Xrandr Xi dl glm glfw assimp::assimp)
+
+if(WIN32)
+    target_link_libraries(OpenGLApp OpenGL::GL glm glfw assimp::assimp)
+elseif(UNIX)
+    target_link_libraries(OpenGLApp OpenGL::GL x11 xrandr Xi dl pthread glm glfw assimp::assimp)
+endif()
 
 target_include_directories(OpenGLApp PUBLIC include libs)
