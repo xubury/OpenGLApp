@@ -149,14 +149,14 @@ void Game::run(int minFps) {
             ImVec2 wsize = ImGui::GetWindowSize();
             // Because I use the texture from OpenGL, I need to invert the V
             // from the UV.
-            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(),
-            wsize,
+            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,
                          ImVec2(0, 1), ImVec2(1, 0));
             ImGui::EndChild();
         }
         ImGui::End();
         ImGui::Render();
-        m_window.clear();
+        glClearColor(0, 0, 0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
     ImGui_ImplOpenGL3_Shutdown();

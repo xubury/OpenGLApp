@@ -27,9 +27,9 @@ static const float quadVertices[] = {
 
     -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f};
 
-static uint32_t quadVAO;
+static uint32_t quadVAO = 0;
 
-static uint32_t quadVBO;
+static uint32_t quadVBO = 0;
 
 static Shader screenShader;
 
@@ -37,7 +37,7 @@ FrameBuffer::FrameBuffer()
     : m_frameBufferId(0), m_textureId(0), m_renderBufferId(0) {}
 
 void FrameBuffer::create(int width, int height) {
-    if (screenShader.isInitialized()) {
+    if (!screenShader.isInitialized()) {
         screenShader.compile(vertexCode, fragmentCode);
         screenShader.use();
         screenShader.setInt("screenTexture", 0);
@@ -67,18 +67,20 @@ void FrameBuffer::create(int width, int height) {
                   << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
-                 GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)(2 * sizeof(float)));
+    if (quadVAO == 0) {
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
+                     GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                              (void *)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                              (void *)(2 * sizeof(float)));
+    }
 }
 
 void FrameBuffer::activate() const {
