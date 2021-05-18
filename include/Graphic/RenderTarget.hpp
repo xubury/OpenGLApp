@@ -56,6 +56,8 @@ class RenderTarget {
     const Shader *m_shader;
 
     const TextureArray *m_textures;
+
+    bool m_isRenderOnFrameBuffer;
 };
 
 template <typename T, typename... ARGS>

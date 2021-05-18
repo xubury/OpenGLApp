@@ -10,7 +10,8 @@
 RenderTarget::RenderTarget()
     : m_camera(new Camera(Camera::Default)),
       m_shader(nullptr),
-      m_textures(nullptr) {}
+      m_textures(nullptr) {
+}
 
 Camera &RenderTarget::getCamera() { return *m_camera.get(); }
 
@@ -40,6 +41,7 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     m_shader->setupAttribute();
 
     buffer.drawPrimitive();
+
 }
 
 void RenderTarget::draw(const ElementBuffer &element,
@@ -61,6 +63,7 @@ void RenderTarget::draw(const ElementBuffer &element,
 void RenderTarget::clear(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void RenderTarget::applyShader(const Shader *shader) {

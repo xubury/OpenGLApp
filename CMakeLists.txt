@@ -38,7 +38,8 @@ set(Graphic_Src
     src/Graphic/Axis.cpp
     src/Graphic/Mesh.cpp
     src/Graphic/ModelResource.cpp
-    src/Graphic/Camera.cpp)
+    src/Graphic/Camera.cpp
+    src/Graphic/FrameBuffer.cpp)
 
 set(Window_Src
     src/Window/GlContext.cpp

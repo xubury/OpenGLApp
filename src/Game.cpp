@@ -55,6 +55,8 @@ Game::Game(int width, int height, const std::string& title)
     m_window.setCamera<ControlCamera>(0, 0, width, height,
                                       glm::vec3(0.f, 0.f, 3.f));
     m_window.setFramerateLimit(120);
+
+    m_frameBuffer.create(width, height);
 }
 
 void Game::update(Time& deltaTime) {
@@ -69,6 +71,7 @@ void Game::update(Time& deltaTime) {
 }
 
 void Game::render() {
+    m_frameBuffer.use();
     m_window.clear();
 
     RenderStates states;
@@ -80,6 +83,8 @@ void Game::render() {
 
     m_app.systems.system<BoundingBoxSystem>()->draw(m_app.entities, m_window);
     m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window);
+
+    m_frameBuffer.draw();
     m_window.display();
 }
 

@@ -8,6 +8,7 @@
 #include <ECS/ECS.hpp>
 #include <Utility/Time.hpp>
 #include <ECS/Application.hpp>
+#include <Graphic/FrameBuffer.hpp>
 
 class Game {
    public:
@@ -27,6 +28,7 @@ class Game {
     RenderWindow m_window;
     Shader m_shader;
     Application<EntityBase> m_app;
+    FrameBuffer m_frameBuffer;
 };
 
 #endif
