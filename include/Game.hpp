@@ -6,7 +6,7 @@
 #include <Graphic/RenderWindow.hpp>
 #include <Graphic/Shader.hpp>
 #include <ECS/ECS.hpp>
-#include <Time.hpp>
+#include <Utility/Time.hpp>
 #include <ECS/Application.hpp>
 
 class Game {

@@ -20,7 +20,8 @@ set(Entity_Src
     src/Entity/Cube.cpp)
 
 set(Utility_Src 
-    src/Utility/Memory.cpp)
+    src/Utility/Memory.cpp
+    src/Utility/Time.cpp)
 
 set(ECS_Src 
     src/ECS/Entity.cpp)
@@ -50,7 +51,6 @@ add_executable(OpenGLApp
     libs/glad.c 
     src/main.cpp
     src/Game.cpp
-    src/Time.cpp
     ${Utility_Src}
     ${ECS_Src}
     ${Component_Src}

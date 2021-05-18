@@ -7,7 +7,7 @@
 #include <Window/GlContext.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <Window/Event.hpp>
-#include <Time.hpp>
+#include <Utility/Time.hpp>
 
 class RenderWindow : public GlContext, public RenderTarget {
    public:
