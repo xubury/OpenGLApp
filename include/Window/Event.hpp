@@ -50,6 +50,7 @@ class Event {
     };
 
     enum EventType {
+        UNKNOWN = 0,
         RESIZED,
         KEY_PRESSED,
         KEY_RELEASED,

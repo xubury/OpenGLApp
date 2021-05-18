@@ -4,6 +4,9 @@
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
 #include <iostream>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
@@ -20,6 +23,20 @@ void Game::addModel(const std::string& path) {
 
 Game::Game(int width, int height, const std::string& title)
     : m_window(width, height, title) {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
@@ -71,9 +88,7 @@ void Game::update(Time& deltaTime) {
 }
 
 void Game::render() {
-    m_frameBuffer.use();
     m_window.clear();
-
     RenderStates states;
     states.shader = &m_shader;
     auto end = m_app.entities.end();
@@ -84,7 +99,6 @@ void Game::render() {
     m_app.systems.system<BoundingBoxSystem>()->draw(m_app.entities, m_window);
     m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window);
 
-    m_frameBuffer.draw();
     m_window.display();
 }
 
@@ -117,7 +131,36 @@ void Game::run(int minFps) {
             update(timePerFrame);
         }
         update(timeSinceLastUpdate);
+        m_frameBuffer.activate();
         render();
+        m_frameBuffer.deactivate();
+        m_frameBuffer.draw();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::Begin("GameWindow");
+        {
+            // Using a Child allow to fill all the space of the window.
+            // It also alows customization
+            ImGui::BeginChild("GameRender");
+            // Get the size of the child (i.e. the whole draw size of the
+            // windows).
+            ImVec2 wsize = ImGui::GetWindowSize();
+            // Because I use the texture from OpenGL, I need to invert the V
+            // from the UV.
+            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(),
+            wsize,
+                         ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::EndChild();
+        }
+        ImGui::End();
+        ImGui::Render();
+        m_window.clear();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     m_window.close();
 }

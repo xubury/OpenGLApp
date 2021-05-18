@@ -50,6 +50,7 @@ void FrameBuffer::create(int width, int height) {
                  GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // attach it to currently bound framebuffer object
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
@@ -63,6 +64,7 @@ void FrameBuffer::create(int width, int height) {
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!"
                   << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
@@ -78,15 +80,21 @@ void FrameBuffer::create(int width, int height) {
                           (void *)(2 * sizeof(float)));
 }
 
-void FrameBuffer::use() const {
+void FrameBuffer::activate() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
+    glEnable(GL_DEPTH_TEST);
+}
+
+void FrameBuffer::deactivate() const {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST);
 }
 
 void FrameBuffer::draw() const {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);  // back to default
-    glDisable(GL_DEPTH_TEST);
+    deactivate();
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
     screenShader.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_textureId);

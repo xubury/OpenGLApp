@@ -9,7 +9,9 @@ class FrameBuffer {
 
     void create(int width, int height);
 
-    void use() const;
+    void activate() const;
+
+    void deactivate() const;
 
     void draw() const;
 
