@@ -34,7 +34,12 @@ static uint32_t quadVBO = 0;
 static Shader screenShader;
 
 FrameBuffer::FrameBuffer()
-    : m_frameBufferId(0), m_textureId(0), m_renderBufferId(0) {}
+    : m_frameBufferId(0),
+      m_textureId(0),
+      m_renderBufferId(0),
+      m_width(0),
+      m_height(0),
+      m_isInitialized(false) {}
 
 void FrameBuffer::create(int width, int height) {
     if (!screenShader.isInitialized()) {
@@ -42,31 +47,6 @@ void FrameBuffer::create(int width, int height) {
         screenShader.use();
         screenShader.setInt("screenTexture", 0);
     }
-    glGenFramebuffers(1, &m_frameBufferId);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
-
-    glGenTextures(1, &m_textureId);
-    glBindTexture(GL_TEXTURE_2D, m_textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // attach it to currently bound framebuffer object
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                           m_textureId, 0);
-
-    glGenRenderbuffers(1, &m_renderBufferId);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_renderBufferId);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                              GL_RENDERBUFFER, m_renderBufferId);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!"
-                  << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     if (quadVAO == 0) {
         glGenVertexArrays(1, &quadVAO);
         glGenBuffers(1, &quadVBO);
@@ -80,6 +60,43 @@ void FrameBuffer::create(int width, int height) {
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
                               (void *)(2 * sizeof(float)));
+    }
+    if (!m_isInitialized) {
+        glGenFramebuffers(1, &m_frameBufferId);
+        glGenTextures(1, &m_textureId);
+        glGenRenderbuffers(1, &m_renderBufferId);
+        update(width, height);
+        m_isInitialized = true;
+    } else {
+        update(width, height);
+    }
+}
+
+void FrameBuffer::update(int width, int height) {
+    if (m_width != width || m_height != height) {
+        glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
+        glBindTexture(GL_TEXTURE_2D, m_textureId);
+        glBindRenderbuffer(GL_RENDERBUFFER, m_renderBufferId);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // attach it to currently bound framebuffer object
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                               GL_TEXTURE_2D, m_textureId, 0);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width,
+                              height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                  GL_RENDERBUFFER, m_renderBufferId);
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!"
+                      << std::endl;
+        m_width = width;
+        m_height = height;
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 }
 

@@ -119,6 +119,7 @@ void Game::run(int minFps) {
                         break;
                 }
             } else if (event.type == Event::EventType::RESIZED) {
+                m_frameBuffer.update(event.size.width, event.size.height);
                 m_window.getCamera().setSize(event.size.width,
                                              event.size.height);
             }
@@ -141,15 +142,13 @@ void Game::run(int minFps) {
         ImGui::NewFrame();
         ImGui::Begin("GameWindow");
         {
-            // Using a Child allow to fill all the space of the window.
-            // It also alows customization
             ImGui::BeginChild("GameRender");
-            // Get the size of the child (i.e. the whole draw size of the
-            // windows).
             ImVec2 wsize = ImGui::GetWindowSize();
+            m_frameBuffer.update(wsize.x, wsize.y);
             // Because I use the texture from OpenGL, I need to invert the V
             // from the UV.
-            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,
+            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(),
+            wsize,
                          ImVec2(0, 1), ImVec2(1, 0));
             ImGui::EndChild();
         }

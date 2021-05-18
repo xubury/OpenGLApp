@@ -9,6 +9,8 @@ class FrameBuffer {
 
     void create(int width, int height);
 
+    void update(int width, int height);
+
     void activate() const;
 
     void deactivate() const;
@@ -22,6 +24,11 @@ class FrameBuffer {
     uint32_t m_frameBufferId;
     uint32_t m_textureId;
     uint32_t m_renderBufferId;
+
+    int m_width;
+    int m_height;
+
+    bool m_isInitialized;
 };
 
 #endif /* FRAMEBUFFER_HPP */
