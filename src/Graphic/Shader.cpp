@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-Shader::Shader() : m_VAO(0) {}
+Shader::Shader() : m_VAO(0), m_initialized(false) {}
 
 Shader::~Shader() { glDeleteVertexArrays(1, &m_VAO); }
 
@@ -70,6 +70,8 @@ void Shader::compile(const std::string& vertexCode,
     // necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+
+    m_initialized = true;
 }
 
 void Shader::bind() const { glBindVertexArray(m_VAO); }
@@ -150,6 +152,8 @@ void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
     glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE,
                        &value[0][0]);
 }
+
+bool Shader::isInitialized() const { return m_initialized; }
 
 DebugShader& DebugShader::instance() {
     static DebugShader s_instance("shader/debugVertex.glsl",

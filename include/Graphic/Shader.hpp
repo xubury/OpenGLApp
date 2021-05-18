@@ -41,11 +41,14 @@ class Shader {
 
     void setMat4(const std::string& name, const glm::mat4& value) const;
 
+    bool isInitialized() const;
    protected:
     uint32_t m_VAO;
 
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
+
+    bool m_initialized;
 };
 
 class DebugShader : public Shader {

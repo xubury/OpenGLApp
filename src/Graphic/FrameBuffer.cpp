@@ -37,10 +37,11 @@ FrameBuffer::FrameBuffer()
     : m_frameBufferId(0), m_textureId(0), m_renderBufferId(0) {}
 
 void FrameBuffer::create(int width, int height) {
-    screenShader.compile(vertexCode, fragmentCode);
-    screenShader.use();
-    screenShader.setInt("screenTexture", 0);
-
+    if (screenShader.isInitialized()) {
+        screenShader.compile(vertexCode, fragmentCode);
+        screenShader.use();
+        screenShader.setInt("screenTexture", 0);
+    }
     glGenFramebuffers(1, &m_frameBufferId);
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
 
