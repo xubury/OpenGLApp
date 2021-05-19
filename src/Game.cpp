@@ -119,9 +119,12 @@ void Game::run(int minFps) {
                         break;
                 }
             } else if (event.type == Event::EventType::RESIZED) {
-                m_frameBuffer.update(event.size.width, event.size.height);
-                m_window.getCamera().setSize(event.size.width,
-                                             event.size.height);
+                // When minimized， the width and height will drop to zero
+                if (event.size.width > 0 && event.size.height > 0) {
+                    m_frameBuffer.update(event.size.width, event.size.height);
+                    m_window.getCamera().setSize(event.size.width,
+                                                 event.size.height);
+                }
             }
             m_window.processEvent(event);
         }
@@ -147,8 +150,7 @@ void Game::run(int minFps) {
             m_frameBuffer.update(wsize.x, wsize.y);
             // Because I use the texture from OpenGL, I need to invert the V
             // from the UV.
-            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(),
-            wsize,
+            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,
                          ImVec2(0, 1), ImVec2(1, 0));
             ImGui::EndChild();
         }

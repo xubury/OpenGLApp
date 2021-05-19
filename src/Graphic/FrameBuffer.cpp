@@ -73,6 +73,7 @@ void FrameBuffer::create(int width, int height) {
 }
 
 void FrameBuffer::update(int width, int height) {
+    assert(width > 0 && height > 0);
     if (m_width != width || m_height != height) {
         glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
         glBindTexture(GL_TEXTURE_2D, m_textureId);
