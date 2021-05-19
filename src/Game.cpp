@@ -4,9 +4,6 @@
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
 #include <iostream>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
@@ -24,19 +21,7 @@ void Game::addModel(const std::string& path) {
 Game::Game(int width, int height, const std::string& title)
     : m_window(width, height, title),
       m_camera(0, 0, width, height, glm::vec3(0, 0, 3.f)) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    (void)io;
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    m_editor.intialize();
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
@@ -109,7 +94,9 @@ void Game::run(int minFps) {
     Time timeSinceLastUpdate = Time::Zero;
     Time timePerFrame = seconds(1.0 / minFps);
 
-    bool gameWindowActive = true;
+    EditorContext context;
+    context.camera = &m_camera;
+    context.frameBuffer = &m_frameBuffer;
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {
@@ -128,9 +115,9 @@ void Game::run(int minFps) {
                     m_camera.setSize(event.size.width, event.size.height);
                 }
             }
-            if (gameWindowActive) m_camera.processEvent(event);
+            if (context.windowActive) m_camera.processEvent(event);
         }
-        if (gameWindowActive) m_camera.processEvents();
+        if (context.windowActive) m_camera.processEvents();
         timeSinceLastUpdate = clock.restart();
         while (timeSinceLastUpdate > timePerFrame) {
             timeSinceLastUpdate -= timePerFrame;
@@ -141,45 +128,8 @@ void Game::run(int minFps) {
         render();
         m_frameBuffer.deactivate();
         m_frameBuffer.draw();
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        ImGui::Begin("GameWindow");
-        {
-            ImGui::BeginChild("GameRender");
-            ImVec2 wsize = ImGui::GetWindowSize();
-            ImVec2 pos = ImGui::GetWindowPos();
-            ImVec2 bottomRight(pos.x + wsize.x, pos.y + wsize.y);
-            gameWindowActive = ImGui::IsWindowFocused() &&
-                               ImGui::IsMouseHoveringRect(pos, bottomRight);
-            m_frameBuffer.update(wsize.x, wsize.y);
-            m_camera.setSize(wsize.x, wsize.y);
-            // Because I use the texture from OpenGL, I need to invert the V
-            // from the UV.
-            ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,
-                         ImVec2(0, 1), ImVec2(1, 0));
-            ImGui::GetWindowDrawList()->AddCircleFilled(
-                ImVec2(10 + pos.x, 10 + pos.y), 10, 0xFF0000FF);
-            ImGui::EndChild();
-        }
-        ImGui::End();
-
-        ImGui::Begin("Settings");
-        {
-            ImGui::BeginChild("Camera");
-            ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
-            ImGui::EndChild();
-        }
-        ImGui::End();
-
-        ImGui::Render();
-        glClearColor(0, 0, 0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        m_editor.render(context);
     }
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    m_editor.close();
     m_window.close();
 }

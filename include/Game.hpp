@@ -9,6 +9,7 @@
 #include <Utility/Time.hpp>
 #include <ECS/Application.hpp>
 #include <Graphic/FrameBuffer.hpp>
+#include <Editor/Editor.hpp>
 
 class Game {
    public:
@@ -30,6 +31,7 @@ class Game {
     Application<EntityBase> m_app;
     FrameBuffer m_frameBuffer;
     ControlCamera m_camera;
+    Editor m_editor;
 };
 
 #endif

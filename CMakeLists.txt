@@ -12,6 +12,9 @@ find_package(assimp REQUIRED)
 find_package(imgui REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
+set(Editor_Src
+    src/Editor/Editor.cpp)
+
 set(Component_Src
     src/Component/Transfrom.cpp
     src/Component/BoundingBox.cpp)
@@ -62,7 +65,8 @@ add_executable(OpenGLApp
     ${Component_Src}
     ${Entity_Src}
     ${Graphic_Src}
-    ${Window_Src})
+    ${Window_Src}
+    ${Editor_Src})
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 

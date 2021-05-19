@@ -31,7 +31,8 @@ class TransformSystem : public System<Transform, EntityBase> {
     virtual void update(EntityManager<EntityBase> &manager,
                         const Time &deltaTime) override;
 
-    void draw(EntityManager<EntityBase> &manager, RenderTarget &target, RenderStates states) const;
+    void draw(EntityManager<EntityBase> &manager, RenderTarget &target,
+              RenderStates states) const;
 
    private:
     static Axis s_axis;
