@@ -12,13 +12,14 @@ struct EditorContext {
 
 class Editor {
    public:
-    Editor() = default;
-
-    void intialize();
+    static Editor &instance();
 
     void render(EditorContext &context);
 
     void close();
+
+   private:
+    Editor();
 };
 
 #endif /* EDITOR_HPP */

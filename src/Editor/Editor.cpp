@@ -6,7 +6,12 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-void Editor::intialize() {
+Editor &Editor::instance() {
+    static Editor s_instance;
+    return s_instance;
+}
+
+Editor::Editor() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -34,7 +39,7 @@ void Editor::render(EditorContext& context) {
         ImVec2 bottomRight(pos.x + wsize.x, pos.y + wsize.y);
         // if game window not active, disable camera response
         context.camera->setActive(ImGui::IsWindowFocused() &&
-                                 ImGui::IsMouseHoveringRect(pos, bottomRight));
+                                  ImGui::IsMouseHoveringRect(pos, bottomRight));
         context.frameBuffer->update(wsize.x, wsize.y);
         context.camera->setSize(wsize.x, wsize.y);
         // Because I use the texture from OpenGL, I need to invert the V

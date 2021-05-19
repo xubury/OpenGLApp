@@ -31,7 +31,6 @@ class Game {
     Application<EntityBase> m_app;
     FrameBuffer m_frameBuffer;
     ControlCamera m_camera;
-    Editor m_editor;
 };
 
 #endif

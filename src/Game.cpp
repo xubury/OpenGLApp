@@ -21,8 +21,6 @@ void Game::addModel(const std::string& path) {
 Game::Game(int width, int height, const std::string& title)
     : m_window(width, height, title),
       m_camera(0, 0, width, height, glm::vec3(0, 0, 3.f)) {
-    m_editor.intialize();
-
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
@@ -128,8 +126,8 @@ void Game::run(int minFps) {
         render();
         m_frameBuffer.deactivate();
         m_frameBuffer.draw();
-        m_editor.render(context);
+        Editor::instance().render(context);
     }
-    m_editor.close();
+    Editor::instance().close();
     m_window.close();
 }
