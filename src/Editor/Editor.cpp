@@ -32,8 +32,21 @@ void Editor::render(EditorContext& context) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+
+    ImGui::Begin("Settings");
+    {
+        ImGui::SetWindowSize(ImVec2(300, 600));
+        ImGui::SetWindowPos(ImVec2(0, 0));
+        ImGui::BeginChild("Camera");
+        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
+        ImGui::EndChild();
+    }
+    ImGui::End();
+
     ImGui::Begin("GameWindow");
     {
+        ImGui::SetWindowSize(ImVec2(800, 600));
+        ImGui::SetWindowPos(ImVec2(300, 0));
         ImGui::BeginChild("GameRender");
         ImVec2 wsize = ImGui::GetWindowSize();
         ImVec2 pos = ImGui::GetWindowPos();
@@ -50,14 +63,6 @@ void Editor::render(EditorContext& context) {
         std::string frameRate =
             "FPS:" + std::to_string(context.window->getFrameRate());
         ImGui::GetWindowDrawList()->AddText(pos, 0xFFFFFFFF, frameRate.c_str());
-        ImGui::EndChild();
-    }
-    ImGui::End();
-
-    ImGui::Begin("Settings");
-    {
-        ImGui::BeginChild("Camera");
-        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
         ImGui::EndChild();
     }
     ImGui::End();
