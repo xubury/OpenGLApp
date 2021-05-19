@@ -158,9 +158,20 @@ void Game::run(int minFps) {
             // from the UV.
             ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,
                          ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::GetWindowDrawList()->AddCircleFilled(
+                ImVec2(10 + pos.x, 10 + pos.y), 10, 0xFF0000FF);
             ImGui::EndChild();
         }
         ImGui::End();
+
+        ImGui::Begin("Settings");
+        {
+            ImGui::BeginChild("Camera");
+            ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
+            ImGui::EndChild();
+        }
+        ImGui::End();
+
         ImGui::Render();
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
