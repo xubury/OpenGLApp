@@ -112,18 +112,17 @@ GlContext::GlContext(int width, int height, const std::string& title) {
         exit(-1);
     }
     glfwMakeContextCurrent(m_context);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD." << std::endl;
+        exit(-1);
+    }
 
+    // setup callbacks
     glfwSetWindowUserPointer(m_context, this);
-
     glfwSetFramebufferSizeCallback(m_context, framebufferSizeCB);
     glfwSetKeyCallback(m_context, keyCallback);
     glfwSetCursorPosCallback(m_context, mouseMovementCallback);
     glfwSetMouseButtonCallback(m_context, mouseButtonCallback);
     glfwSetScrollCallback(m_context, mouseWheelCallback);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD." << std::endl;
-        exit(-1);
-    }
-    glEnable(GL_DEPTH_TEST);
 }
