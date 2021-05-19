@@ -11,14 +11,11 @@ class Shader {
 
     Shader();
 
-    ~Shader();
-
     Shader(const Shader&) = delete;
 
     Shader& operator=(const Shader&) = delete;
 
-    void compile(const std::string& vertexCode,
-                 const std::string& fragmentCode);
+    void compile(const std::string& vertexCode, const std::string& fragmentCode);
 
     void loadFromFile(const std::string& vertexPath,
                       const std::string& fragmentPath);
@@ -39,14 +36,8 @@ class Shader {
 
     void setMat4(const std::string& name, const glm::mat4& value) const;
 
-    bool isInitialized() const;
-   protected:
-    uint32_t m_VAO;
-
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
-
-    bool m_initialized;
 };
 
 class DebugShader : public Shader {

@@ -23,6 +23,8 @@ class ElementBuffer : public Drawable {
 
     bool empty() const;
 
+    bool isInit() const;
+
     template <typename T>
     bool create(const T vertices, std::size_t vertexCnt,
                 const uint32_t *indices, std::size_t indexCnt);
@@ -42,6 +44,7 @@ class ElementBuffer : public Drawable {
 
    private:
     uint32_t m_VBO;
+    uint32_t m_VAO;
     uint32_t m_EBO;
     std::size_t m_size;
     int m_drawType;
@@ -52,7 +55,8 @@ bool ElementBuffer::create(const T vertices, std::size_t vertexCnt,
                            const uint32_t *indices, std::size_t indexCnt) {
     glGenBuffers(1, &m_EBO);
     glGenBuffers(1, &m_VBO);
-    if (!m_VBO || !m_EBO) {
+    glGenVertexArrays(1, &m_VAO);
+    if (!m_VBO || !m_EBO || !m_VAO) {
         std::cerr << "Could not create vertex buffer array." << std::endl;
         return false;
     }

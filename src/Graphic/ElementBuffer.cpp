@@ -15,11 +15,14 @@ std::size_t ElementBuffer::size() const { return m_size; }
 
 bool ElementBuffer::empty() const { return m_size == 0; }
 
+bool ElementBuffer::isInit() const { return m_EBO != 0; }
+
 void ElementBuffer::draw(RenderTarget &target, RenderStates states) const {
     target.draw(*this, states);
 }
 
 void ElementBuffer::bind() const {
+    glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 }

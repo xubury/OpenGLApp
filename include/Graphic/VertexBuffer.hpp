@@ -23,6 +23,8 @@ class VertexBuffer : public Drawable {
 
     bool empty() const;
 
+    bool isInit() const;
+
     template <typename T>
     bool create(const T vertices, std::size_t cnt);
 
@@ -37,15 +39,21 @@ class VertexBuffer : public Drawable {
 
    private:
     uint32_t m_VBO;
+    uint32_t m_VAO;
     std::size_t m_size;
     int m_drawType;
 };
 
 template <typename T>
 bool VertexBuffer::create(const T vertices, std::size_t cnt) {
-    if (!m_VBO) glGenBuffers(1, &m_VBO);
-    if (!m_VBO) {
+    glGenBuffers(1, &m_VBO);
+    glGenVertexArrays(1, &m_VAO);
+    if (!m_VBO || !m_VAO) {
         std::cerr << "Could not create vertex buffer." << std::endl;
+        return false;
+    }
+    if (!m_VAO) {
+        std::cerr << "Could not create vertex array object." << std::endl;
         return false;
     }
     update(vertices, cnt);

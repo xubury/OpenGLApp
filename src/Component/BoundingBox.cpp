@@ -118,6 +118,7 @@ void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
                              RenderTarget &target, RenderStates states) {
     states.shader = &DebugShader::instance();
     DebugShader::instance().setDrawingMode(DebugShader::WIRE_FRAME);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     BoundingBox::Handle box;
     auto view = manager.getByComponents<BoundingBox>(box);
@@ -126,4 +127,6 @@ void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
         updateVertices(box->getWorldMin(), box->getWorldMax());
         target.draw(s_elements, states);
     }
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

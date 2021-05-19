@@ -1,75 +1,69 @@
 #include <Graphic/FrameBuffer.hpp>
 #include <iostream>
 #include <glad/glad.h>
-#include <Graphic/Shader.hpp>
 
-static const char *vertexCode =
-    "#version 330 core\n"
-    "layout (location = 0) in vec2 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoords;\n"
-    "out vec2 texCoords;\n"
-    "void main() {\n"
-    "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-    "    texCoords = aTexCoords;\n"
-    "}";
+FrameBufferShader &FrameBufferShader::instance() {
+    static FrameBufferShader s_instance;
+    return s_instance;
+}
 
-static const char *fragmentCode =
-    "#version 330 core\n"
-    "out vec4 fragColor;\n"
-    "in vec2 texCoords;\n"
-    "uniform sampler2D screenTexture;\n"
-    "void main() {\n"
-    "    fragColor = texture(screenTexture, texCoords);\n"
-    "}";
+void FrameBufferShader::setupAttribute() const {
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          (void *)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          (void *)(2 * sizeof(float)));
+}
 
-static const float quadVertices[] = {
-    -1.0f, 1.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+FrameBufferShader::FrameBufferShader() {
+    const char *vertexCode =
+        "#version 330 core\n"
+        "layout (location = 0) in vec2 aPos;\n"
+        "layout (location = 1) in vec2 aTexCoords;\n"
+        "out vec2 texCoords;\n"
+        "void main() {\n"
+        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+        "    texCoords = aTexCoords;\n"
+        "}";
 
-    -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  1.0f, 1.0f};
+    const char *fragmentCode =
+        "#version 330 core\n"
+        "out vec4 fragColor;\n"
+        "in vec2 texCoords;\n"
+        "uniform sampler2D screenTexture;\n"
+        "void main() {\n"
+        "    fragColor = texture(screenTexture, texCoords);\n"
+        "}";
 
-static uint32_t quadVAO = 0;
-
-static uint32_t quadVBO = 0;
-
-static Shader screenShader;
+    compile(vertexCode, fragmentCode);
+    use();
+    setInt("screenTexture", 0);
+}
 
 FrameBuffer::FrameBuffer()
     : m_frameBufferId(0),
+      m_VBO(0),
       m_textureId(0),
       m_renderBufferId(0),
       m_width(0),
-      m_height(0),
-      m_isInitialized(false) {}
+      m_height(0) {}
 
 void FrameBuffer::create(int width, int height) {
-    if (!screenShader.isInitialized()) {
-        screenShader.compile(vertexCode, fragmentCode);
-        screenShader.use();
-        screenShader.setInt("screenTexture", 0);
-    }
-    if (quadVAO == 0) {
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
-                     GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                              (void *)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                              (void *)(2 * sizeof(float)));
-    }
-    if (!m_isInitialized) {
-        glGenFramebuffers(1, &m_frameBufferId);
-        glGenTextures(1, &m_textureId);
-        glGenRenderbuffers(1, &m_renderBufferId);
-        update(width, height);
-        m_isInitialized = true;
-    } else {
-        update(width, height);
-    }
+    glGenFramebuffers(1, &m_frameBufferId);
+    glGenTextures(1, &m_textureId);
+    const float quadVertices[] = {-1.0f, 1.0f, 0.0f, 1.0f,  -1.0f, -1.0f,
+                                  0.0f,  0.0f, 1.0f, -1.0f, 1.0f,  0.0f,
+
+                                  -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  -1.0f,
+                                  1.0f,  0.0f, 1.0f, 1.0f,  1.0f,  1.0f};
+    glGenBuffers(1, &m_VBO);
+    glGenVertexArrays(1, &m_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
+                 GL_STATIC_DRAW);
+    glGenRenderbuffers(1, &m_renderBufferId);
+    update(width, height);
 }
 
 void FrameBuffer::update(int width, int height) {
@@ -116,10 +110,13 @@ void FrameBuffer::draw() const {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    screenShader.use();
+    FrameBufferShader::instance().use();
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBindVertexArray(m_VAO);
+    FrameBufferShader::instance().setupAttribute();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_textureId);
-    glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
