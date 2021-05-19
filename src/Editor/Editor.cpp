@@ -7,7 +7,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-Editor &Editor::instance() {
+Editor& Editor::instance() {
     static Editor s_instance;
     return s_instance;
 }
@@ -47,9 +47,8 @@ void Editor::render(EditorContext& context) {
         // from the UV.
         ImGui::Image((void*)(intptr_t)context.frameBuffer->getTextureId(),
                      wsize, ImVec2(0, 1), ImVec2(1, 0));
-        ImGui::GetWindowDrawList()->AddCircleFilled(
-            ImVec2(10 + pos.x, 10 + pos.y), 10, 0xFF0000FF);
-        std::string frameRate = "FPS:" + std::to_string(context.window->getFrameRate());
+        std::string frameRate =
+            "FPS:" + std::to_string(context.window->getFrameRate());
         ImGui::GetWindowDrawList()->AddText(pos, 0xFFFFFFFF, frameRate.c_str());
         ImGui::EndChild();
     }
