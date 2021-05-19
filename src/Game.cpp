@@ -107,6 +107,7 @@ void Game::run(int minFps) {
     Time timeSinceLastUpdate = Time::Zero;
     Time timePerFrame = seconds(1.0 / minFps);
 
+    bool gameWindowActive = true;
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {
@@ -126,9 +127,9 @@ void Game::run(int minFps) {
                                                  event.size.height);
                 }
             }
-            m_window.processEvent(event);
+            if (gameWindowActive) m_window.getCamera().processEvent(event);
         }
-        m_window.processEvents();
+        if (gameWindowActive) m_window.getCamera().processEvents();
         timeSinceLastUpdate = clock.restart();
         while (timeSinceLastUpdate > timePerFrame) {
             timeSinceLastUpdate -= timePerFrame;
@@ -147,6 +148,10 @@ void Game::run(int minFps) {
         {
             ImGui::BeginChild("GameRender");
             ImVec2 wsize = ImGui::GetWindowSize();
+            ImVec2 pos = ImGui::GetWindowPos();
+            ImVec2 bottomRight(pos.x + wsize.x, pos.y + wsize.y);
+            gameWindowActive = ImGui::IsWindowFocused() &&
+                               ImGui::IsMouseHoveringRect(pos, bottomRight);
             m_frameBuffer.update(wsize.x, wsize.y);
             // Because I use the texture from OpenGL, I need to invert the V
             // from the UV.

@@ -35,10 +35,6 @@ class RenderTarget {
     template <typename T, typename... ARGS>
     void setCamera(ARGS &&...args);
 
-    bool processEvent(Event &event) const;
-
-    void processEvents() const;
-
    protected:
     RenderTarget();
 
@@ -51,7 +47,7 @@ class RenderTarget {
 
     void applyTexture(const TextureArray *textures);
 
-    std::unique_ptr<Camera> m_camera;
+    std::shared_ptr<Camera> m_camera;
 
     const Shader *m_shader;
 
@@ -64,7 +60,7 @@ template <typename T, typename... ARGS>
 void RenderTarget::setCamera(ARGS &&...args) {
     static_assert(std::is_base_of<Camera, T>::value,
                   "T must be derived from Camera");
-    m_camera = std::make_unique<T>(std::forward<ARGS>(args)...);
+    m_camera = std::make_shared<T>(std::forward<ARGS>(args)...);
 }
 
 #endif

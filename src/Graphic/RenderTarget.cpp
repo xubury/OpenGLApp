@@ -17,12 +17,6 @@ Camera &RenderTarget::getCamera() { return *m_camera.get(); }
 
 const Camera &RenderTarget::getCamera() const { return *m_camera.get(); }
 
-bool RenderTarget::processEvent(Event &event) const {
-    return m_camera->processEvent(event);
-}
-
-void RenderTarget::processEvents() const { m_camera->processEvents(); }
-
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
 }
