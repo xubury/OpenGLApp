@@ -153,6 +153,7 @@ void Game::run(int minFps) {
             gameWindowActive = ImGui::IsWindowFocused() &&
                                ImGui::IsMouseHoveringRect(pos, bottomRight);
             m_frameBuffer.update(wsize.x, wsize.y);
+            m_window.getCamera().setSize(wsize.x, wsize.y);
             // Because I use the texture from OpenGL, I need to invert the V
             // from the UV.
             ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,
