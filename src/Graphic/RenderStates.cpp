@@ -9,4 +9,4 @@
 const RenderStates RenderStates::Default;
 
 RenderStates::RenderStates()
-    : shader(nullptr), transform(1.0f), textures(nullptr), camera(nullptr) {}
+    : shader(nullptr), transform(1.0f), textures(nullptr), camera(&Camera::Default) {}

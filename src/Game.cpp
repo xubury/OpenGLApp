@@ -22,7 +22,8 @@ void Game::addModel(const std::string& path) {
 }
 
 Game::Game(int width, int height, const std::string& title)
-    : m_window(width, height, title) {
+    : m_window(width, height, title),
+      m_camera(0, 0, width, height, glm::vec3(0, 0, 3.f)) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -69,8 +70,6 @@ Game::Game(int width, int height, const std::string& title)
     }
     addModel("resources/models/backpack/backpack.obj");
 
-    m_window.setCamera<ControlCamera>(0, 0, width, height,
-                                      glm::vec3(0.f, 0.f, 3.f));
     m_window.setFramerateLimit(120);
 
     m_frameBuffer.create(width, height);
@@ -91,13 +90,16 @@ void Game::render() {
     m_window.clear();
     RenderStates states;
     states.shader = &m_shader;
+    states.camera = &m_camera;
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         m_window.draw(m_app.entities.get(*cur), states);
     }
 
-    m_app.systems.system<BoundingBoxSystem>()->draw(m_app.entities, m_window);
-    m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window);
+    m_app.systems.system<BoundingBoxSystem>()->draw(m_app.entities, m_window,
+                                                    states);
+    m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window,
+                                                  states);
 
     m_window.display();
 }
@@ -123,13 +125,12 @@ void Game::run(int minFps) {
                 // When minimized， the width and height will drop to zero
                 if (event.size.width > 0 && event.size.height > 0) {
                     m_frameBuffer.update(event.size.width, event.size.height);
-                    m_window.getCamera().setSize(event.size.width,
-                                                 event.size.height);
+                    m_camera.setSize(event.size.width, event.size.height);
                 }
             }
-            if (gameWindowActive) m_window.getCamera().processEvent(event);
+            if (gameWindowActive) m_camera.processEvent(event);
         }
-        if (gameWindowActive) m_window.getCamera().processEvents();
+        if (gameWindowActive) m_camera.processEvents();
         timeSinceLastUpdate = clock.restart();
         while (timeSinceLastUpdate > timePerFrame) {
             timeSinceLastUpdate -= timePerFrame;
@@ -153,7 +154,7 @@ void Game::run(int minFps) {
             gameWindowActive = ImGui::IsWindowFocused() &&
                                ImGui::IsMouseHoveringRect(pos, bottomRight);
             m_frameBuffer.update(wsize.x, wsize.y);
-            m_window.getCamera().setSize(wsize.x, wsize.y);
+            m_camera.setSize(wsize.x, wsize.y);
             // Because I use the texture from OpenGL, I need to invert the V
             // from the UV.
             ImGui::Image((void*)(intptr_t)m_frameBuffer.getTextureId(), wsize,

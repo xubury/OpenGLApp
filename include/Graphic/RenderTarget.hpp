@@ -28,26 +28,19 @@ class RenderTarget {
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
-    Camera &getCamera();
-
-    const Camera &getCamera() const;
-
-    template <typename T, typename... ARGS>
-    void setCamera(ARGS &&...args);
-
    protected:
     RenderTarget();
 
     virtual ~RenderTarget() = default;
 
    private:
+    void applyCamera(const Camera *camera);
+
     void applyShader(const Shader *shader);
 
     void applyTransform(const glm::mat4 &transform) const;
 
     void applyTexture(const TextureArray *textures);
-
-    std::shared_ptr<Camera> m_camera;
 
     const Shader *m_shader;
 
@@ -55,12 +48,5 @@ class RenderTarget {
 
     bool m_isRenderOnFrameBuffer;
 };
-
-template <typename T, typename... ARGS>
-void RenderTarget::setCamera(ARGS &&...args) {
-    static_assert(std::is_base_of<Camera, T>::value,
-                  "T must be derived from Camera");
-    m_camera = std::make_shared<T>(std::forward<ARGS>(args)...);
-}
 
 #endif

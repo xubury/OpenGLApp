@@ -29,6 +29,7 @@ class Game {
     Shader m_shader;
     Application<EntityBase> m_app;
     FrameBuffer m_frameBuffer;
+    ControlCamera m_camera;
 };
 
 #endif

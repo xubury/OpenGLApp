@@ -115,8 +115,7 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
 }
 
 void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
-                             RenderTarget &target) {
-    RenderStates states;
+                             RenderTarget &target, RenderStates states) {
     states.shader = &DebugShader::instance();
     DebugShader::instance().setDrawingMode(DebugShader::WIRE_FRAME);
 

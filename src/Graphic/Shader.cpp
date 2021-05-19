@@ -74,9 +74,8 @@ void Shader::compile(const std::string& vertexCode,
     m_initialized = true;
 }
 
-void Shader::bind() const { glBindVertexArray(m_VAO); }
-
 void Shader::setupAttribute() const {
+    glBindVertexArray(m_VAO);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // position attribute
     glEnableVertexAttribArray(0);

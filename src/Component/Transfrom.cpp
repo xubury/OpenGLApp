@@ -32,11 +32,10 @@ TransformSystem::TransformSystem() { s_axis.create(); }
 void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
 void TransformSystem::draw(EntityManager<EntityBase> &manager,
-                           RenderTarget &target) const {
+                           RenderTarget &target, RenderStates states) const {
     Transform::Handle transform;
     auto view = manager.getByComponents<Transform>(transform);
     auto end = view.end();
-    RenderStates states;
     for (auto cur = view.begin(); cur != end; ++cur) {
         states.transform = transform->getTransform();
         s_axis.draw(target, states);

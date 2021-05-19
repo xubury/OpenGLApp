@@ -23,8 +23,6 @@ class Shader {
     void loadFromFile(const std::string& vertexPath,
                       const std::string& fragmentPath);
 
-    void bind() const;
-
     virtual void setupAttribute() const;
 
     void use() const;

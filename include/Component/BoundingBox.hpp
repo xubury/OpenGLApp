@@ -36,7 +36,7 @@ class BoundingBoxSystem : public System<BoundingBox, EntityBase> {
     virtual void update(EntityManager<EntityBase> &manager,
                         const Time &deltaTime) override;
 
-    void draw(EntityManager<EntityBase> &manager, RenderTarget &target);
+    void draw(EntityManager<EntityBase> &manager, RenderTarget &target, RenderStates states);
 
     void updateVertices(const glm::vec3 &min, const glm::vec3 &max);
 
