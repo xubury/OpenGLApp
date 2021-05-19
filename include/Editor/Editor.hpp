@@ -1,11 +1,14 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
+class RenderWindow;
+
 class FrameBuffer;
 
 class Camera;
 
 struct EditorContext {
+    RenderWindow *window;
     FrameBuffer *frameBuffer;
     Camera *camera;
 };

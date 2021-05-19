@@ -27,6 +27,7 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     void setFramerateLimit(uint32_t fps);
 
+    float getFrameRate() const;
    private:
     friend class GlContext;
 
@@ -40,6 +41,7 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     Time m_framerateLimit;
     Clock m_clock;
+    float m_frameRate;
 };
 
 #endif

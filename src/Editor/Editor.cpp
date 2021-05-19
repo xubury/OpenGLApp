@@ -1,6 +1,7 @@
 #include <Editor/Editor.hpp>
 #include <Graphic/FrameBuffer.hpp>
 #include <Graphic/Camera.hpp>
+#include <Graphic/RenderWindow.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -48,6 +49,8 @@ void Editor::render(EditorContext& context) {
                      wsize, ImVec2(0, 1), ImVec2(1, 0));
         ImGui::GetWindowDrawList()->AddCircleFilled(
             ImVec2(10 + pos.x, 10 + pos.y), 10, 0xFF0000FF);
+        std::string frameRate = "FPS:" + std::to_string(context.window->getFrameRate());
+        ImGui::GetWindowDrawList()->AddText(pos, 0xFFFFFFFF, frameRate.c_str());
         ImGui::EndChild();
     }
     ImGui::End();

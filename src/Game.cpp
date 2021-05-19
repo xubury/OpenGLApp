@@ -95,6 +95,7 @@ void Game::run(int minFps) {
     EditorContext context;
     context.camera = &m_camera;
     context.frameBuffer = &m_frameBuffer;
+    context.window = &m_window;
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {

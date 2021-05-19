@@ -2,6 +2,7 @@
 #include <Window/Event.hpp>
 
 #include <thread>
+#include <iostream>
 
 RenderWindow::RenderWindow(int width, int height, const std::string& title)
     : GlContext(width, height, title) {}
@@ -13,8 +14,14 @@ void RenderWindow::display() {
     if (m_framerateLimit != Time::Zero) {
         std::this_thread::sleep_for(m_framerateLimit -
                                     m_clock.getElapsedTime());
+        m_frameRate =
+            1.f / m_clock.getElapsedTime().as<MilliSeconds>().count() * 1000;
         m_clock.restart();
     }
+}
+
+float RenderWindow::getFrameRate() const {
+    return m_frameRate;
 }
 
 bool RenderWindow::shouldClose() {
