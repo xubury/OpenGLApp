@@ -5,7 +5,7 @@
 #include <list>
 #include <utility>
 
-#include "Window/ActionMap.hpp"
+#include <Window/ActionMap.hpp>
 
 template <typename T>
 class ActionTarget {
@@ -35,6 +35,8 @@ class ActionTarget {
 
     void unbind(const T &key);
 
+    void setActive(bool active);
+
    private:
     std::list<KeyPair> m_eventRealTime;
     std::list<KeyPair> m_eventPoll;
@@ -42,13 +44,18 @@ class ActionTarget {
     std::list<ActionPair> m_eventPollAction;
 
     const ActionMap<T> &m_actionMap;
+
+    bool m_active;
 };
 
 template <typename T>
-ActionTarget<T>::ActionTarget(const ActionMap<T> &map) : m_actionMap(map) {}
+ActionTarget<T>::ActionTarget(const ActionMap<T> &map)
+    : m_actionMap(map), m_active(false) {}
 
 template <typename T>
 bool ActionTarget<T>::processEvent(const Event &event) const {
+    if (!m_active) return false;
+
     for (const auto &[action, func] : m_eventPollAction) {
         if (action == event) {
             func(event);
@@ -66,6 +73,8 @@ bool ActionTarget<T>::processEvent(const Event &event) const {
 
 template <typename T>
 void ActionTarget<T>::processEvents() const {
+    if (!m_active) return;
+
     for (const auto &[action, func] : m_eventRealTimeAction) {
         if (action.test()) {
             func(action.m_event);
@@ -118,6 +127,11 @@ void ActionTarget<T>::unbind(const T &key) {
     } else {
         m_eventPoll.remove_if(removeFunc);
     }
+}
+
+template <typename T>
+void ActionTarget<T>::setActive(bool active) {
+    m_active = active;
 }
 
 #endif

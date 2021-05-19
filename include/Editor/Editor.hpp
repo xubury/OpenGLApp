@@ -8,7 +8,6 @@ class Camera;
 struct EditorContext {
     FrameBuffer *frameBuffer;
     Camera *camera;
-    bool windowActive;
 };
 
 class Editor {

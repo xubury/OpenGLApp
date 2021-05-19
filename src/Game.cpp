@@ -115,9 +115,9 @@ void Game::run(int minFps) {
                     m_camera.setSize(event.size.width, event.size.height);
                 }
             }
-            if (context.windowActive) m_camera.processEvent(event);
+            m_camera.processEvent(event);
         }
-        if (context.windowActive) m_camera.processEvents();
+        m_camera.processEvents();
         timeSinceLastUpdate = clock.restart();
         while (timeSinceLastUpdate > timePerFrame) {
             timeSinceLastUpdate -= timePerFrame;

@@ -11,11 +11,13 @@ inline const float SPEED = 2.5f;
 inline const float ZOOM = 45.f;
 inline const float MOUSE_SENSITIVITY = 0.1f;
 
-class Camera {
+enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
+
+class Camera : protected ActionTarget<Movement> {
    public:
     static const Camera Default;
 
-    enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
+    using ActionTarget::setActive;
 
    public:
     Camera(int x, int y, int width, int height,
@@ -61,6 +63,9 @@ class Camera {
 
     virtual void processEvents() const;
 
+   protected:
+    static ActionMap<Movement> s_cameraMovement;
+
    private:
     int m_x;
     int m_y;
@@ -79,10 +84,11 @@ class Camera {
 
     glm::mat4 m_projection;
     glm::mat4 m_view;
+
     void update();
 };
 
-class ControlCamera : public Camera, protected ActionTarget<Camera::Movement> {
+class ControlCamera : public Camera {
    public:
     ControlCamera(int x, int y, int width, int height,
                   const glm::vec3 &position = glm::vec3(0.f),
@@ -94,7 +100,6 @@ class ControlCamera : public Camera, protected ActionTarget<Camera::Movement> {
     virtual void processEvents() const override;
 
    private:
-    static ActionMap<Camera::Movement> s_cameraMovement;
     glm::vec2 m_lastMousePos;
     bool m_isFirstMouse;
 };

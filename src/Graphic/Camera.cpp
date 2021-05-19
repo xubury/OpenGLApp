@@ -4,9 +4,11 @@
 
 const Camera Camera::Default = Camera(0, 0, 1, 1);
 
+ActionMap<Movement> Camera::s_cameraMovement;
+
 Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position,
                const glm::vec3 &worldUp, float yaw, float pitch)
-    : m_x(x),
+    : ActionTarget(s_cameraMovement), m_x(x),
       m_y(y),
       m_width(width),
       m_height(height),
@@ -114,13 +116,11 @@ void Camera::update() {
     m_view = glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-ActionMap<Camera::Movement> ControlCamera::s_cameraMovement;
 
 ControlCamera::ControlCamera(int x, int y, int width, int height,
                              const glm::vec3 &position,
                              const glm::vec3 &worldUp, float yaw, float pitch)
     : Camera(x, y, width, height, position, worldUp, yaw, pitch),
-      ActionTarget(s_cameraMovement),
       m_isFirstMouse(true) {
     s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
     s_cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
