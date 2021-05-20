@@ -20,11 +20,7 @@ void VertexBuffer::draw(RenderTarget &target, RenderStates states) const {
     target.draw(*this, states);
 }
 
-void VertexBuffer::bind() const {
-    glBindVertexArray(m_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-}
-
 void VertexBuffer::drawPrimitive() const {
+    glBindVertexArray(m_VAO);
     glDrawArrays(m_drawType, 0, m_size);
 }

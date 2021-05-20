@@ -20,9 +20,6 @@ void RenderTarget::draw(const VertexBuffer &buffer,
     applyTransform(states.transform);
     applyTexture(states.textures);
 
-    buffer.bind();
-    m_shader->setupAttribute();
-
     buffer.drawPrimitive();
 }
 
@@ -32,9 +29,6 @@ void RenderTarget::draw(const ElementBuffer &element,
     applyCamera(states.camera);
     applyTransform(states.transform);
     applyTexture(states.textures);
-
-    element.bind();
-    m_shader->setupAttribute();
 
     element.drawPrimitive();
 }

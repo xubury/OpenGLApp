@@ -35,9 +35,6 @@ class FrameBuffer {
 class FrameBufferShader : public Shader {
    public:
     static FrameBufferShader &instance();
-
-    void setupAttribute() const override;
-
    private:
     FrameBufferShader();
 };

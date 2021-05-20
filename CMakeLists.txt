@@ -33,6 +33,7 @@ set(ECS_Src
 set(Graphic_Src
     src/Graphic/Shader.cpp
     src/Graphic/Texture.cpp
+    src/Graphic/Vertex.cpp
     src/Graphic/TextureArray.cpp
     src/Graphic/VertexBuffer.cpp
     src/Graphic/ElementBuffer.cpp

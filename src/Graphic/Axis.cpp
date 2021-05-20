@@ -54,7 +54,6 @@ void Axis::create() {
 }
 
 void Axis::draw(RenderTarget& target, RenderStates states) const {
-    DebugShader::instance().setDrawingMode(DebugShader::NORMAL);
     states.shader = &DebugShader::instance();
     glClear(GL_DEPTH_BUFFER_BIT);
     for (int i = 0; i < 3; ++i) target.draw(s_arrows[i], states);

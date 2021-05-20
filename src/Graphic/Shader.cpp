@@ -65,27 +65,6 @@ void Shader::compile(const std::string& vertexCode,
     glDeleteShader(fragment);
 }
 
-void Shader::setupAttribute() const {
-    // position attribute
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-
-    // color attribute
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*)offsetof(Vertex, color));
-
-    // texture coord
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*)(offsetof(Vertex, texCoord)));
-
-    // normal attribute
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*)(offsetof(Vertex, normal)));
-}
-
 void Shader::use() const { glUseProgram(id); }
 
 void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
@@ -152,16 +131,3 @@ DebugShader::DebugShader(const std::string& vertexPath,
     loadFromFile(vertexPath, fragmentPath);
 }
 
-void DebugShader::setDrawingMode(DrawingMode mode) { m_drawingMode = mode; }
-
-void DebugShader::setupAttribute() const {
-    // position attribute
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DebugVertex),
-                          (void*)0);
-
-    // color attribute
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(DebugVertex),
-                          (void*)offsetof(DebugVertex, color));
-}

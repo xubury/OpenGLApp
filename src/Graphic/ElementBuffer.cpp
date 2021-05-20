@@ -21,12 +21,8 @@ void ElementBuffer::draw(RenderTarget &target, RenderStates states) const {
     target.draw(*this, states);
 }
 
-void ElementBuffer::bind() const {
-    glBindVertexArray(m_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-}
-
 void ElementBuffer::drawPrimitive() const {
+    glBindVertexArray(m_VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glDrawElements(m_drawType, m_size, GL_UNSIGNED_INT, 0);
 }

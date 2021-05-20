@@ -117,7 +117,6 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
 void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
                              RenderTarget &target, RenderStates states) {
     states.shader = &DebugShader::instance();
-    DebugShader::instance().setDrawingMode(DebugShader::WIRE_FRAME);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     BoundingBox::Handle box;

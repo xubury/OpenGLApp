@@ -38,8 +38,6 @@ class ElementBuffer : public Drawable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
-    void bind() const;
-
     void drawPrimitive() const;
 
    private:
@@ -77,10 +75,12 @@ void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
 template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt) {
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
+    glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER,
                  vertexCnt * sizeof(typename std::remove_pointer<T>::type),
                  vertices, GL_STATIC_DRAW);
+    std::remove_pointer<T>::type::setupAttribute();
 }
 
 #endif

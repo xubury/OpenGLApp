@@ -7,15 +7,6 @@ FrameBufferShader &FrameBufferShader::instance() {
     return s_instance;
 }
 
-void FrameBufferShader::setupAttribute() const {
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)(2 * sizeof(float)));
-}
-
 FrameBufferShader::FrameBufferShader() {
     const char *vertexCode =
         "#version 330 core\n"
@@ -59,10 +50,18 @@ void FrameBuffer::create(int width, int height) {
                                   1.0f,  0.0f, 1.0f, 1.0f,  1.0f,  1.0f};
     glGenBuffers(1, &m_VBO);
     glGenVertexArrays(1, &m_VAO);
+
+    glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
                  GL_STATIC_DRAW);
     glGenRenderbuffers(1, &m_renderBufferId);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          (void *)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          (void *)(2 * sizeof(float)));
     update(width, height);
 }
 
@@ -112,11 +111,9 @@ void FrameBuffer::draw() const {
 
     FrameBufferShader::instance().use();
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBindVertexArray(m_VAO);
-    FrameBufferShader::instance().setupAttribute();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_textureId);
+    glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

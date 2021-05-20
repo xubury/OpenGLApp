@@ -20,8 +20,6 @@ class Shader {
     void loadFromFile(const std::string& vertexPath,
                       const std::string& fragmentPath);
 
-    virtual void setupAttribute() const;
-
     void use() const;
 
     void setBool(const std::string& name, bool value) const;
@@ -42,19 +40,11 @@ class Shader {
 
 class DebugShader : public Shader {
    public:
-    enum DrawingMode { NORMAL, WIRE_FRAME };
-
-   public:
     static DebugShader& instance();
-
-    void setDrawingMode(DrawingMode mode);
-
-    void setupAttribute() const override;
 
    private:
     DebugShader(const std::string& vertexPath, const std::string& fragmentPath);
 
-    DrawingMode m_drawingMode;
 };
 
 #endif
