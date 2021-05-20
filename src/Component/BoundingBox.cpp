@@ -110,7 +110,7 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
     auto view = manager.getByComponents<BoundingBox>(box);
     auto end = view.end();
     for (auto cur = view.begin(); cur != end; ++cur) {
-        box->update(cur->component<Transform>()->getTransform());
+        box->update(cur->component<TransformComp>()->getTransform());
     }
 }
 

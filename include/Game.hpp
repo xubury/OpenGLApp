@@ -10,6 +10,7 @@
 #include <ECS/Application.hpp>
 #include <Graphic/FrameBuffer.hpp>
 #include <Editor/Editor.hpp>
+#include <Graphic/Camera.hpp>
 
 class Game {
    public:

@@ -4,7 +4,7 @@
 #include <Graphic/Axis.hpp>
 #include <ECS/ECS.hpp>
 
-class Transform : public Component<Transform, EntityBase> {
+class Transform {
    public:
     Transform();
 
@@ -12,7 +12,13 @@ class Transform : public Component<Transform, EntityBase> {
 
     void translate(const glm::vec3 &position);
 
-    void rotate(float angle, const glm::vec3 &axis);
+    // Factor as RxRyRz,
+    // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
+    void setEulerAngle(glm::vec3 eulerAngle);
+
+    // Factor as RxRyRz,
+    // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
+    glm::vec3 getEulerAngle() const;
 
     glm::mat4 getTransform() const;
 
@@ -20,11 +26,17 @@ class Transform : public Component<Transform, EntityBase> {
 
     glm::vec3 getPosition() const;
 
-   private:
+   protected:
     glm::mat4 m_transform;
 };
 
-class TransformSystem : public System<Transform, EntityBase> {
+class TransformComp : public Transform,
+                      public Component<TransformComp, EntityBase> {
+   public:
+    void rotate(float angle, const glm::vec3 &axis);
+};
+
+class TransformSystem : public System<TransformComp, EntityBase> {
    public:
     TransformSystem();
 

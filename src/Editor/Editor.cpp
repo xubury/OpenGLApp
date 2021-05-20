@@ -2,6 +2,7 @@
 #include <Graphic/FrameBuffer.hpp>
 #include <Graphic/Camera.hpp>
 #include <Graphic/RenderWindow.hpp>
+#include <Component/Transform.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -28,6 +29,17 @@ Editor::Editor() {
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
+void transForm(Transform& trans) {
+    ImGui::Text("Transform");
+    glm::vec3 eulerAngle = trans.getEulerAngle();
+    ImGui::InputFloat3("Rotation", &eulerAngle[0]);
+    trans.setEulerAngle(eulerAngle);
+
+    glm::vec3 pos = trans.getPosition();
+    ImGui::InputFloat3("Position", &pos[0]);
+    trans.setPosition(pos);
+}
+
 void Editor::render(EditorContext& context) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -37,23 +49,19 @@ void Editor::render(EditorContext& context) {
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(0, 0));
-        ImGui::BeginChild("Camera");
-        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
+        if (ImGui::TreeNode("Camera")) {
+            ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
+            transForm(*context.camera);
+            context.camera->updateView();
+            ImGui::Separator();
+            ImGui::TreePop();
+        }
 
-        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Rotation");
-        glm::vec3 pyr = context.camera->getPitchYawRoll();
-        ImGui::InputFloat("Pitch", &pyr[0]);
-        ImGui::InputFloat("Yaw", &pyr[1]);
-        ImGui::InputFloat("Roll", &pyr[2]);
-        context.camera->setPitchYawRoll(pyr[0], pyr[1], pyr[2]);
-
-        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Translation");
-        glm::vec3 pos = context.camera->getPosition();
-        ImGui::InputFloat("X", &pos.x);
-        ImGui::InputFloat("Y", &pos.y);
-        ImGui::InputFloat("Z", &pos.z);
-        context.camera->setPosition(pos.x, pos.y, pos.z);
-        ImGui::EndChild();
+        if (ImGui::TreeNode("Components")) {
+            transForm(*context.trans);
+            ImGui::Separator();
+            ImGui::TreePop();
+        }
     }
     ImGui::End();
 

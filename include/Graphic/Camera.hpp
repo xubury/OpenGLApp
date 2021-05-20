@@ -4,16 +4,15 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include <Window/ActionTarget.hpp>
+#include <Component/Transform.hpp>
 
-inline const float YAW = 0.f;
-inline const float PITCH = 0.f;
 inline const float SPEED = 2.5f;
 inline const float ZOOM = 45.f;
 inline const float MOUSE_SENSITIVITY = 0.1f;
 
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
-class Camera : protected ActionTarget<Movement> {
+class Camera : public Transform, protected ActionTarget<Movement> {
    public:
     static const Camera Default;
 
@@ -21,18 +20,9 @@ class Camera : protected ActionTarget<Movement> {
 
    public:
     Camera(int x, int y, int width, int height,
-           const glm::vec3 &position = glm::vec3(0.f), float yaw = YAW,
-           float pitch = PITCH);
+           const glm::vec3 &position = glm::vec3(0.f));
 
     virtual ~Camera() = default;
-
-    glm::vec3 getPosition() const;
-
-    void setPosition(float x, float y, float z);
-
-    glm::vec3 getPitchYawRoll() const;
-
-    void setPitchYawRoll(float pitch, float yaw, float roll);
 
     glm::mat4 getProjection() const;
 
@@ -68,6 +58,7 @@ class Camera : protected ActionTarget<Movement> {
 
     virtual void processEvents() const;
 
+    void updateView();
    protected:
     static ActionMap<Movement> s_cameraMovement;
 
@@ -76,14 +67,9 @@ class Camera : protected ActionTarget<Movement> {
     int m_y;
     int m_width;
     int m_height;
-    glm::vec3 m_position;
-    glm::vec3 m_front;
-    glm::vec3 m_up;
-    glm::vec3 m_right;
 
     float m_yaw;
     float m_pitch;
-    float m_roll;
 
     float m_zoom;
     float m_nearZ;
@@ -91,15 +77,12 @@ class Camera : protected ActionTarget<Movement> {
 
     glm::mat4 m_projection;
     glm::mat4 m_view;
-
-    void update();
 };
 
 class ControlCamera : public Camera {
    public:
     ControlCamera(int x, int y, int width, int height,
-                  const glm::vec3 &position = glm::vec3(0.f), float yaw = YAW,
-                  float pitch = PITCH);
+                  const glm::vec3 &position = glm::vec3(0.f));
 
     virtual bool processEvent(const Event &event) const override;
 

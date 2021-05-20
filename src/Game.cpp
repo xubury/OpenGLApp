@@ -9,7 +9,7 @@ void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
     Cube* cube = dynamic_cast<Cube*>(m_app.entities.getPtr(id));
     cube->setTextures(textures);
-    cube->component<Transform>()->setPosition(pos);
+    cube->component<TransformComp>()->setPosition(pos);
 }
 
 void Game::addModel(const std::string& path) {
@@ -20,7 +20,7 @@ void Game::addModel(const std::string& path) {
 
 Game::Game(int width, int height, const std::string& title)
     : m_window(width, height, title),
-      m_camera(0, 0, width, height, glm::vec3(0, 0, 3.f)) {
+      m_camera(0, 0, width, height, glm::vec3(0, 0, 10.f)) {
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
@@ -48,10 +48,11 @@ Game::Game(int width, int height, const std::string& title)
                                    Texture::DIFFUSE);
     containerTextures.loadFromFile("resources/textures/container2_specular.png",
                                    Texture::SPECULAR);
+    addModel("resources/models/backpack/backpack.obj");
+
     for (int i = 0; i < 10; ++i) {
         addCube(cubePositions[i], containerTextures);
     }
-    addModel("resources/models/backpack/backpack.obj");
 
     m_window.setFramerateLimit(120);
 
@@ -59,14 +60,13 @@ Game::Game(int width, int height, const std::string& title)
 }
 
 void Game::update(Time& deltaTime) {
-    m_app.update(deltaTime);
-
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
-        m_app.entities.get(*cur).component<Transform>()->rotate(
+        m_app.entities.get(*cur).component<TransformComp>()->rotate(
             glm::radians(1.0f) * deltaTime.as<MilliSeconds>().count(),
-            glm::vec3(1.0, 2.0f, 3.0f));
+            glm::vec3(0, 1, 0));
     }
+    m_app.update(deltaTime);
 }
 
 void Game::render() {
@@ -96,6 +96,7 @@ void Game::run(int minFps) {
     context.camera = &m_camera;
     context.frameBuffer = &m_frameBuffer;
     context.window = &m_window;
+    context.trans = m_app.entities.get(0).component<TransformComp>().get();
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {

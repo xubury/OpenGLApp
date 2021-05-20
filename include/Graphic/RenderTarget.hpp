@@ -5,8 +5,8 @@
 #include <glm/glm.hpp>
 
 #include <Graphic/Drawable.hpp>
-#include <Graphic/Camera.hpp>
 
+class Camera;
 class VertexBuffer;
 class ElementBuffer;
 class Shader;
