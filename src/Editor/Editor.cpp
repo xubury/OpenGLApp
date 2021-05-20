@@ -38,6 +38,20 @@ void Editor::render(EditorContext& context) {
         ImGui::SetWindowPos(ImVec2(0, 0));
         ImGui::BeginChild("Camera");
         ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
+
+        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Rotation");
+        glm::vec3 pyr = context.camera->getPitchYawRoll();
+        ImGui::InputFloat("Pitch", &pyr[0]);
+        ImGui::InputFloat("Yaw", &pyr[1]);
+        ImGui::InputFloat("Roll", &pyr[2]);
+        context.camera->setPitchYawRoll(pyr[0], pyr[1], pyr[2]);
+
+        ImGui::TextColored(ImVec4(1, 1, 1, 1), "Translation");
+        glm::vec3 pos = context.camera->getPosition();
+        ImGui::InputFloat("X", &pos.x);
+        ImGui::InputFloat("Y", &pos.y);
+        ImGui::InputFloat("Z", &pos.z);
+        context.camera->setPosition(pos.x, pos.y, pos.z);
         ImGui::EndChild();
     }
     ImGui::End();

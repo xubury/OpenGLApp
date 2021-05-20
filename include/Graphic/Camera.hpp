@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <Window/ActionTarget.hpp>
 
-inline const float YAW = -90.f;
+inline const float YAW = 0.f;
 inline const float PITCH = 0.f;
 inline const float SPEED = 2.5f;
 inline const float ZOOM = 45.f;
@@ -21,13 +21,18 @@ class Camera : protected ActionTarget<Movement> {
 
    public:
     Camera(int x, int y, int width, int height,
-           const glm::vec3 &position = glm::vec3(0.f),
-           const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f), float yaw = YAW,
+           const glm::vec3 &position = glm::vec3(0.f), float yaw = YAW,
            float pitch = PITCH);
 
     virtual ~Camera() = default;
 
     glm::vec3 getPosition() const;
+
+    void setPosition(float x, float y, float z);
+
+    glm::vec3 getPitchYawRoll() const;
+
+    void setPitchYawRoll(float pitch, float yaw, float roll);
 
     glm::mat4 getProjection() const;
 
@@ -75,9 +80,11 @@ class Camera : protected ActionTarget<Movement> {
     glm::vec3 m_front;
     glm::vec3 m_up;
     glm::vec3 m_right;
-    glm::vec3 m_worldUp;
+
     float m_yaw;
     float m_pitch;
+    float m_roll;
+
     float m_zoom;
     float m_nearZ;
     float m_farZ;
@@ -91,9 +98,8 @@ class Camera : protected ActionTarget<Movement> {
 class ControlCamera : public Camera {
    public:
     ControlCamera(int x, int y, int width, int height,
-                  const glm::vec3 &position = glm::vec3(0.f),
-                  const glm::vec3 &worldUp = glm::vec3(0.f, 1.f, 0.f),
-                  float yaw = YAW, float pitch = PITCH);
+                  const glm::vec3 &position = glm::vec3(0.f), float yaw = YAW,
+                  float pitch = PITCH);
 
     virtual bool processEvent(const Event &event) const override;
 
