@@ -32,12 +32,16 @@ Editor::Editor() {
 void transForm(Transform& trans) {
     ImGui::Text("Transform");
     glm::vec3 eulerAngle = trans.getEulerAngle();
-    ImGui::InputFloat3("Rotation", &eulerAngle[0]);
-    trans.setEulerAngle(eulerAngle);
+    if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f",
+                           ImGuiInputTextFlags_EnterReturnsTrue)) {
+        trans.setEulerAngle(eulerAngle);
+    }
 
     glm::vec3 pos = trans.getPosition();
-    ImGui::InputFloat3("Position", &pos[0]);
-    trans.setPosition(pos);
+    if (ImGui::InputFloat3("Position", &pos[0], "%.3f",
+                           ImGuiInputTextFlags_EnterReturnsTrue)) {
+        trans.setPosition(pos);
+    }
 }
 
 void Editor::render(EditorContext& context) {
