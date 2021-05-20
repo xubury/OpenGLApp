@@ -26,6 +26,7 @@ class Transform {
 
     glm::vec3 getPosition() const;
 
+    void rotate(float angle, const glm::vec3 &axis);
    protected:
     glm::mat4 m_transform;
 };
@@ -33,7 +34,6 @@ class Transform {
 class TransformComp : public Transform,
                       public Component<TransformComp, EntityBase> {
    public:
-    void rotate(float angle, const glm::vec3 &axis);
 };
 
 class TransformSystem : public System<TransformComp, EntityBase> {

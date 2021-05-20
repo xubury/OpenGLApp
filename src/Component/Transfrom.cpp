@@ -68,7 +68,7 @@ glm::vec3 Transform::getPosition() const {
     return pos;
 }
 
-void TransformComp::rotate(float angle, const glm::vec3 &axis) {
+void Transform::rotate(float angle, const glm::vec3 &axis) {
     m_transform = glm::rotate(m_transform, glm::radians(angle), axis);
 }
 
