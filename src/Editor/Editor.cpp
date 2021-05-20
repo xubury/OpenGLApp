@@ -18,6 +18,7 @@ Editor::Editor() {
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.ConfigWindowsMoveFromTitleBarOnly = true;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
