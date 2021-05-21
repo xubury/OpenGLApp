@@ -6,4 +6,6 @@
 #include <ECS/EntityManager.hpp>
 #include <ECS/System.hpp>
 
+#include <Entity/EntityBase.hpp>
+
 #endif

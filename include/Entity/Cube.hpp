@@ -7,7 +7,7 @@
 #include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
-#include <ECS/Entity.hpp>
+#include <Entity/EntityBase.hpp>
 
 class Cube : public EntityBase {
    public:

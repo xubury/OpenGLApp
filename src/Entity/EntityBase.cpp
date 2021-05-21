@@ -1,4 +1,4 @@
-#include <ECS/Entity.hpp>
+#include <Entity/EntityBase.hpp>
 #include <Component/Transform.hpp>
 
 ES_INIT_ENTITY(EntityBase)

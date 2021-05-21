@@ -56,19 +56,6 @@ class Entity {
     ES_INIT_VCOMPONENT(ENTITY) \
     ES_INIT_VSYSTEM(ENTITY)
 
-class EntityBase : public Entity<EntityBase>, public Drawable {
-   public:
-    EntityBase(const EntityBase &) = delete;
-
-    EntityBase &operator=(const EntityBase &) = delete;
-
-    EntityBase(EntityManager<EntityBase> *manager, uint32_t id);
-
-    glm::vec3 getPosition() const;
-
-   private:
-    std::string m_name;
-};
 
 template <typename ENTITY>
 Entity<ENTITY>::Entity(EntityManager<ENTITY> *manager, uint32_t id)

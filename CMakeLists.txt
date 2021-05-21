@@ -20,6 +20,7 @@ set(Component_Src
     src/Component/BoundingBox.cpp)
 
 set(Entity_Src
+    src/Entity/EntityBase.cpp
     src/Entity/Camera.cpp
     src/Entity/Model.cpp
     src/Entity/Cube.cpp)
@@ -28,8 +29,6 @@ set(Utility_Src
     src/Utility/Memory.cpp
     src/Utility/Time.cpp)
 
-set(ECS_Src
-    src/ECS/Entity.cpp)
 
 set(Graphic_Src
     src/Graphic/Shader.cpp
@@ -62,7 +61,6 @@ add_executable(OpenGLApp
     src/Game.cpp
     ${Library_Src}
     ${Utility_Src}
-    ${ECS_Src}
     ${Component_Src}
     ${Entity_Src}
     ${Graphic_Src}

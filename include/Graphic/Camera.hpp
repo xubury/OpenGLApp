@@ -1,10 +1,10 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include <memory>
 #include <glm/glm.hpp>
-#include <Entity/EntityBase.hpp>
 #include <Window/ActionTarget.hpp>
-#include <Graphic/RenderTarget.hpp>
+#include <Component/Transform.hpp>
 
 inline const float SPEED = 2.5f;
 inline const float ZOOM = 45.f;
@@ -12,14 +12,14 @@ inline const float MOUSE_SENSITIVITY = 0.1f;
 
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
-class Camera : public EntityBase, protected ActionTarget<Movement> {
+class Camera : public Entity, protected ActionTarget<Movement> {
    public:
     using ActionTarget::processEvent;
     using ActionTarget::processEvents;
     using ActionTarget::setActive;
 
    public:
-    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
+    Camera(EntityManager<Entity> *manager, uint32_t id, int x, int y,
            int width, int height, const glm::vec3 &position = glm::vec3(0.f));
 
     virtual ~Camera() = default;
@@ -82,7 +82,7 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
 class ControlCamera : public Camera {
    public:
-    ControlCamera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
+    ControlCamera(EntityManager<Entity> *manager, uint32_t id, int x, int y,
                   int width, int height,
                   const glm::vec3 &position = glm::vec3(0.f));
 

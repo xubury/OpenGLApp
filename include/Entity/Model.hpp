@@ -2,7 +2,7 @@
 #define MODEL_HPP
 
 #include <Graphic/ModelResource.hpp>
-#include <ECS/Entity.hpp>
+#include <Entity/EntityBase.hpp>
 
 class Model : public EntityBase {
    public:
