@@ -6,7 +6,7 @@
 #include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
-#include <Graphic/Camera.hpp>
+#include <Entity/Camera.hpp>
 
 RenderTarget::RenderTarget() : m_textures(nullptr) {}
 

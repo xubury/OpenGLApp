@@ -3,7 +3,7 @@
 #include <Entity/Cube.hpp>
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
-#include <Graphic/Camera.hpp>
+#include <Entity/Camera.hpp>
 #include <iostream>
 #include <Editor/Editor.hpp>
 

@@ -1,6 +1,6 @@
 #include <Editor/Editor.hpp>
 #include <Graphic/FrameBuffer.hpp>
-#include <Graphic/Camera.hpp>
+#include <Entity/Camera.hpp>
 #include <Graphic/RenderWindow.hpp>
 #include <Component/Transform.hpp>
 #include <GLFW/glfw3.h>

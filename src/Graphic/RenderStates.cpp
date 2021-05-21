@@ -4,7 +4,7 @@
 
 #include <Graphic/Shader.hpp>
 #include <Graphic/Texture.hpp>
-#include <Graphic/Camera.hpp>
+#include <Entity/Camera.hpp>
 
 const RenderStates RenderStates::Default;
 

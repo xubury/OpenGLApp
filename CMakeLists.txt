@@ -20,6 +20,7 @@ set(Component_Src
     src/Component/BoundingBox.cpp)
 
 set(Entity_Src
+    src/Entity/Camera.cpp
     src/Entity/Model.cpp
     src/Entity/Cube.cpp)
 
@@ -43,7 +44,6 @@ set(Graphic_Src
     src/Graphic/Axis.cpp
     src/Graphic/Mesh.cpp
     src/Graphic/ModelResource.cpp
-    src/Graphic/Camera.cpp
     src/Graphic/FrameBuffer.cpp)
 
 set(Window_Src
