@@ -12,11 +12,11 @@ class Transform {
 
     void translate(const glm::vec3 &position);
 
-    // Factor as RxRyRz,
+    // Factor as RyRxRz,
     // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
     void setEulerAngle(glm::vec3 eulerAngle);
 
-    // Factor as RxRyRz,
+    // Factor as RyRxRz,
     // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
     glm::vec3 getEulerAngle() const;
 

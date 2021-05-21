@@ -124,5 +124,4 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetCursorPosCallback(m_context, mouseMovementCallback);
     glfwSetMouseButtonCallback(m_context, mouseButtonCallback);
     glfwSetScrollCallback(m_context, mouseWheelCallback);
-
 }

@@ -17,6 +17,8 @@ class Camera : public Transform, protected ActionTarget<Movement> {
     static const Camera Default;
 
     using ActionTarget::setActive;
+    using ActionTarget::processEvent;
+    using ActionTarget::processEvents;
 
    public:
     Camera(int x, int y, int width, int height,
@@ -54,10 +56,6 @@ class Camera : public Transform, protected ActionTarget<Movement> {
 
     void zoom(float zoom);
 
-    virtual bool processEvent(const Event &event) const;
-
-    virtual void processEvents() const;
-
     void updateView();
    protected:
     static ActionMap<Movement> s_cameraMovement;
@@ -83,10 +81,6 @@ class ControlCamera : public Camera {
    public:
     ControlCamera(int x, int y, int width, int height,
                   const glm::vec3 &position = glm::vec3(0.f));
-
-    virtual bool processEvent(const Event &event) const override;
-
-    virtual void processEvents() const override;
 
    private:
     glm::vec2 m_lastMousePos;

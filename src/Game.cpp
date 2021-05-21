@@ -64,7 +64,7 @@ void Game::update(Time& deltaTime) {
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         m_app.entities.get(*cur).component<TransformComp>()->rotate(
             glm::radians(1.0f) * deltaTime.as<MilliSeconds>().count(),
-            glm::vec3(0, 1, 0));
+            glm::vec3(1, 2, 3));
     }
     m_app.update(deltaTime);
 }

@@ -99,14 +99,10 @@ void Camera::setNearFar(float near, float far) {
                                     getNearZ(), getFarZ());
 }
 
-bool Camera::processEvent(const Event &) const { return false; }
-
-void Camera::processEvents() const {}
-
 void Camera::updateView() {
-    glm::vec3 pos = m_transform[3];
-    glm::vec3 front = m_transform[2];
     glm::vec3 up = m_transform[1];
+    glm::vec3 front = m_transform[2];
+    glm::vec3 pos = m_transform[3];
     m_view = glm::lookAt(pos, pos - front, up);
 }
 
@@ -147,9 +143,3 @@ ControlCamera::ControlCamera(int x, int y, int width, int height,
     bind(Action(Event::EventType::MOUSE_WHEEL_SCROLLED),
          [this](const Event &event) { zoom(event.mouseWheel.yOffset); });
 }
-
-bool ControlCamera::processEvent(const Event &event) const {
-    return ActionTarget::processEvent(event);
-}
-
-void ControlCamera::processEvents() const { ActionTarget::processEvents(); }

@@ -50,7 +50,7 @@ class ActionTarget {
 
 template <typename T>
 ActionTarget<T>::ActionTarget(const ActionMap<T> &map)
-    : m_actionMap(map), m_active(false) {}
+    : m_actionMap(map), m_active(true) {}
 
 template <typename T>
 bool ActionTarget<T>::processEvent(const Event &event) const {
