@@ -1,6 +1,9 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
+#include <glm/glm.hpp>
+#include <imgui.h>
+
 class RenderWindow;
 
 class FrameBuffer;
@@ -19,6 +22,8 @@ struct EditorContext {
     EntityManager<EntityBase> *entities;
 };
 
+class Transform;
+
 class Editor {
    public:
     static Editor &instance();
@@ -28,10 +33,28 @@ class Editor {
     void close();
 
     EditorContext context;
+
    private:
     Editor();
 
+    void computeMVP();
+
+    glm::vec3 computeLocalToSrceen(const glm::vec3 &localPos);
+
+    void renderFps();
+
+    void renderAxis(const glm::vec2 &origin, const glm::vec3 &dir,
+                         ImU32 color, float thickness = 5.f);
+
+    void renderModelAxes();
+
     int m_activeEntityId;
+
+    glm::mat4 m_mvp;
+
+    ImDrawList *m_drawList;
+
+    ImVec2 m_renderOrigin;
 };
 
 #endif /* EDITOR_HPP */
