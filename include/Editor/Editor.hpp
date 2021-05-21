@@ -31,7 +31,7 @@ class Editor {
    private:
     Editor();
 
-    int m_id;
+    int m_activeEntityId;
 };
 
 #endif /* EDITOR_HPP */

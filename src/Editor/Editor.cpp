@@ -30,6 +30,7 @@ Editor::Editor() {
 }
 
 void transForm(Transform& trans) {
+    ImGui::Separator();
     ImGui::Text("Transform");
     glm::vec3 eulerAngle = trans.getEulerAngle();
     if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f",
@@ -61,8 +62,8 @@ void Editor::render() {
             ImGui::TreePop();
         }
 
-        if (ImGui::TreeNode("Components")) {
-            auto entity = context.entities->getPtr(m_id);
+        if (ImGui::TreeNode("Entity Components")) {
+            auto entity = context.entities->getPtr(m_activeEntityId);
             ImGui::Text("Name: %s", entity->getName().c_str());
             transForm(*entity->component<Transform>().get());
             ImGui::Separator();
