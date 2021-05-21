@@ -9,7 +9,7 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <ECS/Entity.hpp>
 
-class Cube : public EntityBase {
+class Cube : public GameObject {
    public:
     Cube(EntityManager<EntityBase> *manager, uint32_t id);
 

@@ -11,7 +11,7 @@
 VertexBuffer Cube::s_cube(GL_TRIANGLES);
 
 Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id)
-    : EntityBase(manager, id) {
+    : GameObject(manager, id) {
     Vertex vertices[] = {
         {{-0.5f, -0.5f, -0.5f}, {0, 0, 0}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
         {{0.5f, -0.5f, -0.5f}, {0, 0, 0}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
@@ -59,7 +59,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id)
 void Cube::setTextures(const TextureArray &textures) { m_textures = textures; }
 
 void Cube::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = component<TransformComp>()->getTransform();
+    states.transform = component<Transform>()->getTransform();
     states.textures = &m_textures;
     s_cube.draw(target, states);
 }

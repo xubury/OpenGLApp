@@ -35,7 +35,9 @@ template <typename ENTITY>
 class VComponent {
    public:
     virtual ~VComponent() = default;
+
     uint32_t ownerID() const;
+
     EntityManager<ENTITY> *manager() { return m_manager; }
 
    protected:

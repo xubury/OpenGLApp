@@ -55,8 +55,10 @@ class EntityManager {
     const ENTITY &get(std::size_t id) const;
     ENTITY &get(std::size_t id);
 
-    const ENTITY *getPtr(std::size_t id) const;
-    ENTITY *getPtr(std::size_t id);
+    template <typename T = ENTITY>
+    const T *getPtr(std::size_t id) const;
+    template <typename T = ENTITY>
+    T *getPtr(std::size_t id);
 
     Container::const_iterator begin() const;
 
@@ -285,13 +287,15 @@ inline ENTITY &EntityManager<ENTITY>::get(std::size_t id) {
 }
 
 template <class ENTITY>
-inline const ENTITY *EntityManager<ENTITY>::getPtr(std::size_t id) const {
-    return m_entitesAllocated.at(id);
+template <typename T>
+inline const T *EntityManager<ENTITY>::getPtr(std::size_t id) const {
+    return dynamic_cast<T *>(m_entitesAllocated.at(id));
 }
 
 template <class ENTITY>
-inline ENTITY *EntityManager<ENTITY>::getPtr(std::size_t id) {
-    return m_entitesAllocated.at(id);
+template <typename T>
+inline T *EntityManager<ENTITY>::getPtr(std::size_t id) {
+    return dynamic_cast<T *>(m_entitesAllocated.at(id));
 }
 
 template <class ENTITY>

@@ -80,8 +80,8 @@ void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
 void TransformSystem::draw(EntityManager<EntityBase> &manager,
                            RenderTarget &target, RenderStates states) const {
-    TransformComp::Handle transform;
-    auto view = manager.getByComponents<TransformComp>(transform);
+    Transform::Handle transform;
+    auto view = manager.getByComponents<Transform>(transform);
     auto end = view.end();
     for (auto cur = view.begin(); cur != end; ++cur) {
         states.transform = transform->getTransform();

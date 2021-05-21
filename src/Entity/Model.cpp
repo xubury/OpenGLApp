@@ -15,6 +15,6 @@ void Model::loadFromFile(const std::string &path) {
 }
 
 void Model::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = component<TransformComp>()->getTransform();
+    states.transform = component<Transform>()->getTransform();
     target.draw(m_model, states);
 }

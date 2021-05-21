@@ -44,7 +44,7 @@ void transForm(Transform& trans) {
     }
 }
 
-void Editor::render(EditorContext& context) {
+void Editor::render() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -55,14 +55,14 @@ void Editor::render(EditorContext& context) {
         ImGui::SetWindowPos(ImVec2(0, 0));
         if (ImGui::TreeNode("Camera")) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
-            transForm(*context.camera);
+            transForm(*context.camera->component<Transform>().get());
             context.camera->updateView();
             ImGui::Separator();
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNode("Components")) {
-            transForm(*context.trans);
+            transForm(*context.entities->get(m_id).component<Transform>().get());
             ImGui::Separator();
             ImGui::TreePop();
         }

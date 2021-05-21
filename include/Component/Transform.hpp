@@ -4,7 +4,7 @@
 #include <Graphic/Axis.hpp>
 #include <ECS/ECS.hpp>
 
-class Transform {
+class Transform : public Component<Transform, EntityBase> {
    public:
     Transform();
 
@@ -27,16 +27,12 @@ class Transform {
     glm::vec3 getPosition() const;
 
     void rotate(float angle, const glm::vec3 &axis);
+
    protected:
     glm::mat4 m_transform;
 };
 
-class TransformComp : public Transform,
-                      public Component<TransformComp, EntityBase> {
-   public:
-};
-
-class TransformSystem : public System<TransformComp, EntityBase> {
+class TransformSystem : public System<Transform, EntityBase> {
    public:
     TransformSystem();
 

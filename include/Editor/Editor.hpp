@@ -7,25 +7,31 @@ class FrameBuffer;
 
 class Camera;
 
-class TransformComp;
+template <class ENTITY>
+class EntityManager;
+
+class EntityBase;
 
 struct EditorContext {
     RenderWindow *window;
     FrameBuffer *frameBuffer;
     Camera *camera;
-    TransformComp *trans;
+    EntityManager<EntityBase> *entities;
 };
 
 class Editor {
    public:
     static Editor &instance();
 
-    void render(EditorContext &context);
+    void render();
 
     void close();
 
+    EditorContext context;
    private:
     Editor();
+
+    int m_id;
 };
 
 #endif /* EDITOR_HPP */

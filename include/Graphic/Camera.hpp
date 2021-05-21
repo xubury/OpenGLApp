@@ -12,19 +12,21 @@ inline const float MOUSE_SENSITIVITY = 0.1f;
 
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
-class Camera : public Transform, protected ActionTarget<Movement> {
+class Camera : public EntityBase, protected ActionTarget<Movement> {
    public:
-    static const Camera Default;
-
-    using ActionTarget::setActive;
     using ActionTarget::processEvent;
     using ActionTarget::processEvents;
+    using ActionTarget::setActive;
 
    public:
-    Camera(int x, int y, int width, int height,
-           const glm::vec3 &position = glm::vec3(0.f));
+    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
+           int width, int height, const glm::vec3 &position = glm::vec3(0.f));
 
     virtual ~Camera() = default;
+
+    virtual void draw(RenderTarget &target, RenderStates states) const override;
+
+    glm::vec3 getPosition() const;
 
     glm::mat4 getProjection() const;
 
@@ -57,6 +59,7 @@ class Camera : public Transform, protected ActionTarget<Movement> {
     void zoom(float zoom);
 
     void updateView();
+
    protected:
     static ActionMap<Movement> s_cameraMovement;
 
@@ -79,7 +82,8 @@ class Camera : public Transform, protected ActionTarget<Movement> {
 
 class ControlCamera : public Camera {
    public:
-    ControlCamera(int x, int y, int width, int height,
+    ControlCamera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
+                  int width, int height,
                   const glm::vec3 &position = glm::vec3(0.f));
 
    private:

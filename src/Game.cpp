@@ -3,24 +3,27 @@
 #include <Entity/Cube.hpp>
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
+#include <Graphic/Camera.hpp>
 #include <iostream>
+#include <Editor/Editor.hpp>
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
-    Cube* cube = dynamic_cast<Cube*>(m_app.entities.getPtr(id));
+    Cube* cube = m_app.entities.getPtr<Cube>(id);
     cube->setTextures(textures);
-    cube->component<TransformComp>()->setPosition(pos);
+    cube->component<Transform>()->setPosition(pos);
 }
 
 void Game::addModel(const std::string& path) {
     int id = m_app.entities.create<Model>();
-    Model* model = dynamic_cast<Model*>(m_app.entities.getPtr(id));
+    Model* model = m_app.entities.getPtr<Model>(id);
     model->loadFromFile(path);
 }
 
 Game::Game(int width, int height, const std::string& title)
-    : m_window(width, height, title),
-      m_camera(0, 0, width, height, glm::vec3(0, 0, 10.f)) {
+    : m_window(width, height, title), m_activeCam(0) {
+    m_activeCam = m_cameras.create<ControlCamera>(0, 0, width, height,
+                                                  glm::vec3(0, 0, 3));
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
@@ -62,7 +65,7 @@ Game::Game(int width, int height, const std::string& title)
 void Game::update(Time& deltaTime) {
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
-        m_app.entities.get(*cur).component<TransformComp>()->rotate(
+        m_app.entities.get(*cur).component<Transform>()->rotate(
             glm::radians(1.0f) * deltaTime.as<MilliSeconds>().count(),
             glm::vec3(1, 2, 3));
     }
@@ -73,7 +76,7 @@ void Game::render() {
     m_window.clear();
     RenderStates states;
     states.shader = &m_shader;
-    states.camera = &m_camera;
+    states.camera = m_cameras.getPtr<Camera>(m_activeCam);
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         m_window.draw(m_app.entities.get(*cur), states);
@@ -91,12 +94,12 @@ void Game::run(int minFps) {
     Clock clock;
     Time timeSinceLastUpdate = Time::Zero;
     Time timePerFrame = seconds(1.0 / minFps);
+    Camera* camera = m_cameras.getPtr<Camera>(m_activeCam);
 
-    EditorContext context;
-    context.camera = &m_camera;
-    context.frameBuffer = &m_frameBuffer;
-    context.window = &m_window;
-    context.trans = m_app.entities.get(0).component<TransformComp>().get();
+    Editor::instance().context.frameBuffer = &m_frameBuffer;
+    Editor::instance().context.window = &m_window;
+    Editor::instance().context.entities = &m_app.entities;
+    Editor::instance().context.camera = camera;
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {
@@ -112,12 +115,12 @@ void Game::run(int minFps) {
                 // When minimized， the width and height will drop to zero
                 if (event.size.width > 0 && event.size.height > 0) {
                     m_frameBuffer.update(event.size.width, event.size.height);
-                    m_camera.setSize(event.size.width, event.size.height);
+                    camera->setSize(event.size.width, event.size.height);
                 }
             }
-            m_camera.processEvent(event);
+            camera->processEvent(event);
         }
-        m_camera.processEvents();
+        camera->processEvents();
         timeSinceLastUpdate = clock.restart();
         while (timeSinceLastUpdate > timePerFrame) {
             timeSinceLastUpdate -= timePerFrame;
@@ -126,9 +129,8 @@ void Game::run(int minFps) {
         update(timeSinceLastUpdate);
         m_frameBuffer.activate();
         render();
-        m_frameBuffer.deactivate();
         m_frameBuffer.draw();
-        Editor::instance().render(context);
+        Editor::instance().render();
     }
     Editor::instance().close();
     m_window.close();

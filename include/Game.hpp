@@ -9,8 +9,6 @@
 #include <Utility/Time.hpp>
 #include <ECS/Application.hpp>
 #include <Graphic/FrameBuffer.hpp>
-#include <Editor/Editor.hpp>
-#include <Graphic/Camera.hpp>
 
 class Game {
    public:
@@ -30,8 +28,9 @@ class Game {
     RenderWindow m_window;
     Shader m_shader;
     Application<EntityBase> m_app;
+    EntityManager<EntityBase> m_cameras;
+    uint32_t m_activeCam;
     FrameBuffer m_frameBuffer;
-    ControlCamera m_camera;
 };
 
 #endif

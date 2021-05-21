@@ -59,9 +59,12 @@ class Entity {
 class EntityBase : public Entity<EntityBase>, public Drawable {
    public:
     EntityBase(const EntityBase &) = delete;
+
     EntityBase &operator=(const EntityBase &) = delete;
 
     EntityBase(EntityManager<EntityBase> *manager, uint32_t id);
+
+    glm::vec3 getPosition() const;
 
    private:
     std::string m_name;
