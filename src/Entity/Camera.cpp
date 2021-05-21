@@ -21,12 +21,13 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
       m_nearZ(0.1f),
       m_farZ(100.f) {
     component<Transform>()->setPosition(position);
+    component<Transform>()->setEulerAngle(glm::vec3(m_pitch, m_yaw, 0));
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
     updateView();
 }
 
-void Camera::draw(RenderTarget &, RenderStates ) const {}
+void Camera::draw(RenderTarget &, RenderStates) const {}
 
 glm::vec3 Camera::getPosition() const {
     return component<Transform>()->getPosition();
@@ -54,24 +55,19 @@ float Camera::getAspect() const { return (float)m_width / m_height; }
 
 void Camera::move(Movement dir, float val) {
     auto trans = component<Transform>();
-    glm::vec4 &right = trans->getTransform()[0];
-    glm::vec4 &up = trans->getTransform()[1];
-    glm::vec4 &front = trans->getTransform()[2];
-    glm::vec3 translate;
     if (dir == Movement::FORWARD) {
-        translate = -front * val;
+        trans->translateLocal(glm::vec3(0, 0, -1) * val);
     } else if (dir == Movement::BACKWRAD) {
-        translate = front * val;
+        trans->translateLocal(glm::vec3(0, 0, 1) * val);
     } else if (dir == Movement::LEFT) {
-        translate = -right * val;
+        trans->translateLocal(glm::vec3(-1, 0, 0) * val);
     } else if (dir == Movement::RIGHT) {
-        translate = right * val;
+        trans->translateLocal(glm::vec3(1, 0, 0) * val);
     } else if (dir == Movement::UPWARD) {
-        translate = up * val;
+        trans->translateLocal(glm::vec3(0, 1, 0) * val);
     } else if (dir == Movement::DOWNWARD) {
-        translate = -up * val;
+        trans->translateLocal(glm::vec3(0, -1, 0) * val);
     }
-    trans->translate(translate);
     updateView();
 }
 
@@ -121,8 +117,8 @@ void Camera::updateView() {
     m_view = glm::lookAt(pos, pos - front, up);
 }
 
-ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id, int x,
-                             int y, int width, int height,
+ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,
+                             int x, int y, int width, int height,
                              const glm::vec3 &position)
     : Camera(manager, id, x, y, width, height, position), m_isFirstMouse(true) {
     s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);

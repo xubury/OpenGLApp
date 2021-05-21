@@ -56,7 +56,6 @@ class Entity {
     ES_INIT_VCOMPONENT(ENTITY) \
     ES_INIT_VSYSTEM(ENTITY)
 
-
 template <typename ENTITY>
 Entity<ENTITY>::Entity(EntityManager<ENTITY> *manager, uint32_t id)
     : m_id(id), m_manager(manager) {}

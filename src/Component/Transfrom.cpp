@@ -7,8 +7,22 @@ void Transform::transform(const glm::mat4 &transform) {
     m_transform = transform * m_transform;
 }
 
-void Transform::translate(const glm::vec3 &position) {
-    m_transform = glm::translate(m_transform, position);
+void Transform::translateLocal(const glm::vec3 &t) {
+    m_transform = glm::translate(m_transform, t);
+}
+
+void Transform::translateWorld(const glm::vec3 &t) {
+    m_transform[3].x += t.x;
+    m_transform[3].y += t.y;
+    m_transform[3].z += t.z;
+}
+
+void Transform::rotateLocal(float radians, const glm::vec3 &axis) {
+    m_transform = glm::rotate(m_transform, radians, axis);
+}
+
+void Transform::rotateWorld(float radians, const glm::vec3 &axis) {
+    m_transform = glm::rotate(glm::mat4(1.0), radians, axis) * m_transform;
 }
 
 glm::vec3 Transform::getEulerAngle() const {
@@ -57,19 +71,14 @@ void Transform::setEulerAngle(glm::vec3 eulerAngle) {
     up = glm::vec4(glm::cross(glm::vec3(front), glm::vec3(right)), 0);
 }
 
-glm::mat4 Transform::getTransform() const { return m_transform; }
+const glm::mat4 &Transform::getTransform() const { return m_transform; }
 
 void Transform::setPosition(const glm::vec3 &position) {
     m_transform[3] = glm::vec4(position, 1.0);
 }
 
 glm::vec3 Transform::getPosition() const {
-    glm::vec3 pos(m_transform[3]);
-    return pos;
-}
-
-void Transform::rotate(float angle, const glm::vec3 &axis) {
-    m_transform = glm::rotate(m_transform, glm::radians(angle), axis);
+    return m_transform[3];
 }
 
 Axis TransformSystem::s_axis;

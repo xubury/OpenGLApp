@@ -62,7 +62,9 @@ void Editor::render() {
         }
 
         if (ImGui::TreeNode("Components")) {
-            transForm(*context.entities->get(m_id).component<Transform>().get());
+            auto entity = context.entities->getPtr(m_id);
+            ImGui::Text("Name: %s", entity->getName().c_str());
+            transForm(*entity->component<Transform>().get());
             ImGui::Separator();
             ImGui::TreePop();
         }

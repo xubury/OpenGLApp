@@ -12,12 +12,14 @@ void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     Cube* cube = m_app.entities.getPtr<Cube>(id);
     cube->setTextures(textures);
     cube->component<Transform>()->setPosition(pos);
+    cube->setName(typeid(*cube).name());
 }
 
 void Game::addModel(const std::string& path) {
     int id = m_app.entities.create<Model>();
     Model* model = m_app.entities.getPtr<Model>(id);
     model->loadFromFile(path);
+    model->setName(typeid(*model).name());
 }
 
 Game::Game(int width, int height, const std::string& title)
@@ -65,8 +67,8 @@ Game::Game(int width, int height, const std::string& title)
 void Game::update(Time& deltaTime) {
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
-        m_app.entities.get(*cur).component<Transform>()->rotate(
-            glm::radians(1.0f) * deltaTime.as<MilliSeconds>().count(),
+        m_app.entities.get(*cur).component<Transform>()->rotateLocal(
+            glm::radians(0.01f) * deltaTime.as<MilliSeconds>().count(),
             glm::vec3(1, 2, 3));
     }
     m_app.update(deltaTime);
