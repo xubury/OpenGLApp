@@ -138,19 +138,18 @@ void Editor::render() {
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(0, 0));
-        if (ImGui::TreeNode("Camera")) {
+        if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
             drawTransformSheet(*context.camera->component<Transform>().get());
             ImGui::Separator();
-            ImGui::TreePop();
         }
 
-        if (ImGui::TreeNode("Entity Components")) {
+        if (ImGui::CollapsingHeader("Entity",
+                                    ImGuiTreeNodeFlags_DefaultOpen)) {
             auto entity = context.entities->getPtr(m_activeEntityId);
             ImGui::Text("Name: %s", entity->getName().c_str());
             drawTransformSheet(*entity->component<Transform>().get());
             ImGui::Separator();
-            ImGui::TreePop();
         }
     }
     ImGui::End();
