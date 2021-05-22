@@ -35,7 +35,13 @@ glm::vec3 Camera::getPosition() const {
 glm::mat4 Camera::getProjection() const { return m_projection; }
 
 glm::mat4 Camera::getView() const {
-    return glm::inverse(component<Transform>()->getTransform());
+    // TODO: view == glm::inverse(model)
+    // we can get view directly from camera model matrix
+    auto trans = component<Transform>();
+    glm::vec3 up = trans->getUp();
+    glm::vec3 pos = trans->getPosition();
+    glm::vec3 front = trans->getFront();
+    return glm::lookAt(pos, pos - front, up);
 }
 
 int Camera::getX() const { return m_x; }
