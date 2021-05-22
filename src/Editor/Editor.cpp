@@ -46,13 +46,12 @@ static void drawTransformSheet(Transform& trans) {
 }
 
 void Editor::computeMVP() {
-    auto entity = context.entities->getPtr(m_activeEntityId);
-    m_mvp = context.camera->getProjection() * context.camera->getView() *
-            entity->component<Transform>()->getTransform();
+    m_projectionView =
+        context.camera->getProjection() * context.camera->getView();
 }
 
-glm::vec3 Editor::computeLocalToSrceen(const glm::vec3& localPos) {
-    glm::vec4 clipPos = m_mvp * glm::vec4(localPos, 1.0f);
+glm::vec3 Editor::computeWorldToSrceen(const glm::vec3& worldPos) {
+    glm::vec4 clipPos = m_projectionView * glm::vec4(worldPos, 1.0f);
     clipPos /= clipPos.w;
 
     float width = context.camera->getWidth();
@@ -73,24 +72,59 @@ void Editor::renderFps() {
     m_drawList->AddText(m_renderOrigin, 0xFFFFFFFF, frameRate.c_str());
 }
 
-void Editor::renderAxis(const glm::vec2& origin, const glm::vec3& dir,
+void Editor::renderAxis(const glm::vec2& origin, const glm::vec2& axis,
                         ImU32 color, float thickness) {
-    glm::vec3 axis = computeLocalToSrceen(dir);
-    if (axis.z - 1 < std::numeric_limits<float>::epsilon()) {
-        m_drawList->AddLine(
-            ImVec2(m_renderOrigin.x + origin.x, m_renderOrigin.y + origin.y),
-            ImVec2(m_renderOrigin.x + axis.x, m_renderOrigin.y + axis.y), color,
-            thickness);
-    }
+    m_drawList->AddLine(
+        ImVec2(m_renderOrigin.x + origin.x, m_renderOrigin.y + origin.y),
+        ImVec2(m_renderOrigin.x + axis.x, m_renderOrigin.y + axis.y), color,
+        thickness);
 }
 
 void Editor::renderModelAxes() {
-    glm::vec3 origin = computeLocalToSrceen(glm::vec3(0));
+    auto entity = context.entities->getPtr(m_activeEntityId);
+    auto model = entity->component<Transform>();
+    glm::vec3 origin = computeWorldToSrceen(model->getPosition());
+    // backface culling
     if (origin.z - 1 < std::numeric_limits<float>::epsilon()) {
-        renderAxis(origin, glm::vec3(1, 0, 0), 0xFF0000FF);
-        renderAxis(origin, glm::vec3(0, 1, 0), 0xFF00FF00);
-        renderAxis(origin, glm::vec3(0, 0, 1), 0xFFFF0000);
+        // draw x
+        glm::vec3 xAxis = computeWorldToSrceen(model->getRight());
+        if (xAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
+            renderAxis(origin, xAxis, 0xFF0000FF);
+        }
+        // draw y
+        glm::vec3 yAxis = computeWorldToSrceen(model->getUp());
+        if (yAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
+            renderAxis(origin, yAxis, 0xFF00FF00);
+        }
+        // draw z
+        glm::vec3 zAxis = computeWorldToSrceen(model->getFront());
+        if (zAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
+            renderAxis(origin, zAxis, 0xFFFF0000);
+        }
     }
+}
+
+void Editor::renderCameraAxes() {
+    float width = 800;
+    float height = 600;
+    float len = 50.0f;
+    auto model = context.camera->component<Transform>();
+    glm::vec3 origin(width - len * 1.2, height - len * 1.2, 0);
+    // draw x
+    glm::vec3 xAxis = model->getRight();
+    xAxis.y = -xAxis.y;
+    xAxis = origin + xAxis * len;
+    renderAxis(origin, xAxis, 0xFF0000FF, 2);
+    // draw y
+    glm::vec3 yAxis = model->getUp();
+    yAxis.y = -yAxis.y;
+    yAxis = origin + yAxis * len;
+    renderAxis(origin, yAxis, 0xFF00FF00, 2);
+    // draw z
+    glm::vec3 zAxis = model->getFront();
+    zAxis.y = -zAxis.y;
+    zAxis = origin + zAxis * len;
+    renderAxis(origin, zAxis, 0xFFFF0000, 2);
 }
 
 void Editor::render() {
@@ -107,7 +141,6 @@ void Editor::render() {
         if (ImGui::TreeNode("Camera")) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
             drawTransformSheet(*context.camera->component<Transform>().get());
-            context.camera->updateView();
             ImGui::Separator();
             ImGui::TreePop();
         }
@@ -147,6 +180,7 @@ void Editor::render() {
 
     renderFps();
     renderModelAxes();
+    renderCameraAxes();
 
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);

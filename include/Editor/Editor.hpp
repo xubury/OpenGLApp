@@ -39,18 +39,20 @@ class Editor {
 
     void computeMVP();
 
-    glm::vec3 computeLocalToSrceen(const glm::vec3 &localPos);
+    glm::vec3 computeWorldToSrceen(const glm::vec3 &localPos);
 
     void renderFps();
 
-    void renderAxis(const glm::vec2 &origin, const glm::vec3 &dir,
-                         ImU32 color, float thickness = 5.f);
+    void renderAxis(const glm::vec2 &origin, const glm::vec2 &axis, ImU32 color,
+                    float thickness = 5.f);
 
     void renderModelAxes();
 
+    void renderCameraAxes();
+
     int m_activeEntityId;
 
-    glm::mat4 m_mvp;
+    glm::mat4 m_projectionView;
 
     ImDrawList *m_drawList;
 

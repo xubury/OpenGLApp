@@ -58,8 +58,6 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
     void zoom(float zoom);
 
-    void updateView();
-
    protected:
     static ActionMap<Movement> s_cameraMovement;
 
@@ -77,7 +75,6 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
     float m_farZ;
 
     glm::mat4 m_projection;
-    glm::mat4 m_view;
 };
 
 class ControlCamera : public Camera {

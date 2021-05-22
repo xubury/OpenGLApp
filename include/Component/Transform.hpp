@@ -32,6 +32,11 @@ class Transform : public Component<Transform, EntityBase> {
 
     glm::vec3 getPosition() const;
 
+    glm::vec3 getRight() const;
+
+    glm::vec3 getUp() const;
+
+    glm::vec3 getFront() const;
 
    protected:
     glm::mat4 m_transform;

@@ -24,7 +24,6 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
     component<Transform>()->setEulerAngle(glm::vec3(m_pitch, m_yaw, 0));
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
-    updateView();
 }
 
 void Camera::draw(RenderTarget &, RenderStates) const {}
@@ -35,7 +34,9 @@ glm::vec3 Camera::getPosition() const {
 
 glm::mat4 Camera::getProjection() const { return m_projection; }
 
-glm::mat4 Camera::getView() const { return m_view; }
+glm::mat4 Camera::getView() const {
+    return glm::inverse(component<Transform>()->getTransform());
+}
 
 int Camera::getX() const { return m_x; }
 
@@ -68,7 +69,6 @@ void Camera::move(Movement dir, float val) {
     } else if (dir == Movement::DOWNWARD) {
         trans->translateLocal(glm::vec3(0, -1, 0) * val);
     }
-    updateView();
 }
 
 void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
@@ -82,7 +82,6 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
         }
     }
     component<Transform>()->setEulerAngle(glm::vec3(m_pitch, m_yaw, 0));
-    updateView();
 }
 
 void Camera::zoom(float zoom) {
@@ -107,14 +106,6 @@ void Camera::setNearFar(float near, float far) {
     m_farZ = far;
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
-}
-
-void Camera::updateView() {
-    auto trans = component<Transform>();
-    glm::vec3 pos = getPosition();
-    glm::vec3 up = trans->getTransform()[1];
-    glm::vec3 front = trans->getTransform()[2];
-    m_view = glm::lookAt(pos, pos - front, up);
 }
 
 ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,

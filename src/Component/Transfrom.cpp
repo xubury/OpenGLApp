@@ -30,8 +30,8 @@ glm::vec3 Transform::getEulerAngle() const {
     if (m_transform[2][1] - 1 < std::numeric_limits<float>::epsilon()) {
         if (m_transform[2][1] + 1 > std::numeric_limits<float>::epsilon()) {
             eulerAngle.x = asin(-m_transform[2][1]);
-            eulerAngle.y = atan2(-m_transform[2][0], m_transform[2][2]);
-            eulerAngle.z = atan2(-m_transform[0][1], m_transform[1][1]);
+            eulerAngle.y = atan2(m_transform[2][0], m_transform[2][2]);
+            eulerAngle.z = atan2(m_transform[0][1], m_transform[1][1]);
         } else {
             eulerAngle.x = M_PI / 2;
             eulerAngle.y = -atan2(-m_transform[1][0], m_transform[0][0]);
@@ -79,6 +79,18 @@ void Transform::setPosition(const glm::vec3 &position) {
 
 glm::vec3 Transform::getPosition() const {
     return m_transform[3];
+}
+
+glm::vec3 Transform::getRight() const {
+    return m_transform[0];
+}
+
+glm::vec3 Transform::getUp() const {
+    return m_transform[1];
+}
+
+glm::vec3 Transform::getFront() const {
+    return m_transform[2];
 }
 
 Axis TransformSystem::s_axis;
