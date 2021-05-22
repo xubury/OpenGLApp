@@ -73,11 +73,12 @@ target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 
 target_link_libraries(OpenGLApp
     OpenGL::GL
-    glm glfw
+    glm 
+    glfw
     assimp::assimp
     imgui::imgui)
 if(UNIX)
-    target_link_libraries(OpenGLApp x11 xrandr Xi dl pthread)
+    target_link_libraries(OpenGLApp X11 Xrandr Xi dl pthread)
 endif()
 
 target_include_directories(OpenGLApp PUBLIC include libs)
