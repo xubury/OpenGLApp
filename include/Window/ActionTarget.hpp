@@ -37,6 +37,7 @@ class ActionTarget {
 
     void setActive(bool active);
 
+    bool isActive() const;
    private:
     std::list<KeyPair> m_eventRealTime;
     std::list<KeyPair> m_eventPoll;
@@ -132,6 +133,11 @@ void ActionTarget<T>::unbind(const T &key) {
 template <typename T>
 void ActionTarget<T>::setActive(bool active) {
     m_active = active;
+}
+
+template<typename T>
+bool ActionTarget<T>::isActive() const {
+    return m_active;
 }
 
 #endif

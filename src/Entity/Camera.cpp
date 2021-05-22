@@ -138,6 +138,7 @@ ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,
     bind(Movement::DOWNWARD,
          [this](const Event &) { this->move(Movement::DOWNWARD, 0.1f); });
     bind(Action(Event::EventType::MOUSE_MOVED), [this](const Event &event) {
+        if (!isActive()) return;
         glm::vec2 currentMousePos =
             glm::vec2(event.mouseMove.x, event.mouseMove.y);
         if (m_isFirstMouse) {
