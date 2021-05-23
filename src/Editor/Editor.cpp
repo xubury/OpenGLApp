@@ -45,7 +45,7 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
-void Editor::computeMVP() {
+void Editor::computeProjectionView() {
     m_projectionView =
         context.camera->getProjection() * context.camera->getView();
 }
@@ -132,7 +132,7 @@ void Editor::render() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    computeMVP();
+    computeProjectionView();
 
     ImGui::Begin("Settings");
     {
@@ -144,8 +144,7 @@ void Editor::render() {
             ImGui::Separator();
         }
 
-        if (ImGui::CollapsingHeader("Entity",
-                                    ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::CollapsingHeader("Entity", ImGuiTreeNodeFlags_DefaultOpen)) {
             auto entity = context.entities->getPtr(m_activeEntityId);
             ImGui::Text("Name: %s", entity->getName().c_str());
             drawTransformSheet(*entity->component<Transform>().get());

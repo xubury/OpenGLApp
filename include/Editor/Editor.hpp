@@ -37,7 +37,7 @@ class Editor {
    private:
     Editor();
 
-    void computeMVP();
+    void computeProjectionView();
 
     glm::vec3 computeWorldToSrceen(const glm::vec3 &localPos);
 
