@@ -39,6 +39,8 @@ class Editor {
 
     void computeProjectionView();
 
+    void computeCameraRay();
+
     glm::vec3 computeWorldToSrceen(const glm::vec3 &localPos);
 
     void renderFps();
@@ -57,6 +59,10 @@ class Editor {
     ImDrawList *m_drawList;
 
     ImVec2 m_renderOrigin;
+
+    glm::vec4 m_camRayOrigin;
+
+    glm::vec4 m_camRayEnd;
 };
 
 #endif /* EDITOR_HPP */

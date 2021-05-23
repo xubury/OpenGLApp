@@ -13,7 +13,7 @@ Editor& Editor::instance() {
     return s_instance;
 }
 
-Editor::Editor() : m_activeEntityId(0) {
+Editor::Editor() : m_activeEntityId(1) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -50,6 +50,27 @@ void Editor::computeProjectionView() {
         context.camera->getProjection() * context.camera->getView();
 }
 
+void Editor::computeCameraRay() {
+    ImGuiIO& io = ImGui::GetIO();
+    glm::vec2 viewPortOrigin(context.camera->getX(), context.camera->getY());
+    glm::vec2 viewPortSize(context.camera->getWidth(),
+                           context.camera->getHeight());
+    float mouseClipX =
+        (io.MousePos.x - viewPortOrigin.x - m_renderOrigin.x) / viewPortSize.x;
+    mouseClipX = mouseClipX * 2.f - 1.f;
+    float mouseClipY =
+        (io.MousePos.y - viewPortOrigin.y - m_renderOrigin.y) / viewPortSize.y;
+    mouseClipY = (1.f - mouseClipY) * 2.f - 1.f;
+    const float zNear = context.camera->getNearZ();
+    const float zFar = context.camera->getFarZ();
+
+    glm::mat4 inversePV = glm::inverse(m_projectionView);
+    m_camRayOrigin = inversePV * glm::vec4(mouseClipX, mouseClipY, zNear, 1.0f);
+    m_camRayOrigin /= m_camRayOrigin.w;
+    m_camRayEnd = inversePV * glm::vec4(mouseClipX, mouseClipY, zFar, 1.0f);
+    m_camRayEnd /= m_camRayEnd.w;
+}
+
 glm::vec3 Editor::computeWorldToSrceen(const glm::vec3& worldPos) {
     glm::vec4 clipPos = m_projectionView * glm::vec4(worldPos, 1.0f);
     clipPos /= clipPos.w;
@@ -60,8 +81,8 @@ glm::vec3 Editor::computeWorldToSrceen(const glm::vec3& worldPos) {
     float y = context.camera->getY();
 
     glm::vec3 screenPos;
-    screenPos.x = (clipPos.x + 1) * 0.5 * width + x;
-    screenPos.y = (1 - clipPos.y) * 0.5 * height + y;
+    screenPos.x = (clipPos.x + 1) * 0.5 * width + x + m_renderOrigin.x;
+    screenPos.y = (1 - clipPos.y) * 0.5 * height + y + m_renderOrigin.y;
     screenPos.z = clipPos.z;
     return screenPos;
 }
@@ -74,30 +95,29 @@ void Editor::renderFps() {
 
 void Editor::renderAxis(const glm::vec2& origin, const glm::vec2& axis,
                         ImU32 color, float thickness) {
-    m_drawList->AddLine(
-        ImVec2(m_renderOrigin.x + origin.x, m_renderOrigin.y + origin.y),
-        ImVec2(m_renderOrigin.x + axis.x, m_renderOrigin.y + axis.y), color,
-        thickness);
+    m_drawList->AddLine(ImVec2(origin.x, origin.y), ImVec2(axis.x, axis.y),
+                        color, thickness);
 }
 
 void Editor::renderModelAxes() {
     auto entity = context.entities->getPtr(m_activeEntityId);
     auto model = entity->component<Transform>();
-    glm::vec3 origin = computeWorldToSrceen(model->getPosition());
+    glm::vec3 pos = model->getPosition();
+    glm::vec3 origin = computeWorldToSrceen(pos);
     // backface culling
     if (origin.z - 1 < std::numeric_limits<float>::epsilon()) {
         // draw x
-        glm::vec3 xAxis = computeWorldToSrceen(model->getRight());
+        glm::vec3 xAxis = computeWorldToSrceen(pos + model->getRight());
         if (xAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
             renderAxis(origin, xAxis, 0xFF0000FF);
         }
         // draw y
-        glm::vec3 yAxis = computeWorldToSrceen(model->getUp());
+        glm::vec3 yAxis = computeWorldToSrceen(pos + model->getUp());
         if (yAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
             renderAxis(origin, yAxis, 0xFF00FF00);
         }
         // draw z
-        glm::vec3 zAxis = computeWorldToSrceen(model->getFront());
+        glm::vec3 zAxis = computeWorldToSrceen(pos + model->getFront());
         if (zAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
             renderAxis(origin, zAxis, 0xFFFF0000);
         }
@@ -109,7 +129,8 @@ void Editor::renderCameraAxes() {
     float height = 600;
     float len = 50.0f;
     auto model = context.camera->component<Transform>();
-    glm::vec3 origin(width - len * 1.2, height - len * 1.2, 0);
+    glm::vec3 origin(m_renderOrigin.x + width - len * 1.2f,
+                     m_renderOrigin.y + height - len * 1.2f, 0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
@@ -133,6 +154,7 @@ void Editor::render() {
     ImGui::NewFrame();
 
     computeProjectionView();
+    computeCameraRay();
 
     ImGui::Begin("Settings");
     {
@@ -179,6 +201,8 @@ void Editor::render() {
     renderFps();
     renderModelAxes();
     renderCameraAxes();
+    renderAxis(computeWorldToSrceen(m_camRayOrigin),
+               computeWorldToSrceen(m_camRayEnd), 0xFF0000FF);
 
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);
