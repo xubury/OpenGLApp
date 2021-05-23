@@ -8,13 +8,14 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <Utility/Math.hpp>
+#include <iostream>
 
 Editor& Editor::instance() {
     static Editor s_instance;
     return s_instance;
 }
 
-Editor::Editor() : m_activeEntityId(1) {
+Editor::Editor() : m_activeEntityId(1), m_axesDrawingOrder{0, 1, 2} {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -44,30 +45,41 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
-void Editor::computeModelAxes(float len) {
+void Editor::buildModelAxes(float len) {
     auto entity = context.entities->getPtr(m_activeEntityId);
     const auto& model = entity->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
     glm::vec3 renderOrigin = glm::vec3(m_renderOrigin, 0);
-    m_modelScreenPos =
+    m_modelScreenAxes.origin =
         computeWorldToSrceen(originWorld, *context.camera) + renderOrigin;
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelAxes[i].screenPos =
+        m_modelScreenAxes.axes[i].pos =
             computeWorldToSrceen(originWorld + glm::vec3(model[i]),
                                  *context.camera) +
             renderOrigin;
-        m_modelAxes[i].screenPos =
-            m_modelScreenPos +
-            glm::normalize(m_modelAxes[i].screenPos - m_modelScreenPos) * len;
-        m_modelAxes[i].color = 0xFF000000;
-        ((uint8_t*)&m_modelAxes[i].color)[i] = 0xFF;
+        m_modelScreenAxes.axes[i].pos =
+            m_modelScreenAxes.origin +
+            glm::normalize(m_modelScreenAxes.axes[i].pos -
+                           m_modelScreenAxes.origin) *
+                len;
+        m_modelScreenAxes.axes[i].color = 0xFF000000;
+        ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
     // sort the drawing order, so the axis with heighest Z value draw first
-    std::sort(std::begin(m_modelAxes), std::end(m_modelAxes),
-              [](const auto& lhs, const auto& rhs) {
-                  return lhs.screenPos.z > rhs.screenPos.z;
+    std::sort(std::begin(m_axesDrawingOrder), std::end(m_axesDrawingOrder),
+              [&axes = m_modelScreenAxes](const auto& lhs, const auto& rhs) {
+                  return axes.axes[lhs].pos.z > axes.axes[rhs].pos.z;
               });
+}
+
+void Editor::buildModelPlane() {
+    auto entity = context.entities->getPtr(m_activeEntityId);
+    const auto& model = entity->component<Transform>();
+    glm::vec3 pos = model->getPosition();
+    m_planeXY = buildPlane(pos, pos + model->getFront());
+    m_planeXZ = buildPlane(pos, pos + model->getUp());
+    m_planeYZ = buildPlane(pos, pos + model->getRight());
 }
 
 void Editor::renderFps() {
@@ -85,24 +97,27 @@ void Editor::renderAxis(const glm::vec2& origin, const glm::vec2& axis,
 
 void Editor::renderModelAxes() {
     // backface culling
-    if (m_modelScreenPos.z - 1.f < std::numeric_limits<float>::epsilon()) {
-        for (const Axis& axis : m_modelAxes) {
-            if (axis.screenPos.z - 1 < std::numeric_limits<float>::epsilon()) {
-                renderAxis(m_modelScreenPos, axis.screenPos, axis.color);
+    if (m_modelScreenAxes.origin.z > 0.f) {
+        for (int i = 0; i < 3; ++i) {
+            const auto& axis = m_modelScreenAxes.axes[m_axesDrawingOrder[i]];
+            if (axis.pos.z > 0.f) {
+                renderAxis(m_modelScreenAxes.origin, axis.pos, axis.color);
             }
         }
         float hWidth = 5.0f;
         float hHeight = 5.0f;
-        m_drawList->AddRectFilled(
-            ImVec2(m_modelScreenPos.x - hWidth, m_modelScreenPos.y - hHeight),
-            ImVec2(m_modelScreenPos.x + hWidth, m_modelScreenPos.y + hHeight),
-            0xFFFFFFFF);
+        m_drawList->AddRectFilled(ImVec2(m_modelScreenAxes.origin.x - hWidth,
+                                         m_modelScreenAxes.origin.y - hHeight),
+                                  ImVec2(m_modelScreenAxes.origin.x + hWidth,
+                                         m_modelScreenAxes.origin.y + hHeight),
+                                  0xFFFFFFFF);
     }
 }
 
 void Editor::renderCameraAxes(float len) {
     auto model = context.camera->component<Transform>();
-    glm::vec3 origin(m_renderOrigin + context.camera->getViewportSize() - len, 0);
+    glm::vec3 origin(m_renderOrigin + context.camera->getViewportSize() - len,
+                     0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
@@ -124,7 +139,6 @@ void Editor::render() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-
 
     ImGui::Begin("Settings");
     {
@@ -172,9 +186,27 @@ void Editor::render() {
     }
     ImGui::End();
     ImGuiIO& io = ImGui::GetIO();
-    computeModelAxes(50.0f);
+    buildModelAxes(50.0f);
+    buildModelPlane();
     computeCameraRay(m_camRayOrigin, m_camRayDir,
                      glm::vec2(io.MousePos.x, io.MousePos.y), *context.camera);
+    float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, m_planeXY);
+    if (len > 0) {
+        glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
+        glm::vec2 intersectScreenPos =
+            computeWorldToSrceen(intersectPoint, *context.camera);
+
+        glm::vec2 cloesetScreenPoint = findClosestPoint(
+            intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
+            glm::vec2(m_modelScreenAxes.axes[0].pos));
+        m_drawList->AddCircleFilled(
+            ImVec2(cloesetScreenPoint.x, cloesetScreenPoint.y), 10, 0xFFFFFFFF);
+        if (glm::length(intersectScreenPos - cloesetScreenPoint) < 12.f) {
+            std::cout << "yes" << std::endl;
+        } else {
+            std::cout << "no" << std::endl;
+        }
+    }
 
     renderFps();
     renderModelAxes();

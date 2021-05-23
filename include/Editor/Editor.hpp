@@ -25,8 +25,13 @@ struct EditorContext {
 class Transform;
 
 struct Axis {
-    glm::vec3 screenPos;
+    glm::vec3 pos;
     uint32_t color;
+};
+
+struct Axes {
+    glm::vec3 origin;
+    Axis axes[3];
 };
 
 class Editor {
@@ -42,8 +47,11 @@ class Editor {
    private:
     Editor();
 
-    // compute the model's axes coordinate and color
-    void computeModelAxes(float len);
+    // build the model's axes coordinate and color
+    void buildModelAxes(float len);
+
+    // build model's X-Y X-Z Y-Z plane
+    void buildModelPlane();
 
     void renderFps();
 
@@ -64,9 +72,14 @@ class Editor {
 
     glm::vec3 m_camRayDir;
 
-    glm::vec3 m_modelScreenPos;
+    Axes m_modelScreenAxes;
+    int m_axesDrawingOrder[3];
 
-    Axis m_modelAxes[3];
+    glm::vec4 m_planeXY;
+
+    glm::vec4 m_planeXZ;
+
+    glm::vec4 m_planeYZ;
 };
 
 #endif /* EDITOR_HPP */

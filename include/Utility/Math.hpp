@@ -4,16 +4,18 @@
 #include <glm/glm.hpp>
 #include <Entity/Camera.hpp>
 
-inline glm::vec3 findClosestPoint(const glm::vec3 point, const glm::vec3 &start,
-                                  const glm::vec3 &end) {
-    glm::vec3 c = point - start;
-    glm::vec3 v = end - start;
-    float d = (end - start).length();
+template <glm::length_t L, typename T, glm::qualifier Q>
+inline glm::vec<L, T, Q> findClosestPoint(const glm::vec<L, T, Q> point,
+                                  const glm::vec<L, T, Q> &start,
+                                  const glm::vec<L, T, Q> &end) {
+    glm::vec<L, T, Q> c = point - start;
+    glm::vec<L, T, Q> v = end - start;
+    T d = glm::length(end - start);
     v /= d;
     float t = glm::dot(v, c);
-    if (t < std::numeric_limits<float>::epsilon()) {
+    if (t < 0) {
         return start;
-    } else if (t - d > std::numeric_limits<float>::epsilon()) {
+    } else if (t > d) {
         return end;
     }
     return start + v * t;
@@ -23,10 +25,10 @@ inline glm::vec4 buildPlane(const glm::vec3 &point, const glm::vec3 &normal) {
     return glm::vec4(normal, glm::dot(normal, point));
 }
 
-inline float intersectRayPlane(const glm::vec3 &rayStart, const glm::vec3 &dir,
+inline float intersectRayPlane(const glm::vec3 &rayOrigin, const glm::vec3 &dir,
                                glm::vec4 &plane) {
     glm::vec3 normal = plane;
-    float numer = glm::dot(normal, rayStart) - plane.w;
+    float numer = glm::dot(normal, rayOrigin) - plane.w;
     float denom = glm::dot(normal, dir);
     // orthogonal, can't intercect
     if (std::fabs(denom) < std::numeric_limits<float>::epsilon()) {
