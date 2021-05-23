@@ -1,7 +1,6 @@
 #ifndef TRANSFORM_HPP
 #define TRANSFORM_HPP
 
-#include <Graphic/Axis.hpp>
 #include <ECS/ECS.hpp>
 
 class Transform : public Component<Transform, EntityBase> {
@@ -53,7 +52,6 @@ class TransformSystem : public System<Transform, EntityBase> {
               RenderStates states) const;
 
    private:
-    static Axis s_axis;
 };
 
 #endif

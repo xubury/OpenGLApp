@@ -77,35 +77,17 @@ void Transform::setPosition(const glm::vec3 &position) {
     m_transform[3] = glm::vec4(position, 1.0);
 }
 
-glm::vec3 Transform::getPosition() const {
-    return m_transform[3];
-}
+glm::vec3 Transform::getPosition() const { return m_transform[3]; }
 
-glm::vec3 Transform::getRight() const {
-    return m_transform[0];
-}
+glm::vec3 Transform::getRight() const { return m_transform[0]; }
 
-glm::vec3 Transform::getUp() const {
-    return m_transform[1];
-}
+glm::vec3 Transform::getUp() const { return m_transform[1]; }
 
-glm::vec3 Transform::getFront() const {
-    return m_transform[2];
-}
+glm::vec3 Transform::getFront() const { return m_transform[2]; }
 
-Axis TransformSystem::s_axis;
-
-TransformSystem::TransformSystem() { s_axis.create(); }
+TransformSystem::TransformSystem() {}
 
 void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
-void TransformSystem::draw(EntityManager<EntityBase> &manager,
-                           RenderTarget &target, RenderStates states) const {
-    Transform::Handle transform;
-    auto view = manager.getByComponents<Transform>(transform);
-    auto end = view.end();
-    for (auto cur = view.begin(); cur != end; ++cur) {
-        states.transform = transform->getTransform();
-        s_axis.draw(target, states);
-    }
-}
+void TransformSystem::draw(EntityManager<EntityBase> &, RenderTarget &,
+                           RenderStates) const {}

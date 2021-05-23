@@ -40,7 +40,6 @@ set(Graphic_Src
     src/Graphic/RenderWindow.cpp
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
-    src/Graphic/Axis.cpp
     src/Graphic/Mesh.cpp
     src/Graphic/ModelResource.cpp
     src/Graphic/FrameBuffer.cpp)

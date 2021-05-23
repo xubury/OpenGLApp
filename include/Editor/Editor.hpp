@@ -24,6 +24,11 @@ struct EditorContext {
 
 class Transform;
 
+struct Axis {
+    glm::vec3 screenPos;
+    uint32_t color;
+};
+
 class Editor {
    public:
     static Editor &instance();
@@ -39,16 +44,18 @@ class Editor {
 
     void computeProjectionView();
 
+    glm::vec3 computeWorldToSrceen(const glm::vec3 &localPos);
+
     void computeCameraRay();
 
-    glm::vec3 computeWorldToSrceen(const glm::vec3 &localPos);
+    void computeModelAxes(float len);
 
     void renderFps();
 
     void renderAxis(const glm::vec2 &origin, const glm::vec2 &axis, ImU32 color,
                     float thickness = 5.f);
 
-    void renderModelAxes(float len);
+    void renderModelAxes();
 
     void renderCameraAxes(float len);
 
@@ -65,6 +72,10 @@ class Editor {
     glm::vec4 m_camRayOrigin;
 
     glm::vec4 m_camRayEnd;
+
+    glm::vec3 m_modelScreenPos;
+
+    Axis m_modelAxes[3];
 };
 
 #endif /* EDITOR_HPP */
