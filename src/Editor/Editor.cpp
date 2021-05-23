@@ -55,19 +55,18 @@ void Editor::computeCameraRay() {
     glm::vec2 viewPortOrigin(context.camera->getX(), context.camera->getY());
     glm::vec2 viewPortSize(context.camera->getWidth(),
                            context.camera->getHeight());
-    float mouseClipX =
-        (io.MousePos.x - viewPortOrigin.x - m_renderOrigin.x) / viewPortSize.x;
-    mouseClipX = mouseClipX * 2.f - 1.f;
-    float mouseClipY =
-        (io.MousePos.y - viewPortOrigin.y - m_renderOrigin.y) / viewPortSize.y;
-    mouseClipY = (1.f - mouseClipY) * 2.f - 1.f;
+    glm::vec2 mouseClipPos(io.MousePos.x, io.MousePos.y);
+    mouseClipPos =
+        (mouseClipPos - viewPortOrigin - m_renderOrigin) / viewPortSize;
+    mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
+    mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
     const float zNear = context.camera->getNearZ();
     const float zFar = context.camera->getFarZ();
 
     glm::mat4 inversePV = glm::inverse(m_projectionView);
-    m_camRayOrigin = inversePV * glm::vec4(mouseClipX, mouseClipY, zNear, 1.0f);
+    m_camRayOrigin = inversePV * glm::vec4(mouseClipPos, zNear, 1.0f);
     m_camRayOrigin /= m_camRayOrigin.w;
-    m_camRayEnd = inversePV * glm::vec4(mouseClipX, mouseClipY, zFar, 1.0f);
+    m_camRayEnd = inversePV * glm::vec4(mouseClipPos, zFar, 1.0f);
     m_camRayEnd /= m_camRayEnd.w;
 }
 
@@ -90,7 +89,8 @@ glm::vec3 Editor::computeWorldToSrceen(const glm::vec3& worldPos) {
 void Editor::renderFps() {
     std::string frameRate =
         "FPS:" + std::to_string(context.window->getFrameRate());
-    m_drawList->AddText(m_renderOrigin, 0xFFFFFFFF, frameRate.c_str());
+    m_drawList->AddText(ImVec2(m_renderOrigin.x, m_renderOrigin.y), 0xFFFFFFFF,
+                        frameRate.c_str());
 }
 
 void Editor::renderAxis(const glm::vec2& origin, const glm::vec2& axis,
@@ -181,7 +181,9 @@ void Editor::render() {
         ImGui::SetWindowPos(ImVec2(300, 0));
 
         ImGui::BeginChild("GameRender");
-        m_renderOrigin = ImGui::GetWindowPos();
+        ImVec2 renderOrigin = ImGui::GetWindowPos();
+        m_renderOrigin.x = renderOrigin.x;
+        m_renderOrigin.y = renderOrigin.y;
         m_drawList = ImGui::GetWindowDrawList();
 
         ImVec2 wsize = ImGui::GetWindowSize();

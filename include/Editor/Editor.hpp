@@ -58,7 +58,7 @@ class Editor {
 
     ImDrawList *m_drawList;
 
-    ImVec2 m_renderOrigin;
+    glm::vec2 m_renderOrigin;
 
     glm::vec4 m_camRayOrigin;
 
