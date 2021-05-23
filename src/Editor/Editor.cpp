@@ -99,38 +99,44 @@ void Editor::renderAxis(const glm::vec2& origin, const glm::vec2& axis,
                         color, thickness);
 }
 
-void Editor::renderModelAxes() {
+void Editor::renderModelAxes(float len) {
     auto entity = context.entities->getPtr(m_activeEntityId);
-    auto model = entity->component<Transform>();
-    glm::vec3 pos = model->getPosition();
-    glm::vec3 origin = computeWorldToSrceen(pos);
+    const auto& model = entity->component<Transform>()->getTransform();
+    glm::vec3 originWorld = model[3];
+    glm::vec3 originScreen = computeWorldToSrceen(originWorld);
     // backface culling
-    if (origin.z - 1 < std::numeric_limits<float>::epsilon()) {
-        // draw x
-        glm::vec3 xAxis = computeWorldToSrceen(pos + model->getRight());
-        if (xAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
-            renderAxis(origin, xAxis, 0xFF0000FF);
+    if (originScreen.z - 1.f < std::numeric_limits<float>::epsilon()) {
+        // axes screen coordinate and color
+        std::vector<std::pair<glm::vec3, uint32_t>> axes(3);
+        for (int i = 0; i < 3; ++i) {
+            axes[i].first =
+                computeWorldToSrceen(originWorld + glm::vec3(model[i]));
+            axes[i].second = 0xFF000000;
+            ((uint8_t*)&axes[i].second)[i] = 0xFF;
         }
-        // draw y
-        glm::vec3 yAxis = computeWorldToSrceen(pos + model->getUp());
-        if (yAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
-            renderAxis(origin, yAxis, 0xFF00FF00);
+        // sort the drawing order, so the axis with heighest Z value draw first
+        std::sort(axes.begin(), axes.end(),
+                  [](const auto& lhs, const auto& rhs) {
+                      return lhs.first.z > rhs.first.z;
+                  });
+        for (auto& [axis, color] : axes) {
+            if (axis.z - 1 < std::numeric_limits<float>::epsilon()) {
+                axis = originScreen + glm::normalize(axis - originScreen) * len;
+                renderAxis(originScreen, axis, color);
+            }
         }
-        // draw z
-        glm::vec3 zAxis = computeWorldToSrceen(pos + model->getFront());
-        if (zAxis.z - 1 < std::numeric_limits<float>::epsilon()) {
-            renderAxis(origin, zAxis, 0xFFFF0000);
-        }
+        float hWidth = 5.0f;
+        float hHeight = 5.0f;
+        m_drawList->AddRectFilled(
+            ImVec2(originScreen.x - hWidth, originScreen.y - hHeight),
+            ImVec2(originScreen.x + hWidth, originScreen.y + hHeight),
+            0xFFFFFFFF);
     }
 }
 
-void Editor::renderCameraAxes() {
-    float width = 800;
-    float height = 600;
-    float len = 50.0f;
+void Editor::renderCameraAxes(float len) {
     auto model = context.camera->component<Transform>();
-    glm::vec3 origin(m_renderOrigin.x + width - len * 1.2f,
-                     m_renderOrigin.y + height - len * 1.2f, 0);
+    glm::vec3 origin(m_renderOrigin + m_renderSize - len, 0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
@@ -184,6 +190,9 @@ void Editor::render() {
         ImVec2 renderOrigin = ImGui::GetWindowPos();
         m_renderOrigin.x = renderOrigin.x;
         m_renderOrigin.y = renderOrigin.y;
+        ImVec2 renderSize = ImGui::GetWindowSize();
+        m_renderSize.x = renderSize.x;
+        m_renderSize.y = renderSize.y;
         m_drawList = ImGui::GetWindowDrawList();
 
         ImVec2 wsize = ImGui::GetWindowSize();
@@ -201,8 +210,8 @@ void Editor::render() {
     ImGui::End();
 
     renderFps();
-    renderModelAxes();
-    renderCameraAxes();
+    renderModelAxes(50.0f);
+    renderCameraAxes(50.0f);
     renderAxis(computeWorldToSrceen(m_camRayOrigin),
                computeWorldToSrceen(m_camRayEnd), 0xFF0000FF);
 

@@ -48,9 +48,9 @@ class Editor {
     void renderAxis(const glm::vec2 &origin, const glm::vec2 &axis, ImU32 color,
                     float thickness = 5.f);
 
-    void renderModelAxes();
+    void renderModelAxes(float len);
 
-    void renderCameraAxes();
+    void renderCameraAxes(float len);
 
     int m_activeEntityId;
 
@@ -59,6 +59,8 @@ class Editor {
     ImDrawList *m_drawList;
 
     glm::vec2 m_renderOrigin;
+
+    glm::vec2 m_renderSize;
 
     glm::vec4 m_camRayOrigin;
 
