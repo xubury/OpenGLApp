@@ -33,14 +33,12 @@ static void drawTransformSheet(Transform& trans) {
     ImGui::Separator();
     ImGui::Text("Transform");
     glm::vec3 eulerAngle = trans.getEulerAngle();
-    if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f",
-                           ImGuiInputTextFlags_EnterReturnsTrue)) {
+    if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f")) {
         trans.setEulerAngle(eulerAngle);
     }
 
     glm::vec3 pos = trans.getPosition();
-    if (ImGui::InputFloat3("Position", &pos[0], "%.3f",
-                           ImGuiInputTextFlags_EnterReturnsTrue)) {
+    if (ImGui::InputFloat3("Position", &pos[0], "%.3f")) {
         trans.setPosition(pos);
     }
 }
@@ -166,17 +164,19 @@ void Editor::render() {
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(0, 0));
-        if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
             drawTransformSheet(*context.camera->component<Transform>().get());
             ImGui::Separator();
+            ImGui::TreePop();
         }
 
-        if (ImGui::CollapsingHeader("Entity", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::TreeNodeEx("Entity", ImGuiTreeNodeFlags_DefaultOpen)) {
             auto entity = context.entities->getPtr(m_activeEntityId);
             ImGui::Text("Name: %s", entity->getName().c_str());
             drawTransformSheet(*entity->component<Transform>().get());
             ImGui::Separator();
+            ImGui::TreePop();
         }
     }
     ImGui::End();
