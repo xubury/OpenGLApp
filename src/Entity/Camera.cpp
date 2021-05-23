@@ -48,9 +48,15 @@ int Camera::getX() const { return m_x; }
 
 int Camera::getY() const { return m_y; }
 
+glm::vec2 Camera::getViewportPos() const { return glm::vec2(m_x, m_y); }
+
 int Camera::getWidth() const { return m_width; }
 
 int Camera::getHeight() const { return m_height; }
+
+glm::vec2 Camera::getViewportSize() const {
+    return glm::vec2(m_width, m_height);
+}
 
 float Camera::getFOV() const { return m_zoom; }
 

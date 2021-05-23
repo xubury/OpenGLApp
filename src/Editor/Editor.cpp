@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <Utility/Math.hpp>
 
 Editor& Editor::instance() {
     static Editor s_instance;
@@ -43,56 +44,19 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
-void Editor::computeProjectionView() {
-    m_projectionView =
-        context.camera->getProjection() * context.camera->getView();
-}
-
-void Editor::computeCameraRay() {
-    ImGuiIO& io = ImGui::GetIO();
-    glm::vec2 viewPortOrigin(context.camera->getX(), context.camera->getY());
-    glm::vec2 viewPortSize(context.camera->getWidth(),
-                           context.camera->getHeight());
-    glm::vec2 mouseClipPos(io.MousePos.x, io.MousePos.y);
-    mouseClipPos =
-        (mouseClipPos - viewPortOrigin - m_renderOrigin) / viewPortSize;
-    mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
-    mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
-    const float zNear = context.camera->getNearZ();
-    const float zFar = context.camera->getFarZ();
-
-    glm::mat4 inversePV = glm::inverse(m_projectionView);
-    m_camRayOrigin = inversePV * glm::vec4(mouseClipPos, zNear, 1.0f);
-    m_camRayOrigin /= m_camRayOrigin.w;
-    m_camRayEnd = inversePV * glm::vec4(mouseClipPos, zFar, 1.0f);
-    m_camRayEnd /= m_camRayEnd.w;
-}
-
-glm::vec3 Editor::computeWorldToSrceen(const glm::vec3& worldPos) {
-    glm::vec4 clipPos = m_projectionView * glm::vec4(worldPos, 1.0f);
-    clipPos /= clipPos.w;
-
-    float width = context.camera->getWidth();
-    float height = context.camera->getHeight();
-    float x = context.camera->getX();
-    float y = context.camera->getY();
-
-    glm::vec3 screenPos;
-    screenPos.x = (clipPos.x + 1) * 0.5 * width + x + m_renderOrigin.x;
-    screenPos.y = (1 - clipPos.y) * 0.5 * height + y + m_renderOrigin.y;
-    screenPos.z = clipPos.z;
-    return screenPos;
-}
-
 void Editor::computeModelAxes(float len) {
     auto entity = context.entities->getPtr(m_activeEntityId);
     const auto& model = entity->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
-    m_modelScreenPos = computeWorldToSrceen(originWorld);
+    glm::vec3 renderOrigin = glm::vec3(m_renderOrigin, 0);
+    m_modelScreenPos =
+        computeWorldToSrceen(originWorld, *context.camera) + renderOrigin;
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
         m_modelAxes[i].screenPos =
-            computeWorldToSrceen(originWorld + glm::vec3(model[i]));
+            computeWorldToSrceen(originWorld + glm::vec3(model[i]),
+                                 *context.camera) +
+            renderOrigin;
         m_modelAxes[i].screenPos =
             m_modelScreenPos +
             glm::normalize(m_modelAxes[i].screenPos - m_modelScreenPos) * len;
@@ -138,7 +102,7 @@ void Editor::renderModelAxes() {
 
 void Editor::renderCameraAxes(float len) {
     auto model = context.camera->component<Transform>();
-    glm::vec3 origin(m_renderOrigin + m_renderSize - len, 0);
+    glm::vec3 origin(m_renderOrigin + context.camera->getViewportSize() - len, 0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
@@ -161,9 +125,6 @@ void Editor::render() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    computeProjectionView();
-    computeCameraRay();
-    computeModelAxes(50.0f);
 
     ImGui::Begin("Settings");
     {
@@ -195,9 +156,6 @@ void Editor::render() {
         ImVec2 renderOrigin = ImGui::GetWindowPos();
         m_renderOrigin.x = renderOrigin.x;
         m_renderOrigin.y = renderOrigin.y;
-        ImVec2 renderSize = ImGui::GetWindowSize();
-        m_renderSize.x = renderSize.x;
-        m_renderSize.y = renderSize.y;
         m_drawList = ImGui::GetWindowDrawList();
 
         ImVec2 wsize = ImGui::GetWindowSize();
@@ -213,12 +171,18 @@ void Editor::render() {
         ImGui::EndChild();
     }
     ImGui::End();
+    ImGuiIO& io = ImGui::GetIO();
+    computeModelAxes(50.0f);
+    computeCameraRay(m_camRayOrigin, m_camRayDir,
+                     glm::vec2(io.MousePos.x, io.MousePos.y), *context.camera);
 
     renderFps();
     renderModelAxes();
     renderCameraAxes(50.0f);
-    renderAxis(computeWorldToSrceen(m_camRayOrigin),
-               computeWorldToSrceen(m_camRayEnd), 0xFF0000FF);
+    renderAxis(computeWorldToSrceen(m_camRayOrigin, *context.camera),
+               computeWorldToSrceen(m_camRayOrigin + m_camRayDir * 100.f,
+                                    *context.camera),
+               0xFF0000FF);
 
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);

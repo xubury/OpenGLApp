@@ -36,6 +36,10 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
     int getY() const;
 
+    glm::vec2 getViewportPos() const;
+
+    glm::vec2 getViewportSize() const;
+
     int getWidth() const;
 
     int getHeight() const;

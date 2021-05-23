@@ -42,12 +42,7 @@ class Editor {
    private:
     Editor();
 
-    void computeProjectionView();
-
-    glm::vec3 computeWorldToSrceen(const glm::vec3 &localPos);
-
-    void computeCameraRay();
-
+    // compute the model's axes coordinate and color
     void computeModelAxes(float len);
 
     void renderFps();
@@ -61,17 +56,13 @@ class Editor {
 
     int m_activeEntityId;
 
-    glm::mat4 m_projectionView;
-
     ImDrawList *m_drawList;
 
     glm::vec2 m_renderOrigin;
 
-    glm::vec2 m_renderSize;
+    glm::vec3 m_camRayOrigin;
 
-    glm::vec4 m_camRayOrigin;
-
-    glm::vec4 m_camRayEnd;
+    glm::vec3 m_camRayDir;
 
     glm::vec3 m_modelScreenPos;
 
