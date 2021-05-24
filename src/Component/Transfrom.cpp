@@ -27,8 +27,8 @@ void Transform::rotateWorld(float radians, const glm::vec3 &axis) {
 
 glm::vec3 Transform::getEulerAngle() const {
     glm::vec3 eulerAngle;
-    if (m_transform[2][1] - 1 < std::numeric_limits<float>::epsilon()) {
-        if (m_transform[2][1] + 1 > std::numeric_limits<float>::epsilon()) {
+    if (m_transform[2][1] < 1.f) {
+        if (m_transform[2][1] > -1.f) {
             eulerAngle.x = asin(-m_transform[2][1]);
             eulerAngle.y = atan2(m_transform[2][0], m_transform[2][2]);
             eulerAngle.z = atan2(m_transform[0][1], m_transform[1][1]);
