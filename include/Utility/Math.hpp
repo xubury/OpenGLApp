@@ -6,8 +6,8 @@
 
 template <glm::length_t L, typename T, glm::qualifier Q>
 inline glm::vec<L, T, Q> findClosestPoint(const glm::vec<L, T, Q> point,
-                                  const glm::vec<L, T, Q> &start,
-                                  const glm::vec<L, T, Q> &end) {
+                                          const glm::vec<L, T, Q> &start,
+                                          const glm::vec<L, T, Q> &end) {
     glm::vec<L, T, Q> c = point - start;
     glm::vec<L, T, Q> v = end - start;
     T d = glm::length(end - start);
@@ -36,46 +36,6 @@ inline float intersectRayPlane(const glm::vec3 &rayOrigin, const glm::vec3 &dir,
     }
 
     return -numer / denom;
-}
-
-inline glm::vec3 computeWorldToSrceen(const glm::vec3 &worldPos,
-                                      const Camera &camera) {
-    glm::mat4 projectionView = camera.getProjection() * camera.getView();
-    glm::vec4 clipPos = projectionView * glm::vec4(worldPos, 1.0f);
-    clipPos /= clipPos.w;
-
-    float width = camera.getWidth();
-    float height = camera.getHeight();
-    float x = camera.getX();
-    float y = camera.getY();
-
-    glm::vec3 screenPos;
-    screenPos.x = (clipPos.x + 1) * 0.5 * width + x;
-    screenPos.y = (1 - clipPos.y) * 0.5 * height + y;
-    screenPos.z = clipPos.z;
-    return screenPos;
-}
-
-inline void computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
-                             const glm::vec2 &screenPos, const Camera &camera) {
-    glm::vec2 mouseClipPos;
-    mouseClipPos =
-        (screenPos - camera.getViewportPos()) / camera.getViewportSize();
-    mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
-    mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
-    const float zNear = 0.f;
-    const float zFar = 1.f - std::numeric_limits<float>::epsilon();
-
-    glm::mat4 inversePV =
-        glm::inverse(camera.getProjection() * camera.getView());
-    glm::vec4 rayOriginH = inversePV * glm::vec4(mouseClipPos, zNear, 1.0f);
-    rayOriginH /= rayOriginH.w;
-    rayOrigin = rayOriginH;
-
-    glm::vec4 rayEnd = inversePV * glm::vec4(mouseClipPos, zFar, 1.0f);
-    rayEnd /= rayEnd.w;
-
-    rayDir = glm::normalize(glm::vec3(rayEnd) - rayOrigin);
 }
 
 #endif /* MATH_HPP */

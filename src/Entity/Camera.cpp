@@ -120,6 +120,38 @@ void Camera::setNearFar(float near, float far) {
                                     getNearZ(), getFarZ());
 }
 
+void Camera::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
+                              const glm::vec2 &screenPos) const {
+    glm::vec2 mouseClipPos((screenPos.x - m_x) / m_width,
+                           (screenPos.y - m_y) / m_height);
+    mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
+    mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
+    const float zNear = 0.f;
+    const float zFar = 1.f - std::numeric_limits<float>::epsilon();
+
+    glm::mat4 inversePV = glm::inverse(getProjection() * getView());
+    glm::vec4 rayOriginH = inversePV * glm::vec4(mouseClipPos, zNear, 1.0f);
+    rayOriginH /= rayOriginH.w;
+    rayOrigin = rayOriginH;
+
+    glm::vec4 rayEnd = inversePV * glm::vec4(mouseClipPos, zFar, 1.0f);
+    rayEnd /= rayEnd.w;
+
+    rayDir = glm::normalize(glm::vec3(rayEnd) - rayOrigin);
+}
+
+glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
+    glm::mat4 projectionView = getProjection() * getView();
+    glm::vec4 clipPos = projectionView * glm::vec4(worldPos, 1.0f);
+    clipPos /= clipPos.w;
+
+    glm::vec3 screenPos;
+    screenPos.x = (clipPos.x + 1) * 0.5 * m_width + m_x;
+    screenPos.y = (1 - clipPos.y) * 0.5 * m_height + m_y;
+    screenPos.z = clipPos.z;
+    return screenPos;
+}
+
 ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,
                              int x, int y, int width, int height,
                              const glm::vec3 &position)

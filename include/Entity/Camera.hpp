@@ -62,6 +62,11 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
     void zoom(float zoom);
 
+    void computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
+                          const glm::vec2 &screenPos) const;
+
+    glm::vec3 computeWorldToSrceen(const glm::vec3 &worldPos) const;
+
    protected:
     static ActionMap<Movement> s_cameraMovement;
 

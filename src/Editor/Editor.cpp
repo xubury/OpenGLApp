@@ -51,13 +51,12 @@ void Editor::buildModelAxes(float len) {
     glm::vec3 originWorld = model[3];
     glm::vec3 renderOrigin = glm::vec3(m_renderOrigin, 0);
     m_modelScreenAxes.origin =
-        computeWorldToSrceen(originWorld, *context.camera) + renderOrigin;
+        context.camera->computeWorldToSrceen(originWorld) + renderOrigin;
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelScreenAxes.axes[i].pos =
-            computeWorldToSrceen(originWorld + glm::vec3(model[i]),
-                                 *context.camera) +
-            renderOrigin;
+        m_modelScreenAxes.axes[i].pos = context.camera->computeWorldToSrceen(
+                                            originWorld + glm::vec3(model[i])) +
+                                        renderOrigin;
         m_modelScreenAxes.axes[i].pos =
             m_modelScreenAxes.origin +
             glm::normalize(m_modelScreenAxes.axes[i].pos -
@@ -188,13 +187,13 @@ void Editor::render() {
     ImGuiIO& io = ImGui::GetIO();
     buildModelAxes(50.0f);
     buildModelPlane();
-    computeCameraRay(m_camRayOrigin, m_camRayDir,
-                     glm::vec2(io.MousePos.x, io.MousePos.y), *context.camera);
+    context.camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
+                     glm::vec2(io.MousePos.x, io.MousePos.y));
     float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, m_planeXY);
     if (len > 0) {
         glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
         glm::vec2 intersectScreenPos =
-            computeWorldToSrceen(intersectPoint, *context.camera);
+            context.camera->computeWorldToSrceen(intersectPoint);
 
         glm::vec2 cloesetScreenPoint = findClosestPoint(
             intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
@@ -211,9 +210,9 @@ void Editor::render() {
     renderFps();
     renderModelAxes();
     renderCameraAxes(50.0f);
-    renderAxis(computeWorldToSrceen(m_camRayOrigin, *context.camera),
-               computeWorldToSrceen(m_camRayOrigin + m_camRayDir * 100.f,
-                                    *context.camera),
+    renderAxis(context.camera->computeWorldToSrceen(m_camRayOrigin),
+               context.camera->computeWorldToSrceen(m_camRayOrigin +
+                                                    m_camRayDir * 100.f),
                0xFF0000FF);
 
     ImGui::Render();
