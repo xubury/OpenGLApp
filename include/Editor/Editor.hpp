@@ -5,7 +5,7 @@
 
 struct Axis {
     glm::vec3 pos;
-    uint32_t color;
+    glm::vec4 color;
 };
 
 struct Axes {
@@ -42,9 +42,7 @@ class Editor {
 
     glm::vec3 m_camRayDir;
 
-    Axes m_modelScreenAxes;
-
-    int m_axesDrawingOrder[3];
+    Axes m_modelAxes;
 
     glm::vec4 m_planeXY;
 

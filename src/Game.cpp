@@ -75,6 +75,7 @@ void Game::update(Time& deltaTime) {
 }
 
 void Game::render() {
+    m_frameBuffer.activate();
     m_window.clear();
     RenderStates states;
     states.shader = &m_shader;
@@ -89,6 +90,8 @@ void Game::render() {
     // m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window,
     //                                               states);
 
+    m_frameBuffer.draw();
+    Editor::instance().render();
     m_window.display();
 }
 
@@ -129,10 +132,7 @@ void Game::run(int minFps) {
             update(timePerFrame);
         }
         update(timeSinceLastUpdate);
-        m_frameBuffer.activate();
         render();
-        m_frameBuffer.draw();
-        Editor::instance().render();
     }
     Editor::instance().close();
     m_window.close();

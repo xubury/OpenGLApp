@@ -54,7 +54,9 @@ bool VertexBuffer::create(const T vertices, std::size_t cnt) {
         std::cerr << "Could not create vertex array object." << std::endl;
         return false;
     }
-    update(vertices, cnt);
+    if (vertices != nullptr && cnt != 0) {
+        update(vertices, cnt);
+    }
     return true;
 }
 

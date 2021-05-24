@@ -39,11 +39,6 @@ class BoundingBoxSystem : public System<BoundingBox, EntityBase> {
     void draw(EntityManager<EntityBase> &manager, RenderTarget &target,
               RenderStates states);
 
-    void updateVertices(const glm::vec3 &min, const glm::vec3 &max);
-
-    static ElementBuffer s_elements;
-
-    static DebugVertex s_vertices[8];
 };
 
 #endif

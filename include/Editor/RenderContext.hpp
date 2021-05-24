@@ -42,6 +42,9 @@ class RenderContext {
     void addLine(const glm::vec2 &start, const glm::vec2 &end, uint32_t color,
                  float thickness = 5.f);
 
+    void addLineWorld(const glm::vec3 &start, const glm::vec3 &end,
+                   const glm::vec4 &color, float thickness = 5.f);
+
     void addCircleFilled(const glm::vec2 &center, float radius, uint32_t color,
                          int numSegments = 0);
 

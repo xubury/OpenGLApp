@@ -104,11 +104,8 @@ void FrameBuffer::deactivate() const {
     glDisable(GL_DEPTH_TEST);
 }
 
-void FrameBuffer::draw() const {
+void FrameBuffer::draw() {
     deactivate();
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
     FrameBufferShader::instance().use();
 
     glActiveTexture(GL_TEXTURE0);

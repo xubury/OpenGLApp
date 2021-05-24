@@ -15,7 +15,7 @@ class FrameBuffer {
 
     void deactivate() const;
 
-    void draw() const;
+    void draw();
 
     uint32_t getTextureId() const;
 

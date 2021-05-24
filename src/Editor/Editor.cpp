@@ -10,7 +10,7 @@ Editor& Editor::instance() {
     return s_instance;
 }
 
-Editor::Editor() : m_axesDrawingOrder{0, 1, 2} {
+Editor::Editor() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -44,22 +44,16 @@ void Editor::buildModelAxes(float clipLen) {
     const auto& model =
         context.getActiveEntityPtr()->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
-    m_modelScreenAxes.origin =
-        context.getCamera()->computeWorldToSrceen(originWorld);
+    m_modelAxes.origin = originWorld;
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelScreenAxes.axes[i].pos =
-            context.getCamera()->computeWorldToSrceen(
-                originWorld +
-                glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
-        m_modelScreenAxes.axes[i].color = 0xFF000000;
-        ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
+        m_modelAxes.axes[i].pos =
+            originWorld +
+            glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen);
+        m_modelAxes.axes[i].color[3] = 1.0f;
+        m_modelAxes.axes[i].color[i] = 1.0f;
+        // ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
-    // sort the drawing order, so the axis with heighest Z value draw first
-    std::sort(std::begin(m_axesDrawingOrder), std::end(m_axesDrawingOrder),
-              [&axes = m_modelScreenAxes](const auto& lhs, const auto& rhs) {
-                  return axes.axes[lhs].pos.z > axes.axes[rhs].pos.z;
-              });
 }
 
 void Editor::buildModelPlane() {
@@ -78,16 +72,9 @@ void Editor::renderFps() {
 
 void Editor::renderModelAxes() {
     // backface culling
-    if (std::abs(m_modelScreenAxes.origin.z) < 1.f) {
-        for (int i = 0; i < 3; ++i) {
-            const auto& axis = m_modelScreenAxes.axes[m_axesDrawingOrder[i]];
-            if (std::abs(axis.pos.z) < 1.f) {
-                context.addLine(m_modelScreenAxes.origin, axis.pos, axis.color);
-            }
-        }
-        glm::vec3 hSize(5.0f, 5.0f, 0);
-        context.addRectFilled(m_modelScreenAxes.origin - hSize,
-                              m_modelScreenAxes.origin + hSize, 0xFFFFFFFF);
+    for (int i = 0; i < 3; ++i) {
+        const auto& axis = m_modelAxes.axes[i];
+        context.addLineWorld(m_modelAxes.origin, axis.pos, axis.color);
     }
 }
 
@@ -171,9 +158,12 @@ void Editor::render() {
         glm::vec2 intersectScreenPos =
             context.getCamera()->computeWorldToSrceen(intersectPoint);
 
+        glm::vec2 modelOriginScreenPos =
+            context.getCamera()->computeWorldToSrceen(m_modelAxes.origin);
+        glm::vec2 modelAxisScreenPos =
+            context.getCamera()->computeWorldToSrceen(m_modelAxes.axes[0].pos);
         glm::vec2 cloesetScreenPoint = findClosestPoint(
-            intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
-            glm::vec2(m_modelScreenAxes.axes[0].pos));
+            intersectScreenPos, modelOriginScreenPos, modelAxisScreenPos);
         context.addCircleFilled(cloesetScreenPoint, 10, 0xFFFFFFFF);
         if (glm::length(intersectScreenPos - cloesetScreenPoint) < 12.f) {
             std::cout << "yes" << std::endl;

@@ -30,7 +30,6 @@ set(Utility_Src
     src/Utility/Memory.cpp
     src/Utility/Time.cpp)
 
-
 set(Graphic_Src
     src/Graphic/Shader.cpp
     src/Graphic/Texture.cpp
@@ -41,6 +40,7 @@ set(Graphic_Src
     src/Graphic/RenderWindow.cpp
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
+    src/Graphic/Primitive.cpp
     src/Graphic/Mesh.cpp
     src/Graphic/ModelResource.cpp
     src/Graphic/FrameBuffer.cpp)

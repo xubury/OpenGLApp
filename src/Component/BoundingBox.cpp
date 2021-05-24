@@ -52,53 +52,7 @@ const glm::vec3 &BoundingBox::getWorldMin() const { return m_worldMin; }
 
 const glm::vec3 &BoundingBox::getWorldMax() const { return m_worldMax; }
 
-ElementBuffer BoundingBoxSystem::s_elements(GL_TRIANGLES);
-
-DebugVertex BoundingBoxSystem::s_vertices[8];
-
-static const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
-                                     7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
-                                     4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
-
-BoundingBoxSystem::BoundingBoxSystem() {
-    s_elements.create(s_vertices, 8, indices, 36);
-}
-
-void BoundingBoxSystem::updateVertices(const glm::vec3 &min,
-                                       const glm::vec3 &max) {
-    s_vertices[0].position[0] = min.x;
-    s_vertices[0].position[1] = min.y;
-    s_vertices[0].position[2] = max.z;
-
-    s_vertices[1].position[0] = max.x;
-    s_vertices[1].position[1] = min.y;
-    s_vertices[1].position[2] = max.z;
-
-    s_vertices[2].position[0] = max.x;
-    s_vertices[2].position[1] = max.y;
-    s_vertices[2].position[2] = max.z;
-
-    s_vertices[3].position[0] = min.x;
-    s_vertices[3].position[1] = max.y;
-    s_vertices[3].position[2] = max.z;
-
-    s_vertices[4].position[0] = min.x;
-    s_vertices[4].position[1] = min.y;
-    s_vertices[4].position[2] = min.z;
-
-    s_vertices[5].position[0] = max.x;
-    s_vertices[5].position[1] = min.y;
-    s_vertices[5].position[2] = min.z;
-
-    s_vertices[6].position[0] = max.x;
-    s_vertices[6].position[1] = max.y;
-    s_vertices[6].position[2] = min.z;
-
-    s_vertices[7].position[0] = min.x;
-    s_vertices[7].position[1] = max.y;
-    s_vertices[7].position[2] = min.z;
-    s_elements.update(s_vertices, 8);
-}
+BoundingBoxSystem::BoundingBoxSystem() {}
 
 void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
                                const Time &) {
@@ -112,18 +66,11 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
 
 void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
                              RenderTarget &target, RenderStates states) {
-    states.shader = &DebugShader::instance();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    states.shader->use();
-    states.shader->setVec3("color", glm::vec3(0, 1, 0));
-
     BoundingBox::Handle box;
     auto view = manager.getByComponents<BoundingBox>(box);
     auto end = view.end();
     for (auto cur = view.begin(); cur != end; ++cur) {
-        updateVertices(box->getWorldMin(), box->getWorldMax());
-        target.draw(s_elements, states);
+        target.drawBox(box->getWorldMin(), box->getWorldMax(),
+                       glm::vec4(0, 1, 0, 1), states.camera);
     }
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
