@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <imgui.h>
+#include <Component/Transform.hpp>
 
 class RenderWindow;
 
@@ -48,10 +49,17 @@ class RenderContext {
 
     // return the size of clipSize in world space
     float getClipSizeInWorld(float clipSize) const;
+
+    EntityBase *getActiveEntityPtr();
+
    private:
-    ImDrawList *m_drawList;
-    glm::vec2 m_renderOrigin;
+    int m_activeEntityId;
+
     float m_screenFactor;
+
+    ImDrawList *m_drawList;
+
+    glm::vec2 m_renderOrigin;
 };
 
 struct Axis {
@@ -88,8 +96,6 @@ class Editor {
     void renderModelAxes();
 
     void renderCameraAxes(float clipLen);
-
-    int m_activeEntityId;
 
     glm::vec3 m_camRayOrigin;
 

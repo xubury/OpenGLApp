@@ -10,16 +10,22 @@
 #include <Utility/Math.hpp>
 #include <iostream>
 
-RenderContext::RenderContext() : m_screenFactor(1.0f) {}
+RenderContext::RenderContext() : m_activeEntityId(2), m_screenFactor(1.0f) {}
 
 void RenderContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
     m_drawList = ImGui::GetWindowDrawList();
+
+    glm::vec3 pos = getActiveEntityPtr()->component<Transform>()->getPosition();
     float rightLen = camera->getSegmentLengthClipSpace(
-        glm::vec3(0), camera->component<Transform>()->getRight());
+        pos, pos + camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
+}
+
+EntityBase* RenderContext::getActiveEntityPtr() {
+    return entities->getPtr(m_activeEntityId);
 }
 
 glm::vec2 RenderContext::getContextScreenPos() {
@@ -67,7 +73,7 @@ Editor& Editor::instance() {
     return s_instance;
 }
 
-Editor::Editor() : m_activeEntityId(1), m_axesDrawingOrder{0, 1, 2} {
+Editor::Editor() : m_axesDrawingOrder{0, 1, 2} {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -98,15 +104,16 @@ static void drawTransformSheet(Transform& trans) {
 }
 
 void Editor::buildModelAxes(float clipLen) {
-    auto entity = context.entities->getPtr(m_activeEntityId);
-    const auto& model = entity->component<Transform>()->getTransform();
+    const auto& model =
+        context.getActiveEntityPtr()->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
     m_modelScreenAxes.origin =
         context.camera->computeWorldToSrceen(originWorld);
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
         m_modelScreenAxes.axes[i].pos = context.camera->computeWorldToSrceen(
-            originWorld + glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
+            originWorld +
+            glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
         m_modelScreenAxes.axes[i].color = 0xFF000000;
         ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
@@ -118,8 +125,7 @@ void Editor::buildModelAxes(float clipLen) {
 }
 
 void Editor::buildModelPlane() {
-    auto entity = context.entities->getPtr(m_activeEntityId);
-    const auto& model = entity->component<Transform>();
+    const auto& model = context.getActiveEntityPtr()->component<Transform>();
     glm::vec3 pos = model->getPosition();
     m_planeXY = buildPlane(pos, pos + model->getFront());
     m_planeXZ = buildPlane(pos, pos + model->getUp());
@@ -185,7 +191,7 @@ void Editor::render() {
         }
 
         if (ImGui::TreeNodeEx("Entity", ImGuiTreeNodeFlags_DefaultOpen)) {
-            auto entity = context.entities->getPtr(m_activeEntityId);
+            auto entity = context.getActiveEntityPtr();
             ImGui::Text("Name: %s", entity->getName().c_str());
             drawTransformSheet(*entity->component<Transform>().get());
             ImGui::Separator();
