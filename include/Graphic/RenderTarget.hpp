@@ -28,7 +28,8 @@ class RenderTarget {
               const RenderStates &states = RenderStates::Default);
 
     void drawLine(const glm::vec3 &start, const glm::vec3 &end,
-                  const glm::vec4 &color, float thickness, const Camera *camera);
+                  const glm::vec4 &color, float thickness,
+                  const Camera *camera);
 
     void drawBox(const glm::vec3 &min, const glm::vec3 &max,
                  const glm::vec4 &color, const Camera *camera);
