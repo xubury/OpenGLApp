@@ -4,7 +4,7 @@
 #include <memory>
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/Drawable.hpp>
-#include <ECS/Entity.hpp>
+#include <Entity/EntityBase.hpp>
 
 class BoundingBox : public Component<BoundingBox, EntityBase> {
    public:
