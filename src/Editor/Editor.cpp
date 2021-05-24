@@ -10,11 +10,16 @@
 #include <Utility/Math.hpp>
 #include <iostream>
 
+RenderContext::RenderContext() : m_screenFactor(1.0f) {}
+
 void RenderContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
     m_drawList = ImGui::GetWindowDrawList();
+    float rightLen = camera->getSegmentLengthClipSpace(
+        glm::vec3(0), camera->component<Transform>()->getRight());
+    m_screenFactor = 1.0f / rightLen;
 }
 
 glm::vec2 RenderContext::getContextScreenPos() {
@@ -53,6 +58,10 @@ void RenderContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
         rounding, roundingCorners);
 }
 
+float RenderContext::getClipSizeInWorld(float clipSize) const {
+    return m_screenFactor * clipSize;
+}
+
 Editor& Editor::instance() {
     static Editor s_instance;
     return s_instance;
@@ -88,7 +97,7 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
-void Editor::buildModelAxes(float) {
+void Editor::buildModelAxes(float clipLen) {
     auto entity = context.entities->getPtr(m_activeEntityId);
     const auto& model = entity->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
@@ -97,7 +106,7 @@ void Editor::buildModelAxes(float) {
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
         m_modelScreenAxes.axes[i].pos = context.camera->computeWorldToSrceen(
-            originWorld + glm::vec3(model[i]));
+            originWorld + glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
         m_modelScreenAxes.axes[i].color = 0xFF000000;
         ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
@@ -138,23 +147,24 @@ void Editor::renderModelAxes() {
     }
 }
 
-void Editor::renderCameraAxes(float len) {
+void Editor::renderCameraAxes(float clipLen) {
+    clipLen *= context.camera->getHeight() / 2.f;
     auto model = context.camera->component<Transform>();
-    glm::vec3 origin(context.camera->getViewportSize() - len, 0);
+    glm::vec3 origin(context.camera->getViewportSize() - clipLen, 0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
-    xAxis = origin + xAxis * len;
+    xAxis = origin + xAxis * clipLen;
     context.addLine(origin, xAxis, 0xFF0000FF, 2);
     // draw y
     glm::vec3 yAxis = model->getUp();
     yAxis.y = -yAxis.y;
-    yAxis = origin + yAxis * len;
+    yAxis = origin + yAxis * clipLen;
     context.addLine(origin, yAxis, 0xFF00FF00, 2);
     // draw z
     glm::vec3 zAxis = model->getFront();
     zAxis.y = -zAxis.y;
-    zAxis = origin + zAxis * len;
+    zAxis = origin + zAxis * clipLen;
     context.addLine(origin, zAxis, 0xFFFF0000, 2);
 }
 
@@ -206,7 +216,7 @@ void Editor::render() {
     }
     ImGui::End();
 
-    buildModelAxes(50.0f);
+    buildModelAxes(0.2);
     buildModelPlane();
     context.camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
                                      context.getContextScreenPos());
@@ -227,7 +237,7 @@ void Editor::render() {
 
     renderFps();
     renderModelAxes();
-    renderCameraAxes(50.0f);
+    renderCameraAxes(0.2);
     context.addLine(context.camera->computeWorldToSrceen(m_camRayOrigin),
                     context.camera->computeWorldToSrceen(m_camRayOrigin +
                                                          m_camRayDir * 100.f),

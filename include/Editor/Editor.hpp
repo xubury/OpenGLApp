@@ -25,6 +25,8 @@ class RenderContext {
 
     EntityManager<EntityBase> *entities;
 
+    RenderContext();
+
     void prepareContext();
 
     // get window pos relateive to current context window
@@ -44,9 +46,12 @@ class RenderContext {
         float rounding = 0.f,
         ImDrawCornerFlags roundingCorners = ImDrawCornerFlags_All);
 
+    // return the size of clipSize in world space
+    float getClipSizeInWorld(float clipSize) const;
    private:
     ImDrawList *m_drawList;
     glm::vec2 m_renderOrigin;
+    float m_screenFactor;
 };
 
 struct Axis {
@@ -73,7 +78,7 @@ class Editor {
     Editor();
 
     // build the model's axes coordinate and color
-    void buildModelAxes(float len);
+    void buildModelAxes(float clipLen);
 
     // build model's X-Y X-Z Y-Z plane
     void buildModelPlane();
@@ -82,7 +87,7 @@ class Editor {
 
     void renderModelAxes();
 
-    void renderCameraAxes(float len);
+    void renderCameraAxes(float clipLen);
 
     int m_activeEntityId;
 

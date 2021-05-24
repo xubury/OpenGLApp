@@ -154,6 +154,24 @@ glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
     return screenPos;
 }
 
+float Camera::getSegmentLengthClipSpace(const glm::vec3 &start,
+                                        const glm::vec3 &end) const {
+    glm::mat4 projectionView = getProjection() * getView();
+    glm::vec4 segStart = projectionView * glm::vec4(start, 1.0f);
+    if (std::fabs(segStart.w) > std::numeric_limits<float>::epsilon()) {
+        segStart /= segStart.w;
+    }
+
+    glm::vec4 segEnd = projectionView * glm::vec4(end, 1.0f);
+    if (std::fabs(segEnd.w) > std::numeric_limits<float>::epsilon()) {
+        segEnd /= segEnd.w;
+    }
+
+    glm::vec2 clipSpaceAxis = segEnd - segStart;
+    clipSpaceAxis.y /= getAspect();
+    return glm::length(clipSpaceAxis);
+}
+
 ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,
                              int x, int y, int width, int height,
                              const glm::vec3 &position)

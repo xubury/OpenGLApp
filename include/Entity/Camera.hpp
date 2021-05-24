@@ -67,6 +67,9 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
     glm::vec3 computeWorldToSrceen(const glm::vec3 &worldPos) const;
 
+    float getSegmentLengthClipSpace(const glm::vec3 &start,
+                                    const glm::vec3 &end) const;
+
    protected:
     static ActionMap<Movement> s_cameraMovement;
 
