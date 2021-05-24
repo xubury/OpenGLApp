@@ -42,17 +42,10 @@ glm::vec3 Transform::getEulerAngle() const {
         eulerAngle.y = atan2(-m_transform[1][0], m_transform[0][0]);
         eulerAngle.z = 0;
     }
-    eulerAngle.x = glm::degrees(eulerAngle.x);
-    eulerAngle.y = glm::degrees(eulerAngle.y);
-    eulerAngle.z = glm::degrees(eulerAngle.z);
     return eulerAngle;
 }
 
 void Transform::setEulerAngle(glm::vec3 eulerAngle) {
-    eulerAngle.x = glm::radians(eulerAngle.x);
-    eulerAngle.y = glm::radians(eulerAngle.y);
-    eulerAngle.z = glm::radians(eulerAngle.z);
-
     glm::vec4 &right = m_transform[0];
     glm::vec4 &up = m_transform[1];
     glm::vec4 &front = m_transform[2];

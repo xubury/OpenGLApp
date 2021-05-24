@@ -21,7 +21,8 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
       m_nearZ(0.1f),
       m_farZ(100.f) {
     component<Transform>()->setPosition(position);
-    component<Transform>()->setEulerAngle(glm::vec3(m_pitch, m_yaw, 0));
+    component<Transform>()->setEulerAngle(
+        glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
 }
@@ -93,7 +94,8 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
             m_pitch = -89.f;
         }
     }
-    component<Transform>()->setEulerAngle(glm::vec3(m_pitch, m_yaw, 0));
+    component<Transform>()->setEulerAngle(
+        glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
 }
 
 void Camera::zoom(float zoom) {

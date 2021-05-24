@@ -77,9 +77,9 @@ Editor::Editor() : m_activeEntityId(1), m_axesDrawingOrder{0, 1, 2} {
 static void drawTransformSheet(Transform& trans) {
     ImGui::Separator();
     ImGui::Text("Transform");
-    glm::vec3 eulerAngle = trans.getEulerAngle();
+    glm::vec3 eulerAngle = glm::degrees(trans.getEulerAngle());
     if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f")) {
-        trans.setEulerAngle(eulerAngle);
+        trans.setEulerAngle(glm::radians(eulerAngle));
     }
 
     glm::vec3 pos = trans.getPosition();
