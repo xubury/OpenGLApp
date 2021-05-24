@@ -10,26 +10,26 @@
 #include <Utility/Math.hpp>
 #include <iostream>
 
-void EditorContext::prepareContext() {
+void RenderContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
     m_drawList = ImGui::GetWindowDrawList();
 }
 
-glm::vec2 EditorContext::getContextScreenPos() {
+glm::vec2 RenderContext::getContextScreenPos() {
     ImGuiIO& io = ImGui::GetIO();
     return glm::vec2(io.MousePos.x, io.MousePos.y) - m_renderOrigin;
 }
 
-void EditorContext::addText(const glm::vec2& pos, uint32_t col,
+void RenderContext::addText(const glm::vec2& pos, uint32_t col,
                             const char* textBegin, const char* textEnd) {
     m_drawList->AddText(
         ImVec2(m_renderOrigin.x + pos.x, m_renderOrigin.y + pos.y), col,
         textBegin, textEnd);
 }
 
-void EditorContext::addLine(const glm::vec2& start, const glm::vec2& end,
+void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
                             uint32_t color, float thickness) {
     m_drawList->AddLine(
         ImVec2(m_renderOrigin.x + start.x, m_renderOrigin.y + start.y),
@@ -37,14 +37,14 @@ void EditorContext::addLine(const glm::vec2& start, const glm::vec2& end,
         thickness);
 }
 
-void EditorContext::addCircleFilled(const glm::vec2& center, float radius,
+void RenderContext::addCircleFilled(const glm::vec2& center, float radius,
                                     uint32_t color, int numSegments) {
     m_drawList->AddCircleFilled(
         ImVec2(m_renderOrigin.x + center.x, m_renderOrigin.y + center.y),
         radius, color, numSegments);
 }
 
-void EditorContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
+void RenderContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
                                   uint32_t color, float rounding,
                                   ImDrawCornerFlags roundingCorners) {
     m_drawList->AddRectFilled(

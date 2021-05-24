@@ -15,7 +15,7 @@ class EntityManager;
 
 class EntityBase;
 
-class EditorContext {
+class RenderContext {
    public:
     RenderWindow *window;
 
@@ -59,8 +59,6 @@ struct Axes {
     Axis axes[3];
 };
 
-class RenderContext {};
-
 class Editor {
    public:
     static Editor &instance();
@@ -69,7 +67,7 @@ class Editor {
 
     void close();
 
-    EditorContext context;
+    RenderContext context;
 
    private:
     Editor();
