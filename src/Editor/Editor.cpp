@@ -88,7 +88,7 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
-void Editor::buildModelAxes(float len) {
+void Editor::buildModelAxes(float) {
     auto entity = context.entities->getPtr(m_activeEntityId);
     const auto& model = entity->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
@@ -98,11 +98,6 @@ void Editor::buildModelAxes(float len) {
     for (int i = 0; i < 3; ++i) {
         m_modelScreenAxes.axes[i].pos = context.camera->computeWorldToSrceen(
             originWorld + glm::vec3(model[i]));
-        m_modelScreenAxes.axes[i].pos =
-            m_modelScreenAxes.origin +
-            glm::normalize(m_modelScreenAxes.axes[i].pos -
-                           m_modelScreenAxes.origin) *
-                len;
         m_modelScreenAxes.axes[i].color = 0xFF000000;
         ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
@@ -130,10 +125,10 @@ void Editor::renderFps() {
 
 void Editor::renderModelAxes() {
     // backface culling
-    if (m_modelScreenAxes.origin.z > 0.f) {
+    if (std::abs(m_modelScreenAxes.origin.z) < 1.f) {
         for (int i = 0; i < 3; ++i) {
             const auto& axis = m_modelScreenAxes.axes[m_axesDrawingOrder[i]];
-            if (axis.pos.z > 0.f) {
+            if (std::abs(axis.pos.z) < 1.f) {
                 context.addLine(m_modelScreenAxes.origin, axis.pos, axis.color);
             }
         }
