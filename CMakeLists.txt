@@ -13,7 +13,8 @@ find_package(imgui REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
 set(Editor_Src
-    src/Editor/Editor.cpp)
+    src/Editor/Editor.cpp
+    src/Editor/RenderContext.cpp)
 
 set(Component_Src
     src/Component/Transfrom.cpp
@@ -72,7 +73,7 @@ target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 
 target_link_libraries(OpenGLApp
     OpenGL::GL
-    glm 
+    glm
     glfw
     assimp::assimp
     imgui::imgui)
