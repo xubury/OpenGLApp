@@ -55,7 +55,7 @@ void RenderTarget::applyShader(const Shader *shader) {
     m_shader->use();
 }
 
-void RenderTarget::applyTransform(const glm::mat4 &transform) const {
+void RenderTarget::applyTransform(const glm::mat4 &transform) {
     m_shader->setMat4("model", transform);
 }
 

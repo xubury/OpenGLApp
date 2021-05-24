@@ -11,20 +11,30 @@
 
 class RenderContext {
    public:
-    RenderWindow *window;
-
-    FrameBuffer *frameBuffer;
-
-    Camera *camera;
-
-    EntityManager<EntityBase> *entities;
-
     RenderContext();
+
+    void setActiveEntityId(int id);
+
+    EntityBase *getActiveEntityPtr() const;
+
+    void setCamrea(Camera *camera);
+
+    Camera *getCamera() const;
+
+    void setWindow(RenderWindow *window);
+
+    RenderWindow *getWindow() const;
+
+    void setFrameBuffer(FrameBuffer *frameBuffer);
+
+    FrameBuffer *getFrameBuffer() const;
+
+    void setEntityManager(EntityManager<EntityBase> *entites);
 
     void prepareContext();
 
     // get window pos relateive to current context window
-    glm::vec2 getContextScreenPos();
+    glm::vec2 getContextScreenPos() const;
 
     void addText(const glm::vec2 &pos, uint32_t col, const char *textBegin,
                  const char *textEnd = nullptr);
@@ -43,10 +53,16 @@ class RenderContext {
     // return the size of clipSize in world space
     float getClipSizeInWorld(float clipSize) const;
 
-    EntityBase *getActiveEntityPtr();
-
    private:
-    int m_activeEntityId;
+    RenderWindow *m_window;
+
+    FrameBuffer *m_frameBuffer;
+
+    Camera *m_camera;
+
+    EntityManager<EntityBase> *m_entities;
+
+    uint32_t m_activeEntityId;
 
     float m_screenFactor;
 
@@ -54,6 +70,5 @@ class RenderContext {
 
     glm::vec2 m_renderOrigin;
 };
-
 
 #endif /* RENDER_CONTEXT_HPP */

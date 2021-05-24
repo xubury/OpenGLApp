@@ -9,16 +9,36 @@ void RenderContext::prepareContext() {
     m_drawList = ImGui::GetWindowDrawList();
 
     glm::vec3 pos = getActiveEntityPtr()->component<Transform>()->getPosition();
-    float rightLen = camera->getSegmentLengthClipSpace(
-        pos, pos + camera->component<Transform>()->getRight());
+    float rightLen = m_camera->getSegmentLengthClipSpace(
+        pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
 }
 
-EntityBase* RenderContext::getActiveEntityPtr() {
-    return entities->getPtr(m_activeEntityId);
+void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
+
+EntityBase* RenderContext::getActiveEntityPtr() const {
+    return m_entities->getPtr(m_activeEntityId);
 }
 
-glm::vec2 RenderContext::getContextScreenPos() {
+void RenderContext::setCamrea(Camera* camera) { m_camera = camera; }
+
+Camera* RenderContext::getCamera() const { return m_camera; }
+
+void RenderContext::setWindow(RenderWindow* window) { m_window = window; }
+
+RenderWindow* RenderContext::getWindow() const { return m_window; }
+
+void RenderContext::setFrameBuffer(FrameBuffer* frameBuffer) {
+    m_frameBuffer = frameBuffer;
+}
+
+FrameBuffer* RenderContext::getFrameBuffer() const { return m_frameBuffer; }
+
+void RenderContext::setEntityManager(EntityManager<EntityBase>* entites) {
+    m_entities = entites;
+}
+
+glm::vec2 RenderContext::getContextScreenPos() const {
     ImGuiIO& io = ImGui::GetIO();
     return glm::vec2(io.MousePos.x, io.MousePos.y) - m_renderOrigin;
 }

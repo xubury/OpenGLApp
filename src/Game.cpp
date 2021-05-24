@@ -98,10 +98,10 @@ void Game::run(int minFps) {
     Time timePerFrame = seconds(1.0 / minFps);
     Camera* camera = m_cameras.getPtr<Camera>(m_activeCam);
 
-    Editor::instance().context.frameBuffer = &m_frameBuffer;
-    Editor::instance().context.window = &m_window;
-    Editor::instance().context.entities = &m_app.entities;
-    Editor::instance().context.camera = camera;
+    Editor::instance().context.setFrameBuffer(&m_frameBuffer);
+    Editor::instance().context.setWindow(&m_window);
+    Editor::instance().context.setEntityManager(&m_app.entities);
+    Editor::instance().context.setCamrea(camera);
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {

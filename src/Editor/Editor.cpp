@@ -45,12 +45,13 @@ void Editor::buildModelAxes(float clipLen) {
         context.getActiveEntityPtr()->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
     m_modelScreenAxes.origin =
-        context.camera->computeWorldToSrceen(originWorld);
+        context.getCamera()->computeWorldToSrceen(originWorld);
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelScreenAxes.axes[i].pos = context.camera->computeWorldToSrceen(
-            originWorld +
-            glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
+        m_modelScreenAxes.axes[i].pos =
+            context.getCamera()->computeWorldToSrceen(
+                originWorld +
+                glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
         m_modelScreenAxes.axes[i].color = 0xFF000000;
         ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
@@ -71,7 +72,7 @@ void Editor::buildModelPlane() {
 
 void Editor::renderFps() {
     std::string frameRate =
-        "FPS:" + std::to_string(context.window->getFrameRate());
+        "FPS:" + std::to_string(context.getWindow()->getFrameRate());
     context.addText(glm::vec2(0), 0xFFFFFFFF, frameRate.c_str());
 }
 
@@ -91,9 +92,9 @@ void Editor::renderModelAxes() {
 }
 
 void Editor::renderCameraAxes(float clipLen) {
-    clipLen *= context.camera->getHeight() / 2.f;
-    auto model = context.camera->component<Transform>();
-    glm::vec3 origin(context.camera->getViewportSize() - clipLen, 0);
+    clipLen *= context.getCamera()->getHeight() / 2.f;
+    auto model = context.getCamera()->component<Transform>();
+    glm::vec3 origin(context.getCamera()->getViewportSize() - clipLen, 0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
@@ -122,7 +123,8 @@ void Editor::render() {
         ImGui::SetWindowPos(ImVec2(0, 0));
         if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
-            drawTransformSheet(*context.camera->component<Transform>().get());
+            drawTransformSheet(
+                *context.getCamera()->component<Transform>().get());
             ImGui::Separator();
             ImGui::TreePop();
         }
@@ -147,13 +149,13 @@ void Editor::render() {
 
         ImVec2 wsize = ImGui::GetWindowSize();
         // if game window not active, disable camera response
-        context.camera->setActive(ImGui::IsWindowFocused() &&
-                                  ImGui::IsWindowHovered());
-        context.frameBuffer->update(wsize.x, wsize.y);
-        context.camera->setSize(wsize.x, wsize.y);
+        context.getCamera()->setActive(ImGui::IsWindowFocused() &&
+                                       ImGui::IsWindowHovered());
+        context.getFrameBuffer()->update(wsize.x, wsize.y);
+        context.getCamera()->setSize(wsize.x, wsize.y);
         // Because I use the texture from OpenGL, I need to invert the V
         // from the UV.
-        ImGui::Image((void*)(intptr_t)context.frameBuffer->getTextureId(),
+        ImGui::Image((void*)(intptr_t)context.getFrameBuffer()->getTextureId(),
                      wsize, ImVec2(0, 1), ImVec2(1, 0));
         ImGui::EndChild();
     }
@@ -161,13 +163,13 @@ void Editor::render() {
 
     buildModelAxes(0.2);
     buildModelPlane();
-    context.camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
-                                     context.getContextScreenPos());
+    context.getCamera()->computeCameraRay(m_camRayOrigin, m_camRayDir,
+                                          context.getContextScreenPos());
     float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, m_planeXY);
     if (len > 0) {
         glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
         glm::vec2 intersectScreenPos =
-            context.camera->computeWorldToSrceen(intersectPoint);
+            context.getCamera()->computeWorldToSrceen(intersectPoint);
 
         glm::vec2 cloesetScreenPoint = findClosestPoint(
             intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
@@ -181,9 +183,9 @@ void Editor::render() {
     renderFps();
     renderModelAxes();
     renderCameraAxes(0.2);
-    context.addLine(context.camera->computeWorldToSrceen(m_camRayOrigin),
-                    context.camera->computeWorldToSrceen(m_camRayOrigin +
-                                                         m_camRayDir * 100.f),
+    context.addLine(context.getCamera()->computeWorldToSrceen(m_camRayOrigin),
+                    context.getCamera()->computeWorldToSrceen(
+                        m_camRayOrigin + m_camRayDir * 100.f),
                     0xFF0000FF);
 
     ImGui::Render();

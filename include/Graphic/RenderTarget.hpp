@@ -38,7 +38,7 @@ class RenderTarget {
 
     void applyShader(const Shader *shader);
 
-    void applyTransform(const glm::mat4 &transform) const;
+    void applyTransform(const glm::mat4 &transform);
 
     void applyTexture(const TextureArray *textures);
 
