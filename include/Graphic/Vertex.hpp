@@ -13,7 +13,6 @@ struct Vertex {
 
 struct DebugVertex {
     glm::vec3 position;
-    glm::vec3 color;
     static void setupAttribute();
 };
 

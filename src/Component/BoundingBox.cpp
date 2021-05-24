@@ -54,11 +54,7 @@ const glm::vec3 &BoundingBox::getWorldMax() const { return m_worldMax; }
 
 ElementBuffer BoundingBoxSystem::s_elements(GL_TRIANGLES);
 
-DebugVertex BoundingBoxSystem::s_vertices[8] = {
-    {{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}},
-    {{0, 0, 0}, {0, 1.0f, 0}}, {{0, 0, 0}, {0, 1.0f, 0}}};
+DebugVertex BoundingBoxSystem::s_vertices[8];
 
 static const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
                                      7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
@@ -118,6 +114,8 @@ void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
                              RenderTarget &target, RenderStates states) {
     states.shader = &DebugShader::instance();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    states.shader->use();
+    states.shader->setVec3("color", glm::vec3(0, 1, 0));
 
     BoundingBox::Handle box;
     auto view = manager.getByComponents<BoundingBox>(box);
