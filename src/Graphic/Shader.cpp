@@ -34,22 +34,19 @@ void Shader::loadFromFile(const std::string& vertexPath,
     } catch (std::ifstream::failure& e) {
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
-    compile(vertexCode, fragmentCode);
+    compile(vertexCode.c_str(), fragmentCode.c_str());
 }
 
-void Shader::compile(const std::string& vertexCode,
-                     const std::string& fragmentCode) {
+void Shader::compile(const char *vertexCode, const char *fragmentCode) {
     // compile shaders
     // vertex shader
-    const char* vShaderCode = vertexCode.c_str();
-    const char* fShaderCode = fragmentCode.c_str();
     uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vShaderCode, NULL);
+    glShaderSource(vertex, 1, &vertexCode, NULL);
     glCompileShader(vertex);
     checkCompileErrors(vertex, "VERTEX");
     // fragment Shader
     uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    glShaderSource(fragment, 1, &fragmentCode, NULL);
     glCompileShader(fragment);
     checkCompileErrors(fragment, "FRAGMENT");
 
