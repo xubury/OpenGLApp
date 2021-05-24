@@ -10,6 +10,49 @@
 #include <Utility/Math.hpp>
 #include <iostream>
 
+void EditorContext::prepareContext() {
+    ImVec2 renderOrigin = ImGui::GetWindowPos();
+    m_renderOrigin.x = renderOrigin.x;
+    m_renderOrigin.y = renderOrigin.y;
+    m_drawList = ImGui::GetWindowDrawList();
+}
+
+glm::vec2 EditorContext::getContextScreenPos() {
+    ImGuiIO& io = ImGui::GetIO();
+    return glm::vec2(io.MousePos.x, io.MousePos.y) - m_renderOrigin;
+}
+
+void EditorContext::addText(const glm::vec2& pos, uint32_t col,
+                            const char* textBegin, const char* textEnd) {
+    m_drawList->AddText(
+        ImVec2(m_renderOrigin.x + pos.x, m_renderOrigin.y + pos.y), col,
+        textBegin, textEnd);
+}
+
+void EditorContext::addLine(const glm::vec2& start, const glm::vec2& end,
+                            uint32_t color, float thickness) {
+    m_drawList->AddLine(
+        ImVec2(m_renderOrigin.x + start.x, m_renderOrigin.y + start.y),
+        ImVec2(m_renderOrigin.x + end.x, m_renderOrigin.y + end.y), color,
+        thickness);
+}
+
+void EditorContext::addCircleFilled(const glm::vec2& center, float radius,
+                                    uint32_t color, int numSegments) {
+    m_drawList->AddCircleFilled(
+        ImVec2(m_renderOrigin.x + center.x, m_renderOrigin.y + center.y),
+        radius, color, numSegments);
+}
+
+void EditorContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
+                                  uint32_t color, float rounding,
+                                  ImDrawCornerFlags roundingCorners) {
+    m_drawList->AddRectFilled(
+        ImVec2(m_renderOrigin.x + tl.x, m_renderOrigin.y + tl.y),
+        ImVec2(m_renderOrigin.x + br.x, m_renderOrigin.y + br.y), color,
+        rounding, roundingCorners);
+}
+
 Editor& Editor::instance() {
     static Editor s_instance;
     return s_instance;
@@ -49,14 +92,12 @@ void Editor::buildModelAxes(float len) {
     auto entity = context.entities->getPtr(m_activeEntityId);
     const auto& model = entity->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
-    glm::vec3 renderOrigin = glm::vec3(m_renderOrigin, 0);
     m_modelScreenAxes.origin =
-        context.camera->computeWorldToSrceen(originWorld) + renderOrigin;
+        context.camera->computeWorldToSrceen(originWorld);
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
         m_modelScreenAxes.axes[i].pos = context.camera->computeWorldToSrceen(
-                                            originWorld + glm::vec3(model[i])) +
-                                        renderOrigin;
+            originWorld + glm::vec3(model[i]));
         m_modelScreenAxes.axes[i].pos =
             m_modelScreenAxes.origin +
             glm::normalize(m_modelScreenAxes.axes[i].pos -
@@ -84,14 +125,7 @@ void Editor::buildModelPlane() {
 void Editor::renderFps() {
     std::string frameRate =
         "FPS:" + std::to_string(context.window->getFrameRate());
-    m_drawList->AddText(ImVec2(m_renderOrigin.x, m_renderOrigin.y), 0xFFFFFFFF,
-                        frameRate.c_str());
-}
-
-void Editor::renderAxis(const glm::vec2& origin, const glm::vec2& axis,
-                        ImU32 color, float thickness) {
-    m_drawList->AddLine(ImVec2(origin.x, origin.y), ImVec2(axis.x, axis.y),
-                        color, thickness);
+    context.addText(glm::vec2(0), 0xFFFFFFFF, frameRate.c_str());
 }
 
 void Editor::renderModelAxes() {
@@ -100,38 +134,33 @@ void Editor::renderModelAxes() {
         for (int i = 0; i < 3; ++i) {
             const auto& axis = m_modelScreenAxes.axes[m_axesDrawingOrder[i]];
             if (axis.pos.z > 0.f) {
-                renderAxis(m_modelScreenAxes.origin, axis.pos, axis.color);
+                context.addLine(m_modelScreenAxes.origin, axis.pos, axis.color);
             }
         }
-        float hWidth = 5.0f;
-        float hHeight = 5.0f;
-        m_drawList->AddRectFilled(ImVec2(m_modelScreenAxes.origin.x - hWidth,
-                                         m_modelScreenAxes.origin.y - hHeight),
-                                  ImVec2(m_modelScreenAxes.origin.x + hWidth,
-                                         m_modelScreenAxes.origin.y + hHeight),
-                                  0xFFFFFFFF);
+        glm::vec3 hSize(5.0f, 5.0f, 0);
+        context.addRectFilled(m_modelScreenAxes.origin - hSize,
+                              m_modelScreenAxes.origin + hSize, 0xFFFFFFFF);
     }
 }
 
 void Editor::renderCameraAxes(float len) {
     auto model = context.camera->component<Transform>();
-    glm::vec3 origin(m_renderOrigin + context.camera->getViewportSize() - len,
-                     0);
+    glm::vec3 origin(context.camera->getViewportSize() - len, 0);
     // draw x
     glm::vec3 xAxis = model->getRight();
     xAxis.y = -xAxis.y;
     xAxis = origin + xAxis * len;
-    renderAxis(origin, xAxis, 0xFF0000FF, 2);
+    context.addLine(origin, xAxis, 0xFF0000FF, 2);
     // draw y
     glm::vec3 yAxis = model->getUp();
     yAxis.y = -yAxis.y;
     yAxis = origin + yAxis * len;
-    renderAxis(origin, yAxis, 0xFF00FF00, 2);
+    context.addLine(origin, yAxis, 0xFF00FF00, 2);
     // draw z
     glm::vec3 zAxis = model->getFront();
     zAxis.y = -zAxis.y;
     zAxis = origin + zAxis * len;
-    renderAxis(origin, zAxis, 0xFFFF0000, 2);
+    context.addLine(origin, zAxis, 0xFFFF0000, 2);
 }
 
 void Editor::render() {
@@ -166,10 +195,7 @@ void Editor::render() {
         ImGui::SetWindowPos(ImVec2(300, 0));
 
         ImGui::BeginChild("GameRender");
-        ImVec2 renderOrigin = ImGui::GetWindowPos();
-        m_renderOrigin.x = renderOrigin.x;
-        m_renderOrigin.y = renderOrigin.y;
-        m_drawList = ImGui::GetWindowDrawList();
+        context.prepareContext();
 
         ImVec2 wsize = ImGui::GetWindowSize();
         // if game window not active, disable camera response
@@ -184,11 +210,11 @@ void Editor::render() {
         ImGui::EndChild();
     }
     ImGui::End();
-    ImGuiIO& io = ImGui::GetIO();
+
     buildModelAxes(50.0f);
     buildModelPlane();
     context.camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
-                     glm::vec2(io.MousePos.x, io.MousePos.y));
+                                     context.getContextScreenPos());
     float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, m_planeXY);
     if (len > 0) {
         glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
@@ -198,22 +224,19 @@ void Editor::render() {
         glm::vec2 cloesetScreenPoint = findClosestPoint(
             intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
             glm::vec2(m_modelScreenAxes.axes[0].pos));
-        m_drawList->AddCircleFilled(
-            ImVec2(cloesetScreenPoint.x, cloesetScreenPoint.y), 10, 0xFFFFFFFF);
+        context.addCircleFilled(cloesetScreenPoint, 10, 0xFFFFFFFF);
         if (glm::length(intersectScreenPos - cloesetScreenPoint) < 12.f) {
             std::cout << "yes" << std::endl;
-        } else {
-            std::cout << "no" << std::endl;
         }
     }
 
     renderFps();
     renderModelAxes();
     renderCameraAxes(50.0f);
-    renderAxis(context.camera->computeWorldToSrceen(m_camRayOrigin),
-               context.camera->computeWorldToSrceen(m_camRayOrigin +
-                                                    m_camRayDir * 100.f),
-               0xFF0000FF);
+    context.addLine(context.camera->computeWorldToSrceen(m_camRayOrigin),
+                    context.camera->computeWorldToSrceen(m_camRayOrigin +
+                                                         m_camRayDir * 100.f),
+                    0xFF0000FF);
 
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);
