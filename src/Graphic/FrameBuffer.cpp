@@ -129,7 +129,7 @@ void FrameBuffer::update(int width, int height, int sample) {
     assert(width > 0 && height > 0);
     // if width, height or sample changed, do an update
     if (m_width != width || m_height != height ||
-        (sample != 0 && m_sample != sample)) {
+        (sample > 0 && m_sample != sample)) {
         m_width = width;
         m_height = height;
         if (sample > 0) m_sample = sample;
