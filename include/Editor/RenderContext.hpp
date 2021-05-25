@@ -36,7 +36,7 @@ class RenderContext {
     void unloadContext();
 
     // get window pos relateive to current context window
-    glm::vec2 getContextScreenPos() const;
+    glm::vec2 getCursorPos() const;
 
     void addText(const glm::vec2 &pos, uint32_t col, const char *textBegin,
                  const char *textEnd = nullptr);

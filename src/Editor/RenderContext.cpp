@@ -45,7 +45,7 @@ void RenderContext::setEntityManager(EntityManager<EntityBase>* entites) {
     m_entities = entites;
 }
 
-glm::vec2 RenderContext::getContextScreenPos() const {
+glm::vec2 RenderContext::getCursorPos() const {
     ImGuiIO& io = ImGui::GetIO();
     return glm::vec2(io.MousePos.x, io.MousePos.y) - m_renderOrigin;
 }

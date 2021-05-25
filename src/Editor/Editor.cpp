@@ -158,7 +158,7 @@ void Editor::render() {
     buildModelAxes(0.2);
     buildModelPlane();
     context.getCamera()->computeCameraRay(m_camRayOrigin, m_camRayDir,
-                                          context.getContextScreenPos());
+                                          context.getCursorPos());
     float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, m_planeXY);
     if (len > 0) {
         glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
