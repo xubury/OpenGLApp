@@ -90,3 +90,23 @@ void Primitive::drawCircle(const glm::vec3 &center, float radius,
                       GL_DYNAMIC_DRAW);
     m_vertices.drawPrimitive();
 }
+
+void Primitive::drawCircleFilled(const glm::vec3 &center, float radius,
+                                 const glm::vec4 &color, int fragments) {
+    std::vector<DebugVertex> vertex;
+    float increment;
+    if (fragments == 0) {
+        increment = 2.0f * M_PI * 0.001;
+    } else {
+        increment = 2.0f * M_PI / fragments;
+    }
+    vertex.emplace_back(center, color);
+    for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
+        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.x,
+                                      radius * sin(angle) + center.y, center.z),
+                            color);
+    }
+    m_vertices.update(vertex.data(), vertex.size(), GL_TRIANGLE_FAN,
+                      GL_DYNAMIC_DRAW);
+    m_vertices.drawPrimitive();
+}

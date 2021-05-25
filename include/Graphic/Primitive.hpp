@@ -31,6 +31,9 @@ class Primitive {
     void drawCircle(const glm::vec3 &center, float radius,
                     const glm::vec4 &color,  int fragments = 0);
 
+    void drawCircleFilled(const glm::vec3 &center, float radius,
+                    const glm::vec4 &color,  int fragments = 0);
+
    private:
     Primitive();
 

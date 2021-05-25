@@ -79,8 +79,8 @@ void Editor::renderModelAxes() {
         Primitive::instance().drawLine(m_modelScreenAxes.origin, axis.pos,
                                        axis.color, 5.0f);
     }
-    Primitive::instance().drawCircle(m_modelScreenAxes.origin, 10.0f,
-                                     glm::vec4(1.0f));
+    Primitive::instance().drawCircleFilled(m_modelScreenAxes.origin, 10.0f,
+                                           glm::vec4(1.0f));
 }
 
 void Editor::renderCameraAxes(float clipLen) {
