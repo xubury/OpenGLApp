@@ -152,7 +152,6 @@ void FrameBuffer::update(int width, int height, int sample) {
 
 void FrameBuffer::activate() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_multiSampleFrameBufferId);
-    glEnable(GL_DEPTH_TEST);
 }
 
 void FrameBuffer::deactivate() const {
@@ -161,16 +160,17 @@ void FrameBuffer::deactivate() const {
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
                       GL_COLOR_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDisable(GL_DEPTH_TEST);
 }
 
 void FrameBuffer::draw() {
     deactivate();
+    glDisable(GL_DEPTH_TEST);
     FrameBufferShader::instance().use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_textureId);
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glEnable(GL_DEPTH_TEST);
 }
 
 uint32_t FrameBuffer::getScreenTexture() const { return m_textureId; }

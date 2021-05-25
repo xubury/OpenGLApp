@@ -33,6 +33,8 @@ class RenderContext {
 
     void prepareContext();
 
+    void unloadContext();
+
     // get window pos relateive to current context window
     glm::vec2 getContextScreenPos() const;
 

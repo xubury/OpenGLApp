@@ -5,7 +5,6 @@
 RenderContext::RenderContext() : m_activeEntityId(2), m_screenFactor(1.0f) {}
 
 void RenderContext::prepareContext() {
-    m_frameBuffer->activate();
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
@@ -16,8 +15,11 @@ void RenderContext::prepareContext() {
         pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
 
-    Primitive::instance().prepareContext(m_camera);
+    m_frameBuffer->activate();
+    Primitive::instance().setDrawingView(m_camera);
 }
+
+void RenderContext::unloadContext() { m_frameBuffer->deactivate(); }
 
 void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
@@ -64,7 +66,7 @@ void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
 }
 
 void RenderContext::addLineEx(const glm::vec3& start, const glm::vec3& end,
-                                 const glm::vec4& color, float thickness) {
+                              const glm::vec4& color, float thickness) {
     Primitive::instance().drawLine(start, end, color, thickness);
 }
 

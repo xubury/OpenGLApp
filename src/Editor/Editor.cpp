@@ -137,6 +137,7 @@ void Editor::render() {
         ImGui::SetWindowPos(ImVec2(300, 0));
 
         ImGui::BeginChild("GameRender");
+        // prepare the context for ImGui drawing and framebuffer drawing
         context.prepareContext();
 
         ImVec2 wsize = ImGui::GetWindowSize();
@@ -147,8 +148,9 @@ void Editor::render() {
         context.getCamera()->setSize(wsize.x, wsize.y);
         // Because I use the texture from OpenGL, I need to invert the V
         // from the UV.
-        ImGui::Image((void*)(intptr_t)context.getFrameBuffer()->getScreenTexture(),
-                     wsize, ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::Image(
+            (void*)(intptr_t)context.getFrameBuffer()->getScreenTexture(),
+            wsize, ImVec2(0, 1), ImVec2(1, 0));
         ImGui::EndChild();
     }
     ImGui::End();
@@ -182,7 +184,9 @@ void Editor::render() {
                         m_camRayOrigin + m_camRayDir * 100.f),
                     0xFF0000FF);
 
-    context.getFrameBuffer()->deactivate();
+    // unload context and quit drawing drawing on the framebuffer
+    context.unloadContext();
+
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);

@@ -20,7 +20,7 @@ class Primitive {
    public:
     static Primitive &instance();
 
-    void prepareContext(const Camera *camera);
+    void setDrawingView(const Camera *camera);
 
     void drawLine(const glm::vec3 &start, const glm::vec3 &end,
                   const glm::vec4 &color, float thickness);
