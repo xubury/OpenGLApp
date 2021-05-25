@@ -22,10 +22,13 @@ void Game::addModel(const std::string& path) {
     model->setName(typeid(*model).name());
 }
 
-Game::Game(int width, int height, const std::string& title)
-    : m_window(width, height, title), m_activeCam(0) {
-    m_activeCam = m_cameras.create<ControlCamera>(0, 0, width, height,
-                                                  glm::vec3(0, 0, 3));
+Game::Game(const Settings& settings)
+    : m_window(settings.width, settings.height, settings.title),
+      m_activeCam(0),
+      m_editorMode(settings.editor) {
+    m_activeCam = m_cameras.create<ControlCamera>(
+        0, 0, settings.width, settings.height, glm::vec3(0, 0, 3));
+
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
     m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
@@ -61,7 +64,7 @@ Game::Game(int width, int height, const std::string& title)
 
     m_window.setFramerateLimit(120);
 
-    m_frameBuffer.initialize(width, height, 4);
+    m_frameBuffer.initialize(settings.width, settings.height, settings.samples);
 }
 
 void Game::update(Time& deltaTime) {
@@ -85,8 +88,12 @@ void Game::render() {
         m_window.draw(m_app.entities.get(*cur), states);
     }
 
-    m_frameBuffer.draw();
-    Editor::instance().render();
+    if (m_editorMode) {
+        Editor::instance().render();
+    } else {
+        m_frameBuffer.draw();
+    }
+
     m_window.display();
 }
 
@@ -96,10 +103,12 @@ void Game::run(int minFps) {
     Time timePerFrame = seconds(1.0 / minFps);
     Camera* camera = m_cameras.getPtr<Camera>(m_activeCam);
 
-    Editor::instance().context.setFrameBuffer(&m_frameBuffer);
-    Editor::instance().context.setWindow(&m_window);
-    Editor::instance().context.setEntityManager(&m_app.entities);
-    Editor::instance().context.setCamrea(camera);
+    if (m_editorMode) {
+        Editor::instance().context.setFrameBuffer(&m_frameBuffer);
+        Editor::instance().context.setWindow(&m_window);
+        Editor::instance().context.setEntityManager(&m_app.entities);
+        Editor::instance().context.setCamrea(camera);
+    }
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {

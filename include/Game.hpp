@@ -10,9 +10,17 @@
 #include <ECS/Application.hpp>
 #include <Graphic/FrameBuffer.hpp>
 
+struct Settings {
+    int width;
+    int height;
+    std::string title;
+    int samples;
+    bool editor;
+};
+
 class Game {
    public:
-    Game(int width, int height, const std::string &title);
+    Game(const Settings &settings);
 
     void run(int minFps);
 
@@ -31,6 +39,8 @@ class Game {
     EntityManager<EntityBase> m_cameras;
     uint32_t m_activeCam;
     FrameBuffer m_frameBuffer;
+
+    bool m_editorMode;
 };
 
 #endif
