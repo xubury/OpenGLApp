@@ -31,9 +31,6 @@ class RenderTarget {
                   const glm::vec4 &color, float thickness,
                   const Camera *camera);
 
-    void drawBox(const glm::vec3 &min, const glm::vec3 &max,
-                 const glm::vec4 &color, const Camera *camera);
-
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
    protected:

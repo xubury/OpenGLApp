@@ -8,19 +8,13 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <Entity/Camera.hpp>
 
-namespace primitive {
+static VertexBuffer s_lineVertices(GL_LINES);
 
-void initPrimitive();
-
-void drawLine(const glm::vec3 &start, const glm::vec3 &end);
-
-void drawBox(const glm::vec3 &min, const glm::vec3 &max);
-
-}  // namespace primitive
-
-RenderTarget::RenderTarget() : m_textures(nullptr) {
-    primitive::initPrimitive();
+static void initPrimitive() {
+    s_lineVertices.create();
 }
+
+RenderTarget::RenderTarget() : m_textures(nullptr) { initPrimitive(); }
 
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
@@ -49,30 +43,16 @@ void RenderTarget::draw(const ElementBuffer &element,
 void RenderTarget::drawLine(const glm::vec3 &start, const glm::vec3 &end,
                             const glm::vec4 &color, float thickness,
                             const Camera *camera) {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    DebugShader::instance().use();
+    PrimitiveShader::instance().use();
     glViewport(camera->getX(), camera->getY(), camera->getWidth(),
                camera->getHeight());
-    DebugShader::instance().setMat4("projection", camera->getProjection());
-    DebugShader::instance().setMat4("view", camera->getView());
-    DebugShader::instance().setVec4("color", color);
+    PrimitiveShader::instance().setFloat("screenWidth", camera->getWidth());
+    PrimitiveShader::instance().setFloat("screenHeight", camera->getHeight());
     glLineWidth(thickness);
-    primitive::drawLine(start, end);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    DebugVertex vertices[2] = {{start, color}, {end, color}};
+    s_lineVertices.update(vertices, 2, GL_DYNAMIC_DRAW);
+    s_lineVertices.drawPrimitive();
     glLineWidth(1.0f);
-}
-
-void RenderTarget::drawBox(const glm::vec3 &min, const glm::vec3 &max,
-                           const glm::vec4 &color, const Camera *camera) {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    DebugShader::instance().use();
-    glViewport(camera->getX(), camera->getY(), camera->getWidth(),
-               camera->getHeight());
-    DebugShader::instance().setMat4("projection", camera->getProjection());
-    DebugShader::instance().setMat4("view", camera->getView());
-    DebugShader::instance().setVec4("color", color);
-    primitive::drawBox(min, max);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void RenderTarget::clear(float r, float g, float b, float a) {

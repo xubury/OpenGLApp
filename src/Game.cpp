@@ -85,11 +85,6 @@ void Game::render() {
         m_window.draw(m_app.entities.get(*cur), states);
     }
 
-    m_app.systems.system<BoundingBoxSystem>()->draw(m_app.entities, m_window,
-                                                    states);
-    // m_app.systems.system<TransformSystem>()->draw(m_app.entities, m_window,
-    //                                               states);
-
     m_frameBuffer.draw();
     Editor::instance().render();
     m_window.display();

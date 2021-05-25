@@ -42,7 +42,7 @@ class Editor {
 
     glm::vec3 m_camRayDir;
 
-    Axes m_modelAxes;
+    Axes m_modelScreenAxes;
 
     glm::vec4 m_planeXY;
 

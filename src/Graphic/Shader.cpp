@@ -37,7 +37,7 @@ void Shader::loadFromFile(const std::string& vertexPath,
     compile(vertexCode.c_str(), fragmentCode.c_str());
 }
 
-void Shader::compile(const char *vertexCode, const char *fragmentCode) {
+void Shader::compile(const char* vertexCode, const char* fragmentCode) {
     // compile shaders
     // vertex shader
     uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -117,14 +117,13 @@ void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
                        &value[0][0]);
 }
 
-DebugShader& DebugShader::instance() {
-    static DebugShader s_instance("shader/debugVertex.glsl",
-                                  "shader/debugFragment.glsl");
+PrimitiveShader& PrimitiveShader::instance() {
+    static PrimitiveShader s_instance("shader/primitiveVertex.glsl",
+                                      "shader/primitiveFragment.glsl");
     return s_instance;
 }
 
-DebugShader::DebugShader(const std::string& vertexPath,
-                         const std::string& fragmentPath) {
+PrimitiveShader::PrimitiveShader(const std::string& vertexPath,
+                                 const std::string& fragmentPath) {
     loadFromFile(vertexPath, fragmentPath);
 }
-

@@ -44,14 +44,16 @@ void Editor::buildModelAxes(float clipLen) {
     const auto& model =
         context.getActiveEntityPtr()->component<Transform>()->getTransform();
     glm::vec3 originWorld = model[3];
-    m_modelAxes.origin = originWorld;
+    m_modelScreenAxes.origin =
+        context.getCamera()->computeWorldToSrceen(originWorld);
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelAxes.axes[i].pos =
-            originWorld +
-            glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen);
-        m_modelAxes.axes[i].color[3] = 1.0f;
-        m_modelAxes.axes[i].color[i] = 1.0f;
+        m_modelScreenAxes.axes[i].pos =
+            context.getCamera()->computeWorldToSrceen(
+                originWorld +
+                glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
+        m_modelScreenAxes.axes[i].color[3] = 1.0f;
+        m_modelScreenAxes.axes[i].color[i] = 1.0f;
         // ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
     }
 }
@@ -71,10 +73,9 @@ void Editor::renderFps() {
 }
 
 void Editor::renderModelAxes() {
-    // backface culling
     for (int i = 0; i < 3; ++i) {
-        const auto& axis = m_modelAxes.axes[i];
-        context.addLineWorld(m_modelAxes.origin, axis.pos, axis.color);
+        const auto& axis = m_modelScreenAxes.axes[i];
+        context.addLineEx(m_modelScreenAxes.origin, axis.pos, axis.color);
     }
 }
 
@@ -158,12 +159,9 @@ void Editor::render() {
         glm::vec2 intersectScreenPos =
             context.getCamera()->computeWorldToSrceen(intersectPoint);
 
-        glm::vec2 modelOriginScreenPos =
-            context.getCamera()->computeWorldToSrceen(m_modelAxes.origin);
-        glm::vec2 modelAxisScreenPos =
-            context.getCamera()->computeWorldToSrceen(m_modelAxes.axes[0].pos);
         glm::vec2 cloesetScreenPoint = findClosestPoint(
-            intersectScreenPos, modelOriginScreenPos, modelAxisScreenPos);
+            intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
+            glm::vec2(m_modelScreenAxes.axes[0].pos));
         context.addCircleFilled(cloesetScreenPoint, 10, 0xFFFFFFFF);
         if (glm::length(intersectScreenPos - cloesetScreenPoint) < 12.f) {
             std::cout << "yes" << std::endl;
@@ -171,6 +169,8 @@ void Editor::render() {
     }
 
     renderFps();
+    // clear depth buffer to make axes not hidden by object
+    glClear(GL_DEPTH_BUFFER_BIT);
     renderModelAxes();
     renderCameraAxes(0.2);
     context.addLine(context.getCamera()->computeWorldToSrceen(m_camRayOrigin),
@@ -178,6 +178,7 @@ void Editor::render() {
                         m_camRayOrigin + m_camRayDir * 100.f),
                     0xFF0000FF);
 
+    context.getFrameBuffer()->deactivate();
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);

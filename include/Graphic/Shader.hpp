@@ -15,7 +15,7 @@ class Shader {
 
     Shader& operator=(const Shader&) = delete;
 
-    void compile(const char *vertexCode, const char *fragmentCode);
+    void compile(const char* vertexCode, const char* fragmentCode);
 
     void loadFromFile(const std::string& vertexPath,
                       const std::string& fragmentPath);
@@ -38,13 +38,12 @@ class Shader {
     static void checkCompileErrors(uint32_t shader, const std::string type);
 };
 
-class DebugShader : public Shader {
+class PrimitiveShader : public Shader {
    public:
-    static DebugShader& instance();
+    static PrimitiveShader& instance();
 
    private:
-    DebugShader(const std::string& vertexPath, const std::string& fragmentPath);
-
+    PrimitiveShader(const std::string& vertexPath, const std::string& fragmentPath);
 };
 
 #endif

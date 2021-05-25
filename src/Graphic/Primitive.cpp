@@ -3,28 +3,15 @@
 
 namespace primitive {
 
-VertexBuffer s_lineVertices(GL_LINES);
-
 ElementBuffer s_boxElements(GL_TRIANGLES);
 
 void initPrimitive() {
-    DebugVertex vertices[2];
-    s_lineVertices.create(vertices, 2);
+    // const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
+    //                               7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
+    //                               4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
 
-    const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
-                                  7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
-                                  4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
-
-    DebugVertex boxVertices[8];
-    s_boxElements.create(boxVertices, 8, indices, 36);
-}
-
-void drawLine(const glm::vec3 &start, const glm::vec3 &end) {
-    DebugVertex vertices[2];
-    vertices[0].position = start;
-    vertices[1].position = end;
-    s_lineVertices.update(vertices, 2);
-    s_lineVertices.drawPrimitive();
+    // DebugVertex boxVertices[8];
+    s_boxElements.create();
 }
 
 void drawBox(const glm::vec3 &min, const glm::vec3 &max) {

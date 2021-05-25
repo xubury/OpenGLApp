@@ -64,13 +64,3 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
     }
 }
 
-void BoundingBoxSystem::draw(EntityManager<EntityBase> &manager,
-                             RenderTarget &target, RenderStates states) {
-    BoundingBox::Handle box;
-    auto view = manager.getByComponents<BoundingBox>(box);
-    auto end = view.end();
-    for (auto cur = view.begin(); cur != end; ++cur) {
-        target.drawBox(box->getWorldMin(), box->getWorldMax(),
-                       glm::vec4(0, 1, 0, 1), states.camera);
-    }
-}

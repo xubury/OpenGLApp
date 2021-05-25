@@ -5,7 +5,6 @@ RenderContext::RenderContext() : m_activeEntityId(2), m_screenFactor(1.0f) {}
 
 void RenderContext::prepareContext() {
     m_frameBuffer->activate();
-    glClear(GL_DEPTH_BUFFER_BIT);
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
@@ -15,7 +14,6 @@ void RenderContext::prepareContext() {
     float rightLen = m_camera->getSegmentLengthClipSpace(
         pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
-    m_frameBuffer->deactivate();
 }
 
 void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
@@ -62,11 +60,9 @@ void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
         thickness);
 }
 
-void RenderContext::addLineWorld(const glm::vec3& start, const glm::vec3& end,
+void RenderContext::addLineEx(const glm::vec3& start, const glm::vec3& end,
                                  const glm::vec4& color, float thickness) {
-    m_frameBuffer->activate();
     m_window->drawLine(start, end, color, thickness, m_camera);
-    m_frameBuffer->draw();
 }
 
 void RenderContext::addCircleFilled(const glm::vec2& center, float radius,

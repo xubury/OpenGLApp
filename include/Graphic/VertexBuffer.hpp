@@ -25,11 +25,11 @@ class VertexBuffer : public Drawable {
 
     bool isInit() const;
 
-    template <typename T>
-    bool create(const T vertices, std::size_t cnt);
+    bool create();
 
     template <typename T>
-    void update(const T vertices, std::size_t cnt);
+    void update(const T vertices, std::size_t cnt,
+                GLenum mode = GL_STATIC_DRAW);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -42,8 +42,7 @@ class VertexBuffer : public Drawable {
     int m_drawType;
 };
 
-template <typename T>
-bool VertexBuffer::create(const T vertices, std::size_t cnt) {
+inline bool VertexBuffer::create() {
     glGenBuffers(1, &m_VBO);
     glGenVertexArrays(1, &m_VAO);
     if (!m_VBO || !m_VAO) {
@@ -54,20 +53,17 @@ bool VertexBuffer::create(const T vertices, std::size_t cnt) {
         std::cerr << "Could not create vertex array object." << std::endl;
         return false;
     }
-    if (vertices != nullptr && cnt != 0) {
-        update(vertices, cnt);
-    }
     return true;
 }
 
 template <typename T>
-void VertexBuffer::update(const T vertices, std::size_t cnt) {
+void VertexBuffer::update(const T vertices, std::size_t cnt, GLenum mode) {
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER,
                  sizeof(typename std::remove_pointer<T>::type) * cnt, vertices,
-                 GL_STATIC_DRAW);
+                 mode);
     m_size = cnt;
     std::remove_pointer<T>::type::setupAttribute();
 }
