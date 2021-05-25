@@ -7,6 +7,12 @@ class FrameBuffer {
    public:
     FrameBuffer();
 
+    ~FrameBuffer();
+
+    FrameBuffer(const FrameBuffer &) = delete;
+
+    FrameBuffer &operator=(const FrameBuffer &) = delete;
+
     void initialize(int width, int height, int smaple);
 
     void update(int width, int height, int smaple = 0);

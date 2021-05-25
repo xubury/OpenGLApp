@@ -43,6 +43,16 @@ FrameBuffer::FrameBuffer()
       m_height(0),
       m_sample(1) {}
 
+FrameBuffer::~FrameBuffer() {
+    glDeleteFramebuffers(1, &m_multiSampleFrameBufferId);
+    glDeleteFramebuffers(1, &m_frameBufferId);
+
+    glDeleteRenderbuffers(1, &m_multiSampleRenderBufferId);
+
+    glDeleteTextures(1, &m_multiSampleTextureId);
+    glDeleteTextures(1, &m_textureId);
+}
+
 void FrameBuffer::initialize(int width, int height, int sample) {
     glGenFramebuffers(1, &m_multiSampleFrameBufferId);
     glGenFramebuffers(1, &m_frameBufferId);
