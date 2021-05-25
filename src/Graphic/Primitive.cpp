@@ -11,7 +11,7 @@ void initPrimitive() {
     //                               4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
 
     // DebugVertex boxVertices[8];
-    s_boxElements.create();
+    s_boxElements.initialize();
 }
 
 void drawBox(const glm::vec3 &min, const glm::vec3 &max) {

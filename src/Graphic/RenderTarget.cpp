@@ -11,7 +11,7 @@
 static VertexBuffer s_lineVertices(GL_LINES);
 
 static void initPrimitive() {
-    s_lineVertices.create();
+    s_lineVertices.initialize();
 }
 
 RenderTarget::RenderTarget() : m_textures(nullptr) { initPrimitive(); }

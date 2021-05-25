@@ -52,7 +52,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id)
         {{-0.5f, 0.5f, -0.5f}, {0, 0, 0}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}}};
 
     if (!s_cube.isInit()) {
-        s_cube.create();
+        s_cube.initialize();
         s_cube.update(vertices, 36);
     }
     manager->addComponent<BoundingBox>(id)->initialize(vertices, 36);
