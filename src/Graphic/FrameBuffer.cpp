@@ -163,6 +163,4 @@ void FrameBuffer::draw() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-uint32_t FrameBuffer::getFrameBufferId() const { return m_frameBufferId; }
-
 uint32_t FrameBuffer::getScreenTexture() const { return m_textureId; }

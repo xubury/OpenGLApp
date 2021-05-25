@@ -19,13 +19,13 @@ class FrameBuffer {
 
     uint32_t getScreenTexture() const;
 
-    uint32_t getFrameBufferId() const;
-
    private:
     uint32_t m_multiSampleFrameBufferId;
     uint32_t m_multiSampleTextureId;
     uint32_t m_multiSampleRenderBufferId;
 
+    // multisample texture can't draw directly
+    // need to copy it to another framebuffer with normal texture
     uint32_t m_frameBufferId;
     uint32_t m_textureId;
 
@@ -40,6 +40,7 @@ class FrameBuffer {
 class FrameBufferShader : public Shader {
    public:
     static FrameBufferShader &instance();
+
    private:
     FrameBufferShader();
 };
