@@ -104,6 +104,8 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // MSAA
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     m_context = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (m_context == NULL) {
@@ -127,4 +129,6 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     // glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glEnable(GL_DEPTH_TEST);
+    //MSAA
+    glEnable(GL_MULTISAMPLE);
 }

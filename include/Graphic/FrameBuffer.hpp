@@ -7,9 +7,9 @@ class FrameBuffer {
    public:
     FrameBuffer();
 
-    void create(int width, int height);
+    void initialize(int width, int height, int smaple);
 
-    void update(int width, int height);
+    void update(int width, int height, int smaple = 0);
 
     void activate() const;
 
@@ -17,19 +17,24 @@ class FrameBuffer {
 
     void draw();
 
-    uint32_t getTextureId() const;
+    uint32_t getScreenTexture() const;
 
     uint32_t getFrameBufferId() const;
 
    private:
+    uint32_t m_multiSampleFrameBufferId;
+    uint32_t m_multiSampleTextureId;
+    uint32_t m_multiSampleRenderBufferId;
+
     uint32_t m_frameBufferId;
+    uint32_t m_textureId;
+
     uint32_t m_VBO;
     uint32_t m_VAO;
-    uint32_t m_textureId;
-    uint32_t m_renderBufferId;
 
     int m_width;
     int m_height;
+    int m_sample;
 };
 
 class FrameBufferShader : public Shader {

@@ -61,7 +61,7 @@ Game::Game(int width, int height, const std::string& title)
 
     m_window.setFramerateLimit(120);
 
-    m_frameBuffer.create(width, height);
+    m_frameBuffer.initialize(width, height, 4);
 }
 
 void Game::update(Time& deltaTime) {

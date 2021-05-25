@@ -147,7 +147,7 @@ void Editor::render() {
         context.getCamera()->setSize(wsize.x, wsize.y);
         // Because I use the texture from OpenGL, I need to invert the V
         // from the UV.
-        ImGui::Image((void*)(intptr_t)context.getFrameBuffer()->getTextureId(),
+        ImGui::Image((void*)(intptr_t)context.getFrameBuffer()->getScreenTexture(),
                      wsize, ImVec2(0, 1), ImVec2(1, 0));
         ImGui::EndChild();
     }
