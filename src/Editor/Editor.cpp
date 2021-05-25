@@ -3,6 +3,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <Utility/Math.hpp>
+#include <Graphic/Primitive.hpp>
 #include <iostream>
 
 Editor& Editor::instance() {
@@ -75,8 +76,11 @@ void Editor::renderFps() {
 void Editor::renderModelAxes() {
     for (int i = 0; i < 3; ++i) {
         const auto& axis = m_modelScreenAxes.axes[i];
-        context.addLineEx(m_modelScreenAxes.origin, axis.pos, axis.color);
+        Primitive::instance().drawLine(m_modelScreenAxes.origin, axis.pos,
+                                       axis.color, 5.0f);
     }
+    Primitive::instance().drawCircle(m_modelScreenAxes.origin, 10.0f,
+                                     glm::vec4(1.0f));
 }
 
 void Editor::renderCameraAxes(float clipLen) {

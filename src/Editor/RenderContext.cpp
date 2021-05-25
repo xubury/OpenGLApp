@@ -1,4 +1,5 @@
 #include <Editor/RenderContext.hpp>
+#include <Graphic/Primitive.hpp>
 #include <glad/glad.h>
 
 RenderContext::RenderContext() : m_activeEntityId(2), m_screenFactor(1.0f) {}
@@ -14,6 +15,8 @@ void RenderContext::prepareContext() {
     float rightLen = m_camera->getSegmentLengthClipSpace(
         pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
+
+    Primitive::instance().prepareContext(m_camera);
 }
 
 void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
@@ -62,7 +65,7 @@ void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
 
 void RenderContext::addLineEx(const glm::vec3& start, const glm::vec3& end,
                                  const glm::vec4& color, float thickness) {
-    m_window->drawLine(start, end, color, thickness, m_camera);
+    Primitive::instance().drawLine(start, end, color, thickness);
 }
 
 void RenderContext::addCircleFilled(const glm::vec2& center, float radius,

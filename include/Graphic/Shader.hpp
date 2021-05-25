@@ -38,12 +38,4 @@ class Shader {
     static void checkCompileErrors(uint32_t shader, const std::string type);
 };
 
-class PrimitiveShader : public Shader {
-   public:
-    static PrimitiveShader& instance();
-
-   private:
-    PrimitiveShader(const std::string& vertexPath, const std::string& fragmentPath);
-};
-
 #endif

@@ -11,7 +11,7 @@
 
 class VertexBuffer : public Drawable {
    public:
-    VertexBuffer(int type);
+    VertexBuffer();
 
     ~VertexBuffer();
 
@@ -28,8 +28,7 @@ class VertexBuffer : public Drawable {
     bool initialize();
 
     template <typename T>
-    void update(const T vertices, std::size_t cnt,
-                GLenum mode = GL_STATIC_DRAW);
+    void update(const T vertices, std::size_t cnt, GLenum dtype, GLenum mode);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -39,11 +38,12 @@ class VertexBuffer : public Drawable {
     uint32_t m_VBO;
     uint32_t m_VAO;
     std::size_t m_size;
-    int m_drawType;
+    GLenum m_drawType;
 };
 
 template <typename T>
-void VertexBuffer::update(const T vertices, std::size_t cnt, GLenum mode) {
+void VertexBuffer::update(const T vertices, std::size_t cnt, GLenum type,
+                          GLenum mode) {
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -51,6 +51,7 @@ void VertexBuffer::update(const T vertices, std::size_t cnt, GLenum mode) {
                  sizeof(typename std::remove_pointer<T>::type) * cnt, vertices,
                  mode);
     m_size = cnt;
+    m_drawType = type;
     std::remove_pointer<T>::type::setupAttribute();
 }
 

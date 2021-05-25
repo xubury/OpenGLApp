@@ -9,7 +9,7 @@
 #include <Component/Transform.hpp>
 #include <Component/BoundingBox.hpp>
 
-VertexBuffer Cube::s_cube(GL_TRIANGLES);
+VertexBuffer Cube::s_cube;
 
 Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id)
     : EntityBase(manager, id) {
@@ -53,7 +53,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id)
 
     if (!s_cube.isInit()) {
         s_cube.initialize();
-        s_cube.update(vertices, 36);
+        s_cube.update(vertices, 36, GL_TRIANGLES, GL_STATIC_DRAW);
     }
     manager->addComponent<BoundingBox>(id)->initialize(vertices, 36);
 }

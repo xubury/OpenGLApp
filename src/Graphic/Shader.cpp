@@ -117,13 +117,3 @@ void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
                        &value[0][0]);
 }
 
-PrimitiveShader& PrimitiveShader::instance() {
-    static PrimitiveShader s_instance("shader/primitiveVertex.glsl",
-                                      "shader/primitiveFragment.glsl");
-    return s_instance;
-}
-
-PrimitiveShader::PrimitiveShader(const std::string& vertexPath,
-                                 const std::string& fragmentPath) {
-    loadFromFile(vertexPath, fragmentPath);
-}

@@ -8,13 +8,7 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <Entity/Camera.hpp>
 
-static VertexBuffer s_lineVertices(GL_LINES);
-
-static void initPrimitive() {
-    s_lineVertices.initialize();
-}
-
-RenderTarget::RenderTarget() : m_textures(nullptr) { initPrimitive(); }
+RenderTarget::RenderTarget() : m_textures(nullptr) {}
 
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
@@ -40,25 +34,9 @@ void RenderTarget::draw(const ElementBuffer &element,
     element.drawPrimitive();
 }
 
-void RenderTarget::drawLine(const glm::vec3 &start, const glm::vec3 &end,
-                            const glm::vec4 &color, float thickness,
-                            const Camera *camera) {
-    PrimitiveShader::instance().use();
-    glViewport(camera->getX(), camera->getY(), camera->getWidth(),
-               camera->getHeight());
-    PrimitiveShader::instance().setFloat("screenWidth", camera->getWidth());
-    PrimitiveShader::instance().setFloat("screenHeight", camera->getHeight());
-    glLineWidth(thickness);
-    DebugVertex vertices[2] = {{start, color}, {end, color}};
-    s_lineVertices.update(vertices, 2, GL_DYNAMIC_DRAW);
-    s_lineVertices.drawPrimitive();
-    glLineWidth(1.0f);
-}
-
 void RenderTarget::clear(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
 }
 
 void RenderTarget::applyCamera(const Camera *camera) {

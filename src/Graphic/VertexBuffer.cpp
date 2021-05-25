@@ -2,8 +2,8 @@
 #include <Graphic/RenderStates.hpp>
 #include <Graphic/RenderTarget.hpp>
 
-VertexBuffer::VertexBuffer(int type)
-    : m_VBO(0), m_VAO(0), m_size(0), m_drawType(type) {}
+VertexBuffer::VertexBuffer()
+    : m_VBO(0), m_VAO(0), m_size(0), m_drawType(GL_TRIANGLES) {}
 
 VertexBuffer::~VertexBuffer() {
     glDeleteBuffers(1, &m_VBO);

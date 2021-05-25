@@ -4,8 +4,8 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/RenderTarget.hpp>
 
-ElementBuffer::ElementBuffer(int type)
-    : m_VBO(0), m_EBO(0), m_VAO(0), m_size(0), m_drawType(type) {}
+ElementBuffer::ElementBuffer()
+    : m_VBO(0), m_EBO(0), m_VAO(0), m_size(0), m_drawType(GL_TRIANGLES) {}
 
 ElementBuffer::~ElementBuffer() {
     glDeleteBuffers(1, &m_EBO);

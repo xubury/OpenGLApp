@@ -125,4 +125,6 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glfwSetMouseButtonCallback(m_context, mouseButtonCallback);
     glfwSetScrollCallback(m_context, mouseWheelCallback);
     // glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glEnable(GL_DEPTH_TEST);
 }

@@ -1,55 +1,92 @@
+#include <Graphic/Primitive.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
+#include <Entity/Camera.hpp>
 
-namespace primitive {
-
-ElementBuffer s_boxElements(GL_TRIANGLES);
-
-void initPrimitive() {
-    // const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
-    //                               7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
-    //                               4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
-
-    // DebugVertex boxVertices[8];
-    s_boxElements.initialize();
+PrimitiveShader &PrimitiveShader::instance() {
+    static PrimitiveShader s_instance;
+    return s_instance;
 }
 
-void drawBox(const glm::vec3 &min, const glm::vec3 &max) {
-    DebugVertex vertices[8];
-    vertices[0].position[0] = min.x;
-    vertices[0].position[1] = min.y;
-    vertices[0].position[2] = max.z;
+PrimitiveShader::PrimitiveShader() {
+    const char *vertexCode =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec4 aColor;\n"
+        "out vec4 color;\n"
+        "uniform float screenWidth;"
+        "uniform float screenHeight;"
+        "void main() {\n"
+        "    vec4 screenPos = vec4(aPos, 1.0f);\n"
+        "    screenPos.x = screenPos.x / screenWidth * 2.f - 1.f;\n"
+        "    screenPos.y = 1.f - screenPos.y / screenHeight * 2.f;\n"
+        "    gl_Position = screenPos;\n"
+        "    color = aColor;\n"
+        "}";
 
-    vertices[1].position[0] = max.x;
-    vertices[1].position[1] = min.y;
-    vertices[1].position[2] = max.z;
-
-    vertices[2].position[0] = max.x;
-    vertices[2].position[1] = max.y;
-    vertices[2].position[2] = max.z;
-
-    vertices[3].position[0] = min.x;
-    vertices[3].position[1] = max.y;
-    vertices[3].position[2] = max.z;
-
-    vertices[4].position[0] = min.x;
-    vertices[4].position[1] = min.y;
-    vertices[4].position[2] = min.z;
-
-    vertices[5].position[0] = max.x;
-    vertices[5].position[1] = min.y;
-    vertices[5].position[2] = min.z;
-
-    vertices[6].position[0] = max.x;
-    vertices[6].position[1] = max.y;
-    vertices[6].position[2] = min.z;
-
-    vertices[7].position[0] = min.x;
-    vertices[7].position[1] = max.y;
-    vertices[7].position[2] = min.z;
-
-    s_boxElements.update(vertices, 8);
-    s_boxElements.drawPrimitive();
+    const char *fragmentCode =
+        "#version 330 core\n"
+        "out vec4 fragColor;\n"
+        "in vec4 color;\n"
+        "void main() {\n"
+        "    fragColor = color;\n"
+        "}";
+    compile(vertexCode, fragmentCode);
 }
 
-}  // namespace primitive
+Primitive::Primitive() : m_vertices() { m_vertices.initialize(); }
+
+Primitive &Primitive::instance() {
+    static Primitive s_instance;
+    return s_instance;
+}
+
+void Primitive::prepareContext(const Camera *camera) {
+    PrimitiveShader::instance().use();
+    glViewport(camera->getX(), camera->getY(), camera->getWidth(),
+               camera->getHeight());
+    PrimitiveShader::instance().setFloat("screenWidth", camera->getWidth());
+    PrimitiveShader::instance().setFloat("screenHeight", camera->getHeight());
+}
+
+void Primitive::drawLine(const glm::vec3 &start, const glm::vec3 &end,
+                         const glm::vec4 &color, float thickness) {
+    drawPath({start, end}, {color, color}, thickness);
+}
+
+void Primitive::drawPath(const std::vector<glm::vec3> &pts,
+                         const std::vector<glm::vec4> &colors,
+                         float thickness) {
+    std::size_t size = pts.size();
+    assert(colors.size() == size);
+
+    std::vector<DebugVertex> vertices(size);
+    for (std::size_t i = 0; i < size; ++i) {
+        vertices[i].position = pts[i];
+        vertices[i].color = colors[i];
+    }
+    m_vertices.update(vertices.data(), size, GL_LINES, GL_DYNAMIC_DRAW);
+
+    glLineWidth(thickness);
+    m_vertices.drawPrimitive();
+    glLineWidth(1.0f);
+}
+
+void Primitive::drawCircle(const glm::vec3 &center, float radius,
+                           const glm::vec4 &color, int fragments) {
+    std::vector<DebugVertex> vertex;
+    float increment;
+    if (fragments == 0) {
+        increment = 2.0f * M_PI * 0.001;
+    } else {
+        increment = 2.0f * M_PI / fragments;
+    }
+    for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
+        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.x,
+                                      radius * sin(angle) + center.y, center.z),
+                            color);
+    }
+    m_vertices.update(vertex.data(), vertex.size(), GL_LINE_LOOP,
+                      GL_DYNAMIC_DRAW);
+    m_vertices.drawPrimitive();
+}

@@ -11,7 +11,7 @@
 
 class ElementBuffer : public Drawable {
    public:
-    ElementBuffer(int type);
+    ElementBuffer();
 
     ~ElementBuffer();
 
@@ -29,10 +29,12 @@ class ElementBuffer : public Drawable {
 
     template <typename T>
     void update(const T vertices, std::size_t vertexCnt,
-                const uint32_t *indices, std::size_t indexCnt);
+                const uint32_t *indices, std::size_t indexCnt, GLenum type,
+                GLenum mode);
 
     template <typename T>
-    void update(const T vertices, std::size_t vertexCnt);
+    void update(const T vertices, std::size_t vertexCnt, GLenum type,
+                GLenum mode);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -43,27 +45,30 @@ class ElementBuffer : public Drawable {
     uint32_t m_EBO;
     uint32_t m_VAO;
     std::size_t m_size;
-    int m_drawType;
+    GLenum m_drawType;
 };
 
 template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
-                           const uint32_t *indices, std::size_t indexCnt) {
-    update(vertices, vertexCnt);
+                           const uint32_t *indices, std::size_t indexCnt,
+                           GLenum type, GLenum mode) {
+    update(vertices, vertexCnt, type, mode);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexCnt, indices,
-                 GL_STATIC_DRAW);
+                 mode);
     m_size = indexCnt;
 }
 
 template <typename T>
-void ElementBuffer::update(const T vertices, std::size_t vertexCnt) {
+void ElementBuffer::update(const T vertices, std::size_t vertexCnt, GLenum type,
+                           GLenum mode) {
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER,
                  vertexCnt * sizeof(typename std::remove_pointer<T>::type),
-                 vertices, GL_STATIC_DRAW);
+                 vertices, mode);
+    m_drawType = type;
     std::remove_pointer<T>::type::setupAttribute();
 }
 

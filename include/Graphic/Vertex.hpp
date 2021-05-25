@@ -15,6 +15,8 @@ struct DebugVertex {
     glm::vec3 position;
     glm::vec4 color;
     static void setupAttribute();
+    DebugVertex() = default;
+    DebugVertex(const glm::vec3 &position, const glm::vec4 &color);
 };
 
 #endif
