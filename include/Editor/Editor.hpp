@@ -22,11 +22,8 @@ class Editor {
    private:
     Editor();
 
-    // build the model's axes coordinate and color
+    // build the model's axes coordinate
     void buildModelAxes(float clipLen);
-
-    // build model's X-Y X-Z Y-Z plane
-    void buildModelPlane();
 
     void renderFps();
 
@@ -58,11 +55,14 @@ class Editor {
         TRANSLATE_YZ,
         TRANSLATE_XZ,
         TRANSLATE_XY,
+        TRANSLATE_XYZ
     };
 
     MoveType m_moveType;
 
     glm::vec4 m_movePlane;
+
+    float m_axisSizeFactor;
 };
 
 #endif /* EDITOR_HPP */

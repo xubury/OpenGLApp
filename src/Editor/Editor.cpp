@@ -11,7 +11,7 @@ static const float quadMax = 0.8f;
 static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
                                 quadMax, quadMax, quadMax, quadMin};
 
-static const glm::vec4 selectionColor(1.f, 0.5f, 0.06f, 0.54f);
+static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.5f);
 
 static void drawTransformSheet(Transform& trans) {
     ImGui::Separator();
@@ -54,6 +54,7 @@ Editor::Editor() : m_leftMouseDown(false), m_moveType(MoveType::NONE) {
 }
 
 void Editor::buildModelAxes(float clipLen) {
+    m_axisSizeFactor = context.getClipSizeInWorld(clipLen);
     auto trans = context.getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rMatrix = trans->getTransform();
     glm::vec3 originWorld = trans->getPosition();
@@ -62,20 +63,17 @@ void Editor::buildModelAxes(float clipLen) {
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
         m_modelScreenAxes.axes[i] = context.getCamera()->computeWorldToSrceen(
-            originWorld +
-            glm::vec3(rMatrix[i]) * context.getClipSizeInWorld(clipLen));
+            originWorld + glm::vec3(rMatrix[i]) * m_axisSizeFactor);
         for (int j = 0; j < 4; ++j) {
             glm::vec3 cornerWorldPos =
                 originWorld + (rMatrix[(i + 1) % 3] * quadUV[j * 2] +
                                rMatrix[(i + 2) % 3] * quadUV[j * 2 + 1]) *
-                                  context.getClipSizeInWorld(clipLen);
+                                  m_axisSizeFactor;
             m_modelScreenQuads[i][j] =
                 context.getCamera()->computeWorldToSrceen(cornerWorldPos);
         }
     }
 }
-
-void Editor::buildModelPlane() {}
 
 void Editor::renderFps() {
     std::string frameRate =
@@ -109,8 +107,13 @@ void Editor::renderModelAxes() {
         }
         Primitive::instance().drawPath(vertices, 2.0f);
     }
-    Primitive::instance().drawCircleFilled(
-        DebugVertex(m_modelScreenAxes.origin, glm::vec4(1.0)), 10.0f);
+    if (m_moveType == TRANSLATE_XYZ) {
+        Primitive::instance().drawCircleFilled(
+            DebugVertex(m_modelScreenAxes.origin, selectionColor), 10.0f);
+    } else {
+        Primitive::instance().drawCircleFilled(
+            DebugVertex(m_modelScreenAxes.origin, glm::vec4(1.0f)), 10.0f);
+    }
 }
 
 void Editor::renderCameraAxes(float clipLen) {
@@ -135,19 +138,31 @@ void Editor::renderCameraAxes(float clipLen) {
 }
 
 void Editor::computeMoveType() {
-    const auto& model = context.getActiveEntityPtr()->component<Transform>();
-    const glm::mat3& rotation = model->getTransform();
-    glm::vec3 modelPos = model->getPosition();
-    float minZ = std::numeric_limits<float>::max();
+    const auto& trans = context.getActiveEntityPtr()->component<Transform>();
+    const glm::mat3& rotation = trans->getTransform();
+    glm::vec3 modelWorldPos = trans->getPosition();
     m_moveType = MoveType::NONE;
+
+    // if on the model axis center
+    if (glm::length(context.getCursorPos() -
+                    glm::vec2(context.getCamera()->computeWorldToSrceen(
+                        modelWorldPos))) < 12.f) {
+        m_moveType = MoveType::TRANSLATE_XYZ;
+        m_movePlane =
+            buildPlane(modelWorldPos,
+                       context.getCamera()->component<Transform>()->getFront());
+        m_originalPos = modelWorldPos;
+        return;
+    }
+    float minZ = std::numeric_limits<float>::max();
     for (uint32_t i = 0; i < 3; ++i) {
-        glm::vec4 translatePlane = buildPlane(modelPos, rotation[i]);
+        glm::vec4 translatePlane = buildPlane(modelWorldPos, rotation[i]);
         float len =
             intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
         if (len > 0) {
-            glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
+            glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
             glm::vec3 intersectScreenPos =
-                context.getCamera()->computeWorldToSrceen(intersectPoint);
+                context.getCamera()->computeWorldToSrceen(intersectWorldPos);
 
             float projectionUV[2];
             for (int j = 1; j <= 2; ++j) {
@@ -161,12 +176,12 @@ void Editor::computeMoveType() {
                                 cloesetScreenPoint) < 12.f) {
                     m_moveType = static_cast<MoveType>(TRANSLATE_X + axisId);
                     m_movePlane = translatePlane;
-                    m_originalPos = intersectPoint;
+                    m_originalPos = intersectWorldPos;
                     break;
                 }
                 projectionUV[j - 1] = glm::dot(
-                    rotation[axisId], (intersectPoint - modelPos) /
-                                          context.getClipSizeInWorld(0.2f));
+                    rotation[axisId],
+                    (intersectWorldPos - modelWorldPos) / m_axisSizeFactor);
             }
             // check projection uv inside quad
             if (projectionUV[0] >= quadUV[0] && projectionUV[0] <= quadUV[4] &&
@@ -175,7 +190,7 @@ void Editor::computeMoveType() {
                 if (intersectScreenPos.z < minZ) {
                     minZ = intersectScreenPos.z;
                     m_movePlane = translatePlane;
-                    m_originalPos = intersectPoint;
+                    m_originalPos = intersectWorldPos;
                     m_moveType = static_cast<MoveType>(TRANSLATE_YZ + i);
                 }
             }
@@ -266,7 +281,6 @@ void Editor::render() {
     context.getCamera()->computeCameraRay(m_camRayOrigin, m_camRayDir,
                                           context.getCursorPos());
     buildModelAxes(0.2);
-    buildModelPlane();
     handleTranslation();
 
     renderFps();
