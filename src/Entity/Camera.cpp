@@ -125,7 +125,7 @@ void Camera::setNearFar(float near, float far) {
 void Camera::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                               const glm::vec2 &screenPos) const {
     glm::vec2 mouseClipPos((screenPos.x - m_x) / m_width,
-                           (screenPos.y - m_y) / m_height);
+                           (screenPos.y + m_y) / m_height);
     mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
     mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
     const float zNear = 0.f;
@@ -149,7 +149,7 @@ glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
 
     glm::vec3 screenPos;
     screenPos.x = (clipPos.x + 1) * 0.5 * m_width + m_x;
-    screenPos.y = (1 - clipPos.y) * 0.5 * m_height + m_y;
+    screenPos.y = (1 - clipPos.y) * 0.5 * m_height - m_y;
     screenPos.z = clipPos.z;
     return screenPos;
 }

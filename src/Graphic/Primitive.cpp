@@ -14,12 +14,14 @@ PrimitiveShader::PrimitiveShader() {
         "layout (location = 0) in vec3 aPos;\n"
         "layout (location = 1) in vec4 aColor;\n"
         "out vec4 color;\n"
+        "uniform float screenX;"
+        "uniform float screenY;"
         "uniform float screenWidth;"
         "uniform float screenHeight;"
         "void main() {\n"
         "    vec4 screenPos = vec4(aPos, 1.0f);\n"
-        "    screenPos.x = screenPos.x / screenWidth * 2.f - 1.f;\n"
-        "    screenPos.y = 1.f - screenPos.y / screenHeight * 2.f;\n"
+        "    screenPos.x = (screenPos.x - screenX) / screenWidth * 2.f - 1.f;\n"
+        "    screenPos.y = 1.f - (screenPos.y + screenY) / screenHeight * 2.f;\n"
         "    gl_Position = screenPos;\n"
         "    color = aColor;\n"
         "}";
@@ -45,6 +47,8 @@ void Primitive::setDrawingView(const Camera *camera) {
     PrimitiveShader::instance().use();
     glViewport(camera->getX(), camera->getY(), camera->getWidth(),
                camera->getHeight());
+    PrimitiveShader::instance().setFloat("screenX", camera->getX());
+    PrimitiveShader::instance().setFloat("screenY", camera->getY());
     PrimitiveShader::instance().setFloat("screenWidth", camera->getWidth());
     PrimitiveShader::instance().setFloat("screenHeight", camera->getHeight());
 }
