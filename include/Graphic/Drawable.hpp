@@ -7,9 +7,12 @@ class RenderTarget;
 
 class Drawable {
    public:
-    virtual void draw(RenderTarget &target, RenderStates states) const = 0;
-
     virtual ~Drawable() = default;
+
+   protected:
+    friend class RenderTarget;
+
+    virtual void draw(RenderTarget &target, RenderStates states) const = 0;
 };
 
 #endif

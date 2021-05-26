@@ -22,11 +22,7 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
     Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
            int width, int height, const glm::vec3 &position = glm::vec3(0.f));
 
-    virtual ~Camera() = default;
-
     virtual void draw(RenderTarget &target, RenderStates states) const override;
-
-    glm::vec3 getPosition() const;
 
     glm::mat4 getProjection() const;
 
@@ -38,11 +34,11 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
     glm::vec2 getViewportPos() const;
 
-    glm::vec2 getViewportSize() const;
-
     int getViewportWidth() const;
 
     int getViewportHeight() const;
+
+    glm::vec2 getViewportSize() const;
 
     float getFOV() const;
 

@@ -19,6 +19,7 @@ template <typename ENTITY>
 class Entity {
    public:
     Entity(Entity &&) = default;
+
     Entity &operator=(Entity &&) = default;
 
     Entity(EntityManager<ENTITY> *manager, uint32_t id);
@@ -28,6 +29,7 @@ class Entity {
     EntityManager<ENTITY> &getManager();
 
     bool operator==(const Entity &other) const;
+
     bool operator!=(const Entity &other) const;
 
     void remove();

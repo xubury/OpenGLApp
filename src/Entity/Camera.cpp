@@ -29,10 +29,6 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
 
 void Camera::draw(RenderTarget &, RenderStates) const {}
 
-glm::vec3 Camera::getPosition() const {
-    return component<Transform>()->getPosition();
-}
-
 glm::mat4 Camera::getProjection() const { return m_projection; }
 
 glm::mat4 Camera::getView() const {
@@ -66,6 +62,20 @@ float Camera::getNearZ() const { return m_nearZ; }
 float Camera::getFarZ() const { return m_farZ; }
 
 float Camera::getAspect() const { return (float)m_viewportWidth / m_viewportHeight; }
+
+void Camera::setSize(float width, float height) {
+    m_viewportWidth = width;
+    m_viewportHeight = height;
+    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
+                                    getNearZ(), getFarZ());
+}
+
+void Camera::setNearFar(float near, float far) {
+    m_nearZ = near;
+    m_farZ = far;
+    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
+                                    getNearZ(), getFarZ());
+}
 
 void Camera::move(Movement dir, float val) {
     auto trans = component<Transform>();
@@ -104,20 +114,6 @@ void Camera::zoom(float zoom) {
         m_zoom = 1.f;
     else if (m_zoom > 45.f)
         m_zoom = 45.f;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
-
-void Camera::setSize(float width, float height) {
-    m_viewportWidth = width;
-    m_viewportHeight = height;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
-
-void Camera::setNearFar(float near, float far) {
-    m_nearZ = near;
-    m_farZ = far;
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
 }

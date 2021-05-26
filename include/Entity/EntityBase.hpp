@@ -9,6 +9,8 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     EntityBase &operator=(const EntityBase &) = delete;
 
+    virtual ~EntityBase() = default;
+
     EntityBase(EntityManager<EntityBase> *manager, uint32_t id);
 
     void setPosition(const glm::vec3 &position);
