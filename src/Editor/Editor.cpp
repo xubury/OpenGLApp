@@ -11,6 +11,9 @@ static const float quadMax = 0.8f;
 static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
                                 quadMax, quadMax, quadMax, quadMin};
 
+static const float lineThickness = 5.f;
+static const float axisOriginRadius = 10.f;
+
 static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.5f);
 
 static void drawTransformSheet(Transform& trans) {
@@ -56,7 +59,7 @@ Editor::Editor() : m_leftMouseDown(false), m_moveType(MoveType::NONE) {
 void Editor::buildModelAxes(float clipLen) {
     m_axisSizeFactor = context.getClipSizeInWorld(clipLen);
     auto trans = context.getActiveEntityPtr()->component<Transform>();
-    const glm::mat3& rMatrix = trans->getTransform();
+    const glm::mat3& rMatrix = trans->getMatrix();
     glm::vec3 originWorld = trans->getPosition();
     m_modelScreenAxes.origin =
         context.getCamera()->computeWorldToSrceen(originWorld);
@@ -92,7 +95,7 @@ void Editor::renderModelAxes() {
         }
         Primitive::instance().drawLine(
             DebugVertex(m_modelScreenAxes.origin, axisColor),
-            DebugVertex(axis, axisColor), 5.0f);
+            DebugVertex(axis, axisColor), lineThickness);
 
         std::vector<DebugVertex> vertices(4);
         glm::vec4 panelColor(0.f);
@@ -109,10 +112,12 @@ void Editor::renderModelAxes() {
     }
     if (m_moveType == TRANSLATE_XYZ) {
         Primitive::instance().drawCircleFilled(
-            DebugVertex(m_modelScreenAxes.origin, selectionColor), 10.0f);
+            DebugVertex(m_modelScreenAxes.origin, selectionColor),
+            axisOriginRadius);
     } else {
         Primitive::instance().drawCircleFilled(
-            DebugVertex(m_modelScreenAxes.origin, glm::vec4(1.0f)), 10.0f);
+            DebugVertex(m_modelScreenAxes.origin, glm::vec4(1.0f)),
+            axisOriginRadius);
     }
 }
 
@@ -139,14 +144,14 @@ void Editor::renderCameraAxes(float clipLen) {
 
 void Editor::computeMoveType() {
     const auto& trans = context.getActiveEntityPtr()->component<Transform>();
-    const glm::mat3& rotation = trans->getTransform();
+    const glm::mat3& rotation = trans->getMatrix();
     glm::vec3 modelWorldPos = trans->getPosition();
     m_moveType = MoveType::NONE;
 
     // if on the model axis center
     if (glm::length(context.getCursorPos() -
                     glm::vec2(context.getCamera()->computeWorldToSrceen(
-                        modelWorldPos))) < 12.f) {
+                        modelWorldPos))) < axisOriginRadius) {
         m_moveType = MoveType::TRANSLATE_XYZ;
         m_movePlane =
             buildPlane(modelWorldPos,
@@ -173,7 +178,7 @@ void Editor::computeMoveType() {
                                      glm::vec2(m_modelScreenAxes.origin), axis);
                 // check if on axis
                 if (glm::length(glm::vec2(intersectScreenPos) -
-                                cloesetScreenPoint) < 12.f) {
+                                cloesetScreenPoint) < lineThickness) {
                     m_moveType = static_cast<MoveType>(TRANSLATE_X + axisId);
                     m_movePlane = translatePlane;
                     m_originalPos = intersectWorldPos;
@@ -208,7 +213,7 @@ void Editor::handleTranslation() {
             glm::vec3 translation = intersectPoint - m_originalPos;
             if (m_moveType <= TRANSLATE_Z && m_moveType >= TRANSLATE_X) {
                 const glm::vec3& axis =
-                    trans->getTransform()[m_moveType - TRANSLATE_X];
+                    trans->getMatrix()[m_moveType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
             }
             trans->translateWorld(translation);

@@ -25,7 +25,7 @@ class Transform : public Component<Transform, EntityBase> {
     // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
     glm::vec3 getEulerAngle() const;
 
-    const glm::mat4 &getTransform() const;
+    const glm::mat4 &getMatrix() const;
 
     void setPosition(const glm::vec3 &position);
 

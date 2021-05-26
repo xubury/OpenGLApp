@@ -62,7 +62,7 @@ void Transform::setEulerAngle(glm::vec3 eulerAngle) {
     up = glm::vec4(glm::cross(glm::vec3(front), glm::vec3(right)), 0);
 }
 
-const glm::mat4 &Transform::getTransform() const { return m_transform; }
+const glm::mat4 &Transform::getMatrix() const { return m_transform; }
 
 void Transform::setPosition(const glm::vec3 &position) {
     m_transform[3] = glm::vec4(position, 1.0);
