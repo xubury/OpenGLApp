@@ -68,12 +68,12 @@ Game::Game(const Settings& settings)
 }
 
 void Game::update(Time& deltaTime) {
-    auto end = m_app.entities.end();
-    for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
-        m_app.entities.get(*cur).component<Transform>()->rotateLocal(
-            glm::radians(0.01f) * deltaTime.as<MilliSeconds>().count(),
-            glm::vec3(1, 2, 3));
-    }
+    // auto end = m_app.entities.end();
+    // for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
+    //     m_app.entities.get(*cur).component<Transform>()->rotateLocal(
+    //         glm::radians(0.01f) * deltaTime.as<MilliSeconds>().count(),
+    //         glm::vec3(1, 2, 3));
+    // }
     m_app.update(deltaTime);
 }
 

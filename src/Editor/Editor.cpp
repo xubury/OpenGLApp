@@ -6,26 +6,12 @@
 #include <Graphic/Primitive.hpp>
 #include <iostream>
 
-Editor& Editor::instance() {
-    static Editor s_instance;
-    return s_instance;
-}
+static const float quadMin = 0.2f;
+static const float quadMax = 0.8f;
+static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
+                                quadMax, quadMax, quadMax, quadMin};
 
-Editor::Editor() {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-    io.ConfigWindowsMoveFromTitleBarOnly = true;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-}
+static const glm::vec4 selectionColor(1.f, 0.5f, 0.06f, 0.54f);
 
 static void drawTransformSheet(Transform& trans) {
     ImGui::Separator();
@@ -41,31 +27,55 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
+static bool canActive() {
+    return ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered() &&
+           !ImGui::IsAnyItemActive();
+}
+
+Editor& Editor::instance() {
+    static Editor s_instance;
+    return s_instance;
+}
+
+Editor::Editor() : m_leftMouseDown(false), m_moveType(MoveType::NONE) {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.ConfigWindowsMoveFromTitleBarOnly = true;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+}
+
 void Editor::buildModelAxes(float clipLen) {
-    const auto& model =
-        context.getActiveEntityPtr()->component<Transform>()->getTransform();
-    glm::vec3 originWorld = model[3];
+    auto trans = context.getActiveEntityPtr()->component<Transform>();
+    const glm::mat3& rMatrix = trans->getTransform();
+    glm::vec3 originWorld = trans->getPosition();
     m_modelScreenAxes.origin =
         context.getCamera()->computeWorldToSrceen(originWorld);
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelScreenAxes.axes[i].pos =
-            context.getCamera()->computeWorldToSrceen(
-                originWorld +
-                glm::vec3(model[i]) * context.getClipSizeInWorld(clipLen));
-        m_modelScreenAxes.axes[i].color[3] = 1.0f;
-        m_modelScreenAxes.axes[i].color[i] = 1.0f;
-        // ((uint8_t*)&m_modelScreenAxes.axes[i].color)[i] = 0xFF;
+        m_modelScreenAxes.axes[i] = context.getCamera()->computeWorldToSrceen(
+            originWorld +
+            glm::vec3(rMatrix[i]) * context.getClipSizeInWorld(clipLen));
+        for (int j = 0; j < 4; ++j) {
+            glm::vec3 cornerWorldPos =
+                originWorld + (rMatrix[(i + 1) % 3] * quadUV[j * 2] +
+                               rMatrix[(i + 2) % 3] * quadUV[j * 2 + 1]) *
+                                  context.getClipSizeInWorld(clipLen);
+            m_modelScreenQuads[i][j] =
+                context.getCamera()->computeWorldToSrceen(cornerWorldPos);
+        }
     }
 }
 
-void Editor::buildModelPlane() {
-    const auto& model = context.getActiveEntityPtr()->component<Transform>();
-    glm::vec3 pos = model->getPosition();
-    m_planeXY = buildPlane(pos, pos + model->getFront());
-    m_planeXZ = buildPlane(pos, pos + model->getUp());
-    m_planeYZ = buildPlane(pos, pos + model->getRight());
-}
+void Editor::buildModelPlane() {}
 
 void Editor::renderFps() {
     std::string frameRate =
@@ -76,11 +86,31 @@ void Editor::renderFps() {
 void Editor::renderModelAxes() {
     for (int i = 0; i < 3; ++i) {
         const auto& axis = m_modelScreenAxes.axes[i];
-        Primitive::instance().drawLine(m_modelScreenAxes.origin, axis.pos,
-                                       axis.color, 5.0f);
+        glm::vec4 axisColor(0.f);
+        axisColor[i] = 1.0f;
+        axisColor[3] = 1.0f;
+        if (m_moveType == TRANSLATE_X + i) {
+            axisColor = selectionColor;
+        }
+        Primitive::instance().drawLine(
+            DebugVertex(m_modelScreenAxes.origin, axisColor),
+            DebugVertex(axis, axisColor), 5.0f);
+
+        std::vector<DebugVertex> vertices(4);
+        glm::vec4 panelColor(0.f);
+        panelColor[i] = 1.0f;
+        panelColor[3] = 1.0f;
+        if (m_moveType == TRANSLATE_YZ + i) {
+            panelColor = selectionColor;
+        }
+        for (int j = 0; j < 4; ++j) {
+            vertices[j].position = m_modelScreenQuads[i][j];
+            vertices[j].color = panelColor;
+        }
+        Primitive::instance().drawPath(vertices, 2.0f);
     }
-    Primitive::instance().drawCircleFilled(m_modelScreenAxes.origin, 10.0f,
-                                           glm::vec4(1.0f));
+    Primitive::instance().drawCircleFilled(
+        DebugVertex(m_modelScreenAxes.origin, glm::vec4(1.0)), 10.0f);
 }
 
 void Editor::renderCameraAxes(float clipLen) {
@@ -102,6 +132,84 @@ void Editor::renderCameraAxes(float clipLen) {
     zAxis.y = -zAxis.y;
     zAxis = origin + zAxis * clipLen;
     context.addLine(origin, zAxis, 0xFFFF0000, 2);
+}
+
+void Editor::computeMoveType() {
+    const auto& model = context.getActiveEntityPtr()->component<Transform>();
+    const glm::mat3& rotation = model->getTransform();
+    glm::vec3 modelPos = model->getPosition();
+    float minZ = std::numeric_limits<float>::max();
+    m_moveType = MoveType::NONE;
+    for (uint32_t i = 0; i < 3; ++i) {
+        glm::vec4 translatePlane = buildPlane(modelPos, rotation[i]);
+        float len =
+            intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
+        if (len > 0) {
+            glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
+            glm::vec3 intersectScreenPos =
+                context.getCamera()->computeWorldToSrceen(intersectPoint);
+
+            float projectionUV[2];
+            for (int j = 1; j <= 2; ++j) {
+                int axisId = (i + j) % 3;
+                glm::vec2 axis = m_modelScreenAxes.axes[axisId];
+                glm::vec2 cloesetScreenPoint =
+                    findClosestPoint(glm::vec2(intersectScreenPos),
+                                     glm::vec2(m_modelScreenAxes.origin), axis);
+                // check if on axis
+                if (glm::length(glm::vec2(intersectScreenPos) -
+                                cloesetScreenPoint) < 12.f) {
+                    m_moveType = static_cast<MoveType>(TRANSLATE_X + axisId);
+                    m_movePlane = translatePlane;
+                    m_originalPos = intersectPoint;
+                    break;
+                }
+                projectionUV[j - 1] = glm::dot(
+                    rotation[axisId], (intersectPoint - modelPos) /
+                                          context.getClipSizeInWorld(0.2f));
+            }
+            // check projection uv inside quad
+            if (projectionUV[0] >= quadUV[0] && projectionUV[0] <= quadUV[4] &&
+                projectionUV[1] >= quadUV[1] && projectionUV[1] <= quadUV[5]) {
+                // takes the nearest screen quad
+                if (intersectScreenPos.z < minZ) {
+                    minZ = intersectScreenPos.z;
+                    m_movePlane = translatePlane;
+                    m_originalPos = intersectPoint;
+                    m_moveType = static_cast<MoveType>(TRANSLATE_YZ + i);
+                }
+            }
+        }
+    }
+}
+
+void Editor::handleTranslation() {
+    if (m_leftMouseDown) {
+        auto trans = context.getActiveEntityPtr()->component<Transform>();
+        if (m_moveType != NONE) {
+            float len =
+                intersectRayPlane(m_camRayOrigin, m_camRayDir, m_movePlane);
+            glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
+            glm::vec3 translation = intersectPoint - m_originalPos;
+            if (m_moveType <= TRANSLATE_Z && m_moveType >= TRANSLATE_X) {
+                const glm::vec3& axis =
+                    trans->getTransform()[m_moveType - TRANSLATE_X];
+                translation = glm::dot(axis, translation) * axis;
+            }
+            trans->translateWorld(translation);
+            m_originalPos = intersectPoint;
+        }
+
+        if (!ImGui::IsMouseDown(0)) {
+            m_leftMouseDown = false;
+            m_moveType = NONE;
+        }
+    } else {
+        if (canActive()) {
+            m_leftMouseDown = true;
+        }
+        computeMoveType();
+    }
 }
 
 void Editor::render() {
@@ -155,24 +263,11 @@ void Editor::render() {
     }
     ImGui::End();
 
-    buildModelAxes(0.2);
-    buildModelPlane();
     context.getCamera()->computeCameraRay(m_camRayOrigin, m_camRayDir,
                                           context.getCursorPos());
-    float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, m_planeXY);
-    if (len > 0) {
-        glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
-        glm::vec2 intersectScreenPos =
-            context.getCamera()->computeWorldToSrceen(intersectPoint);
-
-        glm::vec2 cloesetScreenPoint = findClosestPoint(
-            intersectScreenPos, glm::vec2(m_modelScreenAxes.origin),
-            glm::vec2(m_modelScreenAxes.axes[0].pos));
-        context.addCircleFilled(cloesetScreenPoint, 10, 0xFFFFFFFF);
-        if (glm::length(intersectScreenPos - cloesetScreenPoint) < 12.f) {
-            std::cout << "yes" << std::endl;
-        }
-    }
+    buildModelAxes(0.2);
+    buildModelPlane();
+    handleTranslation();
 
     renderFps();
     // clear depth buffer to make axes not hidden by object

@@ -26,10 +26,11 @@ inline glm::vec4 buildPlane(const glm::vec3 &point, const glm::vec3 &normal) {
 }
 
 inline float intersectRayPlane(const glm::vec3 &rayOrigin, const glm::vec3 &dir,
-                               glm::vec4 &plane) {
+                               const glm::vec4 &plane) {
     glm::vec3 normal = plane;
     float numer = glm::dot(normal, rayOrigin) - plane.w;
     float denom = glm::dot(normal, dir);
+
     // orthogonal, can't intercect
     if (std::fabs(denom) < std::numeric_limits<float>::epsilon()) {
         return -1.0f;

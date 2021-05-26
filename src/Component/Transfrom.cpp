@@ -12,9 +12,7 @@ void Transform::translateLocal(const glm::vec3 &t) {
 }
 
 void Transform::translateWorld(const glm::vec3 &t) {
-    m_transform[3].x += t.x;
-    m_transform[3].y += t.y;
-    m_transform[3].z += t.z;
+    m_transform = glm::translate(glm::mat4(1.0), t) * m_transform;
 }
 
 void Transform::rotateLocal(float radians, const glm::vec3 &axis) {

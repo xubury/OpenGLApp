@@ -2,7 +2,7 @@
 #include <Graphic/Primitive.hpp>
 #include <glad/glad.h>
 
-RenderContext::RenderContext() : m_activeEntityId(2), m_screenFactor(1.0f) {}
+RenderContext::RenderContext() : m_activeEntityId(0), m_screenFactor(1.0f) {}
 
 void RenderContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
@@ -63,11 +63,6 @@ void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
         ImVec2(m_renderOrigin.x + start.x, m_renderOrigin.y + start.y),
         ImVec2(m_renderOrigin.x + end.x, m_renderOrigin.y + end.y), color,
         thickness);
-}
-
-void RenderContext::addLineEx(const glm::vec3& start, const glm::vec3& end,
-                              const glm::vec4& color, float thickness) {
-    Primitive::instance().drawLine(start, end, color, thickness);
 }
 
 void RenderContext::addCircleFilled(const glm::vec2& center, float radius,

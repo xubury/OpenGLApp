@@ -22,17 +22,14 @@ class Primitive {
 
     void setDrawingView(const Camera *camera);
 
-    void drawLine(const glm::vec3 &start, const glm::vec3 &end,
-                  const glm::vec4 &color, float thickness);
+    void drawLine(const DebugVertex &start, const DebugVertex &end,
+                  float thickness);
 
-    void drawPath(const std::vector<glm::vec3> &pts,
-                  const std::vector<glm::vec4> &colors, float thickness);
+    void drawPath(const std::vector<DebugVertex> &pts, float thickness);
 
-    void drawCircle(const glm::vec3 &center, float radius,
-                    const glm::vec4 &color,  int fragments = 0);
+    void drawCircle(const DebugVertex &center, float radius, int fragments = 0);
 
-    void drawCircleFilled(const glm::vec3 &center, float radius,
-                    const glm::vec4 &color,  int fragments = 0);
+    void drawCircleFilled(const DebugVertex &center, float radius, int fragments = 0);
 
    private:
     Primitive();
