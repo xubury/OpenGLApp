@@ -84,7 +84,7 @@ void Editor::renderModelAxes() {
 }
 
 void Editor::renderCameraAxes(float clipLen) {
-    clipLen *= context.getCamera()->getHeight() / 2.f;
+    clipLen *= context.getCamera()->getViewportHeight() / 2.f;
     auto model = context.getCamera()->component<Transform>();
     glm::vec3 origin(context.getCamera()->getViewportSize() - clipLen, 0);
     // draw x

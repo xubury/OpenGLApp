@@ -21,7 +21,8 @@ PrimitiveShader::PrimitiveShader() {
         "void main() {\n"
         "    vec4 screenPos = vec4(aPos, 1.0f);\n"
         "    screenPos.x = (screenPos.x - screenX) / screenWidth * 2.f - 1.f;\n"
-        "    screenPos.y = 1.f - (screenPos.y + screenY) / screenHeight * 2.f;\n"
+        "    screenPos.y = 1.f - (screenPos.y + screenY) / screenHeight * "
+        "2.f;\n"
         "    gl_Position = screenPos;\n"
         "    color = aColor;\n"
         "}";
@@ -45,12 +46,14 @@ Primitive &Primitive::instance() {
 
 void Primitive::setDrawingView(const Camera *camera) {
     PrimitiveShader::instance().use();
-    glViewport(camera->getX(), camera->getY(), camera->getWidth(),
-               camera->getHeight());
-    PrimitiveShader::instance().setFloat("screenX", camera->getX());
-    PrimitiveShader::instance().setFloat("screenY", camera->getY());
-    PrimitiveShader::instance().setFloat("screenWidth", camera->getWidth());
-    PrimitiveShader::instance().setFloat("screenHeight", camera->getHeight());
+    glViewport(camera->getViewportX(), camera->getViewportY(),
+               camera->getViewportWidth(), camera->getViewportHeight());
+    PrimitiveShader::instance().setFloat("screenX", camera->getViewportX());
+    PrimitiveShader::instance().setFloat("screenY", camera->getViewportY());
+    PrimitiveShader::instance().setFloat("screenWidth",
+                                         camera->getViewportWidth());
+    PrimitiveShader::instance().setFloat("screenHeight",
+                                         camera->getViewportHeight());
 }
 
 void Primitive::drawLine(const glm::vec3 &start, const glm::vec3 &end,

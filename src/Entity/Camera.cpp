@@ -11,10 +11,10 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
                int width, int height, const glm::vec3 &position)
     : EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
-      m_x(x),
-      m_y(y),
-      m_width(width),
-      m_height(height),
+      m_viewportX(x),
+      m_viewportY(y),
+      m_viewportWidth(width),
+      m_viewportHeight(height),
       m_yaw(0),
       m_pitch(0),
       m_zoom(ZOOM),
@@ -45,18 +45,18 @@ glm::mat4 Camera::getView() const {
     return glm::lookAt(pos, pos - front, up);
 }
 
-int Camera::getX() const { return m_x; }
+int Camera::getViewportX() const { return m_viewportX; }
 
-int Camera::getY() const { return m_y; }
+int Camera::getViewportY() const { return m_viewportY; }
 
-glm::vec2 Camera::getViewportPos() const { return glm::vec2(m_x, m_y); }
+glm::vec2 Camera::getViewportPos() const { return glm::vec2(m_viewportX, m_viewportY); }
 
-int Camera::getWidth() const { return m_width; }
+int Camera::getViewportWidth() const { return m_viewportWidth; }
 
-int Camera::getHeight() const { return m_height; }
+int Camera::getViewportHeight() const { return m_viewportHeight; }
 
 glm::vec2 Camera::getViewportSize() const {
-    return glm::vec2(m_width, m_height);
+    return glm::vec2(m_viewportWidth, m_viewportHeight);
 }
 
 float Camera::getFOV() const { return m_zoom; }
@@ -65,7 +65,7 @@ float Camera::getNearZ() const { return m_nearZ; }
 
 float Camera::getFarZ() const { return m_farZ; }
 
-float Camera::getAspect() const { return (float)m_width / m_height; }
+float Camera::getAspect() const { return (float)m_viewportWidth / m_viewportHeight; }
 
 void Camera::move(Movement dir, float val) {
     auto trans = component<Transform>();
@@ -109,8 +109,8 @@ void Camera::zoom(float zoom) {
 }
 
 void Camera::setSize(float width, float height) {
-    m_width = width;
-    m_height = height;
+    m_viewportWidth = width;
+    m_viewportHeight = height;
     m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
                                     getNearZ(), getFarZ());
 }
@@ -124,8 +124,8 @@ void Camera::setNearFar(float near, float far) {
 
 void Camera::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                               const glm::vec2 &screenPos) const {
-    glm::vec2 mouseClipPos((screenPos.x - m_x) / m_width,
-                           (screenPos.y + m_y) / m_height);
+    glm::vec2 mouseClipPos((screenPos.x - m_viewportX) / m_viewportWidth,
+                           (screenPos.y + m_viewportY) / m_viewportHeight);
     mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
     mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
     const float zNear = 0.f;
@@ -148,8 +148,8 @@ glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
     clipPos /= clipPos.w;
 
     glm::vec3 screenPos;
-    screenPos.x = (clipPos.x + 1) * 0.5 * m_width + m_x;
-    screenPos.y = (1 - clipPos.y) * 0.5 * m_height - m_y;
+    screenPos.x = (clipPos.x + 1) * 0.5 * m_viewportWidth + m_viewportX;
+    screenPos.y = (1 - clipPos.y) * 0.5 * m_viewportHeight - m_viewportY;
     screenPos.z = clipPos.z;
     return screenPos;
 }

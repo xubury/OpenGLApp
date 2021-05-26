@@ -32,17 +32,17 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
 
     glm::mat4 getView() const;
 
-    int getX() const;
+    int getViewportX() const;
 
-    int getY() const;
+    int getViewportY() const;
 
     glm::vec2 getViewportPos() const;
 
     glm::vec2 getViewportSize() const;
 
-    int getWidth() const;
+    int getViewportWidth() const;
 
-    int getHeight() const;
+    int getViewportHeight() const;
 
     float getFOV() const;
 
@@ -74,10 +74,10 @@ class Camera : public EntityBase, protected ActionTarget<Movement> {
     static ActionMap<Movement> s_cameraMovement;
 
    private:
-    int m_x;
-    int m_y;
-    int m_width;
-    int m_height;
+    int m_viewportX;
+    int m_viewportY;
+    int m_viewportWidth;
+    int m_viewportHeight;
 
     float m_yaw;
     float m_pitch;

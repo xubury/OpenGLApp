@@ -41,8 +41,8 @@ void RenderTarget::clear(float r, float g, float b, float a) {
 
 void RenderTarget::applyCamera(const Camera *camera) {
     assert(camera != nullptr);
-    glViewport(camera->getX(), camera->getY(), camera->getWidth(),
-               camera->getHeight());
+    glViewport(camera->getViewportX(), camera->getViewportY(),
+               camera->getViewportWidth(), camera->getViewportHeight());
     m_shader->setMat4("projection", camera->getProjection());
     m_shader->setMat4("view", camera->getView());
     m_shader->setVec3("viewPos", camera->getPosition());
