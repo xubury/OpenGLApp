@@ -7,6 +7,7 @@ int main() {
     settings.title = "OpenGL";
     settings.samples = 4;
     settings.editor = true;
+    settings.frameRateLimit = 120;
 
     Game window(settings);
     window.run(30);

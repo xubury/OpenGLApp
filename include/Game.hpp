@@ -16,6 +16,7 @@ struct Settings {
     std::string title;
     int samples;
     bool editor;
+    int frameRateLimit;
 };
 
 class Game {

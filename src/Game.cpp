@@ -62,7 +62,7 @@ Game::Game(const Settings& settings)
         addCube(cubePositions[i], containerTextures);
     }
 
-    m_window.setFramerateLimit(120);
+    m_window.setFramerateLimit(settings.frameRateLimit);
 
     m_frameBuffer.initialize(settings.width, settings.height, settings.samples);
 }
