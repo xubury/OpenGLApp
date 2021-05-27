@@ -45,7 +45,9 @@ int Camera::getViewportX() const { return m_viewportX; }
 
 int Camera::getViewportY() const { return m_viewportY; }
 
-glm::vec2 Camera::getViewportPos() const { return glm::vec2(m_viewportX, m_viewportY); }
+glm::vec2 Camera::getViewportPos() const {
+    return glm::vec2(m_viewportX, m_viewportY);
+}
 
 int Camera::getViewportWidth() const { return m_viewportWidth; }
 
@@ -61,7 +63,9 @@ float Camera::getNearZ() const { return m_nearZ; }
 
 float Camera::getFarZ() const { return m_farZ; }
 
-float Camera::getAspect() const { return (float)m_viewportWidth / m_viewportHeight; }
+float Camera::getAspect() const {
+    return (float)m_viewportWidth / m_viewportHeight;
+}
 
 void Camera::setSize(float width, float height) {
     m_viewportWidth = width;
@@ -198,9 +202,9 @@ ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,
         if (m_isFirstMouse) {
             m_isFirstMouse = false;
         } else {
-            glm::vec2 offset = currentMousePos - m_lastMousePos;
-            rotate(-offset.x * MOUSE_SENSITIVITY,
-                   -offset.y * MOUSE_SENSITIVITY);
+            // glm::vec2 offset = currentMousePos - m_lastMousePos;
+            // rotate(-offset.x * MOUSE_SENSITIVITY,
+            //        -offset.y * MOUSE_SENSITIVITY);
         }
         m_lastMousePos = currentMousePos;
     });

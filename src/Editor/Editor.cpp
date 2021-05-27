@@ -32,8 +32,8 @@ static void drawTransformSheet(Transform& trans) {
     }
 }
 
-static bool canActive() {
-    return ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered() &&
+static bool canActive(ImGuiMouseButton button) {
+    return ImGui::IsMouseClicked(button) && !ImGui::IsAnyItemHovered() &&
            !ImGui::IsAnyItemActive();
 }
 
@@ -42,7 +42,10 @@ Editor& Editor::instance() {
     return s_instance;
 }
 
-Editor::Editor() : m_leftMouseDown(false), m_moveType(MoveType::NONE) {
+Editor::Editor()
+    : m_leftMouseDown(false),
+      m_rightMouseDown(false),
+      m_moveType(MoveType::NONE) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -158,7 +161,7 @@ void Editor::computeMoveType() {
         m_movePlane =
             buildPlane(modelWorldPos,
                        context.getCamera()->component<Transform>()->getFront());
-        m_originalPos = modelWorldPos;
+        m_intersectWorldPos = modelWorldPos;
         return;
     }
     float minZ = std::numeric_limits<float>::max();
@@ -183,7 +186,7 @@ void Editor::computeMoveType() {
                                 cloesetScreenPoint) < lineThickness) {
                     m_moveType = static_cast<MoveType>(TRANSLATE_X + axisId);
                     m_movePlane = translatePlane;
-                    m_originalPos = intersectWorldPos;
+                    m_intersectWorldPos = intersectWorldPos;
                     break;
                 }
                 projectionUV[j - 1] = glm::dot(
@@ -197,7 +200,7 @@ void Editor::computeMoveType() {
                 if (intersectScreenPos.z < minZ) {
                     minZ = intersectScreenPos.z;
                     m_movePlane = translatePlane;
-                    m_originalPos = intersectWorldPos;
+                    m_intersectWorldPos = intersectWorldPos;
                     m_moveType = static_cast<MoveType>(TRANSLATE_YZ + i);
                 }
             }
@@ -207,31 +210,61 @@ void Editor::computeMoveType() {
 
 void Editor::handleTranslation() {
     if (m_leftMouseDown) {
+        ImGui::CaptureMouseFromApp();
         auto trans = context.getActiveEntityPtr()->component<Transform>();
         if (m_moveType != NONE) {
             float len =
                 intersectRayPlane(m_camRayOrigin, m_camRayDir, m_movePlane);
-            glm::vec3 intersectPoint = m_camRayOrigin + len * m_camRayDir;
-            glm::vec3 translation = intersectPoint - m_originalPos;
+            glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
+            glm::vec3 translation = intersectWorldPos - m_intersectWorldPos;
             if (m_moveType <= TRANSLATE_Z && m_moveType >= TRANSLATE_X) {
                 const glm::vec3& axis =
                     trans->getMatrix()[m_moveType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
             }
             trans->translateWorld(translation);
-            m_originalPos = intersectPoint;
+            m_intersectWorldPos = intersectWorldPos;
         }
 
-        if (!ImGui::IsMouseDown(0)) {
+        if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
             m_leftMouseDown = false;
             m_moveType = NONE;
         }
     } else {
-        if (canActive()) {
+        if (canActive(ImGuiMouseButton_Left)) {
             m_leftMouseDown = true;
         }
         computeMoveType();
     }
+}
+
+void Editor::handleCameraRotation() {
+    glm::vec2 pos(context.getCursorPos());
+    if (m_rightMouseDown) {
+        ImGui::CaptureMouseFromApp();
+        glm::vec2 offset = (pos - m_lastMousePos) * 0.1f;
+        glm::mat4 transform(1.0f);
+        const glm::vec3& cameraUp =
+            context.getCamera()->component<Transform>()->getUp();
+        const glm::vec3& cameraRight =
+            context.getCamera()->component<Transform>()->getRight();
+        const glm::vec3& modelWorldPos =
+            context.getActiveEntityPtr()->getPosition();
+        transform = glm::translate(transform, modelWorldPos);
+        transform = glm::rotate(transform, glm::radians(-offset.x), cameraUp);
+        transform =
+            glm::rotate(transform, glm::radians(-offset.y), cameraRight);
+        transform = glm::translate(transform, -modelWorldPos);
+        context.getCamera()->component<Transform>()->transform(transform);
+        if (!ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+            m_rightMouseDown = false;
+        }
+    } else {
+        if (canActive(ImGuiMouseButton_Right)) {
+            m_rightMouseDown = true;
+        }
+    }
+    m_lastMousePos = pos;
 }
 
 void Editor::render() {
@@ -309,6 +342,8 @@ void Editor::render() {
     buildModelAxes(0.2);
 
     handleTranslation();
+
+    handleCameraRotation();
 
     renderFps();
 

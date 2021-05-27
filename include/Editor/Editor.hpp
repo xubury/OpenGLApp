@@ -35,6 +35,8 @@ class Editor {
 
     void handleTranslation();
 
+    void handleCameraRotation();
+
     glm::vec3 m_camRayOrigin;
 
     glm::vec3 m_camRayDir;
@@ -45,7 +47,11 @@ class Editor {
 
     bool m_leftMouseDown;
 
-    glm::vec3 m_originalPos;
+    bool m_rightMouseDown;
+
+    glm::vec2 m_lastMousePos;
+
+    glm::vec3 m_intersectWorldPos;
 
     enum MoveType : uint8_t {
         NONE = 0,
