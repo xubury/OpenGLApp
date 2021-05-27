@@ -41,14 +41,10 @@ class FrameBuffer {
     int m_width;
     int m_height;
     int m_sample;
-};
-
-class FrameBufferShader : public Shader {
-   public:
-    static FrameBufferShader &instance();
 
    private:
-    FrameBufferShader();
+    friend class Shader;
+    static Shader s_shader;
 };
 
 #endif /* FRAMEBUFFER_HPP */

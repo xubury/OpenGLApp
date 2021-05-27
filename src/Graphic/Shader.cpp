@@ -1,12 +1,65 @@
 #include <Graphic/Shader.hpp>
-#include <glad/glad.h>
 #include <Graphic/Vertex.hpp>
+#include <Graphic/FrameBuffer.hpp>
+#include <Graphic/Primitive.hpp>
 
+#include <glad/glad.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-Shader::Shader() {}
+void Shader::initDefaultShaders() {
+    const char* fbVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec2 aPos;\n"
+        "layout (location = 1) in vec2 aTexCoords;\n"
+        "out vec2 texCoords;\n"
+        "void main() {\n"
+        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+        "    texCoords = aTexCoords;\n"
+        "}";
+
+    const char* fbFragment =
+        "#version 330 core\n"
+        "out vec4 fragColor;\n"
+        "in vec2 texCoords;\n"
+        "uniform sampler2D screenTexture;\n"
+        "void main() {\n"
+        "    fragColor = texture(screenTexture, texCoords);\n"
+        "}";
+
+    FrameBuffer::s_shader.compile(fbVertex, fbFragment);
+    FrameBuffer::s_shader.use();
+    FrameBuffer::s_shader.setInt("screenTexture", 0);
+    const char* primitiveVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec4 aColor;\n"
+        "out vec4 color;\n"
+        "uniform float screenX;"
+        "uniform float screenY;"
+        "uniform float screenWidth;"
+        "uniform float screenHeight;"
+        "void main() {\n"
+        "    vec4 screenPos = vec4(aPos, 1.0f);\n"
+        "    screenPos.x = (screenPos.x - screenX) / screenWidth * 2.f - 1.f;\n"
+        "    screenPos.y = 1.f - (screenPos.y + screenY) / screenHeight * "
+        "2.f;\n"
+        "    gl_Position = screenPos;\n"
+        "    color = aColor;\n"
+        "}";
+
+    const char* primitiveFragment =
+        "#version 330 core\n"
+        "out vec4 fragColor;\n"
+        "in vec4 color;\n"
+        "void main() {\n"
+        "    fragColor = color;\n"
+        "}";
+    Primitive::s_shader.compile(primitiveVertex, primitiveFragment);
+}
+
+Shader::Shader() : m_id(0) {}
 
 void Shader::loadFromFile(const std::string& vertexPath,
                           const std::string& fragmentPath) {
@@ -51,18 +104,18 @@ void Shader::compile(const char* vertexCode, const char* fragmentCode) {
     checkCompileErrors(fragment, "FRAGMENT");
 
     // shader Program
-    id = glCreateProgram();
-    glAttachShader(id, vertex);
-    glAttachShader(id, fragment);
-    glLinkProgram(id);
-    checkCompileErrors(id, "PROGRAM");
+    m_id = glCreateProgram();
+    glAttachShader(m_id, vertex);
+    glAttachShader(m_id, fragment);
+    glLinkProgram(m_id);
+    checkCompileErrors(m_id, "PROGRAM");
     // delete the shaders as they're linked into our program now and no longer
     // necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
 
-void Shader::use() const { glUseProgram(id); }
+void Shader::use() const { glUseProgram(m_id); }
 
 void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
     int success;
@@ -93,27 +146,26 @@ void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
 }
 
 void Shader::setBool(const std::string& name, bool value) const {
-    glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+    glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setInt(const std::string& name, int value) const {
-    glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+    glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setFloat(const std::string& name, float value) const {
-    glUniform1f(glGetUniformLocation(id, name.c_str()), value);
+    glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setVec3(const std::string& name, const glm::vec3& value) const {
-    glUniform3fv(glGetUniformLocation(id, name.c_str()), 1, &value[0]);
+    glUniform3fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
 }
 
 void Shader::setVec4(const std::string& name, const glm::vec4& value) const {
-    glUniform4fv(glGetUniformLocation(id, name.c_str()), 1, &value[0]);
+    glUniform4fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
 }
 
 void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
-    glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE,
+    glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE,
                        &value[0][0]);
 }
-

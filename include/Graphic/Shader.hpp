@@ -7,8 +7,6 @@
 
 class Shader {
    public:
-    uint32_t id;
-
     Shader();
 
     Shader(const Shader&) = delete;
@@ -36,6 +34,12 @@ class Shader {
 
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
+
+    uint32_t m_id;
+
+   public:
+    static void initDefaultShaders();
+
 };
 
 #endif

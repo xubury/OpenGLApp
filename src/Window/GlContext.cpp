@@ -1,6 +1,7 @@
-#include "Window/GlContext.hpp"
-#include "Window/Event.hpp"
-#include "Graphic/RenderWindow.hpp"
+#include <Window/GlContext.hpp>
+#include <Graphic/Shader.hpp>
+#include <Window/Event.hpp>
+#include <Graphic/RenderWindow.hpp>
 
 #include <iostream>
 
@@ -131,4 +132,6 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     glEnable(GL_DEPTH_TEST);
     //MSAA
     glEnable(GL_MULTISAMPLE);
+
+    Shader::initDefaultShaders();
 }

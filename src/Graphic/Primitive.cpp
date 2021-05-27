@@ -3,39 +3,7 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <Entity/Camera.hpp>
 
-PrimitiveShader &PrimitiveShader::instance() {
-    static PrimitiveShader s_instance;
-    return s_instance;
-}
-
-PrimitiveShader::PrimitiveShader() {
-    const char *vertexCode =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec4 aColor;\n"
-        "out vec4 color;\n"
-        "uniform float screenX;"
-        "uniform float screenY;"
-        "uniform float screenWidth;"
-        "uniform float screenHeight;"
-        "void main() {\n"
-        "    vec4 screenPos = vec4(aPos, 1.0f);\n"
-        "    screenPos.x = (screenPos.x - screenX) / screenWidth * 2.f - 1.f;\n"
-        "    screenPos.y = 1.f - (screenPos.y + screenY) / screenHeight * "
-        "2.f;\n"
-        "    gl_Position = screenPos;\n"
-        "    color = aColor;\n"
-        "}";
-
-    const char *fragmentCode =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "in vec4 color;\n"
-        "void main() {\n"
-        "    fragColor = color;\n"
-        "}";
-    compile(vertexCode, fragmentCode);
-}
+Shader Primitive::s_shader;
 
 Primitive::Primitive() : m_vertices() { m_vertices.initialize(); }
 
@@ -45,15 +13,13 @@ Primitive &Primitive::instance() {
 }
 
 void Primitive::setDrawingView(const Camera *camera) {
-    PrimitiveShader::instance().use();
+    s_shader.use();
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
-    PrimitiveShader::instance().setFloat("screenX", camera->getViewportX());
-    PrimitiveShader::instance().setFloat("screenY", camera->getViewportY());
-    PrimitiveShader::instance().setFloat("screenWidth",
-                                         camera->getViewportWidth());
-    PrimitiveShader::instance().setFloat("screenHeight",
-                                         camera->getViewportHeight());
+    s_shader.setFloat("screenX", camera->getViewportX());
+    s_shader.setFloat("screenY", camera->getViewportY());
+    s_shader.setFloat("screenWidth", camera->getViewportWidth());
+    s_shader.setFloat("screenHeight", camera->getViewportHeight());
 }
 
 void Primitive::drawLine(const DebugVertex &start, const DebugVertex &end,

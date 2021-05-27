@@ -8,14 +8,6 @@
 
 class Camera;
 
-class PrimitiveShader : public Shader {
-   public:
-    static PrimitiveShader &instance();
-
-   private:
-    PrimitiveShader();
-};
-
 class Primitive {
    public:
     static Primitive &instance();
@@ -29,12 +21,17 @@ class Primitive {
 
     void drawCircle(const DebugVertex &center, float radius, int fragments = 0);
 
-    void drawCircleFilled(const DebugVertex &center, float radius, int fragments = 0);
+    void drawCircleFilled(const DebugVertex &center, float radius,
+                          int fragments = 0);
 
    private:
     Primitive();
 
     VertexBuffer m_vertices;
+
+   private:
+    friend class Shader;
+    static Shader s_shader;
 };
 
 #endif /* PRIMITIVE_HPP */

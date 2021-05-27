@@ -2,35 +2,7 @@
 #include <iostream>
 #include <glad/glad.h>
 
-FrameBufferShader &FrameBufferShader::instance() {
-    static FrameBufferShader s_instance;
-    return s_instance;
-}
-
-FrameBufferShader::FrameBufferShader() {
-    const char *vertexCode =
-        "#version 330 core\n"
-        "layout (location = 0) in vec2 aPos;\n"
-        "layout (location = 1) in vec2 aTexCoords;\n"
-        "out vec2 texCoords;\n"
-        "void main() {\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-        "    texCoords = aTexCoords;\n"
-        "}";
-
-    const char *fragmentCode =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "in vec2 texCoords;\n"
-        "uniform sampler2D screenTexture;\n"
-        "void main() {\n"
-        "    fragColor = texture(screenTexture, texCoords);\n"
-        "}";
-
-    compile(vertexCode, fragmentCode);
-    use();
-    setInt("screenTexture", 0);
-}
+Shader FrameBuffer::s_shader;
 
 FrameBuffer::FrameBuffer()
     : m_multiSampleFrameBufferId(0),
@@ -165,7 +137,7 @@ void FrameBuffer::deactivate() const {
 void FrameBuffer::draw() {
     deactivate();
     glDisable(GL_DEPTH_TEST);
-    FrameBufferShader::instance().use();
+    s_shader.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_textureId);
     glBindVertexArray(m_VAO);
