@@ -45,7 +45,7 @@ Editor& Editor::instance() {
 Editor::Editor()
     : m_leftMouseDown(false),
       m_rightMouseDown(false),
-      m_moveType(MoveType::NONE) {
+      m_translateType(TranslateType::NONE) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -95,7 +95,7 @@ void Editor::renderModelAxes() {
         glm::vec4 axisColor(0.f);
         axisColor[i] = 1.0f;
         axisColor[3] = axisTransparency;
-        if (m_moveType == TRANSLATE_X + i) {
+        if (m_translateType == TRANSLATE_X + i) {
             axisColor = selectionColor;
         }
         Primitive::instance().drawLine(
@@ -106,7 +106,7 @@ void Editor::renderModelAxes() {
         glm::vec4 panelColor(0.f);
         panelColor[i] = 1.0f;
         panelColor[3] = axisTransparency;
-        if (m_moveType == TRANSLATE_YZ + i) {
+        if (m_translateType == TRANSLATE_YZ + i) {
             panelColor = selectionColor;
         }
         for (int j = 0; j < 4; ++j) {
@@ -115,7 +115,7 @@ void Editor::renderModelAxes() {
         }
         Primitive::instance().drawQuadFilled(vertices);
     }
-    if (m_moveType == TRANSLATE_XYZ) {
+    if (m_translateType == TRANSLATE_XYZ) {
         Primitive::instance().drawCircleFilled(
             DebugVertex(m_modelScreenAxes.origin, selectionColor),
             axisOriginRadius);
@@ -147,17 +147,17 @@ void Editor::renderCameraAxes(float clipLen) {
     context.addLine(origin, zAxis, 0xFFFF0000, 2);
 }
 
-void Editor::computeMoveType() {
+void Editor::computeTranslateType() {
     const auto& trans = context.getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rotation = trans->getMatrix();
     glm::vec3 modelWorldPos = trans->getPosition();
-    m_moveType = MoveType::NONE;
+    m_translateType = TranslateType::NONE;
 
     // if on the model axis center
     if (glm::length(context.getCursorPos() -
                     glm::vec2(context.getCamera()->computeWorldToSrceen(
                         modelWorldPos))) < axisOriginRadius) {
-        m_moveType = MoveType::TRANSLATE_XYZ;
+        m_translateType = TranslateType::TRANSLATE_XYZ;
         m_movePlane =
             buildPlane(modelWorldPos,
                        context.getCamera()->component<Transform>()->getFront());
@@ -178,13 +178,14 @@ void Editor::computeMoveType() {
             for (int j = 1; j <= 2; ++j) {
                 int axisId = (i + j) % 3;
                 glm::vec2 axis = m_modelScreenAxes.axes[axisId];
-                glm::vec2 cloesetScreenPoint =
+                glm::vec2 cloesetScreenPos =
                     findClosestPoint(glm::vec2(intersectScreenPos),
                                      glm::vec2(m_modelScreenAxes.origin), axis);
                 // check if on axis
                 if (glm::length(glm::vec2(intersectScreenPos) -
-                                cloesetScreenPoint) < lineThickness) {
-                    m_moveType = static_cast<MoveType>(TRANSLATE_X + axisId);
+                                cloesetScreenPos) < lineThickness) {
+                    m_translateType =
+                        static_cast<TranslateType>(TRANSLATE_X + axisId);
                     m_movePlane = translatePlane;
                     m_intersectWorldPos = intersectWorldPos;
                     break;
@@ -201,25 +202,27 @@ void Editor::computeMoveType() {
                     minZ = intersectScreenPos.z;
                     m_movePlane = translatePlane;
                     m_intersectWorldPos = intersectWorldPos;
-                    m_moveType = static_cast<MoveType>(TRANSLATE_YZ + i);
+                    m_translateType =
+                        static_cast<TranslateType>(TRANSLATE_YZ + i);
                 }
             }
         }
     }
 }
 
-void Editor::handleTranslation() {
+void Editor::handleMouseLeftButton() {
     if (m_leftMouseDown) {
         ImGui::CaptureMouseFromApp();
         auto trans = context.getActiveEntityPtr()->component<Transform>();
-        if (m_moveType != NONE) {
+        if (m_translateType != NONE) {
             float len =
                 intersectRayPlane(m_camRayOrigin, m_camRayDir, m_movePlane);
             glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
             glm::vec3 translation = intersectWorldPos - m_intersectWorldPos;
-            if (m_moveType <= TRANSLATE_Z && m_moveType >= TRANSLATE_X) {
+            if (m_translateType <= TRANSLATE_Z &&
+                m_translateType >= TRANSLATE_X) {
                 const glm::vec3& axis =
-                    trans->getMatrix()[m_moveType - TRANSLATE_X];
+                    trans->getMatrix()[m_translateType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
             }
             trans->translateWorld(translation);
@@ -228,21 +231,21 @@ void Editor::handleTranslation() {
 
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
             m_leftMouseDown = false;
-            m_moveType = NONE;
+            m_translateType = NONE;
         }
     } else {
         if (canActive(ImGuiMouseButton_Left)) {
             m_leftMouseDown = true;
         }
-        computeMoveType();
+        computeTranslateType();
     }
 }
 
-void Editor::handleCameraRotation() {
+void Editor::handleMouseRightButton() {
     glm::vec2 pos(context.getCursorPos());
     if (m_rightMouseDown) {
         ImGui::CaptureMouseFromApp();
-        glm::vec2 offset = (pos - m_lastMousePos) * 0.1f;
+        glm::vec2 offset = (pos - m_lastRightClickPos) * 0.1f;
         glm::mat4 transform(1.0f);
         const glm::vec3& cameraUp =
             context.getCamera()->component<Transform>()->getUp();
@@ -264,7 +267,7 @@ void Editor::handleCameraRotation() {
             m_rightMouseDown = true;
         }
     }
-    m_lastMousePos = pos;
+    m_lastRightClickPos = pos;
 }
 
 void Editor::render() {
@@ -352,9 +355,9 @@ void Editor::render() {
                                           context.getCursorPos());
     buildModelAxes(0.2);
 
-    handleTranslation();
+    handleMouseLeftButton();
 
-    handleCameraRotation();
+    handleMouseRightButton();
 
     renderFps();
 

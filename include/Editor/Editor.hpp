@@ -31,11 +31,11 @@ class Editor {
 
     void renderCameraAxes(float clipLen);
 
-    void computeMoveType();
+    void computeTranslateType();
 
-    void handleTranslation();
+    void handleMouseLeftButton();
 
-    void handleCameraRotation();
+    void handleMouseRightButton();
 
     glm::vec3 m_camRayOrigin;
 
@@ -49,11 +49,11 @@ class Editor {
 
     bool m_rightMouseDown;
 
-    glm::vec2 m_lastMousePos;
+    glm::vec2 m_lastRightClickPos;
 
     glm::vec3 m_intersectWorldPos;
 
-    enum MoveType : uint8_t {
+    enum TranslateType {
         NONE = 0,
         TRANSLATE_X = 1,
         TRANSLATE_Y = 2,
@@ -64,7 +64,7 @@ class Editor {
         TRANSLATE_XYZ
     };
 
-    MoveType m_moveType;
+    TranslateType m_translateType;
 
     glm::vec4 m_movePlane;
 
