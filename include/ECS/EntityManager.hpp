@@ -57,6 +57,7 @@ class EntityManager {
 
     template <typename T = ENTITY>
     const T *getPtr(std::size_t id) const;
+
     template <typename T = ENTITY>
     T *getPtr(std::size_t id);
 

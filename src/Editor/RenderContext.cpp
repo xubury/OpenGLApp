@@ -25,25 +25,25 @@ void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
 uint32_t RenderContext::getActiveEntityId() const { return m_activeEntityId; }
 
-EntityBase* RenderContext::getActiveEntityPtr() const {
+EntityBase* RenderContext::getActiveEntityPtr() {
     return m_entities->getPtr(m_activeEntityId);
 }
 
 void RenderContext::setCamrea(Camera* camera) { m_camera = camera; }
 
-Camera* RenderContext::getCamera() const { return m_camera; }
+Camera* RenderContext::getCamera() { return m_camera; }
 
 void RenderContext::setWindow(RenderWindow* window) { m_window = window; }
 
-RenderWindow* RenderContext::getWindow() const { return m_window; }
+RenderWindow* RenderContext::getWindow() { return m_window; }
 
 void RenderContext::setFrameBuffer(FrameBuffer* frameBuffer) {
     m_frameBuffer = frameBuffer;
 }
 
-FrameBuffer* RenderContext::getFrameBuffer() const { return m_frameBuffer; }
+FrameBuffer* RenderContext::getFrameBuffer() { return m_frameBuffer; }
 
-EntityManager<EntityBase>* RenderContext::getEntityManager() const {
+EntityManager<EntityBase>* RenderContext::getEntityManager() {
     return m_entities;
 }
 

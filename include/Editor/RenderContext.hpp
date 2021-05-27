@@ -17,21 +17,21 @@ class RenderContext {
 
     uint32_t getActiveEntityId() const;
 
-    EntityBase *getActiveEntityPtr() const;
+    EntityBase *getActiveEntityPtr();
 
     void setCamrea(Camera *camera);
 
-    Camera *getCamera() const;
+    Camera *getCamera();
 
     void setWindow(RenderWindow *window);
 
-    RenderWindow *getWindow() const;
+    RenderWindow *getWindow();
 
     void setFrameBuffer(FrameBuffer *frameBuffer);
 
-    FrameBuffer *getFrameBuffer() const;
+    FrameBuffer *getFrameBuffer();
 
-    EntityManager<EntityBase> *getEntityManager() const;
+    EntityManager<EntityBase> *getEntityManager();
 
     void setEntityManager(EntityManager<EntityBase> *entites);
 
