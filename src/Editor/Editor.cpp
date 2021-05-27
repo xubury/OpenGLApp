@@ -6,7 +6,7 @@
 #include <Graphic/Primitive.hpp>
 #include <iostream>
 
-static const float quadMin = 0.2f;
+static const float quadMin = 0.4f;
 static const float quadMax = 0.8f;
 static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
                                 quadMax, quadMax, quadMax, quadMin};
