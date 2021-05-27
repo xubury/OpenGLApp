@@ -1,5 +1,5 @@
 #include <Game.hpp>
-#include <Entity/Model.hpp>
+#include <Entity/ModelEntity.hpp>
 #include <Entity/Cube.hpp>
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
@@ -16,8 +16,8 @@ void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
 }
 
 void Game::addModel(const std::string& path) {
-    int id = m_app.entities.create<Model>();
-    Model* model = m_app.entities.getPtr<Model>(id);
+    int id = m_app.entities.create<ModelEntity>();
+    ModelEntity* model = m_app.entities.getPtr<ModelEntity>(id);
     model->loadFromFile(path);
     model->setName(typeid(*model).name());
 }

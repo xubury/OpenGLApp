@@ -1,5 +1,5 @@
-#ifndef MODEL_RESOURCE_HPP
-#define MODEL_RESOURCE_HPP
+#ifndef MODEL_HPP
+#define MODEL_HPP
 
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Mesh.hpp>
@@ -8,9 +8,9 @@
 #include <assimp/postprocess.h>
 #include <ResourceManager.hpp>
 
-class ModelResource : public Drawable {
+class Model : public Drawable {
    public:
-    ModelResource() = default;
+    Model() = default;
 
     // This function check if the model is loaded before.
     // If loaded, take it out and skip the loadFromFile process.
@@ -22,7 +22,7 @@ class ModelResource : public Drawable {
     template <typename, typename>
     friend class ResourceManager;
 
-    friend class Model;
+    friend class ModelEntity;
 
     // Costly model load function, will not check if loaded before.
     // Use loadModel for fast loading.
@@ -39,7 +39,7 @@ class ModelResource : public Drawable {
 
     std::string m_directory;
 
-    static ResourceManager<std::string, ModelResource> loadedModels;
+    static ResourceManager<std::string, Model> loadedModels;
 };
 
 #endif

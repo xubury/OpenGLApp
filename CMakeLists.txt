@@ -23,7 +23,7 @@ set(Component_Src
 set(Entity_Src
     src/Entity/EntityBase.cpp
     src/Entity/Camera.cpp
-    src/Entity/Model.cpp
+    src/Entity/ModelEntity.cpp
     src/Entity/Cube.cpp)
 
 set(Utility_Src
@@ -42,7 +42,7 @@ set(Graphic_Src
     src/Graphic/RenderStates.cpp
     src/Graphic/Primitive.cpp
     src/Graphic/Mesh.cpp
-    src/Graphic/ModelResource.cpp
+    src/Graphic/Model.cpp
     src/Graphic/FrameBuffer.cpp)
 
 set(Window_Src
