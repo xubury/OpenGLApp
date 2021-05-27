@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <Graphic/Shader.hpp>
 #include <Graphic/VertexBuffer.hpp>
+#include <Graphic/ElementBuffer.hpp>
 #include <vector>
 
 class Camera;
@@ -24,10 +25,16 @@ class Primitive {
     void drawCircleFilled(const DebugVertex &center, float radius,
                           int fragments = 0);
 
+    void drawQuad(const std::vector<DebugVertex> &corners, float thickness);
+
+    void drawQuadFilled(const std::vector<DebugVertex> &corners);
+
    private:
     Primitive();
 
     VertexBuffer m_vertices;
+
+    ElementBuffer m_elements;
 
    private:
     friend class Shader;

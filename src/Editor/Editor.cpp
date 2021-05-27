@@ -14,7 +14,9 @@ static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
 static const float lineThickness = 5.f;
 static const float axisOriginRadius = 10.f;
 
-static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.5f);
+static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.7f);
+
+static const float axisTransparency = 0.8f;
 
 static void drawTransformSheet(Transform& trans) {
     ImGui::Separator();
@@ -89,7 +91,7 @@ void Editor::renderModelAxes() {
         const auto& axis = m_modelScreenAxes.axes[i];
         glm::vec4 axisColor(0.f);
         axisColor[i] = 1.0f;
-        axisColor[3] = 1.0f;
+        axisColor[3] = axisTransparency;
         if (m_moveType == TRANSLATE_X + i) {
             axisColor = selectionColor;
         }
@@ -100,7 +102,7 @@ void Editor::renderModelAxes() {
         std::vector<DebugVertex> vertices(4);
         glm::vec4 panelColor(0.f);
         panelColor[i] = 1.0f;
-        panelColor[3] = 1.0f;
+        panelColor[3] = axisTransparency;
         if (m_moveType == TRANSLATE_YZ + i) {
             panelColor = selectionColor;
         }
@@ -108,7 +110,7 @@ void Editor::renderModelAxes() {
             vertices[j].position = m_modelScreenQuads[i][j];
             vertices[j].color = panelColor;
         }
-        Primitive::instance().drawPath(vertices, 2.0f);
+        Primitive::instance().drawQuadFilled(vertices);
     }
     if (m_moveType == TRANSLATE_XYZ) {
         Primitive::instance().drawCircleFilled(

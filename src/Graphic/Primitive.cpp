@@ -5,7 +5,10 @@
 
 Shader Primitive::s_shader;
 
-Primitive::Primitive() : m_vertices() { m_vertices.initialize(); }
+Primitive::Primitive() : m_vertices() {
+    m_vertices.initialize();
+    m_elements.initialize();
+}
 
 Primitive &Primitive::instance() {
     static Primitive s_instance;
@@ -73,4 +76,22 @@ void Primitive::drawCircleFilled(const DebugVertex &center, float radius,
     m_vertices.update(vertex.data(), vertex.size(), GL_TRIANGLE_FAN,
                       GL_DYNAMIC_DRAW);
     m_vertices.drawPrimitive();
+}
+
+void Primitive::drawQuad(const std::vector<DebugVertex> &corners,
+                         float thickness) {
+    assert(corners.size() == 4);
+    drawPath(corners, thickness);
+}
+
+void Primitive::drawQuadFilled(const std::vector<DebugVertex> &corners) {
+    assert(corners.size() == 4);
+    unsigned int indices[] = {
+        // note that we start from 0!
+        0, 1, 3,  // first triangle
+        1, 2, 3   // second triangle
+    };
+    m_elements.update(corners.data(), corners.size(), indices, 6, GL_TRIANGLES,
+                      GL_DYNAMIC_DRAW);
+    m_elements.drawPrimitive();
 }

@@ -130,7 +130,9 @@ GlContext::GlContext(int width, int height, const std::string& title) {
     // glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glEnable(GL_DEPTH_TEST);
-    //MSAA
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // MSAA
     glEnable(GL_MULTISAMPLE);
 
     Shader::initDefaultShaders();
