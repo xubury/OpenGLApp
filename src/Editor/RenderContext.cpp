@@ -23,6 +23,8 @@ void RenderContext::unloadContext() { m_frameBuffer->deactivate(); }
 
 void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
+uint32_t RenderContext::getActiveEntityId() const { return m_activeEntityId; }
+
 EntityBase* RenderContext::getActiveEntityPtr() const {
     return m_entities->getPtr(m_activeEntityId);
 }
@@ -40,6 +42,10 @@ void RenderContext::setFrameBuffer(FrameBuffer* frameBuffer) {
 }
 
 FrameBuffer* RenderContext::getFrameBuffer() const { return m_frameBuffer; }
+
+EntityManager<EntityBase>* RenderContext::getEntityManager() const {
+    return m_entities;
+}
 
 void RenderContext::setEntityManager(EntityManager<EntityBase>* entites) {
     m_entities = entites;

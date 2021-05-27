@@ -285,20 +285,39 @@ void Editor::render() {
     }
     ImGui::End();
 
+    ImGui::Begin("Scene");
+    {
+        ImGui::SetWindowSize(ImVec2(300, 600));
+        ImGui::SetWindowPos(ImVec2(1100, 0));
+        ImGui::BeginChild("SceneList");
+        std::size_t size = context.getEntityManager()->size();
+        char entityLabel[128];
+        for (std::size_t i = 0; i < size; ++i) {
+            sprintf(entityLabel, "ID:%lld Name:%s", i,
+                    context.getEntityManager()->getPtr(i)->getName().c_str());
+            if (ImGui::Selectable(entityLabel,
+                                  i == context.getActiveEntityId())) {
+                context.setActiveEntityId(i);
+            }
+        }
+        ImGui::EndChild();
+    }
+    ImGui::End();
+
     context.getCamera()->computeCameraRay(m_camRayOrigin, m_camRayDir,
                                           context.getCursorPos());
     buildModelAxes(0.2);
+
     handleTranslation();
 
     renderFps();
+
     // clear depth buffer to make axes not hidden by object
     glClear(GL_DEPTH_BUFFER_BIT);
+
     renderModelAxes();
+
     renderCameraAxes(0.2);
-    context.addLine(context.getCamera()->computeWorldToSrceen(m_camRayOrigin),
-                    context.getCamera()->computeWorldToSrceen(
-                        m_camRayOrigin + m_camRayDir * 100.f),
-                    0xFF0000FF);
 
     // unload context and quit drawing drawing on the framebuffer
     context.unloadContext();
