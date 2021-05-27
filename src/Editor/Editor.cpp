@@ -231,7 +231,6 @@ void Editor::handleMouseLeftButton() {
 
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
             m_leftMouseDown = false;
-            m_translateType = NONE;
         }
     } else {
         if (canActive(ImGuiMouseButton_Left)) {
@@ -245,7 +244,7 @@ void Editor::handleMouseRightButton() {
     glm::vec2 pos(context.getCursorPos());
     if (m_rightMouseDown) {
         ImGui::CaptureMouseFromApp();
-        glm::vec2 offset = (pos - m_lastRightClickPos) * 0.1f;
+        glm::vec2 offset = (pos - m_rightClickPos) * 0.1f;
         glm::mat4 transform(1.0f);
         const glm::vec3& cameraUp =
             context.getCamera()->component<Transform>()->getUp();
@@ -267,7 +266,7 @@ void Editor::handleMouseRightButton() {
             m_rightMouseDown = true;
         }
     }
-    m_lastRightClickPos = pos;
+    m_rightClickPos = pos;
 }
 
 void Editor::render() {
