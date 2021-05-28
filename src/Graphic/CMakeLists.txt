@@ -5,7 +5,6 @@ if (POLICY CMP0072)
     set(OpenGL_GL_PREFERENCE LEGACY)
 endif()
 find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
@@ -43,18 +42,25 @@ add_library(gl-graphic ${Graphic_Src})
 
 set_property(TARGET gl-graphic PROPERTY CXX_STANDARD 17)
 
-target_compile_options(gl-graphic PUBLIC -Wall -Wextra -Wundef -pedantic)
+target_compile_options(gl-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
-target_link_libraries(gl-graphic
+target_link_libraries(gl-graphic PRIVATE
     OpenGL::GL
     glm
-    glfw
-    assimp::assimp
-    imgui::imgui)
+    assimp::assimp)
 if(UNIX)
-    target_link_libraries(gl-graphic X11 Xrandr Xi dl pthread)
+    target_link_libraries(gl-graphic PRIVATE X11 Xrandr Xi dl pthread)
 endif()
 
-target_include_directories(gl-graphic PUBLIC 
-    ${PROJECT_SOURCE_DIR}/include 
+target_include_directories(gl-graphic PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/libs)
+
+install(TARGETS gl-graphic LIBRARY
+    DESTINATION lib)
+
+install(FILES ${Graphic_Include}
+    DESTINATION include/Graphic)
+
+install(FILES ${PROJECT_SOURCE_DIR}/libs/glad/glad.h
+    DESTINATION include/glad)

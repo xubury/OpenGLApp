@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.0)
 project(opengl VERSION 0.1.0)
 
 find_package(imgui REQUIRED)
+find_package(glfw3 REQUIRED)
 
 add_subdirectory(src/Graphic)
 
@@ -45,6 +46,6 @@ add_executable(OpenGLApp
     ${Editor_Src})
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
-target_link_libraries(OpenGLApp gl-graphic imgui::imgui)
+target_link_libraries(OpenGLApp gl-graphic glfw imgui::imgui)
 target_include_directories(OpenGLApp PUBLIC include libs)
 endif()
