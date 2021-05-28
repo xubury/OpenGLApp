@@ -49,7 +49,7 @@ class Editor {
 
     bool m_rightMouseDown;
 
-    glm::vec2 m_rightClickPos;
+    glm::vec2 m_mouseClickPos;
 
     glm::vec3 m_intersectWorldPos;
 

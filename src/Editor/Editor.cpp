@@ -188,7 +188,7 @@ void Editor::computeTranslateType() {
                         static_cast<TranslateType>(TRANSLATE_X + axisId);
                     m_movePlane = translatePlane;
                     m_intersectWorldPos = intersectWorldPos;
-                    break;
+                    return;
                 }
                 projectionUV[j - 1] = glm::dot(
                     rotation[axisId],
@@ -211,6 +211,7 @@ void Editor::computeTranslateType() {
 }
 
 void Editor::handleMouseLeftButton() {
+    glm::vec2 mousePos(context.getCursorPos());
     if (m_leftMouseDown) {
         ImGui::CaptureMouseFromApp();
         auto trans = context.getActiveEntityPtr()->component<Transform>();
@@ -227,6 +228,22 @@ void Editor::handleMouseLeftButton() {
             }
             trans->translateWorld(translation);
             m_intersectWorldPos = intersectWorldPos;
+        } else {
+            glm::vec2 offset = (mousePos - m_mouseClickPos) * 0.1f;
+            glm::mat4 transform(1.0f);
+            const glm::vec3& cameraUp =
+                context.getCamera()->component<Transform>()->getUp();
+            const glm::vec3& cameraRight =
+                context.getCamera()->component<Transform>()->getRight();
+            const glm::vec3& modelWorldPos =
+                context.getActiveEntityPtr()->getPosition();
+            transform = glm::translate(transform, modelWorldPos);
+            transform =
+                glm::rotate(transform, glm::radians(-offset.x), cameraUp);
+            transform =
+                glm::rotate(transform, glm::radians(-offset.y), cameraRight);
+            transform = glm::translate(transform, -modelWorldPos);
+            context.getCamera()->component<Transform>()->transform(transform);
         }
 
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -238,26 +255,13 @@ void Editor::handleMouseLeftButton() {
         }
         computeTranslateType();
     }
+    m_mouseClickPos = mousePos;
 }
 
 void Editor::handleMouseRightButton() {
-    glm::vec2 pos(context.getCursorPos());
+    glm::vec2 mousePos(context.getCursorPos());
     if (m_rightMouseDown) {
         ImGui::CaptureMouseFromApp();
-        glm::vec2 offset = (pos - m_rightClickPos) * 0.1f;
-        glm::mat4 transform(1.0f);
-        const glm::vec3& cameraUp =
-            context.getCamera()->component<Transform>()->getUp();
-        const glm::vec3& cameraRight =
-            context.getCamera()->component<Transform>()->getRight();
-        const glm::vec3& modelWorldPos =
-            context.getActiveEntityPtr()->getPosition();
-        transform = glm::translate(transform, modelWorldPos);
-        transform = glm::rotate(transform, glm::radians(-offset.x), cameraUp);
-        transform =
-            glm::rotate(transform, glm::radians(-offset.y), cameraRight);
-        transform = glm::translate(transform, -modelWorldPos);
-        context.getCamera()->component<Transform>()->transform(transform);
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
             m_rightMouseDown = false;
         }
@@ -266,7 +270,7 @@ void Editor::handleMouseRightButton() {
             m_rightMouseDown = true;
         }
     }
-    m_rightClickPos = pos;
+    m_mouseClickPos = mousePos;
 }
 
 void Editor::render() {
