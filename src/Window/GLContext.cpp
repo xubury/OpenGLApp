@@ -1,13 +1,13 @@
-#include <Window/GlContext.hpp>
+#include <Window/GLContext.hpp>
 #include <Graphic/Shader.hpp>
 #include <Window/Event.hpp>
 #include <Graphic/RenderWindow.hpp>
 
 #include <iostream>
 
-GLFWwindow* GlContext::m_context;
+GLFWwindow* GLContext::m_context;
 
-void GlContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
+void GLContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
     Event event;
     event.type = Event::EventType::RESIZED;
     event.size.width = width;
@@ -16,11 +16,11 @@ void GlContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
     if (win) win->pushEvent(event);
 }
 
-void GlContext::errorCallback(int error, const char* description) {
+void GLContext::errorCallback(int error, const char* description) {
     std::cerr << "Error: " << description << ", Code: " << error << std::endl;
 }
 
-void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
+void GLContext::keyCallback(GLFWwindow* window, int key, int, int action,
                             int mod) {
     Event event;
     if (action == GLFW_RELEASE) {
@@ -49,7 +49,7 @@ void GlContext::keyCallback(GLFWwindow* window, int key, int, int action,
     if (win) win->pushEvent(event);
 }
 
-void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
+void GLContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     Event event;
     event.type = Event::EventType::MOUSE_MOVED;
     event.mouseMove.x = x;
@@ -58,7 +58,7 @@ void GlContext::mouseMovementCallback(GLFWwindow* window, double x, double y) {
     if (win) win->pushEvent(event);
 }
 
-void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
+void GLContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
                                     int mod) {
     Event event;
     event.type = type == GLFW_PRESS ? Event::EventType::MOUSE_BUTTON_PRESSED
@@ -83,7 +83,7 @@ void GlContext::mouseButtonCallback(GLFWwindow* window, int button, int type,
     if (win) win->pushEvent(event);
 }
 
-void GlContext::mouseWheelCallback(GLFWwindow* window, double xOffset,
+void GLContext::mouseWheelCallback(GLFWwindow* window, double xOffset,
                                    double yOffset) {
     Event event;
     event.type = Event::MOUSE_WHEEL_SCROLLED;
@@ -96,7 +96,7 @@ void GlContext::mouseWheelCallback(GLFWwindow* window, double xOffset,
     if (win) win->pushEvent(event);
 }
 
-GlContext::GlContext(int width, int height, const std::string& title) {
+GLContext::GLContext(int width, int height, const std::string& title) {
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
         std::cout << "Failed to initialize glfw." << std::endl;

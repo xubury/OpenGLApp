@@ -7,11 +7,11 @@
 
 class GLFWwindow;
 
-class GlContext {
+class GLContext {
    protected:
-    GlContext(int width, int height, const std::string& title);
+    GLContext(int width, int height, const std::string& title);
 
-    virtual ~GlContext() = default;
+    virtual ~GLContext() = default;
 
    private:
     static GLFWwindow* m_context;

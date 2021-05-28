@@ -4,12 +4,12 @@
 #include <queue>
 #include <string>
 
-#include <Window/GlContext.hpp>
+#include <Window/GLContext.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <Window/Event.hpp>
 #include <Utility/Time.hpp>
 
-class RenderWindow : public GlContext, public RenderTarget {
+class RenderWindow : public GLContext, public RenderTarget {
    public:
     RenderWindow(int width, int height, const std::string& title);
 
@@ -29,7 +29,7 @@ class RenderWindow : public GlContext, public RenderTarget {
 
     float getFrameRate() const;
    private:
-    friend class GlContext;
+    friend class GLContext;
 
     void pollEvents();
 

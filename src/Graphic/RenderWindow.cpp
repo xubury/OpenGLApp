@@ -5,7 +5,7 @@
 #include <iostream>
 
 RenderWindow::RenderWindow(int width, int height, const std::string& title)
-    : GlContext(width, height, title) {}
+    : GLContext(width, height, title) {}
 
 RenderWindow::~RenderWindow() { close(); }
 

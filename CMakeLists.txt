@@ -46,7 +46,7 @@ set(Graphic_Src
     src/Graphic/FrameBuffer.cpp)
 
 set(Window_Src
-    src/Window/GlContext.cpp
+    src/Window/GLContext.cpp
     src/Window/Keyboard.cpp
     src/Window/Mouse.cpp
     src/Window/Action.cpp)
