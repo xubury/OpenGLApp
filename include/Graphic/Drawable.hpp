@@ -3,9 +3,10 @@
 
 class RenderTarget;
 
+#include <Graphic/Export.hpp>
 #include <Graphic/RenderStates.hpp>
 
-class Drawable {
+class GRAPHIC_API Drawable {
    public:
     virtual ~Drawable() = default;
 

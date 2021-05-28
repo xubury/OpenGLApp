@@ -1,10 +1,11 @@
 #ifndef RENDER_TARGET_HPP
 #define RENDER_TARGET_HPP
 
+#include <Graphic/Export.hpp>
+#include <Graphic/Drawable.hpp>
+
 #include <glm/glm.hpp>
 #include <vector>
-
-#include <Graphic/Drawable.hpp>
 
 class Camera;
 class VertexBuffer;
@@ -12,7 +13,7 @@ class ElementBuffer;
 class Primitive;
 class Shader;
 
-class RenderTarget {
+class GRAPHIC_API RenderTarget {
    public:
     RenderTarget(const RenderTarget &) = delete;
 

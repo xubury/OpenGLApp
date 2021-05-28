@@ -1,9 +1,10 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+#include <Graphic/Export.hpp>
 #include <string>
 
-class Texture {
+class GRAPHIC_API Texture {
    public:
     enum TextureType { DIFFUSE, SPECULAR };
 

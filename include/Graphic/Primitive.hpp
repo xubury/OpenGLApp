@@ -1,15 +1,16 @@
 #ifndef PRIMITIVE_HPP
 #define PRIMITIVE_HPP
 
-#include <glm/glm.hpp>
+#include <Graphic/Export.hpp>
 #include <Graphic/Shader.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
+#include <glm/glm.hpp>
 #include <vector>
 
 class Camera;
 
-class Primitive {
+class GRAPHIC_API Primitive {
    public:
     static Primitive &instance();
 

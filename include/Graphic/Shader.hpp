@@ -1,11 +1,12 @@
 #ifndef SAHDER_HPP
 #define SAHDER_HPP
 
+#include <Graphic/Export.hpp>
 #include <stdint.h>
 #include <string>
 #include <glm/glm.hpp>
 
-class Shader {
+class GRAPHIC_API Shader {
    public:
     Shader();
 

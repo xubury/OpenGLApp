@@ -6,12 +6,13 @@
 #include <vector>
 #include <iostream>
 
+#include <Graphic/Export.hpp>
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
 
 typedef void (*AttrFunc)();
 
-class ElementBuffer : public Drawable {
+class GRAPHIC_API ElementBuffer : public Drawable {
    public:
     ElementBuffer();
 

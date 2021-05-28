@@ -1,6 +1,7 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
+#include <Graphic/Export.hpp>
 #include <Graphic/Drawable.hpp>
 #include <Graphic/Mesh.hpp>
 #include <assimp/Importer.hpp>
@@ -8,7 +9,7 @@
 #include <assimp/postprocess.h>
 #include <ResourceManager.hpp>
 
-class Model : public Drawable {
+class GRAPHIC_API Model : public Drawable {
    public:
     Model() = default;
 

@@ -1,17 +1,19 @@
 #ifndef VERTEX_ARRAY_HPP
 #define VERTEX_ARRAY_HPP
 
+#include <Graphic/Export.hpp>
+#include <Graphic/Vertex.hpp>
+#include <Graphic/Drawable.hpp>
+
 #include <glad/glad.h>
 #include <stdint.h>
 #include <iostream>
 #include <vector>
 
-#include <Graphic/Vertex.hpp>
-#include <Graphic/Drawable.hpp>
 
 typedef void (*AttrFunc)();
 
-class VertexBuffer : public Drawable {
+class GRAPHIC_API VertexBuffer : public Drawable {
    public:
     VertexBuffer();
 

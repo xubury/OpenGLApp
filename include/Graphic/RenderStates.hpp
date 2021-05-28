@@ -1,6 +1,7 @@
 #ifndef RENDER_STATES_HPP
 #define RENDER_STATES_HPP
 
+#include <Graphic/Export.hpp>
 #include <glm/glm.hpp>
 
 class Shader;
@@ -9,7 +10,7 @@ class TextureArray;
 
 class Camera;
 
-class RenderStates {
+class GRAPHIC_API RenderStates {
    public:
     RenderStates();
 

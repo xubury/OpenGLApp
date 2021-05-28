@@ -1,13 +1,14 @@
 #ifndef TEXTURE_ARRAY_HPP
 #define TEXTURE_ARRAY_HPP
 
+#include <Graphic/Export.hpp>
 #include <vector>
 #include <memory>
 #include <unordered_map>
 #include <Graphic/Texture.hpp>
 #include <ResourceManager.hpp>
 
-class TextureArray {
+class GRAPHIC_API TextureArray {
    public:
     bool loadFromFile(const std::string& path,
                       Texture::TextureType textureType);

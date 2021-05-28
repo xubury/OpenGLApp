@@ -1,9 +1,10 @@
 #ifndef FRAMEBUFFER_HPP
 #define FRAMEBUFFER_HPP
 
+#include <Graphic/Export.hpp>
 #include <Graphic/Shader.hpp>
 
-class FrameBuffer {
+class GRAPHIC_API FrameBuffer {
    public:
     FrameBuffer();
 
