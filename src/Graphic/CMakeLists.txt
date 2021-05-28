@@ -1,3 +1,4 @@
+set(Include_Root ${PROJECT_SOURCE_DIR}/include/Graphic)
 set(Src_Root ${PROJECT_SOURCE_DIR}/src/Graphic)
 
 if (POLICY CMP0072)
@@ -8,6 +9,20 @@ find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
+
+set(Graphic_Include
+    ${Include_Root}/Shader.hpp
+    ${Include_Root}/Texture.hpp
+    ${Include_Root}/Vertex.hpp
+    ${Include_Root}/TextureArray.hpp
+    ${Include_Root}/VertexBuffer.hpp
+    ${Include_Root}/ElementBuffer.hpp
+    ${Include_Root}/RenderTarget.hpp
+    ${Include_Root}/RenderStates.hpp
+    ${Include_Root}/Primitive.hpp
+    ${Include_Root}/Mesh.hpp
+    ${Include_Root}/Model.hpp
+    ${Include_Root}/FrameBuffer.hpp)
 
 set(Graphic_Src
     ${Src_Root}/Shader.cpp

@@ -34,6 +34,7 @@ set(Window_Src
     src/Window/Mouse.cpp
     src/Window/Action.cpp)
 
+if (NOT BUILD_LIBS_ONLY)
 add_executable(OpenGLApp
     src/main.cpp
     src/Game.cpp
@@ -42,11 +43,8 @@ add_executable(OpenGLApp
     ${Entity_Src}
     ${Window_Src}
     ${Editor_Src})
-
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
-
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
-
 target_link_libraries(OpenGLApp gl-graphic imgui::imgui)
-
 target_include_directories(OpenGLApp PUBLIC include libs)
+endif()
