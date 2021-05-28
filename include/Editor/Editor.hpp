@@ -27,6 +27,8 @@ class Editor {
 
     void renderFps();
 
+    void renderBoundingBox();
+
     void renderModelAxes();
 
     void renderCameraAxes(float clipLen);
@@ -41,9 +43,9 @@ class Editor {
 
     glm::vec3 m_camRayDir;
 
-    Axes m_modelScreenAxes;
+    Axes m_modelAxes;
 
-    glm::vec3 m_modelScreenQuads[3][4];
+    glm::vec3 m_modelQuads[3][4];
 
     bool m_leftMouseDown;
 

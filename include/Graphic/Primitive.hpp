@@ -20,14 +20,25 @@ class Primitive {
 
     void drawPath(const std::vector<DebugVertex> &pts, float thickness);
 
-    void drawCircle(const DebugVertex &center, float radius, int fragments = 0);
+    void drawCircle(const DebugVertex &center, float radius,
+                    int fragments = 100);
 
     void drawCircleFilled(const DebugVertex &center, float radius,
-                          int fragments = 0);
+                          int fragments = 100);
+
+    // TODO: optmize sphere drawing
+    void drawSphere(const DebugVertex &center, float radius,
+                    int fragments = 100);
 
     void drawQuad(const std::vector<DebugVertex> &corners, float thickness);
 
     void drawQuadFilled(const std::vector<DebugVertex> &corners);
+
+    void drawCube(const glm::vec3 &min, const glm::vec3 &max,
+                  const glm::vec4 &color);
+
+    void drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
+                        const glm::vec4 &color);
 
    private:
     Primitive();

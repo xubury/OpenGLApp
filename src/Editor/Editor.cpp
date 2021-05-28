@@ -4,15 +4,16 @@
 #include <imgui_impl_opengl3.h>
 #include <Utility/Math.hpp>
 #include <Graphic/Primitive.hpp>
+#include <Component/BoundingBox.hpp>
 #include <iostream>
 
 static const float quadMin = 0.4f;
 static const float quadMax = 0.8f;
 static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
                                 quadMax, quadMax, quadMax, quadMin};
+static const float axisOriginRadius = 0.1f;
 
 static const float lineThickness = 5.f;
-static const float axisOriginRadius = 10.f;
 
 static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.7f);
 
@@ -66,19 +67,17 @@ void Editor::buildModelAxes(float clipLen) {
     auto trans = context.getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rMatrix = trans->getMatrix();
     glm::vec3 originWorld = trans->getPosition();
-    m_modelScreenAxes.origin =
-        context.getCamera()->computeWorldToSrceen(originWorld);
+    m_modelAxes.origin = originWorld;
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
-        m_modelScreenAxes.axes[i] = context.getCamera()->computeWorldToSrceen(
-            originWorld + glm::vec3(rMatrix[i]) * m_axisSizeFactor);
+        m_modelAxes.axes[i] =
+            originWorld + glm::vec3(rMatrix[i]) * m_axisSizeFactor;
         for (int j = 0; j < 4; ++j) {
             glm::vec3 cornerWorldPos =
                 originWorld + (rMatrix[(i + 1) % 3] * quadUV[j * 2] +
                                rMatrix[(i + 2) % 3] * quadUV[j * 2 + 1]) *
                                   m_axisSizeFactor;
-            m_modelScreenQuads[i][j] =
-                context.getCamera()->computeWorldToSrceen(cornerWorldPos);
+            m_modelQuads[i][j] = cornerWorldPos;
         }
     }
 }
@@ -89,9 +88,18 @@ void Editor::renderFps() {
     context.addText(glm::vec2(0), 0xFFFFFFFF, frameRate.c_str());
 }
 
+void Editor::renderBoundingBox() {
+    if (context.getActiveEntityPtr()->has<BoundingBox>()) {
+        const auto bbox =
+            context.getActiveEntityPtr()->component<BoundingBox>();
+        Primitive::instance().drawCube(bbox->getWorldMin(), bbox->getWorldMax(),
+                                       glm::vec4(0.f, 1.0f, 0.f, 1.0f));
+    }
+}
+
 void Editor::renderModelAxes() {
     for (int i = 0; i < 3; ++i) {
-        const auto& axis = m_modelScreenAxes.axes[i];
+        const auto& axis = m_modelAxes.axes[i];
         glm::vec4 axisColor(0.f);
         axisColor[i] = 1.0f;
         axisColor[3] = axisTransparency;
@@ -99,7 +107,7 @@ void Editor::renderModelAxes() {
             axisColor = selectionColor;
         }
         Primitive::instance().drawLine(
-            DebugVertex(m_modelScreenAxes.origin, axisColor),
+            DebugVertex(m_modelAxes.origin, axisColor),
             DebugVertex(axis, axisColor), lineThickness);
 
         std::vector<DebugVertex> vertices(4);
@@ -110,19 +118,18 @@ void Editor::renderModelAxes() {
             panelColor = selectionColor;
         }
         for (int j = 0; j < 4; ++j) {
-            vertices[j].position = m_modelScreenQuads[i][j];
+            vertices[j].position = m_modelQuads[i][j];
             vertices[j].color = panelColor;
         }
         Primitive::instance().drawQuadFilled(vertices);
     }
+    float worldRadius = m_axisSizeFactor * axisOriginRadius;
     if (m_translateType == TRANSLATE_XYZ) {
-        Primitive::instance().drawCircleFilled(
-            DebugVertex(m_modelScreenAxes.origin, selectionColor),
-            axisOriginRadius);
+        Primitive::instance().drawSphere(
+            DebugVertex(m_modelAxes.origin, selectionColor), worldRadius);
     } else {
-        Primitive::instance().drawCircleFilled(
-            DebugVertex(m_modelScreenAxes.origin, glm::vec4(1.0f)),
-            axisOriginRadius);
+        Primitive::instance().drawSphere(
+            DebugVertex(m_modelAxes.origin, glm::vec4(1.0f)), worldRadius);
     }
 }
 
@@ -154,33 +161,36 @@ void Editor::computeTranslateType() {
     m_translateType = TranslateType::NONE;
 
     // if on the model axis center
-    if (glm::length(context.getCursorPos() -
-                    glm::vec2(context.getCamera()->computeWorldToSrceen(
-                        modelWorldPos))) < axisOriginRadius) {
+    glm::vec4 translatePlane = buildPlane(
+        modelWorldPos, context.getCamera()->component<Transform>()->getFront());
+    float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
+    glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
+    if (glm::length(intersectWorldPos - modelWorldPos) <
+        axisOriginRadius * m_axisSizeFactor) {
         m_translateType = TranslateType::TRANSLATE_XYZ;
-        m_movePlane =
-            buildPlane(modelWorldPos,
-                       context.getCamera()->component<Transform>()->getFront());
+        m_movePlane = translatePlane;
         m_intersectWorldPos = modelWorldPos;
         return;
     }
     float minZ = std::numeric_limits<float>::max();
     for (uint32_t i = 0; i < 3; ++i) {
-        glm::vec4 translatePlane = buildPlane(modelWorldPos, rotation[i]);
+        translatePlane = buildPlane(modelWorldPos, rotation[i]);
         float len =
             intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
         if (len > 0) {
-            glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
+            intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
             glm::vec3 intersectScreenPos =
                 context.getCamera()->computeWorldToSrceen(intersectWorldPos);
 
             float projectionUV[2];
             for (int j = 1; j <= 2; ++j) {
                 int axisId = (i + j) % 3;
-                glm::vec2 axis = m_modelScreenAxes.axes[axisId];
+                glm::vec3 axis = m_modelAxes.axes[axisId];
+                glm::vec2 start = context.getCamera()->computeWorldToSrceen(
+                    m_modelAxes.origin);
+                glm::vec2 end = context.getCamera()->computeWorldToSrceen(axis);
                 glm::vec2 cloesetScreenPos =
-                    findClosestPoint(glm::vec2(intersectScreenPos),
-                                     glm::vec2(m_modelScreenAxes.origin), axis);
+                    findClosestPoint(glm::vec2(intersectScreenPos), start, end);
                 // check if on axis
                 if (glm::length(glm::vec2(intersectScreenPos) -
                                 cloesetScreenPos) < lineThickness) {
@@ -364,6 +374,7 @@ void Editor::render() {
 
     renderFps();
 
+    renderBoundingBox();
     // clear depth buffer to make axes not hidden by object
     glClear(GL_DEPTH_BUFFER_BIT);
 
