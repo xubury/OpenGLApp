@@ -1,5 +1,5 @@
-#include "Window/Mouse.hpp"
-#include "Window/GlContext.hpp"
+#include <Window/Mouse.hpp>
+#include <Window/GlContext.hpp>
 
 bool Mouse::isButtonPressed(Button button) {
     return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;
