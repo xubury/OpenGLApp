@@ -37,7 +37,6 @@ set(Graphic_Src
     src/Graphic/TextureArray.cpp
     src/Graphic/VertexBuffer.cpp
     src/Graphic/ElementBuffer.cpp
-    src/Graphic/RenderWindow.cpp
     src/Graphic/RenderTarget.cpp
     src/Graphic/RenderStates.cpp
     src/Graphic/Primitive.cpp
@@ -46,6 +45,7 @@ set(Graphic_Src
     src/Graphic/FrameBuffer.cpp)
 
 set(Window_Src
+    src/Window/RenderWindow.cpp
     src/Window/GLContext.cpp
     src/Window/Keyboard.cpp
     src/Window/Mouse.cpp

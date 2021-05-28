@@ -6,7 +6,7 @@
 #include <Component/Transform.hpp>
 #include <Graphic/FrameBuffer.hpp>
 #include <Entity/Camera.hpp>
-#include <Graphic/RenderWindow.hpp>
+#include <Window/RenderWindow.hpp>
 #include <Component/Transform.hpp>
 
 class RenderContext {

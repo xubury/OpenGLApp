@@ -1,4 +1,4 @@
-#include <Graphic/RenderWindow.hpp>
+#include <Window/RenderWindow.hpp>
 #include <Window/Event.hpp>
 
 #include <thread>

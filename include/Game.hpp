@@ -3,7 +3,7 @@
 
 #include <string>
 #include <ResourceManager.hpp>
-#include <Graphic/RenderWindow.hpp>
+#include <Window/RenderWindow.hpp>
 #include <Graphic/Shader.hpp>
 #include <ECS/ECS.hpp>
 #include <Utility/Time.hpp>
