@@ -11,6 +11,7 @@ set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Releas
 
 set(Graphic_Include
     ${Include_Root}/Export.hpp
+    ${Include_Root}/Drawable.hpp
     ${Include_Root}/Shader.hpp
     ${Include_Root}/Texture.hpp
     ${Include_Root}/Vertex.hpp
