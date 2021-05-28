@@ -66,4 +66,7 @@ install(FILES ${Graphic_Include}
 install(FILES ${PROJECT_SOURCE_DIR}/libs/glad/glad.h
     DESTINATION include/glad)
 
+install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp
+    DESTINATION include)
+
 target_include_directories(gl-graphic PUBLIC include libs)
