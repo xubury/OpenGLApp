@@ -12,7 +12,6 @@ struct Material {
 };
 
 struct DirLight {
-    vec3 position;
     vec3 direction;
 
     vec3 ambient;

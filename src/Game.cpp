@@ -45,6 +45,11 @@ Game::Game(const Settings& settings)
     m_shader.setFloat("pointLight.cutOff", glm::cos(glm::radians(12.5f)));
     m_shader.setFloat("pointLight.outerCutOff", glm::cos(glm::radians(15.5f)));
 
+    m_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -1.0f));
+    m_shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
+    m_shader.setVec3("dirLight.diffuse", glm::vec3(0.3f));
+    m_shader.setVec3("dirLight.specular", glm::vec3(0.5f));
+
     glm::vec3 cubePositions[] = {
         glm::vec3(-2.0f, 0.0f, 0.0f),   glm::vec3(2.0f, 5.0f, -15.0f),
         glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -124,7 +129,8 @@ void Game::run(int minFps) {
                 // When minimized， the width and height will drop to zero
                 if (event.size.width > 0 && event.size.height > 0) {
                     m_frameBuffer.update(event.size.width, event.size.height);
-                    camera->setViewportSize(event.size.width, event.size.height);
+                    camera->setViewportSize(event.size.width,
+                                            event.size.height);
                 }
             }
             camera->processEvent(event);
