@@ -42,29 +42,29 @@ set(Graphic_Src
     ${Src_Root}/FrameBuffer.cpp
     ${PROJECT_SOURCE_DIR}/libs/glad.c)
 
-add_library(gl-graphic ${Graphic_Src})
+add_library(glgraphic ${Graphic_Src})
 
-set_property(TARGET gl-graphic PROPERTY CXX_STANDARD 17)
+set_property(TARGET glgraphic PROPERTY CXX_STANDARD 17)
 
-target_compile_options(gl-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
+target_compile_options(glgraphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
-target_compile_definitions(gl-graphic PRIVATE GRAPHIC_EXPORTS)
+target_compile_definitions(glgraphic PRIVATE GRAPHIC_EXPORTS)
 
-target_link_libraries(gl-graphic PUBLIC
+target_link_libraries(glgraphic PUBLIC
     OpenGL::GL
     glm
     assimp::assimp)
 if(UNIX)
-    target_link_libraries(gl-graphic PUBLIC X11 Xrandr Xi dl pthread)
+    target_link_libraries(glgraphic PUBLIC X11 Xrandr Xi dl pthread)
 endif()
 
-target_include_directories(gl-graphic PRIVATE
+target_include_directories(glgraphic PRIVATE
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/libs)
 
-target_include_directories(gl-graphic PUBLIC ${GLM_INCLUDE_DIRS})
+target_include_directories(glgraphic PUBLIC ${GLM_INCLUDE_DIRS})
 
-install(TARGETS gl-graphic LIBRARY
+install(TARGETS glgraphic LIBRARY
     DESTINATION lib)
 
 install(FILES ${Graphic_Include}
@@ -76,4 +76,4 @@ install(FILES ${PROJECT_SOURCE_DIR}/libs/glad/glad.h
 install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp
     DESTINATION include)
 
-target_include_directories(gl-graphic PUBLIC include libs)
+target_include_directories(glgraphic PUBLIC include libs)
