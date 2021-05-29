@@ -50,12 +50,12 @@ target_compile_options(gl-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(gl-graphic PRIVATE GRAPHIC_EXPORTS)
 
-target_link_libraries(gl-graphic PRIVATE
+target_link_libraries(gl-graphic PUBLIC
     OpenGL::GL
     glm
     assimp::assimp)
 if(UNIX)
-    target_link_libraries(gl-graphic PRIVATE X11 Xrandr Xi dl pthread)
+    target_link_libraries(gl-graphic PUBLIC X11 Xrandr Xi dl pthread)
 endif()
 
 target_include_directories(gl-graphic PRIVATE
