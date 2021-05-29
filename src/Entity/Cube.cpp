@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-
 #include <Entity/Cube.hpp>
 
 #include <Graphic/Shader.hpp>
