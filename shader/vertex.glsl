@@ -8,6 +8,7 @@ out vec3 fragPos;
 out vec3 color;
 out vec2 texCoord;
 out vec3 normal;
+out vec3 viewPos;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -21,5 +22,6 @@ void main() {
     color = aColor;
     texCoord = aTexCoord;
     normal = normalize(mat3(transpose(inverse(model))) * aNormal);
+    viewPos = vec3(-view[3]);
 }
 

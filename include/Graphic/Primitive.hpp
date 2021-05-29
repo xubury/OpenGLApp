@@ -8,13 +8,13 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-class Camera;
+class CameraBase;
 
 class GRAPHIC_API Primitive {
    public:
     static Primitive &instance();
 
-    void setDrawingView(const Camera *camera);
+    void setDrawingView(const CameraBase *camera);
 
     void drawLine(const DebugVertex &start, const DebugVertex &end,
                   float thickness);

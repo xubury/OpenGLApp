@@ -39,13 +39,12 @@ void RenderTarget::clear(float r, float g, float b, float a) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderTarget::applyCamera(const Camera *camera) {
+void RenderTarget::applyCamera(const CameraBase *camera) {
     assert(camera != nullptr);
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
     m_shader->setMat4("projection", camera->getProjection());
     m_shader->setMat4("view", camera->getView());
-    m_shader->setVec3("viewPos", camera->getPosition());
 }
 
 void RenderTarget::applyShader(const Shader *shader) {

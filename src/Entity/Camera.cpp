@@ -5,81 +5,27 @@
 
 ActionMap<Movement> Camera::s_cameraMovement;
 
-ES_INIT_ENTITY(Camera)
-
 Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
                int width, int height, const glm::vec3 &position)
-    : EntityBase(manager, id),
+    : CameraBase(x, y, width, height),
+      EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
-      m_viewportX(x),
-      m_viewportY(y),
-      m_viewportWidth(width),
-      m_viewportHeight(height),
       m_yaw(0),
-      m_pitch(0),
-      m_zoom(ZOOM),
-      m_nearZ(0.1f),
-      m_farZ(100.f) {
+      m_pitch(0) {
     component<Transform>()->setPosition(position);
     component<Transform>()->setEulerAngle(
         glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
 }
 
-void Camera::draw(RenderTarget &, RenderStates) const {}
-
-glm::mat4 Camera::getProjection() const { return m_projection; }
-
 glm::mat4 Camera::getView() const {
-    // TODO: view == glm::inverse(model)
-    // we can get view directly from camera model matrix
     auto trans = component<Transform>();
-    glm::vec3 up = trans->getUp();
-    glm::vec3 pos = trans->getPosition();
-    glm::vec3 front = trans->getFront();
+    const glm::vec3 &up = trans->getUp();
+    const glm::vec3 &front = trans->getFront();
+    const glm::vec3 &pos = trans->getPosition();
     return glm::lookAt(pos, pos - front, up);
 }
 
-int Camera::getViewportX() const { return m_viewportX; }
-
-int Camera::getViewportY() const { return m_viewportY; }
-
-glm::vec2 Camera::getViewportPos() const {
-    return glm::vec2(m_viewportX, m_viewportY);
-}
-
-int Camera::getViewportWidth() const { return m_viewportWidth; }
-
-int Camera::getViewportHeight() const { return m_viewportHeight; }
-
-glm::vec2 Camera::getViewportSize() const {
-    return glm::vec2(m_viewportWidth, m_viewportHeight);
-}
-
-float Camera::getFOV() const { return m_zoom; }
-
-float Camera::getNearZ() const { return m_nearZ; }
-
-float Camera::getFarZ() const { return m_farZ; }
-
-float Camera::getAspect() const {
-    return (float)m_viewportWidth / m_viewportHeight;
-}
-
-void Camera::setSize(float width, float height) {
-    m_viewportWidth = width;
-    m_viewportHeight = height;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
-
-void Camera::setNearFar(float near, float far) {
-    m_nearZ = near;
-    m_farZ = far;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
+void Camera::draw(RenderTarget &, RenderStates) const {}
 
 void Camera::move(Movement dir, float val) {
     auto trans = component<Transform>();
@@ -108,68 +54,8 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
             m_pitch = -89.f;
         }
     }
-    component<Transform>()->setEulerAngle(
-        glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
-}
-
-void Camera::zoom(float zoom) {
-    m_zoom -= zoom;
-    if (m_zoom < 1.f)
-        m_zoom = 1.f;
-    else if (m_zoom > 45.f)
-        m_zoom = 45.f;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
-
-void Camera::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
-                              const glm::vec2 &screenPos) const {
-    glm::vec2 mouseClipPos((screenPos.x - m_viewportX) / m_viewportWidth,
-                           (screenPos.y + m_viewportY) / m_viewportHeight);
-    mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
-    mouseClipPos.y = (1.f - mouseClipPos.y) * 2.f - 1.f;
-    const float zNear = 0.f;
-    const float zFar = 1.f - std::numeric_limits<float>::epsilon();
-
-    glm::mat4 inversePV = glm::inverse(getProjection() * getView());
-    glm::vec4 rayOriginH = inversePV * glm::vec4(mouseClipPos, zNear, 1.0f);
-    rayOriginH /= rayOriginH.w;
-    rayOrigin = rayOriginH;
-
-    glm::vec4 rayEnd = inversePV * glm::vec4(mouseClipPos, zFar, 1.0f);
-    rayEnd /= rayEnd.w;
-
-    rayDir = glm::normalize(glm::vec3(rayEnd) - rayOrigin);
-}
-
-glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
-    glm::mat4 projectionView = getProjection() * getView();
-    glm::vec4 clipPos = projectionView * glm::vec4(worldPos, 1.0f);
-    clipPos /= clipPos.w;
-
-    glm::vec3 screenPos;
-    screenPos.x = (clipPos.x + 1) * 0.5 * m_viewportWidth + m_viewportX;
-    screenPos.y = (1 - clipPos.y) * 0.5 * m_viewportHeight - m_viewportY;
-    screenPos.z = clipPos.z;
-    return screenPos;
-}
-
-float Camera::getSegmentLengthClipSpace(const glm::vec3 &start,
-                                        const glm::vec3 &end) const {
-    glm::mat4 projectionView = getProjection() * getView();
-    glm::vec4 segStart = projectionView * glm::vec4(start, 1.0f);
-    if (std::fabs(segStart.w) > std::numeric_limits<float>::epsilon()) {
-        segStart /= segStart.w;
-    }
-
-    glm::vec4 segEnd = projectionView * glm::vec4(end, 1.0f);
-    if (std::fabs(segEnd.w) > std::numeric_limits<float>::epsilon()) {
-        segEnd /= segEnd.w;
-    }
-
-    glm::vec2 clipSpaceAxis = segEnd - segStart;
-    clipSpaceAxis.y /= getAspect();
-    return glm::length(clipSpaceAxis);
+    auto trans = component<Transform>();
+    trans->setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
 }
 
 ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,

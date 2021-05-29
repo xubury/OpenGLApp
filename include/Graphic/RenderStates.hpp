@@ -8,7 +8,7 @@ class Shader;
 
 class TextureArray;
 
-class Camera;
+class CameraBase;
 
 class GRAPHIC_API RenderStates {
    public:
@@ -19,7 +19,7 @@ class GRAPHIC_API RenderStates {
     const Shader *shader;
     glm::mat4 transform;
     const TextureArray *textures;
-    const Camera *camera;
+    const CameraBase *camera;
 };
 
 #endif

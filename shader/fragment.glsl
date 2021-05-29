@@ -40,8 +40,8 @@ in vec3 fragPos;
 in vec3 color;
 in vec2 texCoord;
 in vec3 normal;
+in vec3 viewPos;
 
-uniform vec3 viewPos;
 uniform PointLight pointLight;
 uniform DirLight dirLight;
 

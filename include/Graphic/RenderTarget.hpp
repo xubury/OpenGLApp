@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-class Camera;
+class CameraBase;
 class VertexBuffer;
 class ElementBuffer;
 class Primitive;
@@ -36,7 +36,7 @@ class GRAPHIC_API RenderTarget {
     virtual ~RenderTarget() = default;
 
    private:
-    void applyCamera(const Camera *camera);
+    void applyCamera(const CameraBase *camera);
 
     void applyShader(const Shader *shader);
 
