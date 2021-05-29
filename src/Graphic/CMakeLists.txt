@@ -71,7 +71,9 @@ install(TARGETS glgraphic LIBRARY
 install(FILES ${Graphic_Include}
     DESTINATION include/Graphic)
 
-install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp
+install(FILES 
+    ${PROJECT_SOURCE_DIR}/include/Config.hpp
+    ${PROJECT_SOURCE_DIR}/include/OpenGL.hpp
     DESTINATION include)
 
-target_include_directories(glgraphic PUBLIC include libs)
+target_include_directories(glgraphic PUBLIC include)
