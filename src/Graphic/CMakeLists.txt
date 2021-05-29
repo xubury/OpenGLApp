@@ -48,6 +48,8 @@ set_property(TARGET gl-graphic PROPERTY CXX_STANDARD 17)
 
 target_compile_options(gl-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
+target_compile_definitions(gl-graphic PRIVATE GRAPHIC_EXPORTS)
+
 target_link_libraries(gl-graphic PRIVATE
     OpenGL::GL
     glm
