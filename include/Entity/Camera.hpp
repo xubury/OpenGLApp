@@ -34,10 +34,15 @@ class Camera : public CameraBase,
 
     void rotate(float yaw, float pitch, bool constraintPitch = true);
 
+    void zoom(float zoom);
+
+    float getFOV() const;
+
    protected:
     static ActionMap<Movement> s_cameraMovement;
 
    private:
+    float m_zoom;
     float m_yaw;
     float m_pitch;
 };

@@ -10,6 +10,7 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
     : CameraBase(x, y, width, height),
       EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
+      m_zoom(45.f),
       m_yaw(0),
       m_pitch(0) {
     component<Transform>()->setPosition(position);
@@ -35,15 +36,7 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
     bind(Movement::DOWNWARD,
          [this](const Event &) { this->move(Movement::DOWNWARD, 0.1f); });
     bind(Action(Event::EventType::MOUSE_WHEEL_SCROLLED),
-         [this](const Event &event) {
-             float zoom = getZoom();
-             zoom -= event.mouseWheel.yOffset;
-             if (zoom < 1.f)
-                 zoom = 1.f;
-             else if (zoom > 45.f)
-                 zoom = 45.f;
-             setZoom(zoom);
-         });
+         [this](const Event &event) { zoom(event.mouseWheel.yOffset); });
 }
 
 glm::mat4 Camera::getView() const {
@@ -91,3 +84,13 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
     auto trans = component<Transform>();
     trans->setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
 }
+
+void Camera::zoom(float zoom) {
+    m_zoom -= zoom;
+    if (m_zoom < 1.f)
+        m_zoom = 1.f;
+    else if (m_zoom > 45.f)
+        m_zoom = 45.f;
+}
+
+float Camera::getFOV() const { return m_zoom; }

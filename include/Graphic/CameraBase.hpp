@@ -26,8 +26,6 @@ class GRAPHIC_API CameraBase {
 
     void setViewportSize(float width, float height);
 
-    float getFOV() const;
-
     float getNearZ() const;
 
     float getFarZ() const;
@@ -35,10 +33,6 @@ class GRAPHIC_API CameraBase {
     float getAspect() const;
 
     void setNearFar(float near, float far);
-
-    void setZoom(float zoom);
-
-    float getZoom() const;
 
     void computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                           const glm::vec2 &screenPos) const;
@@ -54,11 +48,8 @@ class GRAPHIC_API CameraBase {
     int m_viewportWidth;
     int m_viewportHeight;
 
-    float m_zoom;
     float m_nearZ;
     float m_farZ;
-
-    glm::mat4 m_projection;
 };
 
 #endif /* CAMERA_BASE_HPP */

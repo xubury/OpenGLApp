@@ -7,12 +7,8 @@ CameraBase::CameraBase(int x, int y, int width, int height)
       m_viewportY(y),
       m_viewportWidth(width),
       m_viewportHeight(height),
-      m_zoom(45.f),
       m_nearZ(0.1),
-      m_farZ(100.f) {
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
+      m_farZ(100.f) {}
 
 int CameraBase::getViewportX() const { return m_viewportX; }
 
@@ -29,8 +25,6 @@ int CameraBase::getViewportHeight() const { return m_viewportHeight; }
 glm::vec2 CameraBase::getViewportSize() const {
     return glm::vec2(m_viewportWidth, m_viewportHeight);
 }
-
-float CameraBase::getFOV() const { return m_zoom; }
 
 float CameraBase::getNearZ() const { return m_nearZ; }
 
@@ -49,10 +43,6 @@ void CameraBase::setNearFar(float near, float far) {
     m_nearZ = near;
     m_farZ = far;
 }
-
-void CameraBase::setZoom(float zoom) { m_zoom = zoom; }
-
-float CameraBase::getZoom() const { return m_zoom; }
 
 void CameraBase::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                                   const glm::vec2 &screenPos) const {
