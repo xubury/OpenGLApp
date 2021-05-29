@@ -385,7 +385,7 @@ void Editor::render() {
     context.unloadContext();
 
     ImGui::Render();
-    gl::glClearColor(0.3, 0.3, 0.3, 1.0);
+    glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
