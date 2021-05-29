@@ -15,6 +15,35 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
     component<Transform>()->setPosition(position);
     component<Transform>()->setEulerAngle(
         glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
+    s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
+    s_cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
+    s_cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
+    s_cameraMovement.map(Movement::RIGHT, Keyboard::Key::D);
+    s_cameraMovement.map(Movement::UPWARD, Keyboard::Key::SPACE);
+    s_cameraMovement.map(Movement::DOWNWARD, Keyboard::Key::LCONTROL);
+
+    bind(Movement::FORWARD,
+         [this](const Event &) { this->move(Movement::FORWARD, 0.1f); });
+    bind(Movement::BACKWRAD,
+         [this](const Event &) { this->move(Movement::BACKWRAD, 0.1f); });
+    bind(Movement::LEFT,
+         [this](const Event &) { this->move(Movement::LEFT, 0.1f); });
+    bind(Movement::RIGHT,
+         [this](const Event &) { this->move(Movement::RIGHT, 0.1f); });
+    bind(Movement::UPWARD,
+         [this](const Event &) { this->move(Movement::UPWARD, 0.1f); });
+    bind(Movement::DOWNWARD,
+         [this](const Event &) { this->move(Movement::DOWNWARD, 0.1f); });
+    bind(Action(Event::EventType::MOUSE_WHEEL_SCROLLED),
+         [this](const Event &event) {
+             float zoom = getZoom();
+             zoom -= event.mouseWheel.yOffset;
+             if (zoom < 1.f)
+                 zoom = 1.f;
+             else if (zoom > 45.f)
+                 zoom = 45.f;
+             setZoom(zoom);
+         });
 }
 
 glm::mat4 Camera::getView() const {
@@ -23,6 +52,11 @@ glm::mat4 Camera::getView() const {
     const glm::vec3 &front = trans->getFront();
     const glm::vec3 &pos = trans->getPosition();
     return glm::lookAt(pos, pos - front, up);
+}
+
+glm::mat4 Camera::getProjection() const {
+    return glm::perspective(glm::radians(getFOV()), getAspect(), getNearZ(),
+                            getFarZ());
 }
 
 void Camera::draw(RenderTarget &, RenderStates) const {}
@@ -56,44 +90,4 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
     }
     auto trans = component<Transform>();
     trans->setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
-}
-
-ControlCamera::ControlCamera(EntityManager<EntityBase> *manager, uint32_t id,
-                             int x, int y, int width, int height,
-                             const glm::vec3 &position)
-    : Camera(manager, id, x, y, width, height, position), m_isFirstMouse(true) {
-    s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
-    s_cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
-    s_cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
-    s_cameraMovement.map(Movement::RIGHT, Keyboard::Key::D);
-    s_cameraMovement.map(Movement::UPWARD, Keyboard::Key::SPACE);
-    s_cameraMovement.map(Movement::DOWNWARD, Keyboard::Key::LCONTROL);
-
-    bind(Movement::FORWARD,
-         [this](const Event &) { this->move(Movement::FORWARD, 0.1f); });
-    bind(Movement::BACKWRAD,
-         [this](const Event &) { this->move(Movement::BACKWRAD, 0.1f); });
-    bind(Movement::LEFT,
-         [this](const Event &) { this->move(Movement::LEFT, 0.1f); });
-    bind(Movement::RIGHT,
-         [this](const Event &) { this->move(Movement::RIGHT, 0.1f); });
-    bind(Movement::UPWARD,
-         [this](const Event &) { this->move(Movement::UPWARD, 0.1f); });
-    bind(Movement::DOWNWARD,
-         [this](const Event &) { this->move(Movement::DOWNWARD, 0.1f); });
-    bind(Action(Event::EventType::MOUSE_MOVED), [this](const Event &event) {
-        if (!isActive()) return;
-        glm::vec2 currentMousePos =
-            glm::vec2(event.mouseMove.x, event.mouseMove.y);
-        if (m_isFirstMouse) {
-            m_isFirstMouse = false;
-        } else {
-            // glm::vec2 offset = currentMousePos - m_lastMousePos;
-            // rotate(-offset.x * MOUSE_SENSITIVITY,
-            //        -offset.y * MOUSE_SENSITIVITY);
-        }
-        m_lastMousePos = currentMousePos;
-    });
-    bind(Action(Event::EventType::MOUSE_WHEEL_SCROLLED),
-         [this](const Event &event) { zoom(event.mouseWheel.yOffset); });
 }

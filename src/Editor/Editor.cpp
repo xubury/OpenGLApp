@@ -324,7 +324,7 @@ void Editor::render() {
         context.getCamera()->setActive(ImGui::IsWindowFocused() &&
                                        ImGui::IsWindowHovered());
         context.getFrameBuffer()->update(wsize.x, wsize.y);
-        context.getCamera()->setSize(wsize.x, wsize.y);
+        context.getCamera()->setViewportSize(wsize.x, wsize.y);
         // Because I use the texture from OpenGL, I need to invert the V
         // from the UV.
         ImGui::Image(

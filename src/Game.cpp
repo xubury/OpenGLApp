@@ -26,8 +26,8 @@ Game::Game(const Settings& settings)
     : m_window(settings.width, settings.height, settings.title),
       m_activeCam(0),
       m_editorMode(settings.editor) {
-    m_activeCam = m_cameras.create<ControlCamera>(
-        0, 0, settings.width, settings.height, glm::vec3(0, 0, 3));
+    m_activeCam = m_cameras.create<Camera>(0, 0, settings.width,
+                                           settings.height, glm::vec3(0, 0, 3));
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
@@ -124,7 +124,7 @@ void Game::run(int minFps) {
                 // When minimized， the width and height will drop to zero
                 if (event.size.width > 0 && event.size.height > 0) {
                     m_frameBuffer.update(event.size.width, event.size.height);
-                    camera->setSize(event.size.width, event.size.height);
+                    camera->setViewportSize(event.size.width, event.size.height);
                 }
             }
             camera->processEvent(event);

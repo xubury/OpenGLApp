@@ -14,8 +14,6 @@ CameraBase::CameraBase(int x, int y, int width, int height)
                                     getNearZ(), getFarZ());
 }
 
-glm::mat4 CameraBase::getProjection() const { return m_projection; }
-
 int CameraBase::getViewportX() const { return m_viewportX; }
 
 int CameraBase::getViewportY() const { return m_viewportY; }
@@ -42,29 +40,19 @@ float CameraBase::getAspect() const {
     return (float)m_viewportWidth / m_viewportHeight;
 }
 
-void CameraBase::setSize(float width, float height) {
+void CameraBase::setViewportSize(float width, float height) {
     m_viewportWidth = width;
     m_viewportHeight = height;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
 }
 
 void CameraBase::setNearFar(float near, float far) {
     m_nearZ = near;
     m_farZ = far;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
 }
 
-void CameraBase::zoom(float zoom) {
-    m_zoom -= zoom;
-    if (m_zoom < 1.f)
-        m_zoom = 1.f;
-    else if (m_zoom > 45.f)
-        m_zoom = 45.f;
-    m_projection = glm::perspective(glm::radians(getFOV()), getAspect(),
-                                    getNearZ(), getFarZ());
-}
+void CameraBase::setZoom(float zoom) { m_zoom = zoom; }
+
+float CameraBase::getZoom() const { return m_zoom; }
 
 void CameraBase::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                                   const glm::vec2 &screenPos) const {

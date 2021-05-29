@@ -28,6 +28,8 @@ class Camera : public CameraBase,
 
     virtual glm::mat4 getView() const override;
 
+    virtual glm::mat4 getProjection() const override;
+
     void move(Movement dir, float val);
 
     void rotate(float yaw, float pitch, bool constraintPitch = true);
@@ -38,17 +40,6 @@ class Camera : public CameraBase,
    private:
     float m_yaw;
     float m_pitch;
-};
-
-class ControlCamera : public Camera {
-   public:
-    ControlCamera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
-                  int width, int height,
-                  const glm::vec3 &position = glm::vec3(0.f));
-
-   private:
-    glm::vec2 m_lastMousePos;
-    bool m_isFirstMouse;
 };
 
 #endif

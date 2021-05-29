@@ -8,7 +8,7 @@ class GRAPHIC_API CameraBase {
    public:
     CameraBase(int x, int y, int width, int height);
 
-    glm::mat4 getProjection() const;
+    virtual glm::mat4 getProjection() const = 0;
 
     virtual glm::mat4 getView() const = 0;
 
@@ -24,6 +24,8 @@ class GRAPHIC_API CameraBase {
 
     glm::vec2 getViewportSize() const;
 
+    void setViewportSize(float width, float height);
+
     float getFOV() const;
 
     float getNearZ() const;
@@ -32,11 +34,11 @@ class GRAPHIC_API CameraBase {
 
     float getAspect() const;
 
-    void setSize(float width, float height);
-
     void setNearFar(float near, float far);
 
-    void zoom(float zoom);
+    void setZoom(float zoom);
+
+    float getZoom() const;
 
     void computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                           const glm::vec2 &screenPos) const;
