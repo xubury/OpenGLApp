@@ -87,7 +87,7 @@ void Game::render() {
     m_window.clear();
     RenderStates states;
     states.shader = &m_shader;
-    states.camera = m_cameras.getPtr<Camera>(m_activeCam);
+    states.camera = m_cameras.getPtr<CameraBase>(m_activeCam);
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         m_window.draw(m_app.entities.get(*cur), states);

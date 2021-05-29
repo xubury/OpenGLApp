@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <OpenGL.hpp>
 #include <iostream>
 #include <Graphic/Texture.hpp>
 
@@ -27,7 +27,7 @@ bool Texture::loadFromFile(const std::string &path, TextureType textureType) {
 
     uint8_t *data =
         stbi_load(path.c_str(), &texWidth, &texHeight, &nChannels, 0);
-    int type = nChannels == 3 ? GL_RGB : GL_RGBA;
+    GLenum type = nChannels == 3 ? GL_RGB : GL_RGBA;
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, type, texWidth, texHeight, 0, type,
                      GL_UNSIGNED_BYTE, data);

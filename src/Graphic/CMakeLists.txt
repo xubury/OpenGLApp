@@ -5,6 +5,7 @@ if (POLICY CMP0072)
     set(OpenGL_GL_PREFERENCE LEGACY)
 endif()
 find_package(OpenGL REQUIRED)
+find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
@@ -39,8 +40,7 @@ set(Graphic_Src
     ${Src_Root}/Primitive.cpp
     ${Src_Root}/Mesh.cpp
     ${Src_Root}/Model.cpp
-    ${Src_Root}/FrameBuffer.cpp
-    ${PROJECT_SOURCE_DIR}/libs/glad.c)
+    ${Src_Root}/FrameBuffer.cpp)
 
 add_library(glgraphic ${Graphic_Src})
 
@@ -52,6 +52,7 @@ target_compile_definitions(glgraphic PRIVATE GRAPHIC_EXPORTS)
 
 target_link_libraries(glgraphic PUBLIC
     OpenGL::GL
+    glbinding::glbinding
     glm
     assimp::assimp)
 if(UNIX)
@@ -69,9 +70,6 @@ install(TARGETS glgraphic LIBRARY
 
 install(FILES ${Graphic_Include}
     DESTINATION include/Graphic)
-
-install(FILES ${PROJECT_SOURCE_DIR}/libs/glad/glad.h
-    DESTINATION include/glad)
 
 install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp
     DESTINATION include)

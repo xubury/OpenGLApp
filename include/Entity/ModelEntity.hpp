@@ -1,8 +1,8 @@
 #ifndef MODEL_ENTITY_HPP
 #define MODEL_ENTITY_HPP
 
-#include <Graphic/Model.hpp>
 #include <Entity/EntityBase.hpp>
+#include <Graphic/Model.hpp>
 
 class ModelEntity : public EntityBase {
    public:

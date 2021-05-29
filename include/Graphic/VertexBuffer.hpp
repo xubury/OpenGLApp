@@ -5,11 +5,11 @@
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
 
-#include <glad/glad.h>
 #include <stdint.h>
 #include <iostream>
 #include <vector>
 
+#include <OpenGL.hpp>
 
 typedef void (*AttrFunc)();
 
@@ -32,8 +32,7 @@ class GRAPHIC_API VertexBuffer : public Drawable {
     bool initialize();
 
     template <typename T>
-    void update(const T vertices, std::size_t cnt, uint32_t type,
-                uint32_t mode);
+    void update(const T vertices, std::size_t cnt, GLenum type, GLenum mode);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -43,14 +42,15 @@ class GRAPHIC_API VertexBuffer : public Drawable {
     uint32_t m_VBO;
     uint32_t m_VAO;
     std::size_t m_size;
-    uint32_t m_mode;
-    uint32_t m_primitiveType;
+    GLenum m_mode;
+    GLenum m_primitiveType;
     AttrFunc m_attrFunction;
 };
 
 template <typename T>
-void VertexBuffer::update(const T vertices, std::size_t cnt, uint32_t type,
-                          uint32_t mode) {
+void VertexBuffer::update(const T vertices, std::size_t cnt, GLenum type,
+                          GLenum mode) {
+    using namespace gl;
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

@@ -1,5 +1,4 @@
 #include <Editor/Editor.hpp>
-#include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <Utility/Math.hpp>
@@ -386,7 +385,7 @@ void Editor::render() {
     context.unloadContext();
 
     ImGui::Render();
-    glClearColor(0.3, 0.3, 0.3, 1.0);
+    gl::glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

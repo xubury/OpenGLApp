@@ -10,7 +10,7 @@
 
 class GRAPHIC_API Mesh : public Drawable {
    public:
-    Mesh(int type, const std::vector<Vertex> &vertices,
+    Mesh(GLenum type, const std::vector<Vertex> &vertices,
          const std::vector<uint32_t> &indices, const TextureArray &textures);
 
     void draw(RenderTarget &target, RenderStates states) const override;

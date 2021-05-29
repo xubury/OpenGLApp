@@ -1,5 +1,7 @@
 #include <Graphic/Vertex.hpp>
-#include <glad/glad.h>
+#include <OpenGL.hpp>
+
+using namespace gl;
 
 void Vertex::setupAttribute() {
     // position attribute

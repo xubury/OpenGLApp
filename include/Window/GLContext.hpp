@@ -2,10 +2,10 @@
 #define GL_CONTEXT_HPP
 
 #include <string>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 class GLFWwindow;
+
+extern "C" GLFWwindow *glfwGetCurrentContext();
 
 class GLContext {
    protected:

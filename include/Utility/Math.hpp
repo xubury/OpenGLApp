@@ -2,7 +2,6 @@
 #define MATH_HPP
 
 #include <glm/glm.hpp>
-#include <Entity/Camera.hpp>
 
 template <glm::length_t L, typename T, glm::qualifier Q>
 inline glm::vec<L, T, Q> findClosestPoint(const glm::vec<L, T, Q> point,

@@ -1,6 +1,6 @@
 #include <Graphic/RenderTarget.hpp>
 
-#include <glad/glad.h>
+#include <OpenGL.hpp>
 
 #include <Graphic/Shader.hpp>
 #include <Graphic/TextureArray.hpp>

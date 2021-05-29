@@ -1,8 +1,11 @@
+#include <glbinding/gl/gl.h>
+#include <glbinding/glbinding.h>
 #include <Window/GLContext.hpp>
 #include <Graphic/Shader.hpp>
 #include <Window/Event.hpp>
 #include <Window/RenderWindow.hpp>
 
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 GLFWwindow* GLContext::m_context;
@@ -115,10 +118,8 @@ GLContext::GLContext(int width, int height, const std::string& title) {
         exit(-1);
     }
     glfwMakeContextCurrent(m_context);
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Failed to initialize GLAD." << std::endl;
-        exit(-1);
-    }
+    glbinding::initialize(glfwGetProcAddress);
+        
 
     // setup callbacks
     glfwSetWindowUserPointer(m_context, this);
@@ -133,7 +134,7 @@ GLContext::GLContext(int width, int height, const std::string& title) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // MSAA
-    glEnable(GL_MULTISAMPLE);
+    glEnable(gl::GL_MULTISAMPLE);
 
     Shader::initDefaultShaders();
 }

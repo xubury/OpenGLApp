@@ -44,6 +44,7 @@ add_executable(OpenGLApp
     ${Entity_Src}
     ${Window_Src}
     ${Editor_Src})
+
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 target_link_libraries(OpenGLApp glgraphic glfw imgui::imgui)

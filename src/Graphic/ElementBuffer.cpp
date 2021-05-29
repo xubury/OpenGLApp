@@ -1,9 +1,8 @@
-#include <glad/glad.h>
-#include <iostream>
-
 #include <Graphic/ElementBuffer.hpp>
 #include <Graphic/RenderTarget.hpp>
+#include <iostream>
 
+using namespace gl;
 ElementBuffer::ElementBuffer()
     : m_VBO(0),
       m_EBO(0),

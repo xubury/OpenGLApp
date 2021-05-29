@@ -1,6 +1,8 @@
 #include <Graphic/FrameBuffer.hpp>
 #include <iostream>
-#include <glad/glad.h>
+#include <glbinding/gl/gl.h>
+
+using namespace gl;
 
 Shader FrameBuffer::s_shader;
 

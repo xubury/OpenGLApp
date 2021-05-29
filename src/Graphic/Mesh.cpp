@@ -1,13 +1,14 @@
-#include <Graphic/RenderTarget.hpp>
 #include <Graphic/Mesh.hpp>
+#include <Graphic/RenderTarget.hpp>
 #include <Graphic/Shader.hpp>
+#include <OpenGL.hpp>
 
-Mesh::Mesh(int type, const std::vector<Vertex> &vertices,
+Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
            const std::vector<uint32_t> &indices, const TextureArray &textures)
     : m_vertices(vertices), m_indices(indices), m_textures(textures) {
     m_buffer.initialize();
     m_buffer.update(m_vertices.data(), m_vertices.size(), m_indices.data(),
-                     m_indices.size(), type, GL_STATIC_DRAW);
+                    m_indices.size(), type, GL_STATIC_DRAW);
 }
 
 void Mesh::draw(RenderTarget &target, RenderStates states) const {

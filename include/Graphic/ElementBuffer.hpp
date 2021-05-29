@@ -1,7 +1,6 @@
 #ifndef VERTEX_ELEMENT_HPP
 #define VERTEX_ELEMENT_HPP
 
-#include <glad/glad.h>
 #include <stdint.h>
 #include <vector>
 #include <iostream>
@@ -9,6 +8,7 @@
 #include <Graphic/Export.hpp>
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
+#include <OpenGL.hpp>
 
 typedef void (*AttrFunc)();
 
@@ -32,12 +32,12 @@ class GRAPHIC_API ElementBuffer : public Drawable {
 
     template <typename T>
     void update(const T vertices, std::size_t vertexCnt,
-                const uint32_t *indices, std::size_t indexCnt, uint32_t type,
-                uint32_t mode);
+                const uint32_t *indices, std::size_t indexCnt, GLenum type,
+                GLenum mode);
 
     template <typename T>
-    void update(const T vertices, std::size_t vertexCnt, uint32_t type,
-                uint32_t mode);
+    void update(const T vertices, std::size_t vertexCnt, GLenum type,
+                GLenum mode);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
@@ -48,15 +48,15 @@ class GRAPHIC_API ElementBuffer : public Drawable {
     uint32_t m_EBO;
     uint32_t m_VAO;
     std::size_t m_size;
-    uint32_t m_mode;
-    uint32_t m_primitiveType;
+    GLenum m_mode;
+    GLenum m_primitiveType;
     AttrFunc m_attrFunction;
 };
 
 template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
                            const uint32_t *indices, std::size_t indexCnt,
-                           uint32_t type, uint32_t mode) {
+                           GLenum type, GLenum mode) {
     update(vertices, vertexCnt, type, mode);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexCnt, indices,
@@ -65,8 +65,8 @@ void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
 }
 
 template <typename T>
-void ElementBuffer::update(const T vertices, std::size_t vertexCnt,
-                           uint32_t type, uint32_t mode) {
+void ElementBuffer::update(const T vertices, std::size_t vertexCnt, GLenum type,
+                           GLenum mode) {
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

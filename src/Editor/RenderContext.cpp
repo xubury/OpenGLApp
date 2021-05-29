@@ -1,6 +1,6 @@
-#include <Editor/RenderContext.hpp>
+#include <OpenGL.hpp>
 #include <Graphic/Primitive.hpp>
-#include <glad/glad.h>
+#include <Editor/RenderContext.hpp>
 
 RenderContext::RenderContext() : m_activeEntityId(0), m_screenFactor(1.0f) {}
 

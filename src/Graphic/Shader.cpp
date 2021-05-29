@@ -3,10 +3,12 @@
 #include <Graphic/FrameBuffer.hpp>
 #include <Graphic/Primitive.hpp>
 
-#include <glad/glad.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+#include <glbinding/gl/gl.h>
+using namespace gl;
 
 void Shader::initDefaultShaders() {
     const char* fbVertex =
