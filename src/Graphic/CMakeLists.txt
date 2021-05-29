@@ -62,6 +62,8 @@ target_include_directories(gl-graphic PRIVATE
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/libs)
 
+target_include_directories(gl-graphic PUBLIC ${GLM_INCLUDE_DIRS})
+
 install(TARGETS gl-graphic LIBRARY
     DESTINATION lib)
 
