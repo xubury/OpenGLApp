@@ -1,5 +1,5 @@
-#ifndef RENDER_CONTEXT_HPP
-#define RENDER_CONTEXT_HPP
+#ifndef EDITOR_CONTEXT_HPP
+#define EDITOR_CONTEXT_HPP
 
 #include <imgui.h>
 #include <glm/glm.hpp>
@@ -9,9 +9,9 @@
 #include <Window/RenderWindow.hpp>
 #include <Component/Transform.hpp>
 
-class RenderContext {
+class EditorContext {
    public:
-    RenderContext();
+    EditorContext();
 
     void setActiveEntityId(int id);
 

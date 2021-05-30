@@ -8,7 +8,7 @@
 #include <Graphic/Export.hpp>
 #include <Graphic/Vertex.hpp>
 #include <Graphic/Drawable.hpp>
-#include <OpenGL.hpp>
+#include <Graphic/OpenGL.hpp>
 
 typedef void (*AttrFunc)();
 

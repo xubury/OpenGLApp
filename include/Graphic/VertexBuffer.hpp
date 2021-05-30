@@ -9,7 +9,7 @@
 #include <iostream>
 #include <vector>
 
-#include <OpenGL.hpp>
+#include <Graphic/OpenGL.hpp>
 
 typedef void (*AttrFunc)();
 
@@ -50,7 +50,6 @@ class GRAPHIC_API VertexBuffer : public Drawable {
 template <typename T>
 void VertexBuffer::update(const T vertices, std::size_t cnt, GLenum type,
                           GLenum mode) {
-    using namespace gl;
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

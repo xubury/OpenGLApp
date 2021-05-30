@@ -1,7 +1,7 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
-#include <Editor/RenderContext.hpp>
+#include <Editor/EditorContext.hpp>
 #include <Graphic/Vertex.hpp>
 
 struct Axes {
@@ -17,7 +17,7 @@ class Editor {
 
     void close();
 
-    RenderContext context;
+    EditorContext context;
 
    private:
     Editor();

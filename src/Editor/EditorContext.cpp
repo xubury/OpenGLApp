@@ -1,10 +1,9 @@
-#include <OpenGL.hpp>
 #include <Graphic/Primitive.hpp>
-#include <Editor/RenderContext.hpp>
+#include <Editor/EditorContext.hpp>
 
-RenderContext::RenderContext() : m_activeEntityId(0), m_screenFactor(1.0f) {}
+EditorContext::EditorContext() : m_activeEntityId(0), m_screenFactor(1.0f) {}
 
-void RenderContext::prepareContext() {
+void EditorContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
@@ -19,51 +18,51 @@ void RenderContext::prepareContext() {
     Primitive::instance().setDrawingView(m_camera);
 }
 
-void RenderContext::unloadContext() { m_frameBuffer->deactivate(); }
+void EditorContext::unloadContext() { m_frameBuffer->deactivate(); }
 
-void RenderContext::setActiveEntityId(int id) { m_activeEntityId = id; }
+void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
-uint32_t RenderContext::getActiveEntityId() const { return m_activeEntityId; }
+uint32_t EditorContext::getActiveEntityId() const { return m_activeEntityId; }
 
-EntityBase* RenderContext::getActiveEntityPtr() {
+EntityBase* EditorContext::getActiveEntityPtr() {
     return m_entities->getPtr(m_activeEntityId);
 }
 
-void RenderContext::setCamrea(Camera* camera) { m_camera = camera; }
+void EditorContext::setCamrea(Camera* camera) { m_camera = camera; }
 
-Camera* RenderContext::getCamera() { return m_camera; }
+Camera* EditorContext::getCamera() { return m_camera; }
 
-void RenderContext::setWindow(RenderWindow* window) { m_window = window; }
+void EditorContext::setWindow(RenderWindow* window) { m_window = window; }
 
-RenderWindow* RenderContext::getWindow() { return m_window; }
+RenderWindow* EditorContext::getWindow() { return m_window; }
 
-void RenderContext::setFrameBuffer(FrameBuffer* frameBuffer) {
+void EditorContext::setFrameBuffer(FrameBuffer* frameBuffer) {
     m_frameBuffer = frameBuffer;
 }
 
-FrameBuffer* RenderContext::getFrameBuffer() { return m_frameBuffer; }
+FrameBuffer* EditorContext::getFrameBuffer() { return m_frameBuffer; }
 
-EntityManager<EntityBase>* RenderContext::getEntityManager() {
+EntityManager<EntityBase>* EditorContext::getEntityManager() {
     return m_entities;
 }
 
-void RenderContext::setEntityManager(EntityManager<EntityBase>* entites) {
+void EditorContext::setEntityManager(EntityManager<EntityBase>* entites) {
     m_entities = entites;
 }
 
-glm::vec2 RenderContext::getCursorPos() const {
+glm::vec2 EditorContext::getCursorPos() const {
     ImGuiIO& io = ImGui::GetIO();
     return glm::vec2(io.MousePos.x, io.MousePos.y) - m_renderOrigin;
 }
 
-void RenderContext::addText(const glm::vec2& pos, uint32_t col,
+void EditorContext::addText(const glm::vec2& pos, uint32_t col,
                             const char* textBegin, const char* textEnd) {
     m_drawList->AddText(
         ImVec2(m_renderOrigin.x + pos.x, m_renderOrigin.y + pos.y), col,
         textBegin, textEnd);
 }
 
-void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
+void EditorContext::addLine(const glm::vec2& start, const glm::vec2& end,
                             uint32_t color, float thickness) {
     m_drawList->AddLine(
         ImVec2(m_renderOrigin.x + start.x, m_renderOrigin.y + start.y),
@@ -71,14 +70,14 @@ void RenderContext::addLine(const glm::vec2& start, const glm::vec2& end,
         thickness);
 }
 
-void RenderContext::addCircleFilled(const glm::vec2& center, float radius,
+void EditorContext::addCircleFilled(const glm::vec2& center, float radius,
                                     uint32_t color, int numSegments) {
     m_drawList->AddCircleFilled(
         ImVec2(m_renderOrigin.x + center.x, m_renderOrigin.y + center.y),
         radius, color, numSegments);
 }
 
-void RenderContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
+void EditorContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
                                   uint32_t color, float rounding,
                                   ImDrawCornerFlags roundingCorners) {
     m_drawList->AddRectFilled(
@@ -87,6 +86,6 @@ void RenderContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
         rounding, roundingCorners);
 }
 
-float RenderContext::getClipSizeInWorld(float clipSize) const {
+float EditorContext::getClipSizeInWorld(float clipSize) const {
     return m_screenFactor * clipSize;
 }

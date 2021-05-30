@@ -11,7 +11,7 @@ set(Editor_Src
     libs/imgui_impl_glfw.cpp
     libs/imgui_impl_opengl3.cpp
     src/Editor/Editor.cpp
-    src/Editor/RenderContext.cpp)
+    src/Editor/EditorContext.cpp)
 
 set(Component_Src
     src/Component/Transfrom.cpp
@@ -50,3 +50,5 @@ target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 target_link_libraries(OpenGLApp glgraphic glfw imgui::imgui)
 target_include_directories(OpenGLApp PUBLIC include libs)
 endif()
+
+install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp DESTINATION include)

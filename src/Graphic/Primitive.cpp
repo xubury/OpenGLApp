@@ -1,7 +1,7 @@
 #include <Graphic/Primitive.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
-#include <Entity/Camera.hpp>
+#include <Graphic/CameraBase.hpp>
 
 Shader Primitive::s_shader;
 

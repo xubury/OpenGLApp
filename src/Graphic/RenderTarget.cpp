@@ -1,12 +1,12 @@
 #include <Graphic/RenderTarget.hpp>
 
-#include <OpenGL.hpp>
+#include <Graphic/OpenGL.hpp>
 
 #include <Graphic/Shader.hpp>
 #include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
-#include <Entity/Camera.hpp>
+#include <Graphic/CameraBase.hpp>
 
 RenderTarget::RenderTarget() : m_textures(nullptr) {}
 

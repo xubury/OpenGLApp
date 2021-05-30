@@ -1,5 +1,5 @@
 #include <Graphic/Vertex.hpp>
-#include <OpenGL.hpp>
+#include <Graphic/OpenGL.hpp>
 
 using namespace gl;
 

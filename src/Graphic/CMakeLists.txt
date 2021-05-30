@@ -12,6 +12,7 @@ set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Releas
 
 set(Graphic_Include
     ${Include_Root}/Export.hpp
+    ${Include_Root}/OpenGL.hpp
     ${Include_Root}/Drawable.hpp
     ${Include_Root}/CameraBase.hpp
     ${Include_Root}/Shader.hpp
@@ -68,12 +69,4 @@ target_include_directories(glgraphic PUBLIC ${GLM_INCLUDE_DIRS})
 install(TARGETS glgraphic LIBRARY
     DESTINATION lib)
 
-install(FILES ${Graphic_Include}
-    DESTINATION include/Graphic)
-
-install(FILES 
-    ${PROJECT_SOURCE_DIR}/include/Config.hpp
-    ${PROJECT_SOURCE_DIR}/include/OpenGL.hpp
-    DESTINATION include)
-
-target_include_directories(glgraphic PUBLIC include)
+install(FILES ${Graphic_Include} DESTINATION include/Graphic)
