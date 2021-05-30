@@ -1,5 +1,6 @@
 #include <Graphic/Model.hpp>
 #include <Graphic/RenderTarget.hpp>
+#include <iostream>
 
 ResourceManager<std::string, Model> Model::loadedModels;
 

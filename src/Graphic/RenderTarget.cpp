@@ -4,9 +4,9 @@
 
 #include <Graphic/Shader.hpp>
 #include <Graphic/TextureArray.hpp>
-#include <Graphic/VertexBuffer.hpp>
-#include <Graphic/ElementBuffer.hpp>
+#include <Graphic/BufferObject.hpp>
 #include <Graphic/CameraBase.hpp>
+#include <iostream>
 
 RenderTarget::RenderTarget() : m_textures(nullptr) {}
 
@@ -14,24 +14,16 @@ void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
     drawable.draw(*this, states);
 }
 
-void RenderTarget::draw(const VertexBuffer &buffer,
+void RenderTarget::draw(const BufferObject &buffer,
                         const RenderStates &states) {
-    applyCamera(states.camera);
+    assert(buffer.isInit());
+
     applyShader(states.shader);
+    applyCamera(states.camera);
     applyTransform(states.transform);
     applyTexture(states.textures);
 
     buffer.drawPrimitive();
-}
-
-void RenderTarget::draw(const ElementBuffer &element,
-                        const RenderStates &states) {
-    applyShader(states.shader);
-    applyCamera(states.camera);
-    applyTransform(states.transform);
-    applyTexture(states.textures);
-
-    element.drawPrimitive();
 }
 
 void RenderTarget::clear(float r, float g, float b, float a) {

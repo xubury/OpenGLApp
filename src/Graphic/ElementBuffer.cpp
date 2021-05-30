@@ -1,31 +1,15 @@
 #include <Graphic/ElementBuffer.hpp>
-#include <Graphic/RenderTarget.hpp>
 #include <iostream>
 
-using namespace gl;
-ElementBuffer::ElementBuffer()
-    : m_VBO(0),
-      m_EBO(0),
-      m_VAO(0),
-      m_size(0),
-      m_mode(GL_STATIC_DRAW),
-      m_primitiveType(GL_TRIANGLES),
-      m_attrFunction(nullptr) {}
+ElementBuffer::ElementBuffer() : m_VBO(0), m_EBO(0) {}
 
 ElementBuffer::~ElementBuffer() {
     glDeleteBuffers(1, &m_VBO);
     glDeleteBuffers(1, &m_EBO);
-    glDeleteVertexArrays(1, &m_VAO);
 }
 
 ElementBuffer::ElementBuffer(const ElementBuffer &other)
-    : m_VBO(0),
-      m_EBO(0),
-      m_VAO(0),
-      m_size(other.m_size),
-      m_mode(other.m_mode),
-      m_primitiveType(other.m_primitiveType),
-      m_attrFunction(other.m_attrFunction) {
+    : BufferObject(other), m_VBO(0), m_EBO(0) {
     initialize();
 
     int size;
@@ -41,20 +25,24 @@ ElementBuffer::ElementBuffer(const ElementBuffer &other)
     glBufferData(GL_COPY_WRITE_BUFFER, size, nullptr, other.m_mode);
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, size);
 
-    glBindVertexArray(m_VAO);
+    bindVertexArray();
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     m_attrFunction();
 }
 
+ElementBuffer::ElementBuffer(ElementBuffer &&other) { swap(*this, other); }
+
 ElementBuffer &ElementBuffer::operator=(ElementBuffer other) {
-    std::swap(m_VBO, other.m_VBO);
-    std::swap(m_EBO, other.m_EBO);
-    std::swap(m_VAO, other.m_VAO);
-    std::swap(m_size, other.m_size);
-    std::swap(m_mode, other.m_mode);
-    std::swap(m_primitiveType, other.m_primitiveType);
-    std::swap(m_attrFunction, other.m_attrFunction);
+    swap(*this, other);
     return *this;
+}
+
+void swap(ElementBuffer &first, ElementBuffer &second) {
+    using std::swap;
+    swap(first.m_VBO, second.m_VBO);
+    swap(first.m_EBO, second.m_EBO);
+    swap(static_cast<BufferObject &>(first),
+         static_cast<BufferObject &>(second));
 }
 
 bool ElementBuffer::initialize() {
@@ -69,26 +57,11 @@ bool ElementBuffer::initialize() {
         std::cerr << "Could not create element buffer object." << std::endl;
         return false;
     }
-    glGenVertexArrays(1, &m_VAO);
-    if (!m_VAO) {
-        std::cerr << "Could not create vertex array object." << std::endl;
-        return false;
-    }
-    return true;
-}
-
-std::size_t ElementBuffer::size() const { return m_size; }
-
-bool ElementBuffer::empty() const { return m_size == 0; }
-
-bool ElementBuffer::isInit() const { return m_VAO != 0; }
-
-void ElementBuffer::draw(RenderTarget &target, RenderStates states) const {
-    target.draw(*this, states);
+    return BufferObject::initialize();
 }
 
 void ElementBuffer::drawPrimitive() const {
-    glBindVertexArray(m_VAO);
+    bindVertexArray();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glDrawElements(m_primitiveType, m_size, GL_UNSIGNED_INT, 0);
 }

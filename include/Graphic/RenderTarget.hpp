@@ -9,7 +9,7 @@
 
 class CameraBase;
 class VertexBuffer;
-class ElementBuffer;
+class BufferObject;
 class Primitive;
 class Shader;
 
@@ -22,10 +22,7 @@ class GRAPHIC_API RenderTarget {
     void draw(const Drawable &drawable,
               const RenderStates &states = RenderStates::Default);
 
-    void draw(const VertexBuffer &buffer,
-              const RenderStates &states = RenderStates::Default);
-
-    void draw(const ElementBuffer &buffer,
+    void draw(const BufferObject &buffer,
               const RenderStates &states = RenderStates::Default);
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);

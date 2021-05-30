@@ -20,6 +20,7 @@ set(Graphic_Include
     ${Include_Root}/Vertex.hpp
     ${Include_Root}/TextureArray.hpp
     ${Include_Root}/VertexBuffer.hpp
+    ${Include_Root}/BufferObject.hpp
     ${Include_Root}/ElementBuffer.hpp
     ${Include_Root}/RenderTarget.hpp
     ${Include_Root}/RenderStates.hpp
@@ -35,6 +36,7 @@ set(Graphic_Src
     ${Src_Root}/Vertex.cpp
     ${Src_Root}/TextureArray.cpp
     ${Src_Root}/VertexBuffer.cpp
+    ${Src_Root}/BufferObject.cpp
     ${Src_Root}/ElementBuffer.cpp
     ${Src_Root}/RenderTarget.cpp
     ${Src_Root}/RenderStates.cpp

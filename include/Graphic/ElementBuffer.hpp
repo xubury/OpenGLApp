@@ -1,18 +1,9 @@
 #ifndef VERTEX_ELEMENT_HPP
 #define VERTEX_ELEMENT_HPP
 
-#include <stdint.h>
-#include <vector>
-#include <iostream>
+#include <Graphic/BufferObject.hpp>
 
-#include <Graphic/Export.hpp>
-#include <Graphic/Vertex.hpp>
-#include <Graphic/Drawable.hpp>
-#include <Graphic/OpenGL.hpp>
-
-typedef void (*AttrFunc)();
-
-class GRAPHIC_API ElementBuffer : public Drawable {
+class GRAPHIC_API ElementBuffer : public BufferObject {
    public:
     ElementBuffer();
 
@@ -20,15 +11,13 @@ class GRAPHIC_API ElementBuffer : public Drawable {
 
     ElementBuffer(const ElementBuffer &other);
 
+    ElementBuffer(ElementBuffer &&other);
+
     ElementBuffer &operator=(ElementBuffer other);
 
-    std::size_t size() const;
+    friend void swap(ElementBuffer &first, ElementBuffer &second);
 
-    bool empty() const;
-
-    bool isInit() const;
-
-    bool initialize();
+    bool initialize() override;
 
     template <typename T>
     void update(const T vertices, std::size_t vertexCnt,
@@ -39,18 +28,11 @@ class GRAPHIC_API ElementBuffer : public Drawable {
     void update(const T vertices, std::size_t vertexCnt, GLenum type,
                 GLenum mode);
 
-    void draw(RenderTarget &target, RenderStates states) const override;
-
-    void drawPrimitive() const;
+    void drawPrimitive() const override;
 
    private:
     uint32_t m_VBO;
     uint32_t m_EBO;
-    uint32_t m_VAO;
-    std::size_t m_size;
-    GLenum m_mode;
-    GLenum m_primitiveType;
-    AttrFunc m_attrFunction;
 };
 
 template <typename T>
@@ -68,7 +50,7 @@ template <typename T>
 void ElementBuffer::update(const T vertices, std::size_t vertexCnt, GLenum type,
                            GLenum mode) {
     static_assert(std::is_pointer<T>::value, "Expected a pointer");
-    glBindVertexArray(m_VAO);
+    bindVertexArray();
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER,
                  vertexCnt * sizeof(typename std::remove_pointer<T>::type),
