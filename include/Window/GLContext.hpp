@@ -14,8 +14,6 @@ class GLContext {
     virtual ~GLContext() = default;
 
    private:
-    static GLFWwindow* m_context;
-
     static void errorCallback(int error, const char* description);
 
     static void framebufferSizeCB(GLFWwindow* window, int width, int height);

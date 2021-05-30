@@ -8,8 +8,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-GLFWwindow* GLContext::m_context;
-
 void GLContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
     Event event;
     event.type = Event::EventType::RESIZED;
@@ -111,30 +109,31 @@ GLContext::GLContext(int width, int height, const std::string& title) {
     // MSAA
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    m_context = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (m_context == NULL) {
+    GLFWwindow* win =
+        glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    if (win == NULL) {
         std::cout << "Failed to create GLFW window." << std::endl;
         glfwTerminate();
         exit(-1);
     }
-    glfwMakeContextCurrent(m_context);
+    glfwMakeContextCurrent(win);
     glbinding::initialize(glfwGetProcAddress);
-        
 
     // setup callbacks
-    glfwSetWindowUserPointer(m_context, this);
-    glfwSetFramebufferSizeCallback(m_context, framebufferSizeCB);
-    glfwSetKeyCallback(m_context, keyCallback);
-    glfwSetCursorPosCallback(m_context, mouseMovementCallback);
-    glfwSetMouseButtonCallback(m_context, mouseButtonCallback);
-    glfwSetScrollCallback(m_context, mouseWheelCallback);
+    glfwSetWindowUserPointer(win, this);
+    glfwSetFramebufferSizeCallback(win, framebufferSizeCB);
+    glfwSetKeyCallback(win, keyCallback);
+    glfwSetCursorPosCallback(win, mouseMovementCallback);
+    glfwSetMouseButtonCallback(win, mouseButtonCallback);
+    glfwSetScrollCallback(win, mouseWheelCallback);
     // glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    using namespace gl;
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // MSAA
-    glEnable(gl::GL_MULTISAMPLE);
+    glEnable(GL_MULTISAMPLE);
 
     Shader::initDefaultShaders();
 }
