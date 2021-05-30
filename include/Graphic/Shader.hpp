@@ -14,10 +14,12 @@ class GRAPHIC_API Shader {
 
     Shader& operator=(const Shader&) = delete;
 
-    void compile(const char* vertexCode, const char* fragmentCode);
+    void compile(const char* vertexCode, const char* fragmentCode,
+                 const char* geometryCode = nullptr);
 
     void loadFromFile(const std::string& vertexPath,
-                      const std::string& fragmentPath);
+                      const std::string& fragmentPath,
+                      const std::string& geometryPath = "");
 
     void use() const;
 
@@ -40,7 +42,6 @@ class GRAPHIC_API Shader {
 
    public:
     static void initDefaultShaders();
-
 };
 
 #endif
