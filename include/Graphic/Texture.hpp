@@ -12,6 +12,10 @@ class GRAPHIC_API Texture {
 
     ~Texture();
 
+    Texture(const Texture &) = delete;
+
+    Texture &operator=(const Texture &) = delete;
+
     bool loadFromFile(const std::string &path, TextureType textureType);
 
     uint32_t id() const;

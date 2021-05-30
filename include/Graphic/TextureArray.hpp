@@ -2,11 +2,8 @@
 #define TEXTURE_ARRAY_HPP
 
 #include <Graphic/Export.hpp>
-#include <vector>
-#include <memory>
-#include <unordered_map>
 #include <Graphic/Texture.hpp>
-#include <ResourceManager.hpp>
+#include <vector>
 
 class GRAPHIC_API TextureArray {
    public:
@@ -20,9 +17,7 @@ class GRAPHIC_API TextureArray {
     std::size_t size() const;
 
    private:
-    std::vector<Texture*> m_list;
-
-    static ResourceManager<std::string, Texture> loadedTexture;
+    std::vector<const Texture*> m_list;
 };
 
 #endif

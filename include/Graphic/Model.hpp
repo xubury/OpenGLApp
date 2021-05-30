@@ -7,7 +7,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <ResourceManager.hpp>
 
 class GRAPHIC_API Model : public Drawable {
    public:
@@ -39,8 +38,6 @@ class GRAPHIC_API Model : public Drawable {
     std::vector<Mesh> m_meshes;
 
     std::string m_directory;
-
-    static ResourceManager<std::string, Model> loadedModels;
 };
 
 #endif

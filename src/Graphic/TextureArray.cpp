@@ -1,14 +1,13 @@
 #include <Graphic/TextureArray.hpp>
+#include <ResourceManager.hpp>
 
-ResourceManager<std::string, Texture> TextureArray::loadedTexture;
+static ResourceManager<std::string, Texture> s_loadedTexture;
 
 bool TextureArray::loadFromFile(const std::string &path,
                                 Texture::TextureType textureType) {
-    m_list.emplace_back(&loadedTexture.getOrLoad(path, path, textureType));
+    m_list.emplace_back(&s_loadedTexture.getOrLoad(path, path, textureType));
     return true;
 }
-
-Texture &TextureArray::at(std::size_t id) { return *m_list[id]; }
 
 const Texture &TextureArray::at(std::size_t id) const { return *m_list[id]; }
 
