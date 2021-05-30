@@ -5,7 +5,7 @@
 
 Shader Primitive::s_shader;
 
-Primitive::Primitive() : m_vertices() {
+Primitive::Primitive() {
     m_vertices.initialize();
     m_elements.initialize();
 }
@@ -35,8 +35,7 @@ void Primitive::drawPath(const std::vector<Vertex> &pts, float thickness) {
     glLineWidth(1.0f);
 }
 
-void Primitive::drawCircle(const Vertex &center, float radius,
-                           int fragments) {
+void Primitive::drawCircle(const Vertex &center, float radius, int fragments) {
     assert(fragments > 0);
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
@@ -68,8 +67,7 @@ void Primitive::drawCircleFilled(const Vertex &center, float radius,
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawSphere(const Vertex &center, float radius,
-                           int fragments) {
+void Primitive::drawSphere(const Vertex &center, float radius, int fragments) {
     assert(fragments > 0);
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
@@ -94,8 +92,7 @@ void Primitive::drawSphere(const Vertex &center, float radius,
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawQuad(const std::vector<Vertex> &corners,
-                         float thickness) {
+void Primitive::drawQuad(const std::vector<Vertex> &corners, float thickness) {
     assert(corners.size() == 4);
     drawPath(corners, thickness);
 }
