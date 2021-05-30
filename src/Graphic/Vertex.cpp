@@ -1,8 +1,6 @@
 #include <Graphic/Vertex.hpp>
 #include <Graphic/OpenGL.hpp>
 
-using namespace gl;
-
 void Vertex::setupAttribute() {
     // position attribute
     glEnableVertexAttribArray(0);
@@ -24,16 +22,9 @@ void Vertex::setupAttribute() {
                           (void *)(offsetof(Vertex, normal)));
 }
 
-DebugVertex::DebugVertex(const glm::vec3 &position, const glm::vec4 &color)
+Vertex::Vertex(const glm::vec3 &position, const glm::vec4 &color)
     : position(position), color(color) {}
 
-void DebugVertex::setupAttribute() {
-    // position attribute
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DebugVertex),
-                          (void *)0);
-    // color attribute
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(DebugVertex),
-                          (void *)offsetof(DebugVertex, color));
-}
+Vertex::Vertex(const glm::vec3 &position, const glm::vec4 &color,
+               const glm::vec2 &texCoord, const glm::vec3 &normal)
+    : position(position), color(color), texCoord(texCoord), normal(normal) {}

@@ -16,24 +16,24 @@ class GRAPHIC_API Primitive {
 
     void setDrawingView(const CameraBase *camera);
 
-    void drawLine(const DebugVertex &start, const DebugVertex &end,
+    void drawLine(const Vertex &start, const Vertex &end,
                   float thickness);
 
-    void drawPath(const std::vector<DebugVertex> &pts, float thickness);
+    void drawPath(const std::vector<Vertex> &pts, float thickness);
 
-    void drawCircle(const DebugVertex &center, float radius,
+    void drawCircle(const Vertex &center, float radius,
                     int fragments = 100);
 
-    void drawCircleFilled(const DebugVertex &center, float radius,
+    void drawCircleFilled(const Vertex &center, float radius,
                           int fragments = 100);
 
     // TODO: optmize sphere drawing
-    void drawSphere(const DebugVertex &center, float radius,
+    void drawSphere(const Vertex &center, float radius,
                     int fragments = 100);
 
-    void drawQuad(const std::vector<DebugVertex> &corners, float thickness);
+    void drawQuad(const std::vector<Vertex> &corners, float thickness);
 
-    void drawQuadFilled(const std::vector<DebugVertex> &corners);
+    void drawQuadFilled(const std::vector<Vertex> &corners);
 
     void drawCube(const glm::vec3 &min, const glm::vec3 &max,
                   const glm::vec4 &color);

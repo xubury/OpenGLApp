@@ -6,7 +6,6 @@ BufferObject::BufferObject()
     : m_size(0),
       m_mode(GL_STATIC_DRAW),
       m_primitiveType(GL_TRIANGLES),
-      m_attrFunction(nullptr),
       m_VAO(0) {}
 
 BufferObject::~BufferObject() { glDeleteVertexArrays(1, &m_VAO); }
@@ -15,7 +14,6 @@ BufferObject::BufferObject(const BufferObject &other)
     : m_size(other.m_size),
       m_mode(other.m_mode),
       m_primitiveType(other.m_primitiveType),
-      m_attrFunction(other.m_attrFunction),
       m_VAO(0) {}
 
 BufferObject::BufferObject(BufferObject &&other) { swap(*this, other); }
@@ -30,7 +28,6 @@ void swap(BufferObject &first, BufferObject &second) {
     swap(first.m_size, second.m_size);
     swap(first.m_mode, second.m_mode);
     swap(first.m_primitiveType, second.m_primitiveType);
-    swap(first.m_attrFunction, second.m_attrFunction);
 }
 
 bool BufferObject::isInit() const { return m_VAO != 0; }

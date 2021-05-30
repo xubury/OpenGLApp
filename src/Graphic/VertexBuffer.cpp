@@ -18,7 +18,7 @@ VertexBuffer::VertexBuffer(const VertexBuffer &other)
 
     bindVertexArray();
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    m_attrFunction();
+    Vertex::setupAttribute();
 }
 
 VertexBuffer::VertexBuffer(VertexBuffer &&other) { swap(*this, other); }
@@ -48,4 +48,14 @@ bool VertexBuffer::initialize() {
 void VertexBuffer::drawPrimitive() const {
     bindVertexArray();
     glDrawArrays(m_primitiveType, 0, m_size);
+}
+
+void VertexBuffer::update(const Vertex *vertices, std::size_t cnt, GLenum type,
+                          GLenum mode) {
+    bindVertexArray();
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * cnt, vertices, mode);
+    m_size = cnt;
+    m_primitiveType = type;
+    Vertex::setupAttribute();
 }

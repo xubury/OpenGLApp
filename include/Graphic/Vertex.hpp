@@ -6,18 +6,14 @@
 
 struct GRAPHIC_API Vertex {
     glm::vec3 position;
-    glm::vec3 color;
+    glm::vec4 color;
     glm::vec2 texCoord;
     glm::vec3 normal;
     static void setupAttribute();
-};
-
-struct GRAPHIC_API DebugVertex {
-    glm::vec3 position;
-    glm::vec4 color;
-    static void setupAttribute();
-    DebugVertex() = default;
-    DebugVertex(const glm::vec3 &position, const glm::vec4 &color);
+    Vertex() = default;
+    Vertex(const glm::vec3 &position, const glm::vec4 &color);
+    Vertex(const glm::vec3 &position, const glm::vec4 &color,
+           const glm::vec2 &texCoord, const glm::vec3 &normal);
 };
 
 #endif

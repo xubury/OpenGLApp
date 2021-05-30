@@ -23,22 +23,22 @@ void Primitive::setDrawingView(const CameraBase *camera) {
     s_shader.setMat4("view", camera->getView());
 }
 
-void Primitive::drawLine(const DebugVertex &start, const DebugVertex &end,
+void Primitive::drawLine(const Vertex &start, const Vertex &end,
                          float thickness) {
     drawPath({start, end}, thickness);
 }
 
-void Primitive::drawPath(const std::vector<DebugVertex> &pts, float thickness) {
+void Primitive::drawPath(const std::vector<Vertex> &pts, float thickness) {
     m_vertices.update(pts.data(), pts.size(), GL_LINE_LOOP, GL_DYNAMIC_DRAW);
     glLineWidth(thickness);
     m_vertices.drawPrimitive();
     glLineWidth(1.0f);
 }
 
-void Primitive::drawCircle(const DebugVertex &center, float radius,
+void Primitive::drawCircle(const Vertex &center, float radius,
                            int fragments) {
     assert(fragments > 0);
-    std::vector<DebugVertex> vertex;
+    std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
         vertex.emplace_back(glm::vec3(radius * cos(angle) + center.position.x,
@@ -51,10 +51,10 @@ void Primitive::drawCircle(const DebugVertex &center, float radius,
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawCircleFilled(const DebugVertex &center, float radius,
+void Primitive::drawCircleFilled(const Vertex &center, float radius,
                                  int fragments) {
     assert(fragments > 0);
-    std::vector<DebugVertex> vertex;
+    std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     vertex.emplace_back(center);
     for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
@@ -68,10 +68,10 @@ void Primitive::drawCircleFilled(const DebugVertex &center, float radius,
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawSphere(const DebugVertex &center, float radius,
+void Primitive::drawSphere(const Vertex &center, float radius,
                            int fragments) {
     assert(fragments > 0);
-    std::vector<DebugVertex> vertex;
+    std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     vertex.emplace_back(center);
     float x, y, z;
@@ -94,13 +94,13 @@ void Primitive::drawSphere(const DebugVertex &center, float radius,
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawQuad(const std::vector<DebugVertex> &corners,
+void Primitive::drawQuad(const std::vector<Vertex> &corners,
                          float thickness) {
     assert(corners.size() == 4);
     drawPath(corners, thickness);
 }
 
-void Primitive::drawQuadFilled(const std::vector<DebugVertex> &corners) {
+void Primitive::drawQuadFilled(const std::vector<Vertex> &corners) {
     assert(corners.size() == 4);
     const uint32_t indices[6] = {0, 1, 3, 1, 2, 3};
     m_elements.update(corners.data(), corners.size(), indices, 6, GL_TRIANGLES,
@@ -120,7 +120,7 @@ void Primitive::drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
     const uint32_t indices[36] = {0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1,
                                   7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4,
                                   4, 5, 1, 1, 0, 4, 3, 2, 6, 6, 7, 3};
-    DebugVertex vertices[8];
+    Vertex vertices[8];
     vertices[0].position[0] = min.x;
     vertices[0].position[1] = min.y;
     vertices[0].position[2] = max.z;

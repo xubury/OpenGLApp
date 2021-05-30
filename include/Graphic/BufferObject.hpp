@@ -7,14 +7,10 @@
 #include <Graphic/OpenGL.hpp>
 
 class GRAPHIC_API BufferObject : public Drawable {
-   public:
-    typedef void (*AttrFunc)();
-
    protected:
     std::size_t m_size;
     GLenum m_mode;
     GLenum m_primitiveType;
-    AttrFunc m_attrFunction;
 
    public:
     BufferObject();

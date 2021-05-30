@@ -105,11 +105,10 @@ void Editor::renderModelAxes() {
         if (m_translateType == TRANSLATE_X + i) {
             axisColor = selectionColor;
         }
-        Primitive::instance().drawLine(
-            DebugVertex(m_modelAxes.origin, axisColor),
-            DebugVertex(axis, axisColor), lineThickness);
+        Primitive::instance().drawLine(Vertex(m_modelAxes.origin, axisColor),
+                                       Vertex(axis, axisColor), lineThickness);
 
-        std::vector<DebugVertex> vertices(4);
+        std::vector<Vertex> vertices(4);
         glm::vec4 panelColor(0.f);
         panelColor[i] = 1.0f;
         panelColor[3] = axisTransparency;
@@ -125,10 +124,10 @@ void Editor::renderModelAxes() {
     float worldRadius = m_axisSizeFactor * axisOriginRadius;
     if (m_translateType == TRANSLATE_XYZ) {
         Primitive::instance().drawSphere(
-            DebugVertex(m_modelAxes.origin, selectionColor), worldRadius);
+            Vertex(m_modelAxes.origin, selectionColor), worldRadius);
     } else {
         Primitive::instance().drawSphere(
-            DebugVertex(m_modelAxes.origin, glm::vec4(1.0f)), worldRadius);
+            Vertex(m_modelAxes.origin, glm::vec4(1.0f)), worldRadius);
     }
 }
 

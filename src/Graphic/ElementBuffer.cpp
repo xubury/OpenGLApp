@@ -27,7 +27,7 @@ ElementBuffer::ElementBuffer(const ElementBuffer &other)
 
     bindVertexArray();
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    m_attrFunction();
+    Vertex::setupAttribute();
 }
 
 ElementBuffer::ElementBuffer(ElementBuffer &&other) { swap(*this, other); }
@@ -64,4 +64,24 @@ void ElementBuffer::drawPrimitive() const {
     bindVertexArray();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glDrawElements(m_primitiveType, m_size, GL_UNSIGNED_INT, 0);
+}
+
+void ElementBuffer::update(const Vertex *vertices, std::size_t vertexCnt,
+                           const uint32_t *indices, std::size_t indexCnt,
+                           GLenum type, GLenum mode) {
+    update(vertices, vertexCnt, type, mode);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indexCnt, indices,
+                 mode);
+    m_size = indexCnt;
+}
+
+void ElementBuffer::update(const Vertex *vertices, std::size_t vertexCnt,
+                           GLenum type, GLenum mode) {
+    bindVertexArray();
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertexCnt * sizeof(Vertex), vertices, mode);
+    m_primitiveType = type;
+    m_mode = mode;
+    Vertex::setupAttribute();
 }
