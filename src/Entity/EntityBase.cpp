@@ -25,4 +25,4 @@ void EntityBase::setTextures(const TextureArray &textures) {
     m_textures = textures;
 }
 
-const TextureArray &EntityBase::getTextures() const { return m_textures; }
+const TextureArray *EntityBase::getTextures() const { return &m_textures; }

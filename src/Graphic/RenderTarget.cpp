@@ -64,21 +64,22 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
     uint32_t ambient = 0;
     uint32_t diffuse = 0;
     uint32_t specular = 0;
-    std::size_t size = m_textures->size();
-    for (std::size_t i = 0; i < size; ++i) {
+    std::size_t i = 0;
+    for (const auto texture : m_textures->getList()) {
         std::string name;
-        if (m_textures->at(i).getType() == Texture::AMBIENT) {
+        if (texture->getType() == Texture::AMBIENT) {
             name = "material.ambient" + std::to_string(ambient++);
-        } else if (m_textures->at(i).getType() == Texture::DIFFUSE) {
+        } else if (texture->getType() == Texture::DIFFUSE) {
             name = "material.diffuse" + std::to_string(diffuse++);
-        } else if (m_textures->at(i).getType() == Texture::SPECULAR) {
+        } else if (texture->getType() == Texture::SPECULAR) {
             name = "material.specular" + std::to_string(specular++);
         } else {
             std::cout << "Invalid Texture." << std::endl;
         }
         glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, m_textures->at(i).id());
+        glBindTexture(GL_TEXTURE_2D, texture->id());
         // set the GL_TEXTUREX correspondence
         m_shader->setInt(name, i);
+        ++i;
     }
 }

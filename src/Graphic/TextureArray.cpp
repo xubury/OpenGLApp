@@ -4,15 +4,18 @@
 static ResourceManager<std::string, Texture> s_loadedTexture;
 
 void TextureArray::loadFromFile(const std::string &path,
-                        Texture::TextureType textureType) {
+                                Texture::TextureType textureType) {
     m_list.emplace_back(&s_loadedTexture.getOrLoad(path, path, textureType));
 }
 
-void TextureArray::loadFromValue(const std::string &id, const glm::vec3 &value,
-                                Texture::TextureType textureType) {
-    m_list.emplace_back(&s_loadedTexture.getOrLoad(id, value, textureType));
+void TextureArray::loadFromValue(const glm::vec3 &value,
+                                 Texture::TextureType textureType) {
+    m_list.emplace_back(std::make_shared<Texture>());
+    m_list.back()->load(value, textureType);
 }
 
-const Texture &TextureArray::at(std::size_t id) const { return *m_list[id]; }
-
 std::size_t TextureArray::size() const { return m_list.size(); }
+
+const std::list<std::shared_ptr<Texture>> &TextureArray::getList() const {
+    return m_list;
+}

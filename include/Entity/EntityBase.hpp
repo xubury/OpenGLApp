@@ -24,7 +24,7 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     void setTextures(const TextureArray &textures);
 
-    const TextureArray &getTextures() const;
+    const TextureArray *getTextures() const;
 
    private:
     std::string m_name;

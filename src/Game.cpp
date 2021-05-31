@@ -67,9 +67,9 @@ Game::Game(const Settings& settings)
         glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
         glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
     TextureArray textures;
-    textures.loadFromValue("ambient", glm::vec3(0.5f), Texture::AMBIENT);
-    textures.loadFromValue("diffuse", glm::vec3(1.f), Texture::DIFFUSE);
-    textures.loadFromValue("specular", glm::vec3(0.f), Texture::SPECULAR);
+    textures.loadFromValue(glm::vec3(0.5f), Texture::AMBIENT);
+    textures.loadFromValue(glm::vec3(1.f), Texture::DIFFUSE);
+    textures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
     addModel("resources/models/backpack/backpack.obj");
 
     for (int i = 0; i < 10; ++i) {
@@ -102,7 +102,7 @@ void Game::render() {
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();
-        states.textures = &m_app.entities.get(*cur).getTextures();
+        states.textures = m_app.entities.get(*cur).getTextures();
         m_window.draw(m_app.entities.get(*cur), states);
     }
 
