@@ -6,7 +6,7 @@
 ResourceManager<std::string, Model> s_loadedModels;
 
 void Model::loadModel(const std::string &path) {
-    *this = s_loadedModels.getOrLoad(path, path);
+    *this = *s_loadedModels.getOrLoad(path, path);
 }
 
 void Model::draw(RenderTarget &target, RenderStates states) const {

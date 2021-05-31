@@ -5,7 +5,7 @@ static ResourceManager<std::string, Texture> s_loadedTexture;
 
 void TextureArray::loadFromFile(const std::string &path,
                                 Texture::TextureType textureType) {
-    m_list.emplace_back(&s_loadedTexture.getOrLoad(path, path, textureType));
+    m_list.emplace_back(s_loadedTexture.getOrLoad(path, path, textureType));
 }
 
 void TextureArray::loadFromValue(const glm::vec3 &value,

@@ -1,7 +1,6 @@
 #ifndef CUBE_HPP
 #define CUBE_HPP
 
-#include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Entity/EntityBase.hpp>
 

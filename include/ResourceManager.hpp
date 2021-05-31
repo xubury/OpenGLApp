@@ -7,6 +7,8 @@
 
 template <typename IDENTIFIER, typename RESOURCE>
 class ResourceManager {
+    using Ptr = std::shared_ptr<RESOURCE>;
+
    public:
     ResourceManager(const ResourceManager &) = delete;
     ResourceManager &operator=(const ResourceManager &) = delete;
@@ -14,26 +16,27 @@ class ResourceManager {
     ResourceManager() = default;
 
     template <typename... ARGS>
-    RESOURCE &load(const IDENTIFIER &id, ARGS &&...args);
+    Ptr load(const IDENTIFIER &id, ARGS &&...args);
 
     bool count(const IDENTIFIER &id);
 
-    RESOURCE &get(const IDENTIFIER &id);
+    Ptr get(const IDENTIFIER &id);
 
     template <typename... ARGS>
-    RESOURCE &getOrLoad(const IDENTIFIER &id, ARGS &&...args);
+    Ptr getOrLoad(const IDENTIFIER &id, ARGS &&...args);
 
     void clear();
 
    private:
-    std::unordered_map<IDENTIFIER, std::unique_ptr<RESOURCE>> m_map;
+    std::unordered_map<IDENTIFIER, Ptr> m_map;
 };
 
 template <typename IDENTIFIER, typename RESOURCE>
 template <typename... ARGS>
-RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::load(const IDENTIFIER &id,
-                                                      ARGS &&...args) {
-    std::unique_ptr<RESOURCE> ptr(new RESOURCE);
+typename ResourceManager<IDENTIFIER, RESOURCE>::Ptr
+ResourceManager<IDENTIFIER, RESOURCE>::load(const IDENTIFIER &id,
+                                            ARGS &&...args) {
+    std::shared_ptr<RESOURCE> ptr(new RESOURCE);
     if (!ptr->load(std::forward<ARGS>(args)...)) {
         throw std::runtime_error("Cannot load from file");
     }
@@ -41,12 +44,13 @@ RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::load(const IDENTIFIER &id,
         throw std::runtime_error(
             "Fail to implace in map, object already loaded.");
     }
-    return *m_map[id];
+    return m_map[id];
 }
 
 template <typename IDENTIFIER, typename RESOURCE>
-RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::get(const IDENTIFIER &id) {
-    return *m_map.at(id);
+typename ResourceManager<IDENTIFIER, RESOURCE>::Ptr
+ResourceManager<IDENTIFIER, RESOURCE>::get(const IDENTIFIER &id) {
+    return m_map.at(id);
 }
 
 template <typename IDENTIFIER, typename RESOURCE>
@@ -56,8 +60,9 @@ bool ResourceManager<IDENTIFIER, RESOURCE>::count(const IDENTIFIER &id) {
 
 template <typename IDENTIFIER, typename RESOURCE>
 template <typename... ARGS>
-RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::getOrLoad(const IDENTIFIER &id,
-                                                           ARGS &&...args) {
+typename ResourceManager<IDENTIFIER, RESOURCE>::Ptr
+ResourceManager<IDENTIFIER, RESOURCE>::getOrLoad(const IDENTIFIER &id,
+                                                 ARGS &&...args) {
     if (m_map.count(id) == 0) {
         return load(id, std::forward<ARGS>(args)...);
     }
