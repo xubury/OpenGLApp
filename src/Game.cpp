@@ -18,7 +18,7 @@ void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
 }
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
-    int id = m_app.entities.create<Cube>();
+    int id = m_app.entities.create<Cube>(0.5, 0.2, 0.3);
     EntityBase* cube = m_app.entities.getPtr(id);
     cube->setTextures(textures);
     cube->component<Transform>()->setPosition(pos);

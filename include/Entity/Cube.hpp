@@ -6,7 +6,8 @@
 
 class Cube : public EntityBase {
    public:
-    Cube(EntityManager<EntityBase> *manager, uint32_t id);
+    Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
+         float height, float length);
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
