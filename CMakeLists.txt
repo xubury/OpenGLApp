@@ -21,7 +21,8 @@ set(Entity_Src
     src/Entity/EntityBase.cpp
     src/Entity/Camera.cpp
     src/Entity/ModelEntity.cpp
-    src/Entity/Cube.cpp)
+    src/Entity/Cube.cpp
+    src/Entity/Sphere.cpp)
 
 set(Utility_Src
     src/Utility/Memory.cpp

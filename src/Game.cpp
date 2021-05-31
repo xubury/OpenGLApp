@@ -1,11 +1,20 @@
 #include <Game.hpp>
-#include <Entity/ModelEntity.hpp>
-#include <Entity/Cube.hpp>
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
 #include <Entity/Camera.hpp>
-#include <iostream>
+#include <Entity/ModelEntity.hpp>
+#include <Entity/Cube.hpp>
+#include <Entity/Sphere.hpp>
 #include <Editor/Editor.hpp>
+
+#include <iostream>
+
+void Game::addSphere(const glm::vec3& pos) {
+    int id = m_app.entities.create<Sphere>();
+    Sphere* sphere = m_app.entities.getPtr<Sphere>(id);
+    sphere->component<Transform>()->setPosition(pos);
+    sphere->setName(typeid(*sphere).name());
+}
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
@@ -61,10 +70,11 @@ Game::Game(const Settings& settings)
                                    Texture::DIFFUSE);
     containerTextures.loadFromFile("resources/textures/container2_specular.png",
                                    Texture::SPECULAR);
-    addModel("resources/models/backpack/backpack.obj");
+    // addModel("resources/models/backpack/backpack.obj");
 
     for (int i = 0; i < 10; ++i) {
-        addCube(cubePositions[i], containerTextures);
+        // addCube(cubePositions[i], containerTextures);
+        addSphere(cubePositions[i]);
     }
 
     m_window.setFramerateLimit(settings.frameRateLimit);

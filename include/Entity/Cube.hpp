@@ -1,12 +1,8 @@
 #ifndef CUBE_HPP
 #define CUBE_HPP
 
-#include <stdint.h>
-
-#include <Graphic/Drawable.hpp>
 #include <Graphic/TextureArray.hpp>
 #include <Graphic/VertexBuffer.hpp>
-#include <Graphic/ElementBuffer.hpp>
 #include <Entity/EntityBase.hpp>
 
 class Cube : public EntityBase {

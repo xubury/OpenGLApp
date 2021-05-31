@@ -29,6 +29,8 @@ class Game {
 
     void render();
 
+    void addSphere(const glm::vec3 &pos);
+
     void addCube(const glm::vec3 &pos, const TextureArray &textures);
 
     void addModel(const std::string &path);

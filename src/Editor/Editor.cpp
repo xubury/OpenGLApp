@@ -105,29 +105,28 @@ void Editor::renderModelAxes() {
         if (m_translateType == TRANSLATE_X + i) {
             axisColor = selectionColor;
         }
-        Primitive::instance().drawLine(Vertex(m_modelAxes.origin, axisColor),
-                                       Vertex(axis, axisColor), lineThickness);
+        Primitive::instance().drawLine(m_modelAxes.origin, axis, axisColor,
+                                       lineThickness);
 
-        std::vector<Vertex> vertices(4);
+        std::vector<glm::vec3> vertices(4);
         glm::vec4 panelColor(0.f);
         panelColor[i] = 1.0f;
         panelColor[3] = axisTransparency;
         if (m_translateType == TRANSLATE_YZ + i) {
             panelColor = selectionColor;
         }
-        for (int j = 0; j < 4; ++j) {
-            vertices[j].position = m_modelQuads[i][j];
-            vertices[j].color = panelColor;
-        }
-        Primitive::instance().drawQuadFilled(vertices);
+
+        Primitive::instance().drawQuadFilled(
+            std::vector<glm::vec3>(m_modelQuads[i], m_modelQuads[i] + 4),
+            panelColor);
     }
     float worldRadius = m_axisSizeFactor * axisOriginRadius;
     if (m_translateType == TRANSLATE_XYZ) {
-        Primitive::instance().drawSphere(
-            Vertex(m_modelAxes.origin, selectionColor), worldRadius);
+        Primitive::instance().drawSphere(m_modelAxes.origin, selectionColor,
+                                         worldRadius);
     } else {
-        Primitive::instance().drawSphere(
-            Vertex(m_modelAxes.origin, glm::vec4(1.0f)), worldRadius);
+        Primitive::instance().drawSphere(m_modelAxes.origin, glm::vec4(1.0f),
+                                         worldRadius);
     }
 }
 

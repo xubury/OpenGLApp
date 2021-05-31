@@ -23,85 +23,124 @@ void Primitive::setDrawingView(const CameraBase *camera) {
     s_shader.setMat4("view", camera->getView());
 }
 
-void Primitive::drawLine(const Vertex &start, const Vertex &end,
-                         float thickness) {
-    drawPath({start, end}, thickness);
+void Primitive::drawLine(const glm::vec3 &start, const glm::vec3 &end,
+                         const glm::vec4 &color, float thickness) {
+    drawPath({start, end}, color, thickness);
 }
 
-void Primitive::drawPath(const std::vector<Vertex> &pts, float thickness) {
-    m_vertices.update(pts.data(), pts.size(), GL_LINE_LOOP, GL_DYNAMIC_DRAW);
+void Primitive::drawPath(const std::vector<glm::vec3> &pts,
+                         const glm::vec4 &color, float thickness) {
+    std::size_t size = pts.size();
+    std::vector<Vertex> vetices(size);
+    for (std::size_t i = 0; i < size; ++i) {
+        vetices[i].position = pts[i];
+    }
+    m_vertices.update(vetices.data(), vetices.size(), GL_LINE_LOOP,
+                      GL_DYNAMIC_DRAW);
     glLineWidth(thickness);
+    s_shader.setVec4("color", color);
     m_vertices.drawPrimitive();
     glLineWidth(1.0f);
 }
 
-void Primitive::drawCircle(const Vertex &center, float radius, int fragments) {
+void Primitive::drawCircle(const glm::vec3 &center, const glm::vec4 &color,
+                           float radius, int fragments) {
     assert(fragments > 0);
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
-        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.position.x,
-                                      radius * sin(angle) + center.position.y,
-                                      center.position.z),
-                            center.color);
+        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.x,
+                                      radius * sin(angle) + center.y,
+                                      center.z));
     }
     m_vertices.update(vertex.data(), vertex.size(), GL_LINE_LOOP,
                       GL_DYNAMIC_DRAW);
+    s_shader.setVec4("color", color);
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawCircleFilled(const Vertex &center, float radius,
+void Primitive::drawCircleFilled(const glm::vec3 &center,
+                                 const glm::vec4 &color, float radius,
                                  int fragments) {
     assert(fragments > 0);
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     vertex.emplace_back(center);
     for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
-        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.position.x,
-                                      radius * sin(angle) + center.position.y,
-                                      center.position.z),
-                            center.color);
+        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.x,
+                                      radius * sin(angle) + center.y,
+                                      center.z));
     }
     m_vertices.update(vertex.data(), vertex.size(), GL_TRIANGLE_FAN,
                       GL_DYNAMIC_DRAW);
+    s_shader.setVec4("color", color);
     m_vertices.drawPrimitive();
 }
 
-void Primitive::drawSphere(const Vertex &center, float radius, int fragments) {
-    assert(fragments > 0);
-    std::vector<Vertex> vertex;
-    float increment = 2.0f * M_PI / fragments;
-    vertex.emplace_back(center);
+void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
+                           float radius, int sectorCount, int stackCount) {
+    std::vector<Vertex> vertices;
     float x, y, z;
     float xy;
-    for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
-        xy = radius * cos(angle);
-        z = radius * sin(angle);
-        for (float sectorAngle = 0.f; sectorAngle < 2.0f * M_PI;
-             sectorAngle += increment) {
+
+    float sectorStep = 2 * M_PI / sectorCount;
+    float stackStep = M_PI / stackCount;
+    float sectorAngle, stackAngle;
+    for (int i = 0; i <= stackCount; ++i) {
+        stackAngle = M_PI / 2 - i * stackStep;
+        xy = radius * cos(stackAngle);
+        z = radius * sin(stackAngle);
+        for (int j = 0; j <= sectorCount; ++j) {
+            sectorAngle = j * sectorStep;
             x = xy * cos(sectorAngle);
             y = xy * sin(sectorAngle);
-            vertex.emplace_back(
-                glm::vec3(x + center.position.x, y + center.position.y,
-                          z + center.position.z),
-                center.color);
+            vertices.emplace_back(glm::vec3(x, y, z) + center);
         }
     }
-    m_vertices.update(vertex.data(), vertex.size(), GL_TRIANGLE_FAN,
-                      GL_DYNAMIC_DRAW);
-    m_vertices.drawPrimitive();
+    std::vector<uint32_t> indices;
+    uint32_t k1, k2;
+    for (int i = 0; i < stackCount; ++i) {
+        k1 = i * (sectorCount + 1);  // beginning of current stack
+        k2 = k1 + sectorCount + 1;   // beginning of next stack
+
+        for (int j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+            // 2 triangles per sector excluding 1st and last stacks
+            if (i != 0) {
+                indices.push_back(k1);
+                indices.push_back(k2);
+                indices.push_back(k1 + 1);  // k1---k2---k1+1
+            }
+
+            if (i != (stackCount - 1)) {
+                indices.push_back(k1 + 1);
+                indices.push_back(k2);
+                indices.push_back(k2 + 1);  // k1---k2---k1+1
+            }
+        }
+    }
+    m_elements.update(vertices.data(), vertices.size(), indices.data(),
+                      indices.size(), GL_TRIANGLES, GL_DYNAMIC_DRAW);
+    s_shader.setVec4("color", color);
+    m_elements.drawPrimitive();
 }
 
-void Primitive::drawQuad(const std::vector<Vertex> &corners, float thickness) {
+void Primitive::drawQuad(const std::vector<glm::vec3> &corners,
+                         const glm::vec4 &color, float thickness) {
     assert(corners.size() == 4);
-    drawPath(corners, thickness);
+    drawPath(corners, color, thickness);
 }
 
-void Primitive::drawQuadFilled(const std::vector<Vertex> &corners) {
+void Primitive::drawQuadFilled(const std::vector<glm::vec3> &corners,
+                               const glm::vec4 &color) {
     assert(corners.size() == 4);
     const uint32_t indices[6] = {0, 1, 3, 1, 2, 3};
-    m_elements.update(corners.data(), corners.size(), indices, 6, GL_TRIANGLES,
-                      GL_DYNAMIC_DRAW);
+    std::vector<Vertex> vertices(4);
+    for (int i = 0; i < 4; ++i) {
+        vertices[i].position = corners[i];
+    }
+    m_elements.update(vertices.data(), vertices.size(), indices, 6,
+                      GL_TRIANGLES, GL_DYNAMIC_DRAW);
+    s_shader.setVec4("color", color);
     m_elements.drawPrimitive();
 }
 
@@ -121,43 +160,36 @@ void Primitive::drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
     vertices[0].position[0] = min.x;
     vertices[0].position[1] = min.y;
     vertices[0].position[2] = max.z;
-    vertices[0].color = color;
 
     vertices[1].position[0] = max.x;
     vertices[1].position[1] = min.y;
     vertices[1].position[2] = max.z;
-    vertices[1].color = color;
 
     vertices[2].position[0] = max.x;
     vertices[2].position[1] = max.y;
     vertices[2].position[2] = max.z;
-    vertices[2].color = color;
 
     vertices[3].position[0] = min.x;
     vertices[3].position[1] = max.y;
     vertices[3].position[2] = max.z;
-    vertices[3].color = color;
 
     vertices[4].position[0] = min.x;
     vertices[4].position[1] = min.y;
     vertices[4].position[2] = min.z;
-    vertices[4].color = color;
 
     vertices[5].position[0] = max.x;
     vertices[5].position[1] = min.y;
     vertices[5].position[2] = min.z;
-    vertices[5].color = color;
 
     vertices[6].position[0] = max.x;
     vertices[6].position[1] = max.y;
     vertices[6].position[2] = min.z;
-    vertices[6].color = color;
 
     vertices[7].position[0] = min.x;
     vertices[7].position[1] = max.y;
     vertices[7].position[2] = min.z;
-    vertices[7].color = color;
 
     m_elements.update(vertices, 8, indices, 36, GL_TRIANGLES, GL_DYNAMIC_DRAW);
+    s_shader.setVec4("color", color);
     m_elements.drawPrimitive();
 }

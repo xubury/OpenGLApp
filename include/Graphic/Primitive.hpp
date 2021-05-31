@@ -16,24 +16,27 @@ class GRAPHIC_API Primitive {
 
     void setDrawingView(const CameraBase *camera);
 
-    void drawLine(const Vertex &start, const Vertex &end,
+    void drawLine(const glm::vec3 &start, const glm::vec3 &end,
+                  const glm::vec4 &color, float thickness);
+
+    void drawPath(const std::vector<glm::vec3> &pts, const glm::vec4 &color,
                   float thickness);
 
-    void drawPath(const std::vector<Vertex> &pts, float thickness);
+    void drawCircle(const glm::vec3 &center, const glm::vec4 &color,
+                    float radius, int fragments = 100);
 
-    void drawCircle(const Vertex &center, float radius,
-                    int fragments = 100);
-
-    void drawCircleFilled(const Vertex &center, float radius,
-                          int fragments = 100);
+    void drawCircleFilled(const glm::vec3 &center, const glm::vec4 &color,
+                          float radius, int fragments = 100);
 
     // TODO: optmize sphere drawing
-    void drawSphere(const Vertex &center, float radius,
-                    int fragments = 100);
+    void drawSphere(const glm::vec3 &center, const glm::vec4 &color,
+                    float radius, int sectorCount = 10, int stackCount = 10);
 
-    void drawQuad(const std::vector<Vertex> &corners, float thickness);
+    void drawQuad(const std::vector<glm::vec3> &corners, const glm::vec4 &color,
+                  float thickness);
 
-    void drawQuadFilled(const std::vector<Vertex> &corners);
+    void drawQuadFilled(const std::vector<glm::vec3> &corners,
+                        const glm::vec4 &color);
 
     void drawCube(const glm::vec3 &min, const glm::vec3 &max,
                   const glm::vec4 &color);

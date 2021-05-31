@@ -36,7 +36,6 @@ struct PointLight {
 };
 
 in vec3 fragPos;
-in vec4 color;
 in vec2 texCoord;
 in vec3 normal;
 in vec3 viewPos;

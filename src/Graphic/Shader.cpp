@@ -36,19 +36,16 @@ void Shader::initDefaultShaders() {
     const char* primitiveVertex =
         "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec4 aColor;\n"
-        "out vec4 color;\n"
         "uniform mat4 projection; "
         "uniform mat4 view;"
         "void main() {\n"
         "    gl_Position = projection * view * vec4(aPos, 1.0f);\n"
-        "    color = aColor;\n"
         "}";
 
     const char* primitiveFragment =
         "#version 330 core\n"
         "out vec4 fragColor;\n"
-        "in vec4 color;\n"
+        "uniform vec4 color;\n"
         "void main() {\n"
         "    fragColor = color;\n"
         "}";
