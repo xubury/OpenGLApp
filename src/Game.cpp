@@ -69,7 +69,7 @@ Game::Game(const Settings& settings)
     TextureArray textures;
     textures.loadFromValue(glm::vec3(0.5f), Texture::AMBIENT);
     textures.loadFromValue(glm::vec3(1.f), Texture::DIFFUSE);
-    textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+    textures.loadFromValue(glm::vec3(1.f), Texture::SPECULAR);
     // addModel("resources/models/backpack/backpack.obj");
 
     for (int i = 0; i < 10; ++i) {
