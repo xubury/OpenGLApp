@@ -170,6 +170,30 @@ void Editor::computeTranslateType() {
         return;
     }
     float minZ = std::numeric_limits<float>::max();
+    bool onAxis = false;
+    for (uint32_t i = 0; i < 3; ++i) {
+        glm::vec3 start =
+            context.getCamera()->computeWorldToSrceen(m_modelAxes.origin);
+        glm::vec3 end =
+            context.getCamera()->computeWorldToSrceen(m_modelAxes.axes[i]);
+        glm::vec3 intersectScreenPos =
+            context.getCamera()->computeWorldToSrceen(intersectWorldPos);
+        glm::vec3 cloesetScreenPos =
+            findClosestPoint(intersectScreenPos, start, end);
+        if (glm::length(intersectScreenPos - cloesetScreenPos) <
+            lineThickness) {
+            if (cloesetScreenPos.z < minZ) {
+                minZ = cloesetScreenPos.z;
+                m_translateType = static_cast<TranslateType>(TRANSLATE_X + i);
+                m_movePlane = translatePlane;
+                m_intersectWorldPos = intersectWorldPos;
+                onAxis = true;
+            }
+        }
+    }
+    if (onAxis) return;
+
+    minZ = std::numeric_limits<float>::max();
     for (uint32_t i = 0; i < 3; ++i) {
         translatePlane = buildPlane(modelWorldPos, rotation[i]);
         float len =
@@ -182,22 +206,6 @@ void Editor::computeTranslateType() {
             float projectionUV[2];
             for (int j = 1; j <= 2; ++j) {
                 int axisId = (i + j) % 3;
-                glm::vec3 axis = m_modelAxes.axes[axisId];
-                glm::vec2 start = context.getCamera()->computeWorldToSrceen(
-                    m_modelAxes.origin);
-                glm::vec2 end = context.getCamera()->computeWorldToSrceen(axis);
-                glm::vec2 cloesetScreenPos =
-                    findClosestPoint(glm::vec2(intersectScreenPos), start, end);
-                // check if on axis
-                if (glm::length(glm::vec2(intersectScreenPos) -
-                                cloesetScreenPos) < lineThickness) {
-                    m_translateType =
-                        static_cast<TranslateType>(TRANSLATE_X + axisId);
-                    m_movePlane = translatePlane;
-                    m_intersectWorldPos = intersectWorldPos;
-                    // do not return here, will cause jitter.
-                    break;
-                }
                 projectionUV[j - 1] = glm::dot(
                     rotation[axisId],
                     (intersectWorldPos - modelWorldPos) / m_axisSizeFactor);
@@ -233,6 +241,9 @@ void Editor::handleMouseLeftButton() {
                 const glm::vec3& axis =
                     trans->getMatrix()[m_translateType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
+                m_movePlane = buildPlane(
+                    trans->getPosition(),
+                    context.getCamera()->component<Transform>()->getFront());
             }
             trans->translateWorld(translation);
             m_intersectWorldPos = intersectWorldPos;
@@ -366,6 +377,8 @@ void Editor::render() {
                                           context.getCursorPos());
     buildModelAxes(0.2);
 
+    // clear depth buffer to make axes not hidden by object
+    glClear(GL_DEPTH_BUFFER_BIT);
     handleMouseLeftButton();
 
     handleMouseRightButton();
@@ -373,8 +386,6 @@ void Editor::render() {
     renderFps();
 
     renderBoundingBox();
-    // clear depth buffer to make axes not hidden by object
-    glClear(GL_DEPTH_BUFFER_BIT);
 
     renderModelAxes();
 
