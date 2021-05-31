@@ -59,6 +59,5 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id)
 }
 
 void Sphere::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = component<Transform>()->getMatrix();
     target.draw(m_sphere, states);
 }

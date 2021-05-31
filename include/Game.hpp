@@ -29,7 +29,7 @@ class Game {
 
     void render();
 
-    void addSphere(const glm::vec3 &pos);
+    void addSphere(const glm::vec3 &pos, const TextureArray &textures);
 
     void addCube(const glm::vec3 &pos, const TextureArray &textures);
 

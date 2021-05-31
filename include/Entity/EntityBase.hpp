@@ -2,6 +2,7 @@
 #define ENTITY_BASE_HPP
 
 #include <ECS/Entity.hpp>
+#include <Graphic/TextureArray.hpp>
 
 class EntityBase : public Entity<EntityBase>, public Drawable {
    public:
@@ -21,8 +22,13 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     void setName(const std::string &name);
 
+    void setTextures(const TextureArray &textures);
+
+    const TextureArray &getTextures() const;
+
    private:
     std::string m_name;
+    TextureArray m_textures;
 };
 
 #endif

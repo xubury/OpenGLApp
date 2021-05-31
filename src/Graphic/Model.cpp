@@ -15,7 +15,7 @@ void Model::draw(RenderTarget &target, RenderStates states) const {
     }
 }
 
-bool Model::loadFromFile(const std::string &path) {
+bool Model::load(const std::string &path) {
     Assimp::Importer import;
     const aiScene *scene =
         import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -69,17 +69,23 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     }
 
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+    processTextures(textures, material, aiTextureType_AMBIENT);
     processTextures(textures, material, aiTextureType_DIFFUSE);
     processTextures(textures, material, aiTextureType_SPECULAR);
-    m_meshes.emplace_back((GLenum)mesh->mPrimitiveTypes, vertices, indices, textures);
+    m_meshes.emplace_back((GLenum)mesh->mPrimitiveTypes, vertices, indices,
+                          textures);
 }
 
 void Model::processTextures(TextureArray &textures, aiMaterial *mat,
-                                    aiTextureType type) {
+                            aiTextureType type) {
     for (std::size_t i = 0; i < mat->GetTextureCount(type); ++i) {
         aiString path;
         mat->GetTexture(type, i, &path);
         switch (type) {
+            case aiTextureType_AMBIENT:
+                textures.loadFromFile(m_directory + path.C_Str(),
+                                      Texture::AMBIENT);
+                break;
             case aiTextureType_DIFFUSE:
                 textures.loadFromFile(m_directory + path.C_Str(),
                                       Texture::DIFFUSE);

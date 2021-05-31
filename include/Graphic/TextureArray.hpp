@@ -7,7 +7,10 @@
 
 class GRAPHIC_API TextureArray {
    public:
-    bool loadFromFile(const std::string& path,
+    void loadFromFile(const std::string& path,
+                      Texture::TextureType textureType);
+
+    void loadFromValue(const std::string& id, const glm::vec3& value,
                       Texture::TextureType textureType);
 
     Texture& at(std::size_t id);

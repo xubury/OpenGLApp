@@ -61,12 +61,15 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
     }
     m_textures = textures;
     m_shader->setFloat("material.shininess", 64);
+    uint32_t ambient = 0;
     uint32_t diffuse = 0;
     uint32_t specular = 0;
     std::size_t size = m_textures->size();
     for (std::size_t i = 0; i < size; ++i) {
         std::string name;
-        if (m_textures->at(i).getType() == Texture::DIFFUSE) {
+        if (m_textures->at(i).getType() == Texture::AMBIENT) {
+            name = "material.ambient" + std::to_string(ambient++);
+        } else if (m_textures->at(i).getType() == Texture::DIFFUSE) {
             name = "material.diffuse" + std::to_string(diffuse++);
         } else if (m_textures->at(i).getType() == Texture::SPECULAR) {
             name = "material.specular" + std::to_string(specular++);

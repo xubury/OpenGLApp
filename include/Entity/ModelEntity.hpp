@@ -8,7 +8,7 @@ class ModelEntity : public EntityBase {
    public:
     ModelEntity(EntityManager<EntityBase> *manager, uint32_t id);
 
-    void loadFromFile(const std::string &path);
+    void load(const std::string &path);
 
     void draw(RenderTarget &target, RenderStates states) const override;
 

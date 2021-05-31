@@ -56,10 +56,6 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id)
     manager->addComponent<BoundingBox>(id)->initialize(vertices, 36);
 }
 
-void Cube::setTextures(const TextureArray &textures) { m_textures = textures; }
-
 void Cube::draw(RenderTarget &target, RenderStates states) const {
-    states.transform = component<Transform>()->getMatrix();
-    states.textures = &m_textures;
     target.draw(s_cube, states);
 }

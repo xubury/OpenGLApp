@@ -2,6 +2,8 @@
 out vec4 fragColor;
 
 struct Material {
+    sampler2D ambient0;
+
     sampler2D diffuse0;
     sampler2D diffuse1;
     sampler2D diffuse2;
@@ -49,7 +51,7 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec3 viewDir) 
     vec3 lightDir = normalize(light.direction);
 
     // ambient
-    vec3 ambient = light.ambient * texture(material.diffuse0, texCoord).rgb;
+    vec3 ambient = light.ambient * texture(material.ambient0, texCoord).rgb;
         
     // diffuse
     float diff = max(dot(normal, -lightDir), 0.0);
@@ -68,7 +70,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
     vec3 lightDir = normalize(fragPos - light.position);
 
     // ambient
-    vec3 ambient = light.ambient * texture(material.diffuse0, texCoord).rgb;
+    vec3 ambient = light.ambient * texture(material.ambient0, texCoord).rgb;
         
     // diffuse
     float diff = max(dot(normal, -lightDir), 0.0);

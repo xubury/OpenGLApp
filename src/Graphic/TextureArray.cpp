@@ -3,10 +3,14 @@
 
 static ResourceManager<std::string, Texture> s_loadedTexture;
 
-bool TextureArray::loadFromFile(const std::string &path,
-                                Texture::TextureType textureType) {
+void TextureArray::loadFromFile(const std::string &path,
+                        Texture::TextureType textureType) {
     m_list.emplace_back(&s_loadedTexture.getOrLoad(path, path, textureType));
-    return true;
+}
+
+void TextureArray::loadFromValue(const std::string &id, const glm::vec3 &value,
+                                Texture::TextureType textureType) {
+    m_list.emplace_back(&s_loadedTexture.getOrLoad(id, value, textureType));
 }
 
 const Texture &TextureArray::at(std::size_t id) const { return *m_list[id]; }

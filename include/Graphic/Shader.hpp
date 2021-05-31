@@ -17,7 +17,7 @@ class GRAPHIC_API Shader {
     void compile(const char* vertexCode, const char* fragmentCode,
                  const char* geometryCode = nullptr);
 
-    void loadFromFile(const std::string& vertexPath,
+    void load(const std::string& vertexPath,
                       const std::string& fragmentPath,
                       const std::string& geometryPath = "");
 

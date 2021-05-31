@@ -34,7 +34,7 @@ template <typename... ARGS>
 RESOURCE &ResourceManager<IDENTIFIER, RESOURCE>::load(const IDENTIFIER &id,
                                                       ARGS &&...args) {
     std::unique_ptr<RESOURCE> ptr(new RESOURCE);
-    if (!ptr->loadFromFile(std::forward<ARGS>(args)...)) {
+    if (!ptr->load(std::forward<ARGS>(args)...)) {
         throw std::runtime_error("Cannot load from file");
     }
     if (m_map.emplace(id, std::move(ptr)).second == false) {

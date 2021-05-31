@@ -9,16 +9,17 @@
 
 #include <iostream>
 
-void Game::addSphere(const glm::vec3& pos) {
+void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Sphere>();
-    Sphere* sphere = m_app.entities.getPtr<Sphere>(id);
+    EntityBase* sphere = m_app.entities.getPtr(id);
+    sphere->setTextures(textures);
     sphere->component<Transform>()->setPosition(pos);
     sphere->setName(typeid(*sphere).name());
 }
 
 void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>();
-    Cube* cube = m_app.entities.getPtr<Cube>(id);
+    EntityBase* cube = m_app.entities.getPtr(id);
     cube->setTextures(textures);
     cube->component<Transform>()->setPosition(pos);
     cube->setName(typeid(*cube).name());
@@ -27,7 +28,7 @@ void Game::addCube(const glm::vec3& pos, const TextureArray& textures) {
 void Game::addModel(const std::string& path) {
     int id = m_app.entities.create<ModelEntity>();
     ModelEntity* model = m_app.entities.getPtr<ModelEntity>(id);
-    model->loadFromFile(path);
+    model->load(path);
     model->setName(typeid(*model).name());
 }
 
@@ -40,7 +41,7 @@ Game::Game(const Settings& settings)
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
-    m_shader.loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
+    m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
 
     m_shader.use();
     m_shader.setVec3("pointLight.position", glm::vec3(0.0f, 0.0f, 2.0f));
@@ -55,26 +56,25 @@ Game::Game(const Settings& settings)
     m_shader.setFloat("pointLight.outerCutOff", glm::cos(glm::radians(15.5f)));
 
     m_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -1.0f));
-    m_shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
-    m_shader.setVec3("dirLight.diffuse", glm::vec3(0.3f));
-    m_shader.setVec3("dirLight.specular", glm::vec3(0.5f));
+    m_shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
+    m_shader.setVec3("dirLight.diffuse", glm::vec3(0.5f));
+    m_shader.setVec3("dirLight.specular", glm::vec3(1.0));
 
-    glm::vec3 cubePositions[] = {
+    glm::vec3 positions[] = {
         glm::vec3(-2.0f, 0.0f, 0.0f),   glm::vec3(2.0f, 5.0f, -15.0f),
         glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
         glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
         glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
         glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
-    TextureArray containerTextures;
-    containerTextures.loadFromFile("resources/textures/container2.png",
-                                   Texture::DIFFUSE);
-    containerTextures.loadFromFile("resources/textures/container2_specular.png",
-                                   Texture::SPECULAR);
-    // addModel("resources/models/backpack/backpack.obj");
+    TextureArray textures;
+    textures.loadFromValue("ambient", glm::vec3(0.5f), Texture::AMBIENT);
+    textures.loadFromValue("diffuse", glm::vec3(1.f), Texture::DIFFUSE);
+    textures.loadFromValue("specular", glm::vec3(0.f), Texture::SPECULAR);
+    addModel("resources/models/backpack/backpack.obj");
 
     for (int i = 0; i < 10; ++i) {
         // addCube(cubePositions[i], containerTextures);
-        addSphere(cubePositions[i]);
+        addSphere(positions[i], textures);
     }
 
     m_window.setFramerateLimit(settings.frameRateLimit);
@@ -100,6 +100,9 @@ void Game::render() {
     states.camera = m_cameras.getPtr<CameraBase>(m_activeCam);
     auto end = m_app.entities.end();
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
+        states.transform =
+            m_app.entities.get(*cur).component<Transform>()->getMatrix();
+        states.textures = &m_app.entities.get(*cur).getTextures();
         m_window.draw(m_app.entities.get(*cur), states);
     }
 

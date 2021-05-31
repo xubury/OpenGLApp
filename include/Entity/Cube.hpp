@@ -11,11 +11,8 @@ class Cube : public EntityBase {
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
-    void setTextures(const TextureArray &textures);
-
    private:
     static VertexBuffer s_cube;
-    TextureArray m_textures;
 };
 
 #endif

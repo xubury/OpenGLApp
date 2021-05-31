@@ -7,7 +7,7 @@ ModelEntity::ModelEntity(EntityManager<EntityBase> *manager, uint32_t id)
     manager->addComponent<BoundingBox>(id);
 }
 
-void ModelEntity::loadFromFile(const std::string &path) {
+void ModelEntity::load(const std::string &path) {
     m_model.loadModel(path);
     for (const auto &mesh : m_model.m_meshes) {
         component<BoundingBox>()->initialize(mesh.getVertex(), mesh.size());

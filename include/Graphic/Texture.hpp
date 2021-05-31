@@ -2,11 +2,12 @@
 #define TEXTURE_HPP
 
 #include <Graphic/Export.hpp>
+#include <glm/glm.hpp>
 #include <string>
 
 class GRAPHIC_API Texture {
    public:
-    enum TextureType { DIFFUSE, SPECULAR };
+    enum TextureType { AMBIENT, DIFFUSE, SPECULAR };
 
     Texture();
 
@@ -16,7 +17,9 @@ class GRAPHIC_API Texture {
 
     Texture &operator=(const Texture &) = delete;
 
-    bool loadFromFile(const std::string &path, TextureType textureType);
+    bool load(const std::string &path, TextureType textureType);
+
+    bool load(const glm::vec3 &value, TextureType textureType);
 
     uint32_t id() const;
 
