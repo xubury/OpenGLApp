@@ -10,6 +10,8 @@ class TextureArray;
 
 class CameraBase;
 
+class LightBase;
+
 class GRAPHIC_API RenderStates {
    public:
     RenderStates();
@@ -20,6 +22,9 @@ class GRAPHIC_API RenderStates {
     glm::mat4 transform;
     const TextureArray *textures;
     const CameraBase *camera;
+    const LightBase *light;
+    bool depthMapDraw;
+    uint32_t depthMapTexture;
 };
 
 #endif

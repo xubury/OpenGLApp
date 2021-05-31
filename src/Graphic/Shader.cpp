@@ -4,6 +4,7 @@
 #include <Graphic/Primitive.hpp>
 
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 #include <sstream>
 #include <iostream>
 
@@ -30,9 +31,24 @@ void Shader::initDefaultShaders() {
         "    fragColor = texture(screenTexture, texCoords);\n"
         "}";
 
+    const char* shadowVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "uniform mat4 lightSpaceMatrix;\n"
+        "uniform mat4 model;\n"
+        "void main() {\n"
+        "    gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);\n"
+        "}";
+    const char* shadowFragment =
+        "#version 330 core\n"
+        "void main() {\n"
+        "}";
+
     FrameBuffer::s_shader.compile(fbVertex, fbFragment);
     FrameBuffer::s_shader.use();
     FrameBuffer::s_shader.setInt("screenTexture", 0);
+    FrameBuffer::s_shadowShader.compile(shadowVertex, shadowFragment);
+
     const char* primitiveVertex =
         "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
@@ -74,8 +90,8 @@ void fileToString(const std::string& path, std::string& string) {
 }
 
 void Shader::load(const std::string& vertexPath,
-                          const std::string& fragmentPath,
-                          const std::string& geometryPath) {
+                  const std::string& fragmentPath,
+                  const std::string& geometryPath) {
     std::string vertexCode;
     std::string fragmentCode;
     fileToString(vertexPath, vertexCode);
@@ -176,5 +192,5 @@ void Shader::setVec4(const std::string& name, const glm::vec4& value) const {
 
 void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
     glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE,
-                       &value[0][0]);
+                       glm::value_ptr(value));
 }

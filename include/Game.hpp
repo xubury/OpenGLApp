@@ -31,7 +31,8 @@ class Game {
 
     void addSphere(const glm::vec3 &pos, const TextureArray &textures);
 
-    void addCube(const glm::vec3 &pos, const TextureArray &textures);
+    void addCube(const glm::vec3 &pos, float width, float height, float length,
+                 const TextureArray &textures);
 
     void addModel(const std::string &path);
 
@@ -41,6 +42,7 @@ class Game {
     Application<EntityBase> m_app;
     EntityManager<EntityBase> m_cameras;
     uint32_t m_activeCam;
+    uint32_t m_light;
     FrameBuffer m_frameBuffer;
 
     bool m_editorMode;

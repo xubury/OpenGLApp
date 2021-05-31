@@ -7,10 +7,12 @@ out vec3 fragPos;
 out vec2 texCoord;
 out vec3 normal;
 out vec3 viewPos;
+out vec4 fragPosLightSpace;
 
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform mat4 lightSpaceMatrix;
 
 
 void main() {
@@ -20,5 +22,6 @@ void main() {
     texCoord = aTexCoord;
     normal = normalize(mat3(transpose(inverse(model))) * aNormal);
     viewPos = vec3(-view[3]);
+    fragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
 }
 

@@ -3,6 +3,7 @@
 
 #include <Graphic/Export.hpp>
 #include <Graphic/Shader.hpp>
+#include <Graphic/LightBase.hpp>
 
 class GRAPHIC_API FrameBuffer {
    public:
@@ -24,7 +25,13 @@ class GRAPHIC_API FrameBuffer {
 
     void draw();
 
+    void setupDepthDraw();
+
     uint32_t getScreenTexture() const;
+
+    uint32_t getDepthMapTexture() const;
+
+    static Shader s_shadowShader;
 
    private:
     uint32_t m_multiSampleFrameBufferId;
@@ -34,7 +41,10 @@ class GRAPHIC_API FrameBuffer {
     // multisample texture can't draw directly
     // need to copy it to another framebuffer with normal texture
     uint32_t m_frameBufferId;
-    uint32_t m_textureId;
+    uint32_t m_screenTextureId;
+
+    uint32_t m_shadowFrameBufferId;
+    uint32_t m_shadowTextureId;
 
     uint32_t m_VBO;
     uint32_t m_VAO;

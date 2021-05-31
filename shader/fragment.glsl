@@ -1,6 +1,8 @@
 #version 330 core
 out vec4 fragColor;
 
+uniform sampler2D shadowMap;
+
 struct Material {
     sampler2D ambient0;
 
@@ -41,11 +43,28 @@ in vec3 fragPos;
 in vec2 texCoord;
 in vec3 normal;
 in vec3 viewPos;
+in vec4 fragPosLightSpace;
 
 uniform PointLight pointLight;
 uniform DirLight dirLight;
 
 uniform Material material;
+
+float shadowCalculation(vec4 fragPosLightSpace)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    float bias =0.005;
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+    return shadow;
+}
 
 vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec3 viewDir) {
     vec3 lightDir = normalize(light.direction);
@@ -68,7 +87,8 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec3 viewDir) 
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec
                     * texture(material.specular0, texCoord).rgb;
-    return ambient + diffuse + specular;
+    float shadow = shadowCalculation(fragPosLightSpace);
+    return ambient + (1.0 - shadow) * (diffuse + specular);
 }
 
 vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewDir) {
@@ -113,6 +133,6 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
 void main() {
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 result = calculateDirLight(dirLight, fragPos, normal, viewDir);
-    result += calculatePointLight(pointLight, fragPos, normal, viewDir);
+    // result += calculatePointLight(pointLight, fragPos, normal, viewDir);
     fragColor = vec4(result, 1.0);
 }

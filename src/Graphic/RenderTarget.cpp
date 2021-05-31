@@ -6,6 +6,8 @@
 #include <Graphic/TextureArray.hpp>
 #include <Graphic/BufferObject.hpp>
 #include <Graphic/CameraBase.hpp>
+#include <Graphic/FrameBuffer.hpp>
+#include <Graphic/LightBase.hpp>
 #include <iostream>
 
 RenderTarget::RenderTarget() : m_textures(nullptr) {}
@@ -18,10 +20,24 @@ void RenderTarget::draw(const BufferObject &buffer,
                         const RenderStates &states) {
     assert(buffer.isInit());
 
-    applyShader(states.shader);
-    applyCamera(states.camera);
-    applyTransform(states.transform);
-    applyTexture(states.textures);
+    if (states.depthMapDraw) {
+        applyShader(states.shader);
+        m_shader->setMat4("lightSpaceMatrix", states.light->getViewMatirx());
+        applyTransform(states.transform);
+    } else {
+        applyShader(states.shader);
+        applyCamera(states.camera);
+        applyTransform(states.transform);
+        m_shader->setMat4("lightSpaceMatrix", states.light->getViewMatirx());
+        m_shader->setVec3("dirLight.direction", states.light->getDirection());
+        m_shader->setVec3("dirLight.ambient", states.light->amibent);
+        m_shader->setVec3("dirLight.diffuse", states.light->diffuse);
+        m_shader->setVec3("dirLight.specular", states.light->specular);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, states.depthMapTexture);
+        m_shader->setInt("shadowMap", 0);
+        applyTexture(states.textures);
+    }
 
     buffer.drawPrimitive();
 }
@@ -55,7 +71,7 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
         // clean up old textures
         std::size_t size = m_textures->size();
         for (std::size_t i = 0; i < size; ++i) {
-            glActiveTexture(GL_TEXTURE0 + i);
+            glActiveTexture(GL_TEXTURE0 + i + 1);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
@@ -76,10 +92,10 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
         } else {
             std::cout << "Invalid Texture." << std::endl;
         }
-        glActiveTexture(GL_TEXTURE0 + i);
+        glActiveTexture(GL_TEXTURE0 + i + 1);
         glBindTexture(GL_TEXTURE_2D, texture->id());
         // set the GL_TEXTUREX correspondence
-        m_shader->setInt(name, i);
+        m_shader->setInt(name, i + 1);
         ++i;
     }
 }

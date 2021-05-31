@@ -12,7 +12,7 @@ class Cube : public EntityBase {
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    static VertexBuffer s_cube;
+    VertexBuffer s_cube;
 };
 
 #endif
