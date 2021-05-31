@@ -64,8 +64,8 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec3 viewDir) 
     // float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 
     // blinn-phong
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), material.shininess);
+    vec3 halfwayDir = normalize(viewDir - lightDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec
                     * texture(material.specular0, texCoord).rgb;
     return ambient + diffuse + specular;
@@ -88,8 +88,8 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
     // float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 
     // blinn-phong
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), material.shininess);
+    vec3 halfwayDir = normalize(viewDir - lightDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     vec3 specular = light.specular * spec
                     * texture(material.specular0, texCoord).rgb;
 

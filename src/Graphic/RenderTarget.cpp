@@ -65,7 +65,7 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
     uint32_t diffuse = 0;
     uint32_t specular = 0;
     std::size_t i = 0;
-    for (const auto texture : m_textures->getList()) {
+    for (const auto &texture : m_textures->getList()) {
         std::string name;
         if (texture->getType() == Texture::AMBIENT) {
             name = "material.ambient" + std::to_string(ambient++);

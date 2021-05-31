@@ -58,7 +58,7 @@ Game::Game(const Settings& settings)
     m_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -1.0f));
     m_shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
     m_shader.setVec3("dirLight.diffuse", glm::vec3(0.5f));
-    m_shader.setVec3("dirLight.specular", glm::vec3(1.0));
+    m_shader.setVec3("dirLight.specular", glm::vec3(0.1f));
 
     glm::vec3 positions[] = {
         glm::vec3(-2.0f, 0.0f, 0.0f),   glm::vec3(2.0f, 5.0f, -15.0f),
