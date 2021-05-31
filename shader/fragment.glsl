@@ -24,7 +24,7 @@ struct DirLight {
 struct PointLight {
     vec3 position;
     vec3 direction;
-    
+
     float cutOff;
     float outerCutOff;
 
@@ -52,16 +52,16 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec3 viewDir) 
 
     // ambient
     vec3 ambient = light.ambient * texture(material.ambient0, texCoord).rgb;
-        
+
     // diffuse
     float diff = max(dot(normal, -lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff 
+    vec3 diffuse = light.diffuse * diff
                    * texture(material.diffuse0, texCoord).rgb;
 
     // specular
     vec3 reflectDir = reflect(lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
-    vec3 specular = light.specular * spec 
+    vec3 specular = light.specular * spec
                     * texture(material.specular0, texCoord).rgb;
     return ambient + diffuse + specular;
 }
@@ -71,16 +71,16 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
 
     // ambient
     vec3 ambient = light.ambient * texture(material.ambient0, texCoord).rgb;
-        
+
     // diffuse
     float diff = max(dot(normal, -lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff 
+    vec3 diffuse = light.diffuse * diff
                    * texture(material.diffuse0, texCoord).rgb;
 
     // specular
     vec3 reflectDir = reflect(lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
-    vec3 specular = light.specular * spec 
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec
                     * texture(material.specular0, texCoord).rgb;
 
     float distance = length(light.position - fragPos);

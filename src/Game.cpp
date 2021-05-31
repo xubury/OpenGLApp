@@ -69,11 +69,13 @@ Game::Game(const Settings& settings)
     TextureArray textures;
     textures.loadFromValue(glm::vec3(0.5f), Texture::AMBIENT);
     textures.loadFromValue(glm::vec3(1.f), Texture::DIFFUSE);
-    textures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
-    addModel("resources/models/backpack/backpack.obj");
+    textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+    // addModel("resources/models/backpack/backpack.obj");
 
     for (int i = 0; i < 10; ++i) {
-        // addCube(cubePositions[i], containerTextures);
+        glm::vec3 offset(0);
+        offset[i % 3] = i % 5;
+        addCube(positions[i] + offset, textures);
         addSphere(positions[i], textures);
     }
 

@@ -195,7 +195,8 @@ void Editor::computeTranslateType() {
                         static_cast<TranslateType>(TRANSLATE_X + axisId);
                     m_movePlane = translatePlane;
                     m_intersectWorldPos = intersectWorldPos;
-                    return;
+                    // do not return here, will cause jitter.
+                    break;
                 }
                 projectionUV[j - 1] = glm::dot(
                     rotation[axisId],
