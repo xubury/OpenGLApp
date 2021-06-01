@@ -25,10 +25,6 @@ class GRAPHIC_API BufferObject : public Drawable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
-    bool isInit() const;
-
-    virtual bool initialize();
-
     virtual void drawPrimitive() const = 0;
 
     std::size_t size() const;

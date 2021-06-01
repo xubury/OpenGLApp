@@ -17,8 +17,6 @@ class GRAPHIC_API ElementBuffer : public BufferObject {
 
     friend void swap(ElementBuffer &first, ElementBuffer &second);
 
-    bool initialize() override;
-
     void update(const Vertex *vertices, std::size_t vertexCnt,
                 const uint32_t *indices, std::size_t indexCnt, GLenum type,
                 GLenum mode);

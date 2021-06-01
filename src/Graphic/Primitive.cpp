@@ -5,10 +5,7 @@
 
 Shader Primitive::s_shader;
 
-Primitive::Primitive() {
-    m_vertices.initialize();
-    m_elements.initialize();
-}
+Primitive::Primitive() {}
 
 Primitive &Primitive::instance() {
     static Primitive s_instance;

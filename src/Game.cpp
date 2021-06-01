@@ -37,6 +37,7 @@ void Game::addModel(const std::string& path) {
 Game::Game(const Settings& settings)
     : m_window(settings.width, settings.height, settings.title),
       m_activeCam(0),
+      m_frameBuffer(settings.width, settings.height, settings.samples),
       m_editorMode(settings.editor) {
     m_activeCam = m_cameras.create<Camera>(0, 0, settings.width,
                                            settings.height, glm::vec3(0, 3, 3));
@@ -95,8 +96,6 @@ Game::Game(const Settings& settings)
     addSphere(glm::vec3(0, 6, 0), textures);
 
     m_window.setFramerateLimit(settings.frameRateLimit);
-
-    m_frameBuffer.initialize(settings.width, settings.height, settings.samples);
 }
 
 void Game::update(Time& deltaTime) {

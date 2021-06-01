@@ -11,7 +11,7 @@ class Sphere : public EntityBase {
     virtual void draw(RenderTarget &target, RenderStates states) const override;
 
    private:
-    static ElementBuffer s_sphere;
+    ElementBuffer m_shpere;
 };
 
 #endif /* SPHERE_HPP */

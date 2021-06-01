@@ -61,7 +61,7 @@ static void attachMultisampleTexture(int frameBuffer, int renderBuffer,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(int width, int height, int sample)
     : m_multiSampleFrameBufferId(0),
       m_multiSampleTextureId(0),
       m_multiSampleRenderBufferId(0),
@@ -71,19 +71,7 @@ FrameBuffer::FrameBuffer()
       m_VAO(0),
       m_width(0),
       m_height(0),
-      m_sample(1) {}
-
-FrameBuffer::~FrameBuffer() {
-    glDeleteFramebuffers(1, &m_multiSampleFrameBufferId);
-    glDeleteFramebuffers(1, &m_frameBufferId);
-
-    glDeleteRenderbuffers(1, &m_multiSampleRenderBufferId);
-
-    glDeleteTextures(1, &m_multiSampleTextureId);
-    glDeleteTextures(1, &m_screenTextureId);
-}
-
-void FrameBuffer::initialize(int width, int height, int sample) {
+      m_sample(1) {
     glGenFramebuffers(1, &m_multiSampleFrameBufferId);
     glGenFramebuffers(1, &m_frameBufferId);
 
@@ -114,6 +102,16 @@ void FrameBuffer::initialize(int width, int height, int sample) {
                           (void *)(2 * sizeof(float)));
 
     update(width, height, sample);
+}
+
+FrameBuffer::~FrameBuffer() {
+    glDeleteFramebuffers(1, &m_multiSampleFrameBufferId);
+    glDeleteFramebuffers(1, &m_frameBufferId);
+
+    glDeleteRenderbuffers(1, &m_multiSampleRenderBufferId);
+
+    glDeleteTextures(1, &m_multiSampleTextureId);
+    glDeleteTextures(1, &m_screenTextureId);
 }
 
 void FrameBuffer::update(int width, int height, int sample) {

@@ -17,8 +17,6 @@ class GRAPHIC_API VertexBuffer : public BufferObject {
 
     friend void swap(VertexBuffer &first, VertexBuffer &second);
 
-    bool initialize() override;
-
     void update(const Vertex *vertices, std::size_t cnt, GLenum type,
                 GLenum mode);
 

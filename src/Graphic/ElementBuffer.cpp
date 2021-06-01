@@ -1,7 +1,10 @@
 #include <Graphic/ElementBuffer.hpp>
 #include <iostream>
 
-ElementBuffer::ElementBuffer() : m_VBO(0), m_EBO(0) {}
+ElementBuffer::ElementBuffer() : m_VBO(0), m_EBO(0) {
+    glGenBuffers(1, &m_VBO);
+    glGenBuffers(1, &m_EBO);
+}
 
 ElementBuffer::~ElementBuffer() {
     glDeleteBuffers(1, &m_VBO);
@@ -10,7 +13,8 @@ ElementBuffer::~ElementBuffer() {
 
 ElementBuffer::ElementBuffer(const ElementBuffer &other)
     : BufferObject(other), m_VBO(0), m_EBO(0) {
-    initialize();
+    glGenBuffers(1, &m_VBO);
+    glGenBuffers(1, &m_EBO);
 
     int size;
     glBindBuffer(GL_COPY_READ_BUFFER, other.m_VBO);
@@ -43,21 +47,6 @@ void swap(ElementBuffer &first, ElementBuffer &second) {
     swap(first.m_EBO, second.m_EBO);
     swap(static_cast<BufferObject &>(first),
          static_cast<BufferObject &>(second));
-}
-
-bool ElementBuffer::initialize() {
-    if (isInit()) return true;
-    glGenBuffers(1, &m_VBO);
-    if (!m_VBO) {
-        std::cerr << "Could not create vertex buffer." << std::endl;
-        return false;
-    }
-    glGenBuffers(1, &m_EBO);
-    if (!m_EBO) {
-        std::cerr << "Could not create element buffer object." << std::endl;
-        return false;
-    }
-    return BufferObject::initialize();
 }
 
 void ElementBuffer::drawPrimitive() const {

@@ -47,8 +47,6 @@ void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
 
 void RenderTarget::draw(const BufferObject &buffer,
                         const RenderStates &states) {
-    assert(buffer.isInit());
-
     applyTransform(states.transform);
     applyTexture(states.textures);
 
