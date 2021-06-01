@@ -3,8 +3,6 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-Light::Light() {}
-
 glm::mat4 Light::getLightSpaceMatrix() const {
     auto trans = owner().component<Transform>();
     const glm::vec3 &up = trans->getUp();
@@ -16,6 +14,7 @@ glm::mat4 Light::getLightSpaceMatrix() const {
         glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
     return lightProjection * lightView;
 }
+
 glm::vec3 Light::getDirection() const {
     return owner().component<Transform>()->getFront();
 }

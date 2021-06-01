@@ -6,7 +6,7 @@
 
 class Light : public Component<Light, EntityBase>, public LightBase {
    public:
-    Light();
+    Light() = default;
 
     glm::mat4 getLightSpaceMatrix() const override;
 
