@@ -1,4 +1,5 @@
 #include <Graphic/Shader.hpp>
+#include <Graphic/OpenGL.hpp>
 #include <Graphic/Vertex.hpp>
 #include <Graphic/FrameBuffer.hpp>
 #include <Graphic/Primitive.hpp>
@@ -8,70 +9,9 @@
 #include <sstream>
 #include <iostream>
 
-#include <glbinding/gl/gl.h>
-using namespace gl;
-
-void Shader::initDefaultShaders() {
-    const char* fbVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec2 aPos;\n"
-        "layout (location = 1) in vec2 aTexCoords;\n"
-        "out vec2 texCoords;\n"
-        "void main() {\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-        "    texCoords = aTexCoords;\n"
-        "}";
-
-    const char* fbFragment =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "in vec2 texCoords;\n"
-        "uniform sampler2D uScreenTexture;\n"
-        "void main() {\n"
-        "    fragColor = texture(uScreenTexture, texCoords);\n"
-        "}";
-
-    FrameBuffer::s_shader.compile(fbVertex, fbFragment);
-    FrameBuffer::s_shader.use();
-    FrameBuffer::s_shader.setInt("uScreenTexture", 0);
-
-    const char* shadowVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 uLightSpaceMatrix;\n"
-        "uniform mat4 uModel;\n"
-        "void main() {\n"
-        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
-        "}";
-    const char* shadowFragment =
-        "#version 330 core\n"
-        "void main() {\n"
-        "}";
-
-    ShadowBuffer::s_shadowShader.compile(shadowVertex, shadowFragment);
-
-    const char* primitiveVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 uProjection; "
-        "uniform mat4 uView;"
-        "void main() {\n"
-        "    gl_Position = uProjection * uView * vec4(aPos, 1.0f);\n"
-        "}";
-
-    const char* primitiveFragment =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "uniform vec4 uColor;\n"
-        "void main() {\n"
-        "    fragColor = uColor;\n"
-        "}";
-    Primitive::s_shader.compile(primitiveVertex, primitiveFragment);
-}
-
 Shader::Shader() : m_id(0) {}
 
-void fileToString(const std::string& path, std::string& string) {
+static void fileToString(const std::string& path, std::string& string) {
     std::ifstream file;
     // ensure ifstream objects can throw exceptions:
     file.exceptions(std::ifstream::failbit | std::ifstream::badbit);

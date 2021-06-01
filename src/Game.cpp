@@ -60,6 +60,43 @@ Game::Game(const Settings& settings)
     m_app.systems.add<TransformSystem>();
     m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
 
+    const char* shadowVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "uniform mat4 uLightSpaceMatrix;\n"
+        "uniform mat4 uModel;\n"
+        "void main() {\n"
+        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
+        "}";
+    const char* shadowFragment =
+        "#version 330 core\n"
+        "void main() {\n"
+        "}";
+
+    m_shadowShader.compile(shadowVertex, shadowFragment);
+
+    const char* fbVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec2 aPos;\n"
+        "layout (location = 1) in vec2 aTexCoords;\n"
+        "out vec2 texCoords;\n"
+        "void main() {\n"
+        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+        "    texCoords = aTexCoords;\n"
+        "}";
+
+    const char* fbFragment =
+        "#version 330 core\n"
+        "out vec4 fragColor;\n"
+        "in vec2 texCoords;\n"
+        "uniform sampler2D uScreenTexture;\n"
+        "void main() {\n"
+        "    fragColor = texture(uScreenTexture, texCoords);\n"
+        "}";
+
+    m_fbShader.compile(fbVertex, fbFragment);
+    m_fbShader.use();
+    m_fbShader.setInt("uScreenTexture", 0);
     // m_shader.use();
     // m_shader.setVec3("pointLight.position", glm::vec3(0.0f, 0.0f, 2.0f));
     // m_shader.setVec3("pointLight.direction", glm::vec3(0.0f, 0.0f, -1.0f));
@@ -114,30 +151,36 @@ void Game::render() {
     auto end = m_app.entities.end();
 
     RenderStates states;
-    const Light& light = *m_app.entities.getPtr<Light>(m_light);
+    Light& light = *m_app.entities.getPtr<Light>(m_light);
+
     // draw depth map
-    m_window.beginDepthMap(light);
+    ShadowBuffer& shadow = light.getShadowBuffer();
+    shadow.beginScene(m_shadowShader, *m_cameras.getPtr<Camera>(m_activeCam),
+                      light);
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();
-        m_window.draw(m_app.entities.get(*cur), states);
+        m_app.entities.get(*cur).draw(shadow, states);
     }
+    shadow.endScene();
 
     // normal draw
-    m_frameBuffer.activate();
+    m_frameBuffer.beginScene();
     m_window.beginScene(m_shader, *m_cameras.getPtr<Camera>(m_activeCam),
                         light);
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();
         states.textures = m_app.entities.get(*cur).getTextures();
-        m_window.draw(m_app.entities.get(*cur), states);
+        m_app.entities.get(*cur).draw(m_window, states);
     }
+    m_window.endScene();
+    m_frameBuffer.endScene();
 
     if (m_editorMode) {
         Editor::instance().render();
     } else {
-        m_frameBuffer.draw();
+        m_frameBuffer.draw(m_fbShader);
     }
 
     m_window.display();

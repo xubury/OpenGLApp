@@ -21,16 +21,12 @@ class GRAPHIC_API RenderTarget {
 
     RenderTarget &operator=(const RenderTarget &) = delete;
 
-    void beginScene(const Shader &shader, const CameraBase &camera,
-                    const LightBase &light);
+    virtual void beginScene(const Shader &shader, const CameraBase &camera,
+                            const LightBase &light);
 
-    void beginDepthMap(const LightBase &light);
+    virtual void endScene();
 
-    void draw(const Drawable &drawable,
-              const RenderStates &states = RenderStates::Default);
-
-    void draw(const BufferObject &buffer,
-              const RenderStates &states = RenderStates::Default);
+    virtual void draw(const BufferObject &buffer, const RenderStates &states);
 
     void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
 
@@ -39,11 +35,11 @@ class GRAPHIC_API RenderTarget {
 
     virtual ~RenderTarget() = default;
 
-   private:
     void applyShader(const Shader &shader);
 
     void applyTransform(const glm::mat4 &transform);
 
+   private:
     void applyTexture(const TextureArray *textures);
 
     const Shader *m_shader;

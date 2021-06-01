@@ -16,5 +16,5 @@ void ModelEntity::load(const std::string &path) {
 
 void ModelEntity::draw(RenderTarget &target, RenderStates states) const {
     states.transform = component<Transform>()->getMatrix();
-    target.draw(m_model, states);
+    m_model.draw(target, states);
 }

@@ -3,7 +3,7 @@
 Light::Light(EntityManager<EntityBase> *manager, uint32_t id)
     : EntityBase(manager, id) {}
 
-glm::mat4 Light::getViewMatirx() const {
+glm::mat4 Light::getLightSpaceMatrix() const {
     auto trans = component<Transform>();
     const glm::vec3 &up = trans->getUp();
     const glm::vec3 &front = trans->getFront();

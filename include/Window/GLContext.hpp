@@ -5,7 +5,7 @@
 
 class GLFWwindow;
 
-extern "C" GLFWwindow *glfwGetCurrentContext();
+extern "C" GLFWwindow* glfwGetCurrentContext();
 
 class GLContext {
    protected:

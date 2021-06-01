@@ -134,6 +134,4 @@ GLContext::GLContext(int width, int height, const std::string& title) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // MSAA
     glEnable(GL_MULTISAMPLE);
-
-    Shader::initDefaultShaders();
 }

@@ -7,8 +7,6 @@
 
 using namespace gl;
 
-Shader FrameBuffer::s_shader;
-
 static void attachScreenTexture(int framebuffer, int texture, int width,
                                 int height) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -129,11 +127,11 @@ void FrameBuffer::update(int width, int height, int sample) {
     }
 }
 
-void FrameBuffer::activate() const {
+void FrameBuffer::beginScene() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_multiSampleFrameBufferId);
 }
 
-void FrameBuffer::deactivate() const {
+void FrameBuffer::endScene() const {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_multiSampleFrameBufferId);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBufferId);
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
@@ -141,10 +139,9 @@ void FrameBuffer::deactivate() const {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FrameBuffer::draw() {
-    deactivate();
+void FrameBuffer::draw(const Shader &shader) {
     glDisable(GL_DEPTH_TEST);
-    s_shader.use();
+    shader.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_screenTextureId);
     glBindVertexArray(m_VAO);

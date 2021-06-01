@@ -2,13 +2,16 @@
 #define SAHDER_HPP
 
 #include <Graphic/Export.hpp>
-#include <stdint.h>
+#include <Base.hpp>
 #include <string>
+#include <stdint.h>
 #include <glm/glm.hpp>
 
 class GRAPHIC_API Shader {
    public:
     Shader();
+
+    ~Shader() = default;
 
     Shader(const Shader&) = delete;
 
@@ -17,9 +20,8 @@ class GRAPHIC_API Shader {
     void compile(const char* vertexCode, const char* fragmentCode,
                  const char* geometryCode = nullptr);
 
-    void load(const std::string& vertexPath,
-                      const std::string& fragmentPath,
-                      const std::string& geometryPath = "");
+    void load(const std::string& vertexPath, const std::string& fragmentPath,
+              const std::string& geometryPath = "");
 
     void use() const;
 
@@ -39,9 +41,6 @@ class GRAPHIC_API Shader {
     static void checkCompileErrors(uint32_t shader, const std::string type);
 
     uint32_t m_id;
-
-   public:
-    static void initDefaultShaders();
 };
 
 #endif

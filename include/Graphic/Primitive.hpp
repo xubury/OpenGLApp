@@ -52,8 +52,7 @@ class GRAPHIC_API Primitive {
     ElementBuffer m_elements;
 
    private:
-    friend class Shader;
-    static Shader s_shader;
+    Shader m_shader;
 };
 
 #endif /* PRIMITIVE_HPP */

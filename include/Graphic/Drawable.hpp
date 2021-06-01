@@ -10,9 +10,6 @@ class GRAPHIC_API Drawable {
    public:
     virtual ~Drawable() = default;
 
-   protected:
-    friend class RenderTarget;
-
     virtual void draw(RenderTarget &target, RenderStates states) const = 0;
 };
 

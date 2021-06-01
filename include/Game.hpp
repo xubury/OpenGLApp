@@ -39,6 +39,8 @@ class Game {
    private:
     RenderWindow m_window;
     Shader m_shader;
+    Shader m_shadowShader;
+    Shader m_fbShader;
     Application<EntityBase> m_app;
     EntityManager<EntityBase> m_cameras;
     uint32_t m_activeCam;

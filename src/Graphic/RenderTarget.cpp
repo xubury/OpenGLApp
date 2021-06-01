@@ -12,7 +12,7 @@
 
 static const float TEXTURE_RESERVED = 1;  // reserved for depth map
 
-RenderTarget::RenderTarget() : m_textures(nullptr) {}
+RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
 void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
                               const LightBase &light) {
@@ -27,25 +27,14 @@ void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
     glBindTexture(GL_TEXTURE_2D, light.getShadowBuffer().getDepthMapTexture());
     shader.setInt("uDepthMap", 0);
 
-    shader.setMat4("uLightSpaceMatrix", light.getViewMatirx());
+    shader.setMat4("uLightSpaceMatrix", light.getLightSpaceMatrix());
     shader.setVec3("uDirLight.direction", light.getDirection());
     shader.setVec3("uDirLight.ambient", light.amibent);
     shader.setVec3("uDirLight.diffuse", light.diffuse);
     shader.setVec3("uDirLight.specular", light.specular);
 }
 
-void RenderTarget::beginDepthMap(const LightBase &light) {
-    const ShadowBuffer &buffer = light.getShadowBuffer();
-    applyShader(buffer.s_shadowShader);
-    glViewport(0, 0, buffer.getWidth(), buffer.getHeight());
-    glBindFramebuffer(GL_FRAMEBUFFER, buffer.getFrameBuffer());
-    glClear(GL_DEPTH_BUFFER_BIT);
-    m_shader->setMat4("uLightSpaceMatrix", light.getViewMatirx());
-}
-
-void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
-    drawable.draw(*this, states);
-}
+void RenderTarget::endScene() {}
 
 void RenderTarget::draw(const BufferObject &buffer,
                         const RenderStates &states) {

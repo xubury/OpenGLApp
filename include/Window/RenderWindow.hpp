@@ -28,6 +28,7 @@ class RenderWindow : public GLContext, public RenderTarget {
     void setFramerateLimit(uint32_t fps);
 
     float getFrameRate() const;
+
    private:
     friend class GLContext;
 

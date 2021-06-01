@@ -11,7 +11,7 @@ class Light : public EntityBase, public LightBase {
    public:
     Light(EntityManager<EntityBase> *manager, uint32_t id);
 
-    glm::mat4 getViewMatirx() const override;
+    glm::mat4 getLightSpaceMatrix() const override;
 
     glm::vec3 getDirection() const override;
 

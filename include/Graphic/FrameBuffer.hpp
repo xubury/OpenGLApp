@@ -17,11 +17,11 @@ class GRAPHIC_API FrameBuffer {
 
     void update(int width, int height, int smaple = 0);
 
-    void activate() const;
+    void beginScene() const;
 
-    void deactivate() const;
+    void endScene() const;
 
-    void draw();
+    void draw(const Shader &shader);
 
     uint32_t getScreenTexture() const;
 
@@ -41,10 +41,6 @@ class GRAPHIC_API FrameBuffer {
     int m_width;
     int m_height;
     int m_sample;
-
-   private:
-    friend class Shader;
-    static Shader s_shader;
 };
 
 #endif /* FRAMEBUFFER_HPP */

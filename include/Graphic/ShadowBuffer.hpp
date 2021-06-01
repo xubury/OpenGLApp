@@ -3,14 +3,22 @@
 
 #include <Graphic/Export.hpp>
 #include <Graphic/Shader.hpp>
+#include <Graphic/RenderTarget.hpp>
 
-class ShadowBuffer {
+class GRAPHIC_API ShadowBuffer : public RenderTarget {
    public:
     ShadowBuffer(int width = 800, int height = 600);
 
     ~ShadowBuffer();
 
     ShadowBuffer(const ShadowBuffer &) = delete;
+
+    void beginScene(const Shader &shader, const CameraBase &camera,
+                    const LightBase &light) override;
+
+    void endScene() override;
+
+    void draw(const BufferObject &buffer, const RenderStates &states) override;
 
     ShadowBuffer &operator=(const ShadowBuffer &) = delete;
 
@@ -21,8 +29,6 @@ class ShadowBuffer {
     uint32_t getWidth() const;
 
     uint32_t getHeight() const;
-
-    static Shader s_shadowShader;
 
    private:
     uint32_t m_width;
