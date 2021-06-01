@@ -139,9 +139,9 @@ void FrameBuffer::endScene() const {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FrameBuffer::draw(const Shader &shader) {
+void FrameBuffer::draw(Ref<Shader> shader) {
     glDisable(GL_DEPTH_TEST);
-    shader.use();
+    shader->bind();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_screenTextureId);
     glBindVertexArray(m_VAO);

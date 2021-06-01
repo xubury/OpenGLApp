@@ -81,7 +81,9 @@ void Shader::compile(const char* vertexCode, const char* fragmentCode,
     if (geometry != 0) glDeleteShader(geometry);
 }
 
-void Shader::use() const { glUseProgram(m_id); }
+void Shader::bind() const { glUseProgram(m_id); }
+
+void Shader::unbind() const { glUseProgram(0); }
 
 void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
     int success;
@@ -134,4 +136,17 @@ void Shader::setVec4(const std::string& name, const glm::vec4& value) const {
 void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
     glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE,
                        glm::value_ptr(value));
+}
+
+void ShaderLibrary::add(const std::string& name) {
+    m_library.emplace(name, createRef<Shader>());
+}
+
+Ref<Shader> ShaderLibrary::get(const std::string& name) {
+    assert(exists(name));
+    return m_library[name];
+}
+
+bool ShaderLibrary::exists(const std::string& name) const {
+    return m_library.find(name) != m_library.end();
 }

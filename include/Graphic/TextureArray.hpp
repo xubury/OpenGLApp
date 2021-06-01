@@ -1,10 +1,10 @@
 #ifndef TEXTURE_ARRAY_HPP
 #define TEXTURE_ARRAY_HPP
 
+#include <Base.hpp>
 #include <Graphic/Export.hpp>
 #include <Graphic/Texture.hpp>
 #include <list>
-#include <memory>
 
 class GRAPHIC_API TextureArray {
    public:
@@ -18,7 +18,7 @@ class GRAPHIC_API TextureArray {
 
     const std::list<std::shared_ptr<Texture>> &getList() const; 
    private:
-    std::list<std::shared_ptr<Texture>> m_list;
+    std::list<Ref<Texture>> m_list;
 };
 
 #endif

@@ -37,10 +37,13 @@ class Game {
     void addModel(const std::string &path, const glm::vec3 &pos);
 
    private:
+    void loadShaders();
+
+    void loadScene();
+
+   private:
     RenderWindow m_window;
-    Shader m_shader;
-    Shader m_shadowShader;
-    Shader m_fbShader;
+    ShaderLibrary m_shaders;
     Application<EntityBase> m_app;
     EntityManager<EntityBase> m_cameras;
     uint32_t m_activeCam;

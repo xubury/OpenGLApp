@@ -13,15 +13,15 @@
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
 void RenderTarget::beginScene(
-    const Shader &shader, const CameraBase &camera,
-    const std::vector<LightBase *> &lights,
+    Ref<Shader> shader, const CameraBase &camera,
+    const std::vector<const LightBase *> &lights,
     const std::vector<Ref<ShadowBuffer>> &shadowBuffers) {
     applyShader(shader);
     glViewport(camera.getViewportX(), camera.getViewportY(),
                camera.getViewportWidth(), camera.getViewportHeight());
     clear();
-    shader.setMat4("uProjection", camera.getProjection());
-    shader.setMat4("uView", camera.getView());
+    shader->setMat4("uProjection", camera.getProjection());
+    shader->setMat4("uView", camera.getView());
 
     // reserve texture for depth map
     m_textureReserved = lights.size();
@@ -29,17 +29,20 @@ void RenderTarget::beginScene(
     for (int i = 0; i < 1; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, shadowBuffers[i]->getDepthMap());
-        shader.setInt("uDepthMap", i);
+        shader->setInt("uDepthMap", i);
 
-        shader.setMat4("uLightSpaceMatrix", lights[i]->getLightSpaceMatrix());
-        shader.setVec3("uDirLight.direction", lights[i]->getDirection());
-        shader.setVec3("uDirLight.ambient", lights[i]->amibent);
-        shader.setVec3("uDirLight.diffuse", lights[i]->diffuse);
-        shader.setVec3("uDirLight.specular", lights[i]->specular);
+        shader->setMat4("uLightSpaceMatrix", lights[i]->getLightSpaceMatrix());
+        shader->setVec3("uDirLight.direction", lights[i]->getDirection());
+        shader->setVec3("uDirLight.ambient", lights[i]->amibent);
+        shader->setVec3("uDirLight.diffuse", lights[i]->diffuse);
+        shader->setVec3("uDirLight.specular", lights[i]->specular);
     }
 }
 
-void RenderTarget::endScene() {}
+void RenderTarget::endScene() {
+    m_shader->unbind();
+    m_shader.reset();
+}
 
 void RenderTarget::draw(const BufferObject &buffer,
                         const RenderStates &states) {
@@ -54,9 +57,9 @@ void RenderTarget::clear(float r, float g, float b, float a) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderTarget::applyShader(const Shader &shader) {
-    m_shader = &shader;
-    m_shader->use();
+void RenderTarget::applyShader(Ref<Shader> shader) {
+    m_shader = shader;
+    m_shader->bind();
 }
 
 void RenderTarget::applyTransform(const glm::mat4 &transform) {

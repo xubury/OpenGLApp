@@ -35,17 +35,67 @@ void Game::addModel(const std::string& path, const glm::vec3& pos) {
     model->setName(typeid(*model).name());
 }
 
-Game::Game(const Settings& settings)
-    : m_window(settings.width, settings.height, settings.title),
-      m_activeCam(0),
-      m_frameBuffer(settings.width, settings.height, settings.samples),
-      m_editorMode(settings.editor) {
-    m_activeCam = m_cameras.create<Camera>(
-        0, 0, settings.width, settings.height, glm::vec3(-8.f, 9.f, 13.f));
-    m_cameras.get(m_activeCam)
-        .setEulerAngle(glm::vec3(glm::radians(-15.f), glm::radians(-35.f),
-                                 glm::radians(5.f)));
+void Game::loadShaders() {
+    const char* shadowVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "uniform mat4 uLightSpaceMatrix;\n"
+        "uniform mat4 uModel;\n"
+        "void main() {\n"
+        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
+        "}";
+    const char* shadowFragment =
+        "#version 330 core\n"
+        "void main() {\n"
+        "}";
 
+    m_shaders.add("Shadow");
+    m_shaders.get("Shadow")->compile(shadowVertex, shadowFragment);
+
+    const char* fbVertex =
+        "#version 330 core\n"
+        "layout (location = 0) in vec2 aPos;\n"
+        "layout (location = 1) in vec2 aTexCoords;\n"
+        "out vec2 texCoords;\n"
+        "void main() {\n"
+        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+        "    texCoords = aTexCoords;\n"
+        "}";
+
+    const char* fbFragment =
+        "#version 330 core\n"
+        "out vec4 fragColor;\n"
+        "in vec2 texCoords;\n"
+        "uniform sampler2D uScreenTexture;\n"
+        "void main() {\n"
+        "    fragColor = texture(uScreenTexture, texCoords);\n"
+        "}";
+
+    m_shaders.add("FrameBuffer");
+    m_shaders.get("FrameBuffer")->compile(fbVertex, fbFragment);
+    m_shaders.get("FrameBuffer")->bind();
+    m_shaders.get("FrameBuffer")->setInt("uScreenTexture", 0);
+
+    m_shaders.add("Main");
+    m_shaders.get("Main")->load("shader/vertex.glsl", "shader/fragment.glsl");
+    m_shaders.get("Main")->bind();
+    m_shaders.get("Main")->setVec3("pointLight.position",
+                                   glm::vec3(0.0f, 0.0f, 2.0f));
+    m_shaders.get("Main")->setVec3("pointLight.direction",
+                                   glm::vec3(0.0f, 0.0f, -1.0f));
+    m_shaders.get("Main")->setVec3("pointLight.ambient", glm::vec3(0.5f));
+    m_shaders.get("Main")->setVec3("pointLight.diffuse", glm::vec3(0.5f));
+    m_shaders.get("Main")->setVec3("pointLight.specular", glm::vec3(1.0f));
+    m_shaders.get("Main")->setFloat("pointLight.constant", 1.0f);
+    m_shaders.get("Main")->setFloat("pointLight.linear", 0.09f);
+    m_shaders.get("Main")->setFloat("pointLight.quadratic", 0.032f);
+    m_shaders.get("Main")->setFloat("pointLight.cutOff",
+                                    glm::cos(glm::radians(12.5f)));
+    m_shaders.get("Main")->setFloat("pointLight.outerCutOff",
+                                    glm::cos(glm::radians(15.5f)));
+}
+
+void Game::loadScene() {
     uint32_t lightSource = m_app.entities.create<EntityBase>();
     m_app.entities.get(lightSource).add<Light>();
     m_app.entities.get(lightSource).setPosition(glm::vec3(0, 8, 8));
@@ -68,59 +118,6 @@ Game::Game(const Settings& settings)
     // light2->amibent = glm::vec3(0.5f);
     // light2->diffuse = glm::vec3(0.5f);
     // light2->specular = glm::vec3(0.5f);
-
-    m_app.systems.add<BoundingBoxSystem>();
-    m_app.systems.add<TransformSystem>();
-    m_shader.load("shader/vertex.glsl", "shader/fragment.glsl");
-
-    const char* shadowVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 uLightSpaceMatrix;\n"
-        "uniform mat4 uModel;\n"
-        "void main() {\n"
-        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
-        "}";
-    const char* shadowFragment =
-        "#version 330 core\n"
-        "void main() {\n"
-        "}";
-
-    m_shadowShader.compile(shadowVertex, shadowFragment);
-
-    const char* fbVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec2 aPos;\n"
-        "layout (location = 1) in vec2 aTexCoords;\n"
-        "out vec2 texCoords;\n"
-        "void main() {\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-        "    texCoords = aTexCoords;\n"
-        "}";
-
-    const char* fbFragment =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "in vec2 texCoords;\n"
-        "uniform sampler2D uScreenTexture;\n"
-        "void main() {\n"
-        "    fragColor = texture(uScreenTexture, texCoords);\n"
-        "}";
-
-    m_fbShader.compile(fbVertex, fbFragment);
-    m_fbShader.use();
-    m_fbShader.setInt("uScreenTexture", 0);
-    m_shader.use();
-    m_shader.setVec3("pointLight.position", glm::vec3(0.0f, 0.0f, 2.0f));
-    m_shader.setVec3("pointLight.direction", glm::vec3(0.0f, 0.0f, -1.0f));
-    m_shader.setVec3("pointLight.ambient", glm::vec3(0.5f));
-    m_shader.setVec3("pointLight.diffuse", glm::vec3(0.5f));
-    m_shader.setVec3("pointLight.specular", glm::vec3(1.0f));
-    m_shader.setFloat("pointLight.constant", 1.0f);
-    m_shader.setFloat("pointLight.linear", 0.09f);
-    m_shader.setFloat("pointLight.quadratic", 0.032f);
-    m_shader.setFloat("pointLight.cutOff", glm::cos(glm::radians(12.5f)));
-    m_shader.setFloat("pointLight.outerCutOff", glm::cos(glm::radians(15.5f)));
 
     // ground
     TextureArray groundTextures;
@@ -150,8 +147,26 @@ Game::Game(const Settings& settings)
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
     addSphere(glm::vec3(0, 6, 0), textures);
 
-    addModel("resources/models/backpack/backpack.obj",
-             glm::vec3(0.f, 6.f, 6.f));
+    // addmodel("resources/models/backpack/backpack.obj",
+    //          glm::vec3(0.f, 6.f, 6.f));
+}
+
+Game::Game(const Settings& settings)
+    : m_window(settings.width, settings.height, settings.title),
+      m_activeCam(0),
+      m_frameBuffer(settings.width, settings.height, settings.samples),
+      m_editorMode(settings.editor) {
+    loadShaders();
+    loadScene();
+    m_activeCam = m_cameras.create<Camera>(
+        0, 0, settings.width, settings.height, glm::vec3(-8.f, 9.f, 13.f));
+    m_cameras.get(m_activeCam)
+        .setEulerAngle(glm::vec3(glm::radians(-15.f), glm::radians(-35.f),
+                                 glm::radians(5.f)));
+
+    m_app.systems.add<BoundingBoxSystem>();
+    m_app.systems.add<TransformSystem>();
+
     m_window.setFramerateLimit(settings.frameRateLimit);
 }
 
@@ -170,14 +185,14 @@ void Game::render() {
 
     RenderStates states;
     std::vector<Ref<ShadowBuffer>> buffers;
-    std::vector<LightBase*> lightList;
+    std::vector<const LightBase*> lightList;
     Light::Handle light;
     auto view = m_app.entities.getByComponents(light);
     auto end = view.end();
     for (auto begin = view.begin(); begin != end; ++begin) {
         buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map
-        buffers.back()->beginScene(m_shadowShader, *light.get());
+        buffers.back()->beginScene(m_shaders.get("Shadow"), *light.get());
         for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
             states.transform =
                 m_app.entities.get(*cur).component<Transform>()->getMatrix();
@@ -189,8 +204,9 @@ void Game::render() {
 
     // normal draw
     m_frameBuffer.beginScene();
-    m_window.beginScene(m_shader, *m_cameras.getPtr<Camera>(m_activeCam),
-                        lightList, buffers);
+    m_window.beginScene(m_shaders.get("Main"),
+                        *m_cameras.getPtr<Camera>(m_activeCam), lightList,
+                        buffers);
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();
@@ -203,7 +219,7 @@ void Game::render() {
     if (m_editorMode) {
         Editor::instance().render();
     } else {
-        m_frameBuffer.draw(m_fbShader);
+        m_frameBuffer.draw(m_shaders.get("FrameBuffer"));
     }
 
     m_window.display();

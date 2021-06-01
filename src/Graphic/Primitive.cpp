@@ -29,7 +29,7 @@ Primitive &Primitive::instance() {
 }
 
 void Primitive::setDrawingView(const CameraBase *camera) {
-    m_shader.use();
+    m_shader.bind();
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
     m_shader.setMat4("uProjection", camera->getProjection());

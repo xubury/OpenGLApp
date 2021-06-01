@@ -1,11 +1,12 @@
 #ifndef SAHDER_HPP
 #define SAHDER_HPP
 
-#include <Graphic/Export.hpp>
 #include <Base.hpp>
+#include <Graphic/Export.hpp>
 #include <string>
 #include <stdint.h>
 #include <glm/glm.hpp>
+#include <unordered_map>
 
 class GRAPHIC_API Shader {
    public:
@@ -23,7 +24,9 @@ class GRAPHIC_API Shader {
     void load(const std::string& vertexPath, const std::string& fragmentPath,
               const std::string& geometryPath = "");
 
-    void use() const;
+    void bind() const;
+
+    void unbind() const;
 
     void setBool(const std::string& name, bool value) const;
 
@@ -41,6 +44,18 @@ class GRAPHIC_API Shader {
     static void checkCompileErrors(uint32_t shader, const std::string type);
 
     uint32_t m_id;
+};
+
+class GRAPHIC_API ShaderLibrary {
+   public:
+    void add(const std::string& name);
+
+    Ref<Shader> get(const std::string& name);
+
+    bool exists(const std::string& name) const;
+
+   private:
+    std::unordered_map<std::string, Ref<Shader>> m_library;
 };
 
 #endif

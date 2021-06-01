@@ -10,12 +10,10 @@ void TextureArray::loadFromFile(const std::string &path,
 
 void TextureArray::loadFromValue(const glm::vec3 &value,
                                  Texture::TextureType textureType) {
-    m_list.emplace_back(std::make_shared<Texture>());
+    m_list.emplace_back(createRef<Texture>());
     m_list.back()->load(value, textureType);
 }
 
 std::size_t TextureArray::size() const { return m_list.size(); }
 
-const std::list<std::shared_ptr<Texture>> &TextureArray::getList() const {
-    return m_list;
-}
+const std::list<Ref<Texture>> &TextureArray::getList() const { return m_list; }

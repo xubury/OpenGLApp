@@ -21,7 +21,7 @@ class GRAPHIC_API FrameBuffer {
 
     void endScene() const;
 
-    void draw(const Shader &shader);
+    void draw(Ref<Shader> shader);
 
     uint32_t getScreenTexture() const;
 

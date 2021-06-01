@@ -4,6 +4,7 @@
 #include <Utility/Math.hpp>
 #include <Graphic/Primitive.hpp>
 #include <Component/BoundingBox.hpp>
+#include <Component/Light.hpp>
 #include <iostream>
 
 static const float quadMin = 0.4f;
@@ -18,7 +19,7 @@ static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.7f);
 
 static const float axisTransparency = 0.8f;
 
-static void drawTransformSheet(Transform& trans) {
+static void renderTransformProperty(Transform& trans) {
     ImGui::Separator();
     ImGui::Text("Transform");
     glm::vec3 eulerAngle = glm::degrees(trans.getEulerAngle());
@@ -30,6 +31,14 @@ static void drawTransformSheet(Transform& trans) {
     if (ImGui::InputFloat3("Position", &pos[0], "%.3f")) {
         trans.setPosition(pos);
     }
+}
+
+static void renderLightProperty(Light& light) {
+    ImGui::Separator();
+    ImGui::Text("Light");
+    ImGui::InputFloat3("Ambient", &light.amibent[0], "%.3f");
+    ImGui::InputFloat3("Diffuse", &light.diffuse[0], "%.3f");
+    ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
 }
 
 static bool canActive(ImGuiMouseButton button) {
@@ -303,7 +312,7 @@ void Editor::render() {
         ImGui::SetWindowPos(ImVec2(0, 0));
         if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
-            drawTransformSheet(
+            renderTransformProperty(
                 *context.getCamera()->component<Transform>().get());
             ImGui::Separator();
             ImGui::TreePop();
@@ -312,7 +321,10 @@ void Editor::render() {
         if (ImGui::TreeNodeEx("Entity", ImGuiTreeNodeFlags_DefaultOpen)) {
             auto entity = context.getActiveEntityPtr();
             ImGui::Text("Name: %s", entity->getName().c_str());
-            drawTransformSheet(*entity->component<Transform>().get());
+            renderTransformProperty(*entity->component<Transform>().get());
+            if (entity->has<Light>()) {
+                renderLightProperty(*entity->component<Light>().get());
+            }
             ImGui::Separator();
             ImGui::TreePop();
         }

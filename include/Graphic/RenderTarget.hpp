@@ -22,8 +22,8 @@ class GRAPHIC_API RenderTarget {
 
     RenderTarget &operator=(const RenderTarget &) = delete;
 
-    void beginScene(const Shader &shader, const CameraBase &camera,
-                    const std::vector<LightBase *> &lights,
+    void beginScene(Ref<Shader> shader, const CameraBase &camera,
+                    const std::vector<const LightBase *> &lights,
                     const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
 
     void endScene();
@@ -37,14 +37,14 @@ class GRAPHIC_API RenderTarget {
 
     virtual ~RenderTarget() = default;
 
-    void applyShader(const Shader &shader);
+    void applyShader(Ref<Shader> shader);
 
     void applyTransform(const glm::mat4 &transform);
 
    private:
     void applyTexture(const TextureArray *textures);
 
-    const Shader *m_shader;
+    Ref<Shader> m_shader;
 
     const TextureArray *m_textures;
 
