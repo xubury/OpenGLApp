@@ -1,10 +1,12 @@
-#include <Entity/Light.hpp>
+#include <Component/Light.hpp>
+#include <Component/Transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
-Light::Light(EntityManager<EntityBase> *manager, uint32_t id)
-    : EntityBase(manager, id) {}
+Light::Light() {}
 
 glm::mat4 Light::getLightSpaceMatrix() const {
-    auto trans = component<Transform>();
+    auto trans = owner().component<Transform>();
     const glm::vec3 &up = trans->getUp();
     const glm::vec3 &front = trans->getFront();
     const glm::vec3 &pos = trans->getPosition();
@@ -15,11 +17,9 @@ glm::mat4 Light::getLightSpaceMatrix() const {
     return lightProjection * lightView;
 }
 glm::vec3 Light::getDirection() const {
-    return component<Transform>()->getFront();
+    return owner().component<Transform>()->getFront();
 }
 
 glm::vec3 Light::getPosition() const {
-    return component<Transform>()->getPosition();
+    return owner().component<Transform>()->getPosition();
 }
-
-void Light::draw(RenderTarget &, RenderStates) const {}

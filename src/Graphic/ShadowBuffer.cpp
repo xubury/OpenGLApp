@@ -49,8 +49,7 @@ uint32_t ShadowBuffer::getWidth() const { return m_width; }
 
 uint32_t ShadowBuffer::getHeight() const { return m_height; }
 
-void ShadowBuffer::beginScene(const Shader &shader, const CameraBase &,
-                              const LightBase &light) {
+void ShadowBuffer::beginScene(const Shader &shader, const LightBase &light) {
     applyShader(shader);
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
     glViewport(0, 0, m_width, m_height);

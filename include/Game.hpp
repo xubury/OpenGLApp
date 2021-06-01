@@ -44,7 +44,6 @@ class Game {
     Application<EntityBase> m_app;
     EntityManager<EntityBase> m_cameras;
     uint32_t m_activeCam;
-    uint32_t m_light;
     FrameBuffer m_frameBuffer;
 
     bool m_editorMode;

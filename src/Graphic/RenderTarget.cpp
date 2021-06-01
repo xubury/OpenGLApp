@@ -10,12 +10,10 @@
 #include <Graphic/LightBase.hpp>
 #include <iostream>
 
-static const float TEXTURE_RESERVED = 1;  // reserved for depth map
-
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
 void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
-                              const LightBase &light) {
+                              const std::list<LightBase *> &lights) {
     applyShader(shader);
     glViewport(camera.getViewportX(), camera.getViewportY(),
                camera.getViewportWidth(), camera.getViewportHeight());
@@ -24,14 +22,19 @@ void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
     shader.setMat4("uView", camera.getView());
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, light.getShadowBuffer().getDepthMapTexture());
+    
+    // reserve texture for depth map
+    m_textureReserved = lights.size();
+    // handle multiple lights
+    auto light = *lights.begin();
+    glBindTexture(GL_TEXTURE_2D, light->getShadowBuffer().getDepthMapTexture());
     shader.setInt("uDepthMap", 0);
 
-    shader.setMat4("uLightSpaceMatrix", light.getLightSpaceMatrix());
-    shader.setVec3("uDirLight.direction", light.getDirection());
-    shader.setVec3("uDirLight.ambient", light.amibent);
-    shader.setVec3("uDirLight.diffuse", light.diffuse);
-    shader.setVec3("uDirLight.specular", light.specular);
+    shader.setMat4("uLightSpaceMatrix", light->getLightSpaceMatrix());
+    shader.setVec3("uDirLight.direction", light->getDirection());
+    shader.setVec3("uDirLight.ambient", light->amibent);
+    shader.setVec3("uDirLight.diffuse", light->diffuse);
+    shader.setVec3("uDirLight.specular", light->specular);
 }
 
 void RenderTarget::endScene() {}
@@ -66,7 +69,7 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
         // clean up old textures
         std::size_t size = m_textures->size();
         for (std::size_t i = 0; i < size; ++i) {
-            glActiveTexture(GL_TEXTURE0 + i + TEXTURE_RESERVED);
+            glActiveTexture(GL_TEXTURE0 + i + m_textureReserved);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
@@ -75,7 +78,7 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
     uint32_t ambient = 0;
     uint32_t diffuse = 0;
     uint32_t specular = 0;
-    std::size_t i = TEXTURE_RESERVED;
+    std::size_t i = m_textureReserved;
     for (const auto &texture : m_textures->getList()) {
         std::string name;
         if (texture->getType() == Texture::AMBIENT) {

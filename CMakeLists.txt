@@ -15,15 +15,15 @@ set(Editor_Src
 
 set(Component_Src
     src/Component/Transfrom.cpp
-    src/Component/BoundingBox.cpp)
+    src/Component/BoundingBox.cpp
+    src/Component/Light.cpp)
 
 set(Entity_Src
     src/Entity/EntityBase.cpp
     src/Entity/Camera.cpp
     src/Entity/ModelEntity.cpp
     src/Entity/Cube.cpp
-    src/Entity/Sphere.cpp
-    src/Entity/Light.cpp)
+    src/Entity/Sphere.cpp)
 
 set(Utility_Src
     src/Utility/Memory.cpp

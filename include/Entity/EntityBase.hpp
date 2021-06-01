@@ -18,6 +18,10 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     glm::vec3 getPosition() const;
 
+    void setEulerAngle(const glm::vec3 &angle);
+    
+    glm::vec3 getEulerAngle() const;
+
     std::string getName() const;
 
     void setName(const std::string &name);
@@ -26,6 +30,7 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     const TextureArray *getTextures() const;
 
+    virtual void draw(RenderTarget &target, RenderStates states) const override;
    private:
     std::string m_name;
     TextureArray m_textures;

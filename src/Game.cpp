@@ -1,11 +1,11 @@
 #include <Game.hpp>
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
+#include <Component/Light.hpp>
 #include <Entity/Camera.hpp>
 #include <Entity/ModelEntity.hpp>
 #include <Entity/Cube.hpp>
 #include <Entity/Sphere.hpp>
-#include <Entity/Light.hpp>
 #include <Editor/Editor.hpp>
 
 #include <iostream>
@@ -43,18 +43,30 @@ Game::Game(const Settings& settings)
     m_activeCam = m_cameras.create<Camera>(
         0, 0, settings.width, settings.height, glm::vec3(-8.f, 9.f, 13.f));
     m_cameras.get(m_activeCam)
-        .component<Transform>()
-        ->setEulerAngle(glm::vec3(glm::radians(-15.f), glm::radians(-35.f),
-                                  glm::radians(5.f)));
+        .setEulerAngle(glm::vec3(glm::radians(-15.f), glm::radians(-35.f),
+                                 glm::radians(5.f)));
 
-    m_light = m_app.entities.create<Light>();
-    m_app.entities.getPtr<Light>(m_light)->amibent = glm::vec3(0.5f);
-    m_app.entities.getPtr<Light>(m_light)->diffuse = glm::vec3(0.5f);
-    m_app.entities.getPtr<Light>(m_light)->specular = glm::vec3(0.5f);
-    m_app.entities.getPtr<Light>(m_light)->setPosition(glm::vec3(0, 8, 8));
-    m_app.entities.getPtr<Light>(m_light)
-        ->component<Transform>()
-        ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
+    uint32_t lightSource = m_app.entities.create<EntityBase>();
+    m_app.entities.get(lightSource).add<Light>();
+    m_app.entities.get(lightSource).setPosition(glm::vec3(0, 8, 8));
+    m_app.entities.get(lightSource)
+        .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
+
+    auto light = m_app.entities.get(lightSource).component<Light>();
+    light->amibent = glm::vec3(0.5f);
+    light->diffuse = glm::vec3(0.5f);
+    light->specular = glm::vec3(0.5f);
+
+    // uint32_t lightSource2 = m_app.entities.create<EntityBase>();
+    // m_app.entities.get(lightSource2).add<Light>();
+    // m_app.entities.get(lightSource2).setPosition(glm::vec3(0, 8, 8));
+    // m_app.entities.get(lightSource2)
+    //     .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
+
+    // auto light2 = m_app.entities.get(lightSource2).component<Light>();
+    // light2->amibent = glm::vec3(0.5f);
+    // light2->diffuse = glm::vec3(0.5f);
+    // light2->specular = glm::vec3(0.5f);
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
@@ -148,27 +160,31 @@ void Game::update(Time& deltaTime) {
 }
 
 void Game::render() {
-    auto end = m_app.entities.end();
+    auto entityIterEnd = m_app.entities.end();
 
     RenderStates states;
-    Light& light = *m_app.entities.getPtr<Light>(m_light);
-
-    // draw depth map
-    ShadowBuffer& shadow = light.getShadowBuffer();
-    shadow.beginScene(m_shadowShader, *m_cameras.getPtr<Camera>(m_activeCam),
-                      light);
-    for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
-        states.transform =
-            m_app.entities.get(*cur).component<Transform>()->getMatrix();
-        m_app.entities.get(*cur).draw(shadow, states);
+    std::list<LightBase*> lightList;
+    Light::Handle light;
+    auto view = m_app.entities.getByComponents(light);
+    auto end = view.end();
+    for (auto begin = view.begin(); begin != end; ++begin) {
+        // draw depth map
+        ShadowBuffer& shadow = light->getShadowBuffer();
+        shadow.beginScene(m_shadowShader, *light.get());
+        for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
+            states.transform =
+                m_app.entities.get(*cur).component<Transform>()->getMatrix();
+            m_app.entities.get(*cur).draw(shadow, states);
+        }
+        shadow.endScene();
+        lightList.push_back(light.get());
     }
-    shadow.endScene();
 
     // normal draw
     m_frameBuffer.beginScene();
     m_window.beginScene(m_shader, *m_cameras.getPtr<Camera>(m_activeCam),
-                        light);
-    for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
+                        lightList);
+    for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();
         states.textures = m_app.entities.get(*cur).getTextures();

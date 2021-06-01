@@ -5,7 +5,7 @@
 #include <Graphic/Drawable.hpp>
 
 #include <glm/glm.hpp>
-#include <vector>
+#include <list>
 
 class CameraBase;
 
@@ -21,10 +21,10 @@ class GRAPHIC_API RenderTarget {
 
     RenderTarget &operator=(const RenderTarget &) = delete;
 
-    virtual void beginScene(const Shader &shader, const CameraBase &camera,
-                            const LightBase &light);
+    void beginScene(const Shader &shader, const CameraBase &camera,
+                    const std::list<LightBase *> &light);
 
-    virtual void endScene();
+    void endScene();
 
     virtual void draw(const BufferObject &buffer, const RenderStates &states);
 
@@ -45,6 +45,8 @@ class GRAPHIC_API RenderTarget {
     const Shader *m_shader;
 
     const TextureArray *m_textures;
+
+    uint32_t m_textureReserved;
 };
 
 #endif

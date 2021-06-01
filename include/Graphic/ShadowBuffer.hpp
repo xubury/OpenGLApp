@@ -13,10 +13,9 @@ class GRAPHIC_API ShadowBuffer : public RenderTarget {
 
     ShadowBuffer(const ShadowBuffer &) = delete;
 
-    void beginScene(const Shader &shader, const CameraBase &camera,
-                    const LightBase &light) override;
+    void beginScene(const Shader &shader, const LightBase &light);
 
-    void endScene() override;
+    void endScene();
 
     void draw(const BufferObject &buffer, const RenderStates &states) override;
 
