@@ -34,7 +34,7 @@ class Game {
     void addCube(const glm::vec3 &pos, float width, float height, float length,
                  const TextureArray &textures);
 
-    void addModel(const std::string &path);
+    void addModel(const std::string &path, const glm::vec3 &pos);
 
    private:
     RenderWindow m_window;

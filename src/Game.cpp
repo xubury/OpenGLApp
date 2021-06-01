@@ -14,7 +14,7 @@ void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Sphere>();
     EntityBase* sphere = m_app.entities.getPtr(id);
     sphere->setTextures(textures);
-    sphere->component<Transform>()->setPosition(pos);
+    sphere->setPosition(pos);
     sphere->setName(typeid(*sphere).name());
 }
 
@@ -23,14 +23,15 @@ void Game::addCube(const glm::vec3& pos, float width, float height,
     int id = m_app.entities.create<Cube>(width, height, length);
     EntityBase* cube = m_app.entities.getPtr(id);
     cube->setTextures(textures);
-    cube->component<Transform>()->setPosition(pos);
+    cube->setPosition(pos);
     cube->setName(typeid(*cube).name());
 }
 
-void Game::addModel(const std::string& path) {
+void Game::addModel(const std::string& path, const glm::vec3& pos) {
     int id = m_app.entities.create<ModelEntity>();
     ModelEntity* model = m_app.entities.getPtr<ModelEntity>(id);
     model->load(path);
+    model->setPosition(pos);
     model->setName(typeid(*model).name());
 }
 
@@ -39,21 +40,21 @@ Game::Game(const Settings& settings)
       m_activeCam(0),
       m_frameBuffer(settings.width, settings.height, settings.samples),
       m_editorMode(settings.editor) {
-    m_activeCam = m_cameras.create<Camera>(0, 0, settings.width,
-                                           settings.height, glm::vec3(0, 3, 3));
+    m_activeCam = m_cameras.create<Camera>(
+        0, 0, settings.width, settings.height, glm::vec3(-8.f, 9.f, 13.f));
     m_cameras.get(m_activeCam)
         .component<Transform>()
-        ->setEulerAngle(glm::vec3(glm::radians(-30.f), glm::radians(-2.f), 0));
-    m_cameras.get(m_activeCam).setPosition(glm::vec3(-2, 20, 25));
+        ->setEulerAngle(glm::vec3(glm::radians(-15.f), glm::radians(-35.f),
+                                  glm::radians(5.f)));
 
     m_light = m_app.entities.create<Light>();
     m_app.entities.getPtr<Light>(m_light)->amibent = glm::vec3(0.5f);
     m_app.entities.getPtr<Light>(m_light)->diffuse = glm::vec3(0.5f);
     m_app.entities.getPtr<Light>(m_light)->specular = glm::vec3(0.5f);
-    m_app.entities.getPtr<Light>(m_light)->setPosition(glm::vec3(-2, 5, -3));
+    m_app.entities.getPtr<Light>(m_light)->setPosition(glm::vec3(0, 8, 8));
     m_app.entities.getPtr<Light>(m_light)
         ->component<Transform>()
-        ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(45.f), 0));
+        ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
@@ -82,7 +83,6 @@ Game::Game(const Settings& settings)
     textures.loadFromValue(glm::vec3(0.5f), Texture::AMBIENT);
     textures.loadFromValue(glm::vec3(1.f), Texture::DIFFUSE);
     textures.loadFromValue(glm::vec3(1.f), Texture::SPECULAR);
-    // addModel("resources/models/backpack/backpack.obj");
 
     // for (int i = 0; i < 10; ++i) {
     //     glm::vec3 offset(0);
@@ -95,6 +95,8 @@ Game::Game(const Settings& settings)
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
     addSphere(glm::vec3(0, 6, 0), textures);
 
+    addModel("resources/models/backpack/backpack.obj",
+             glm::vec3(0.f, 6.f, 6.f));
     m_window.setFramerateLimit(settings.frameRateLimit);
 }
 
