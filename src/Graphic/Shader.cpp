@@ -26,45 +26,45 @@ void Shader::initDefaultShaders() {
         "#version 330 core\n"
         "out vec4 fragColor;\n"
         "in vec2 texCoords;\n"
-        "uniform sampler2D screenTexture;\n"
+        "uniform sampler2D uScreenTexture;\n"
         "void main() {\n"
-        "    fragColor = texture(screenTexture, texCoords);\n"
+        "    fragColor = texture(uScreenTexture, texCoords);\n"
         "}";
+
+    FrameBuffer::s_shader.compile(fbVertex, fbFragment);
+    FrameBuffer::s_shader.use();
+    FrameBuffer::s_shader.setInt("uScreenTexture", 0);
 
     const char* shadowVertex =
         "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 lightSpaceMatrix;\n"
-        "uniform mat4 model;\n"
+        "uniform mat4 uLightSpaceMatrix;\n"
+        "uniform mat4 uModel;\n"
         "void main() {\n"
-        "    gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);\n"
+        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
         "}";
     const char* shadowFragment =
         "#version 330 core\n"
         "void main() {\n"
         "}";
 
-    FrameBuffer::s_shader.compile(fbVertex, fbFragment);
-    FrameBuffer::s_shader.use();
-    FrameBuffer::s_shader.setInt("screenTexture", 0);
-
     ShadowBuffer::s_shadowShader.compile(shadowVertex, shadowFragment);
 
     const char* primitiveVertex =
         "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 projection; "
-        "uniform mat4 view;"
+        "uniform mat4 uProjection; "
+        "uniform mat4 uView;"
         "void main() {\n"
-        "    gl_Position = projection * view * vec4(aPos, 1.0f);\n"
+        "    gl_Position = uProjection * uView * vec4(aPos, 1.0f);\n"
         "}";
 
     const char* primitiveFragment =
         "#version 330 core\n"
         "out vec4 fragColor;\n"
-        "uniform vec4 color;\n"
+        "uniform vec4 uColor;\n"
         "void main() {\n"
-        "    fragColor = color;\n"
+        "    fragColor = uColor;\n"
         "}";
     Primitive::s_shader.compile(primitiveVertex, primitiveFragment);
 }

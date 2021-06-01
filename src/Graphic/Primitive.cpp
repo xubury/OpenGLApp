@@ -16,8 +16,8 @@ void Primitive::setDrawingView(const CameraBase *camera) {
     s_shader.use();
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
-    s_shader.setMat4("projection", camera->getProjection());
-    s_shader.setMat4("view", camera->getView());
+    s_shader.setMat4("uProjection", camera->getProjection());
+    s_shader.setMat4("uView", camera->getView());
 }
 
 void Primitive::drawLine(const glm::vec3 &start, const glm::vec3 &end,
@@ -35,7 +35,7 @@ void Primitive::drawPath(const std::vector<glm::vec3> &pts,
     m_vertices.update(vetices.data(), vetices.size(), GL_LINE_LOOP,
                       GL_DYNAMIC_DRAW);
     glLineWidth(thickness);
-    s_shader.setVec4("color", color);
+    s_shader.setVec4("uColor", color);
     m_vertices.drawPrimitive();
     glLineWidth(1.0f);
 }
@@ -52,7 +52,7 @@ void Primitive::drawCircle(const glm::vec3 &center, const glm::vec4 &color,
     }
     m_vertices.update(vertex.data(), vertex.size(), GL_LINE_LOOP,
                       GL_DYNAMIC_DRAW);
-    s_shader.setVec4("color", color);
+    s_shader.setVec4("uColor", color);
     m_vertices.drawPrimitive();
 }
 
@@ -70,7 +70,7 @@ void Primitive::drawCircleFilled(const glm::vec3 &center,
     }
     m_vertices.update(vertex.data(), vertex.size(), GL_TRIANGLE_FAN,
                       GL_DYNAMIC_DRAW);
-    s_shader.setVec4("color", color);
+    s_shader.setVec4("uColor", color);
     m_vertices.drawPrimitive();
 }
 
@@ -117,7 +117,7 @@ void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
     }
     m_elements.update(vertices.data(), vertices.size(), indices.data(),
                       indices.size(), GL_TRIANGLES, GL_DYNAMIC_DRAW);
-    s_shader.setVec4("color", color);
+    s_shader.setVec4("uColor", color);
     m_elements.drawPrimitive();
 }
 
@@ -137,7 +137,7 @@ void Primitive::drawQuadFilled(const std::vector<glm::vec3> &corners,
     }
     m_elements.update(vertices.data(), vertices.size(), indices, 6,
                       GL_TRIANGLES, GL_DYNAMIC_DRAW);
-    s_shader.setVec4("color", color);
+    s_shader.setVec4("uColor", color);
     m_elements.drawPrimitive();
 }
 
@@ -187,6 +187,6 @@ void Primitive::drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
     vertices[7].position[2] = min.z;
 
     m_elements.update(vertices, 8, indices, 36, GL_TRIANGLES, GL_DYNAMIC_DRAW);
-    s_shader.setVec4("color", color);
+    s_shader.setVec4("uColor", color);
     m_elements.drawPrimitive();
 }

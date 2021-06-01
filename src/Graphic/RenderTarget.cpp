@@ -10,6 +10,8 @@
 #include <Graphic/LightBase.hpp>
 #include <iostream>
 
+static const float TEXTURE_RESERVED = 1;  // reserved for depth map
+
 RenderTarget::RenderTarget() : m_textures(nullptr) {}
 
 void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
@@ -18,18 +20,18 @@ void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
     glViewport(camera.getViewportX(), camera.getViewportY(),
                camera.getViewportWidth(), camera.getViewportHeight());
     clear();
-    shader.setMat4("projection", camera.getProjection());
-    shader.setMat4("view", camera.getView());
+    shader.setMat4("uProjection", camera.getProjection());
+    shader.setMat4("uView", camera.getView());
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, light.getShadowBuffer().getDepthMapTexture());
-    shader.setInt("depthMap", 0);
+    shader.setInt("uDepthMap", 0);
 
-    shader.setMat4("lightSpaceMatrix", light.getViewMatirx());
-    shader.setVec3("dirLight.direction", light.getDirection());
-    shader.setVec3("dirLight.ambient", light.amibent);
-    shader.setVec3("dirLight.diffuse", light.diffuse);
-    shader.setVec3("dirLight.specular", light.specular);
+    shader.setMat4("uLightSpaceMatrix", light.getViewMatirx());
+    shader.setVec3("uDirLight.direction", light.getDirection());
+    shader.setVec3("uDirLight.ambient", light.amibent);
+    shader.setVec3("uDirLight.diffuse", light.diffuse);
+    shader.setVec3("uDirLight.specular", light.specular);
 }
 
 void RenderTarget::beginDepthMap(const LightBase &light) {
@@ -38,7 +40,7 @@ void RenderTarget::beginDepthMap(const LightBase &light) {
     glViewport(0, 0, buffer.getWidth(), buffer.getHeight());
     glBindFramebuffer(GL_FRAMEBUFFER, buffer.getFrameBuffer());
     glClear(GL_DEPTH_BUFFER_BIT);
-    m_shader->setMat4("lightSpaceMatrix", light.getViewMatirx());
+    m_shader->setMat4("uLightSpaceMatrix", light.getViewMatirx());
 }
 
 void RenderTarget::draw(const Drawable &drawable, const RenderStates &states) {
@@ -65,7 +67,7 @@ void RenderTarget::applyShader(const Shader &shader) {
 
 void RenderTarget::applyTransform(const glm::mat4 &transform) {
     assert(m_shader != nullptr);
-    m_shader->setMat4("model", transform);
+    m_shader->setMat4("uModel", transform);
 }
 
 void RenderTarget::applyTexture(const TextureArray *textures) {
@@ -75,31 +77,31 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
         // clean up old textures
         std::size_t size = m_textures->size();
         for (std::size_t i = 0; i < size; ++i) {
-            glActiveTexture(GL_TEXTURE0 + i + 1);
+            glActiveTexture(GL_TEXTURE0 + i + TEXTURE_RESERVED);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
     m_textures = textures;
-    m_shader->setFloat("material.shininess", 64);
+    m_shader->setFloat("uMaterial.shininess", 64);
     uint32_t ambient = 0;
     uint32_t diffuse = 0;
     uint32_t specular = 0;
-    std::size_t i = 0;
+    std::size_t i = TEXTURE_RESERVED;
     for (const auto &texture : m_textures->getList()) {
         std::string name;
         if (texture->getType() == Texture::AMBIENT) {
-            name = "material.ambient" + std::to_string(ambient++);
+            name = "uMaterial.ambient" + std::to_string(ambient++);
         } else if (texture->getType() == Texture::DIFFUSE) {
-            name = "material.diffuse" + std::to_string(diffuse++);
+            name = "uMaterial.diffuse" + std::to_string(diffuse++);
         } else if (texture->getType() == Texture::SPECULAR) {
-            name = "material.specular" + std::to_string(specular++);
+            name = "uMaterial.specular" + std::to_string(specular++);
         } else {
             std::cout << "Invalid Texture." << std::endl;
         }
-        glActiveTexture(GL_TEXTURE0 + i + 1);
+        glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, texture->id());
         // set the GL_TEXTUREX correspondence
-        m_shader->setInt(name, i + 1);
+        m_shader->setInt(name, i);
         ++i;
     }
 }

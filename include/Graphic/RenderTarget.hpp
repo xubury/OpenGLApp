@@ -8,9 +8,11 @@
 #include <vector>
 
 class CameraBase;
-class VertexBuffer;
+
 class BufferObject;
+
 class Primitive;
+
 class Shader;
 
 class GRAPHIC_API RenderTarget {
@@ -47,9 +49,6 @@ class GRAPHIC_API RenderTarget {
     const Shader *m_shader;
 
     const TextureArray *m_textures;
-
-    bool m_isRenderOnFrameBuffer;
-
 };
 
 #endif
