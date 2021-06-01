@@ -9,29 +9,15 @@
 
 class Light : public EntityBase, public LightBase {
    public:
-    Light(EntityManager<EntityBase> *manager, uint32_t id)
-        : EntityBase(manager, id) {}
+    Light(EntityManager<EntityBase> *manager, uint32_t id);
 
-    glm::mat4 getViewMatirx() const override {
-        auto trans = component<Transform>();
-        const glm::vec3 &up = trans->getUp();
-        const glm::vec3 &front = trans->getFront();
-        const glm::vec3 &pos = trans->getPosition();
-        glm::mat4 lightView = glm::lookAt(pos, pos + front, up);
-        float near_plane = 1.0f, far_plane = 100.0f;
-        glm::mat4 lightProjection =
-            glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        return lightProjection * lightView;
-    }
-    glm::vec3 getDirection() const override {
-        return component<Transform>()->getFront();
-    }
+    glm::mat4 getViewMatirx() const override;
 
-    glm::vec3 getPosition() const override {
-        return component<Transform>()->getPosition();
-    }
+    glm::vec3 getDirection() const override;
 
-    void draw(RenderTarget &, RenderStates) const override {}
+    glm::vec3 getPosition() const override;
+
+    void draw(RenderTarget &, RenderStates) const override;
 };
 
 #endif /* LIGHT_HPP */

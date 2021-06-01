@@ -49,7 +49,7 @@ Game::Game(const Settings& settings)
     m_app.entities.getPtr<Light>(m_light)->amibent = glm::vec3(0.5f);
     m_app.entities.getPtr<Light>(m_light)->diffuse = glm::vec3(0.5f);
     m_app.entities.getPtr<Light>(m_light)->specular = glm::vec3(0.5f);
-    m_app.entities.getPtr<Light>(m_light)->setPosition(glm::vec3(0, 5, -3));
+    m_app.entities.getPtr<Light>(m_light)->setPosition(glm::vec3(-2, 5, -3));
     m_app.entities.getPtr<Light>(m_light)
         ->component<Transform>()
         ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(45.f), 0));
@@ -86,13 +86,13 @@ Game::Game(const Settings& settings)
     // for (int i = 0; i < 10; ++i) {
     //     glm::vec3 offset(0);
     //     offset[i % 3] = i % 5;
-    //     addCube(positions[i] + offset, textures);
+    //     addCube(positions[i] + offset, 1, 1, 1, textures);
     //     addSphere(positions[i], textures);
     // }
-    //
+
     addCube(glm::vec3(0), 10, 0.2, 10, textures);
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
-    addSphere(glm::vec3(0, 3, 0), textures);
+    addSphere(glm::vec3(0, 6, 0), textures);
 
     m_window.setFramerateLimit(settings.frameRateLimit);
 
@@ -110,17 +110,12 @@ void Game::update(Time& deltaTime) {
 }
 
 void Game::render() {
-    RenderStates states;
-    states.light = m_app.entities.getPtr<LightBase>(m_light);
-    states.camera = m_cameras.getPtr<CameraBase>(m_activeCam);
-
     auto end = m_app.entities.end();
 
+    RenderStates states;
+    const Light& light = *m_app.entities.getPtr<Light>(m_light);
     // draw depth map
-    m_frameBuffer.setupDepthDraw();
-    states.depthMapDraw = true;
-    states.shader = &m_frameBuffer.s_shadowShader;
-    states.depthMapTexture = m_frameBuffer.getDepthMapTexture();
+    m_window.beginDepthMap(light);
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();
@@ -129,10 +124,8 @@ void Game::render() {
 
     // normal draw
     m_frameBuffer.activate();
-    m_window.clear();
-    states.depthMapDraw = false;
-    states.shader = &m_shader;
-    states.depthMapTexture = m_frameBuffer.getDepthMapTexture();
+    m_window.beginScene(m_shader, *m_cameras.getPtr<Camera>(m_activeCam),
+                        light);
     for (auto cur = m_app.entities.begin(); cur != end; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();

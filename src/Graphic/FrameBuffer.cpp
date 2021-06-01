@@ -8,33 +8,6 @@
 using namespace gl;
 
 Shader FrameBuffer::s_shader;
-Shader FrameBuffer::s_shadowShader;
-
-static const float SHADOW_WIDTH = 800;
-static const float SHADOW_HEIGHT = 600;
-
-static void attachShadowTexture(int framebuffer, int texture) {
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH,
-                 SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-                           texture, 0);
-
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!"
-                  << std::endl;
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
 
 static void attachScreenTexture(int framebuffer, int texture, int width,
                                 int height) {
@@ -113,13 +86,11 @@ FrameBuffer::~FrameBuffer() {
 void FrameBuffer::initialize(int width, int height, int sample) {
     glGenFramebuffers(1, &m_multiSampleFrameBufferId);
     glGenFramebuffers(1, &m_frameBufferId);
-    glGenFramebuffers(1, &m_shadowFrameBufferId);
 
     glGenRenderbuffers(1, &m_multiSampleRenderBufferId);
 
     glGenTextures(1, &m_multiSampleTextureId);
     glGenTextures(1, &m_screenTextureId);
-    glGenTextures(1, &m_shadowTextureId);
 
     // screen texture vbo vao
     const float quadVertices[] = {-1.0f, 1.0f, 0.0f, 1.0f,  -1.0f, -1.0f,
@@ -141,8 +112,6 @@ void FrameBuffer::initialize(int width, int height, int sample) {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
                           (void *)(2 * sizeof(float)));
-    // shadow
-    attachShadowTexture(m_shadowFrameBufferId, m_shadowTextureId);
 
     update(width, height, sample);
 }
@@ -185,12 +154,4 @@ void FrameBuffer::draw() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void FrameBuffer::setupDepthDraw() {
-    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFrameBufferId);
-    glClear(GL_DEPTH_BUFFER_BIT);
-}
-
 uint32_t FrameBuffer::getScreenTexture() const { return m_screenTextureId; }
-
-uint32_t FrameBuffer::getDepthMapTexture() const { return m_shadowTextureId; }

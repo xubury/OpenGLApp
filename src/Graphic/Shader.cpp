@@ -47,7 +47,8 @@ void Shader::initDefaultShaders() {
     FrameBuffer::s_shader.compile(fbVertex, fbFragment);
     FrameBuffer::s_shader.use();
     FrameBuffer::s_shader.setInt("screenTexture", 0);
-    FrameBuffer::s_shadowShader.compile(shadowVertex, shadowFragment);
+
+    ShadowBuffer::s_shadowShader.compile(shadowVertex, shadowFragment);
 
     const char* primitiveVertex =
         "#version 330 core\n"

@@ -19,6 +19,11 @@ class GRAPHIC_API RenderTarget {
 
     RenderTarget &operator=(const RenderTarget &) = delete;
 
+    void beginScene(const Shader &shader, const CameraBase &camera,
+                    const LightBase &light);
+
+    void beginDepthMap(const LightBase &light);
+
     void draw(const Drawable &drawable,
               const RenderStates &states = RenderStates::Default);
 
@@ -33,9 +38,7 @@ class GRAPHIC_API RenderTarget {
     virtual ~RenderTarget() = default;
 
    private:
-    void applyCamera(const CameraBase *camera);
-
-    void applyShader(const Shader *shader);
+    void applyShader(const Shader &shader);
 
     void applyTransform(const glm::mat4 &transform);
 
@@ -46,6 +49,7 @@ class GRAPHIC_API RenderTarget {
     const TextureArray *m_textures;
 
     bool m_isRenderOnFrameBuffer;
+
 };
 
 #endif

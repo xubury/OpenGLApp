@@ -18,13 +18,8 @@ class GRAPHIC_API RenderStates {
 
     static const RenderStates Default;
 
-    const Shader *shader;
     glm::mat4 transform;
     const TextureArray *textures;
-    const CameraBase *camera;
-    const LightBase *light;
-    bool depthMapDraw;
-    uint32_t depthMapTexture;
 };
 
 #endif

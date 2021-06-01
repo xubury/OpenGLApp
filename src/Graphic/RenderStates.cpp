@@ -5,11 +5,4 @@
 
 const RenderStates RenderStates::Default;
 
-RenderStates::RenderStates()
-    : shader(nullptr),
-      transform(1.0f),
-      textures(nullptr),
-      camera(nullptr),
-      light(nullptr),
-      depthMapDraw(false),
-      depthMapTexture(0) {}
+RenderStates::RenderStates() : transform(1.0f), textures(nullptr) {}

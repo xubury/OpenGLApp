@@ -27,7 +27,9 @@ set(Graphic_Include
     ${Include_Root}/Primitive.hpp
     ${Include_Root}/Mesh.hpp
     ${Include_Root}/Model.hpp
-    ${Include_Root}/FrameBuffer.hpp)
+    ${Include_Root}/FrameBuffer.hpp
+    ${Include_Root}/ShadowBuffer.hpp
+    ${Include_Root}/LightBase.hpp)
 
 set(Graphic_Src
     ${Src_Root}/CameraBase.cpp
@@ -43,7 +45,9 @@ set(Graphic_Src
     ${Src_Root}/Primitive.cpp
     ${Src_Root}/Mesh.cpp
     ${Src_Root}/Model.cpp
-    ${Src_Root}/FrameBuffer.cpp)
+    ${Src_Root}/FrameBuffer.cpp
+    ${Src_Root}/ShadowBuffer.cpp
+    ${Src_Root}/LightBase.cpp)
 
 add_library(glgraphic ${Graphic_Src})
 
