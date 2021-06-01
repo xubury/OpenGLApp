@@ -1,17 +1,22 @@
 #ifndef SHADOW_BUFFER_HPP
 #define SHADOW_BUFFER_HPP
 
+#include <Base.hpp>
 #include <Graphic/Export.hpp>
 #include <Graphic/Shader.hpp>
 #include <Graphic/RenderTarget.hpp>
 
 class GRAPHIC_API ShadowBuffer : public RenderTarget {
    public:
-    ShadowBuffer(int width = 1024, int height = 1024);
+    static Ref<ShadowBuffer> create(int width, int height);
+
+    ShadowBuffer(int width, int height);
 
     ~ShadowBuffer();
 
     ShadowBuffer(const ShadowBuffer &) = delete;
+
+    ShadowBuffer &operator=(const ShadowBuffer &) = delete;
 
     void beginScene(const Shader &shader, const LightBase &light);
 
@@ -19,9 +24,7 @@ class GRAPHIC_API ShadowBuffer : public RenderTarget {
 
     void draw(const BufferObject &buffer, const RenderStates &states) override;
 
-    ShadowBuffer &operator=(const ShadowBuffer &) = delete;
-
-    uint32_t getTexture() const;
+    uint32_t getDepthMap() const;
 
     uint32_t getFrameBuffer() const;
 

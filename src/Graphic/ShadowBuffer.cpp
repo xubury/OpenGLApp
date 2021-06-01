@@ -31,6 +31,10 @@ static void attachDepthMapTexture(int framebuffer, int texture, int width,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+Ref<ShadowBuffer> ShadowBuffer::create(int width, int height) {
+    return createRef<ShadowBuffer>(width, height);
+}
+
 ShadowBuffer::ShadowBuffer(int width, int height)
     : m_width(width), m_height(height) {
     glGenFramebuffers(1, &m_frameBufferId);
@@ -43,7 +47,7 @@ ShadowBuffer::~ShadowBuffer() {
     glDeleteTextures(1, &m_textureId);
 }
 
-uint32_t ShadowBuffer::getTexture() const { return m_textureId; }
+uint32_t ShadowBuffer::getDepthMap() const { return m_textureId; }
 
 uint32_t ShadowBuffer::getFrameBuffer() const { return m_frameBufferId; }
 

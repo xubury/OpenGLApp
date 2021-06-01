@@ -12,8 +12,10 @@
 
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
-void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
-                              const std::list<LightBase *> &lights) {
+void RenderTarget::beginScene(
+    const Shader &shader, const CameraBase &camera,
+    const std::vector<LightBase *> &lights,
+    const std::vector<Ref<ShadowBuffer>> &shadowBuffers) {
     applyShader(shader);
     glViewport(camera.getViewportX(), camera.getViewportY(),
                camera.getViewportWidth(), camera.getViewportHeight());
@@ -21,20 +23,20 @@ void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
     shader.setMat4("uProjection", camera.getProjection());
     shader.setMat4("uView", camera.getView());
 
-    glActiveTexture(GL_TEXTURE0);
-    
     // reserve texture for depth map
     m_textureReserved = lights.size();
-    // handle multiple lights
-    auto light = *lights.begin();
-    glBindTexture(GL_TEXTURE_2D, light->getShadowBuffer().getTexture());
-    shader.setInt("uDepthMap", 0);
+    // TODO: handle multiple lights
+    for (int i = 0; i < 1; ++i) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, shadowBuffers[i]->getDepthMap());
+        shader.setInt("uDepthMap", i);
 
-    shader.setMat4("uLightSpaceMatrix", light->getLightSpaceMatrix());
-    shader.setVec3("uDirLight.direction", light->getDirection());
-    shader.setVec3("uDirLight.ambient", light->amibent);
-    shader.setVec3("uDirLight.diffuse", light->diffuse);
-    shader.setVec3("uDirLight.specular", light->specular);
+        shader.setMat4("uLightSpaceMatrix", lights[i]->getLightSpaceMatrix());
+        shader.setVec3("uDirLight.direction", lights[i]->getDirection());
+        shader.setVec3("uDirLight.ambient", lights[i]->amibent);
+        shader.setVec3("uDirLight.diffuse", lights[i]->diffuse);
+        shader.setVec3("uDirLight.specular", lights[i]->specular);
+    }
 }
 
 void RenderTarget::endScene() {}

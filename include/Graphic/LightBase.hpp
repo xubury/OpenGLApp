@@ -16,13 +16,6 @@ class GRAPHIC_API LightBase {
     glm::vec3 amibent;
     glm::vec3 diffuse;
     glm::vec3 specular;
-
-    const ShadowBuffer &getShadowBuffer() const;
-
-    ShadowBuffer &getShadowBuffer();
-
-   private:
-    ShadowBuffer m_shadowBuffer;
 };
 
 #endif /* LIGHT_BASE_HPP */

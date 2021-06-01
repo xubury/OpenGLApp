@@ -169,27 +169,28 @@ void Game::render() {
     auto entityIterEnd = m_app.entities.end();
 
     RenderStates states;
-    std::list<LightBase*> lightList;
+    std::vector<Ref<ShadowBuffer>> buffers;
+    std::vector<LightBase*> lightList;
     Light::Handle light;
     auto view = m_app.entities.getByComponents(light);
     auto end = view.end();
     for (auto begin = view.begin(); begin != end; ++begin) {
+        buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map
-        ShadowBuffer& shadow = light->getShadowBuffer();
-        shadow.beginScene(m_shadowShader, *light.get());
+        buffers.back()->beginScene(m_shadowShader, *light.get());
         for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
             states.transform =
                 m_app.entities.get(*cur).component<Transform>()->getMatrix();
-            m_app.entities.get(*cur).draw(shadow, states);
+            m_app.entities.get(*cur).draw(*buffers.back(), states);
         }
-        shadow.endScene();
+        buffers.back()->endScene();
         lightList.push_back(light.get());
     }
 
     // normal draw
     m_frameBuffer.beginScene();
     m_window.beginScene(m_shader, *m_cameras.getPtr<Camera>(m_activeCam),
-                        lightList);
+                        lightList, buffers);
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
         states.transform =
             m_app.entities.get(*cur).component<Transform>()->getMatrix();

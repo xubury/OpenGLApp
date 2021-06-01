@@ -1,17 +1,18 @@
 #ifndef RENDER_TARGET_HPP
 #define RENDER_TARGET_HPP
 
+#include <Base.hpp>
 #include <Graphic/Export.hpp>
 #include <Graphic/Drawable.hpp>
 
 #include <glm/glm.hpp>
-#include <list>
+#include <vector>
 
 class CameraBase;
 
 class BufferObject;
 
-class Primitive;
+class ShadowBuffer;
 
 class Shader;
 
@@ -22,7 +23,8 @@ class GRAPHIC_API RenderTarget {
     RenderTarget &operator=(const RenderTarget &) = delete;
 
     void beginScene(const Shader &shader, const CameraBase &camera,
-                    const std::list<LightBase *> &light);
+                    const std::vector<LightBase *> &lights,
+                    const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
 
     void endScene();
 
