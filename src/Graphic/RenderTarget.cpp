@@ -24,7 +24,7 @@ void RenderTarget::beginScene(
     shader->setMat4("uView", camera.getView());
 
     // reserve texture for depth map
-    m_textureReserved = lights.size();
+    m_textureReserved = shadowBuffers.size();
     // TODO: handle multiple lights
     for (int i = 0; i < 1; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
