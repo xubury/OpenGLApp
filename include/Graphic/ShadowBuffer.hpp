@@ -7,7 +7,7 @@
 
 class GRAPHIC_API ShadowBuffer : public RenderTarget {
    public:
-    ShadowBuffer(int width = 800, int height = 600);
+    ShadowBuffer(int width = 1024, int height = 1024);
 
     ~ShadowBuffer();
 
@@ -21,7 +21,7 @@ class GRAPHIC_API ShadowBuffer : public RenderTarget {
 
     ShadowBuffer &operator=(const ShadowBuffer &) = delete;
 
-    uint32_t getDepthMapTexture() const;
+    uint32_t getTexture() const;
 
     uint32_t getFrameBuffer() const;
 

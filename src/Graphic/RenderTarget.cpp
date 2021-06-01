@@ -27,7 +27,7 @@ void RenderTarget::beginScene(const Shader &shader, const CameraBase &camera,
     m_textureReserved = lights.size();
     // handle multiple lights
     auto light = *lights.begin();
-    glBindTexture(GL_TEXTURE_2D, light->getShadowBuffer().getDepthMapTexture());
+    glBindTexture(GL_TEXTURE_2D, light->getShadowBuffer().getTexture());
     shader.setInt("uDepthMap", 0);
 
     shader.setMat4("uLightSpaceMatrix", light->getLightSpaceMatrix());

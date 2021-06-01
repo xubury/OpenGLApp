@@ -61,7 +61,8 @@ Game::Game(const Settings& settings)
     // m_app.entities.get(lightSource2).add<Light>();
     // m_app.entities.get(lightSource2).setPosition(glm::vec3(0, 8, 8));
     // m_app.entities.get(lightSource2)
-    //     .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
+    //     .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f),
+    //     0));
 
     // auto light2 = m_app.entities.get(lightSource2).component<Light>();
     // light2->amibent = glm::vec3(0.5f);
@@ -109,18 +110,24 @@ Game::Game(const Settings& settings)
     m_fbShader.compile(fbVertex, fbFragment);
     m_fbShader.use();
     m_fbShader.setInt("uScreenTexture", 0);
-    // m_shader.use();
-    // m_shader.setVec3("pointLight.position", glm::vec3(0.0f, 0.0f, 2.0f));
-    // m_shader.setVec3("pointLight.direction", glm::vec3(0.0f, 0.0f, -1.0f));
-    // m_shader.setVec3("pointLight.ambient", glm::vec3(0.5f));
-    // m_shader.setVec3("pointLight.diffuse", glm::vec3(0.5f));
-    // m_shader.setVec3("pointLight.specular", glm::vec3(1.0f));
-    // m_shader.setFloat("pointLight.constant", 1.0f);
-    // m_shader.setFloat("pointLight.linear", 0.09f);
-    // m_shader.setFloat("pointLight.quadratic", 0.032f);
-    // m_shader.setFloat("pointLight.cutOff", glm::cos(glm::radians(12.5f)));
-    // m_shader.setFloat("pointLight.outerCutOff",
-    // glm::cos(glm::radians(15.5f)));
+    m_shader.use();
+    m_shader.setVec3("pointLight.position", glm::vec3(0.0f, 0.0f, 2.0f));
+    m_shader.setVec3("pointLight.direction", glm::vec3(0.0f, 0.0f, -1.0f));
+    m_shader.setVec3("pointLight.ambient", glm::vec3(0.5f));
+    m_shader.setVec3("pointLight.diffuse", glm::vec3(0.5f));
+    m_shader.setVec3("pointLight.specular", glm::vec3(1.0f));
+    m_shader.setFloat("pointLight.constant", 1.0f);
+    m_shader.setFloat("pointLight.linear", 0.09f);
+    m_shader.setFloat("pointLight.quadratic", 0.032f);
+    m_shader.setFloat("pointLight.cutOff", glm::cos(glm::radians(12.5f)));
+    m_shader.setFloat("pointLight.outerCutOff", glm::cos(glm::radians(15.5f)));
+
+    // ground
+    TextureArray groundTextures;
+    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
+    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
+    groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
+    addCube(glm::vec3(0), 50, 1, 50, groundTextures);
 
     // glm::vec3 positions[] = {
     //     glm::vec3(-2.0f, 0.0f, 0.0f),   glm::vec3(2.0f, 5.0f, -15.0f),
@@ -129,9 +136,9 @@ Game::Game(const Settings& settings)
     //     glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
     //     glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
     TextureArray textures;
-    textures.loadFromValue(glm::vec3(0.5f), Texture::AMBIENT);
-    textures.loadFromValue(glm::vec3(1.f), Texture::DIFFUSE);
-    textures.loadFromValue(glm::vec3(1.f), Texture::SPECULAR);
+    textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
+    textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
+    textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
 
     // for (int i = 0; i < 10; ++i) {
     //     glm::vec3 offset(0);
@@ -140,7 +147,6 @@ Game::Game(const Settings& settings)
     //     addSphere(positions[i], textures);
     // }
 
-    addCube(glm::vec3(0), 10, 0.2, 10, textures);
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
     addSphere(glm::vec3(0, 6, 0), textures);
 
