@@ -5,17 +5,14 @@
 
 ActionMap<Movement> Camera::s_cameraMovement;
 
-Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
-               int width, int height, const glm::vec3 &position)
+Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position)
     : CameraBase(x, y, width, height),
-      EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
       m_zoom(45.f),
       m_yaw(0),
       m_pitch(0) {
-    component<Transform>()->setPosition(position);
-    component<Transform>()->setEulerAngle(
-        glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
+    setPosition(position);
+    setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
     s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
     s_cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
     s_cameraMovement.map(Movement::LEFT, Keyboard::Key::A);
@@ -40,10 +37,9 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
 }
 
 glm::mat4 Camera::getView() const {
-    auto trans = component<Transform>();
-    const glm::vec3 &up = trans->getUp();
-    const glm::vec3 &front = trans->getFront();
-    const glm::vec3 &pos = trans->getPosition();
+    const glm::vec3 &up = getUp();
+    const glm::vec3 &front = getFront();
+    const glm::vec3 &pos = getPosition();
     return glm::lookAt(pos, pos - front, up);
 }
 
@@ -52,22 +48,19 @@ glm::mat4 Camera::getProjection() const {
                             getFarZ());
 }
 
-void Camera::draw(RenderTarget &, RenderStates) const {}
-
 void Camera::move(Movement dir, float val) {
-    auto trans = component<Transform>();
     if (dir == Movement::FORWARD) {
-        trans->translateLocal(glm::vec3(0, 0, -1) * val);
+        translateLocal(glm::vec3(0, 0, -1) * val);
     } else if (dir == Movement::BACKWRAD) {
-        trans->translateLocal(glm::vec3(0, 0, 1) * val);
+        translateLocal(glm::vec3(0, 0, 1) * val);
     } else if (dir == Movement::LEFT) {
-        trans->translateLocal(glm::vec3(-1, 0, 0) * val);
+        translateLocal(glm::vec3(-1, 0, 0) * val);
     } else if (dir == Movement::RIGHT) {
-        trans->translateLocal(glm::vec3(1, 0, 0) * val);
+        translateLocal(glm::vec3(1, 0, 0) * val);
     } else if (dir == Movement::UPWARD) {
-        trans->translateLocal(glm::vec3(0, 1, 0) * val);
+        translateLocal(glm::vec3(0, 1, 0) * val);
     } else if (dir == Movement::DOWNWARD) {
-        trans->translateLocal(glm::vec3(0, -1, 0) * val);
+        translateLocal(glm::vec3(0, -1, 0) * val);
     }
 }
 
@@ -81,8 +74,7 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
             m_pitch = -89.f;
         }
     }
-    auto trans = component<Transform>();
-    trans->setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
+    setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
 }
 
 void Camera::zoom(float zoom) {

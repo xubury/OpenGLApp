@@ -19,6 +19,8 @@ struct Settings {
     int frameRateLimit;
 };
 
+class Camera;
+
 class Game {
    public:
     Game(const Settings &settings);
@@ -45,8 +47,7 @@ class Game {
     RenderWindow m_window;
     ShaderLibrary m_shaders;
     Application<EntityBase> m_app;
-    EntityManager<EntityBase> m_cameras;
-    uint32_t m_activeCam;
+    Ref<Camera> m_mainCamera;
     FrameBuffer m_frameBuffer;
 
     bool m_editorMode;

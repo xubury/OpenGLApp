@@ -11,11 +11,11 @@ void EditorContext::prepareContext() {
 
     glm::vec3 pos = getActiveEntityPtr()->component<Transform>()->getPosition();
     float rightLen = m_camera->getSegmentLengthClipSpace(
-        pos, pos + m_camera->component<Transform>()->getRight());
+        pos, pos + m_camera->getRight());
     m_screenFactor = 1.0f / rightLen;
 
     m_frameBuffer->beginScene();
-    Primitive::instance().setDrawingView(m_camera);
+    Primitive::instance().setDrawingView(m_camera.get());
 }
 
 void EditorContext::unloadContext() { m_frameBuffer->endScene(); }
@@ -24,13 +24,13 @@ void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
 uint32_t EditorContext::getActiveEntityId() const { return m_activeEntityId; }
 
-EntityBase* EditorContext::getActiveEntityPtr() {
-    return m_entities->getPtr(m_activeEntityId);
+Ref<EntityBase> EditorContext::getActiveEntityPtr() {
+    return m_entities->get(m_activeEntityId);
 }
 
-void EditorContext::setCamrea(Camera* camera) { m_camera = camera; }
+void EditorContext::setCamrea(const Ref<Camera> &camera) { m_camera = camera; }
 
-Camera* EditorContext::getCamera() { return m_camera; }
+Ref<Camera> EditorContext::getCamera() { return m_camera; }
 
 void EditorContext::setWindow(RenderWindow* window) { m_window = window; }
 

@@ -1,6 +1,7 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
+#include <Base.hpp>
 #include <ECS/Defines.hpp>
 
 template <typename ENTITY>
@@ -38,7 +39,7 @@ class VComponent {
 
     uint32_t ownerID() const;
 
-    const ENTITY &owner() const;
+    const Ref<ENTITY> owner() const;
 
     EntityManager<ENTITY> *manager() { return m_manager; }
 
@@ -119,7 +120,7 @@ inline uint32_t VComponent<ENTITY>::ownerID() const {
 }
 
 template <typename ENTITY>
-inline const ENTITY &VComponent<ENTITY>::owner() const {
+inline const Ref<ENTITY> VComponent<ENTITY>::owner() const {
     return m_manager->get(m_ownerID);
 }
 

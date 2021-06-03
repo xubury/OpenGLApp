@@ -12,27 +12,27 @@
 
 void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Sphere>();
-    EntityBase* sphere = m_app.entities.getPtr(id);
+    Ref<EntityBase> sphere = m_app.entities.get(id);
     sphere->setTextures(textures);
     sphere->setPosition(pos);
-    sphere->setName(typeid(*sphere).name());
+    sphere->setName("Sphere");
 }
 
 void Game::addCube(const glm::vec3& pos, float width, float height,
                    float length, const TextureArray& textures) {
     int id = m_app.entities.create<Cube>(width, height, length);
-    EntityBase* cube = m_app.entities.getPtr(id);
+    Ref<EntityBase> cube = m_app.entities.get(id);
     cube->setTextures(textures);
     cube->setPosition(pos);
-    cube->setName(typeid(*cube).name());
+    cube->setName("Cube");
 }
 
 void Game::addModel(const std::string& path, const glm::vec3& pos) {
     int id = m_app.entities.create<ModelEntity>();
-    ModelEntity* model = m_app.entities.getPtr<ModelEntity>(id);
-    model->load(path);
+    Ref<EntityBase> model = m_app.entities.get(id);
+    dynamic_cast<ModelEntity*>(model.get())->load(path);
     model->setPosition(pos);
-    model->setName(typeid(*model).name());
+    model->setName("model");
 }
 
 void Game::loadShaders() {
@@ -95,13 +95,13 @@ void Game::loadShaders() {
 
 void Game::loadScene() {
     uint32_t lightSource = m_app.entities.create<EntityBase>();
-    m_app.entities.get(lightSource).setName("Directional Light");
-    m_app.entities.get(lightSource).setPosition(glm::vec3(0, 8, 8));
+    m_app.entities.get(lightSource)->setName("Directional Light");
+    m_app.entities.get(lightSource)->setPosition(glm::vec3(0, 8, 8));
     m_app.entities.get(lightSource)
-        .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
+        ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
 
-    m_app.entities.get(lightSource).add<Light>();
-    auto light = m_app.entities.get(lightSource).component<Light>();
+    m_app.entities.get(lightSource)->add<Light>();
+    auto light = m_app.entities.get(lightSource)->component<Light>();
     light->amibent = glm::vec3(0.5f);
     light->diffuse = glm::vec3(0.5f);
     light->specular = glm::vec3(0.5f);
@@ -152,16 +152,14 @@ void Game::loadScene() {
 
 Game::Game(const Settings& settings)
     : m_window(settings.width, settings.height, settings.title),
-      m_activeCam(0),
       m_frameBuffer(settings.width, settings.height, settings.samples),
       m_editorMode(settings.editor) {
     loadShaders();
     loadScene();
-    m_activeCam = m_cameras.create<Camera>(
-        0, 0, settings.width, settings.height, glm::vec3(-8.f, 9.f, 13.f));
-    m_cameras.get(m_activeCam)
-        .setEulerAngle(glm::vec3(glm::radians(-15.f), glm::radians(-35.f),
-                                 glm::radians(5.f)));
+    m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height,
+                                  glm::vec3(-8.f, 9.f, 13.f));
+    m_mainCamera->setEulerAngle(
+        glm::vec3(glm::radians(-15.f), glm::radians(-35.f), glm::radians(5.f)));
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
@@ -194,8 +192,8 @@ void Game::render() {
         buffers.back()->beginScene(m_shaders.get("Shadow"), *light.get());
         for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
             states.transform =
-                m_app.entities.get(*cur).component<Transform>()->getMatrix();
-            m_app.entities.get(*cur).draw(*buffers.back(), states);
+                m_app.entities.get(*cur)->component<Transform>()->getMatrix();
+            m_app.entities.get(*cur)->draw(*buffers.back(), states);
         }
         buffers.back()->endScene();
         lightList.push_back(light.get());
@@ -203,14 +201,12 @@ void Game::render() {
 
     // normal draw
     m_frameBuffer.beginScene();
-    m_window.beginScene(m_shaders.get("Main"),
-                        *m_cameras.getPtr<Camera>(m_activeCam), lightList,
-                        buffers);
+    m_window.beginScene(m_shaders.get("Main"), m_mainCamera, lightList, buffers);
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
         states.transform =
-            m_app.entities.get(*cur).component<Transform>()->getMatrix();
-        states.textures = m_app.entities.get(*cur).getTextures();
-        m_app.entities.get(*cur).draw(m_window, states);
+            m_app.entities.get(*cur)->component<Transform>()->getMatrix();
+        states.textures = m_app.entities.get(*cur)->getTextures();
+        m_app.entities.get(*cur)->draw(m_window, states);
     }
     m_window.endScene();
     m_frameBuffer.endScene();
@@ -228,7 +224,7 @@ void Game::run(int minFps) {
     Clock clock;
     Time timeSinceLastUpdate = Time::Zero;
     Time timePerFrame = seconds(1.0 / minFps);
-    Camera* camera = m_cameras.getPtr<Camera>(m_activeCam);
+    Ref<Camera> camera = m_mainCamera;
 
     if (m_editorMode) {
         Editor::instance().context.setFrameBuffer(&m_frameBuffer);

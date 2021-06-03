@@ -17,11 +17,11 @@ class EditorContext {
 
     uint32_t getActiveEntityId() const;
 
-    EntityBase *getActiveEntityPtr();
+    Ref<EntityBase> getActiveEntityPtr();
 
-    void setCamrea(Camera *camera);
+    void setCamrea(const Ref<Camera> &camera);
 
-    Camera *getCamera();
+    Ref<Camera> getCamera();
 
     void setWindow(RenderWindow *window);
 
@@ -64,7 +64,7 @@ class EditorContext {
 
     FrameBuffer *m_frameBuffer;
 
-    Camera *m_camera;
+    Ref<Camera> m_camera;
 
     EntityManager<EntityBase> *m_entities;
 

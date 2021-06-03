@@ -13,15 +13,15 @@
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
 void RenderTarget::beginScene(
-    Ref<Shader> shader, const CameraBase &camera,
+    Ref<Shader> shader, const Ref<CameraBase> &camera,
     const std::vector<const LightBase *> &lights,
     const std::vector<Ref<ShadowBuffer>> &shadowBuffers) {
     applyShader(shader);
-    glViewport(camera.getViewportX(), camera.getViewportY(),
-               camera.getViewportWidth(), camera.getViewportHeight());
+    glViewport(camera->getViewportX(), camera->getViewportY(),
+               camera->getViewportWidth(), camera->getViewportHeight());
     clear();
-    shader->setMat4("uProjection", camera.getProjection());
-    shader->setMat4("uView", camera.getView());
+    shader->setMat4("uProjection", camera->getProjection());
+    shader->setMat4("uView", camera->getView());
 
     // reserve texture for depth map
     m_textureReserved = shadowBuffers.size();

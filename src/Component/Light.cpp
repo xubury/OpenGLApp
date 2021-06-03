@@ -4,7 +4,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 glm::mat4 Light::getLightSpaceMatrix() const {
-    auto trans = owner().component<Transform>();
+    auto trans = owner()->component<Transform>();
     const glm::vec3 &up = trans->getUp();
     const glm::vec3 &front = trans->getFront();
     const glm::vec3 &pos = trans->getPosition();
@@ -16,9 +16,9 @@ glm::mat4 Light::getLightSpaceMatrix() const {
 }
 
 glm::vec3 Light::getDirection() const {
-    return owner().component<Transform>()->getFront();
+    return owner()->component<Transform>()->getFront();
 }
 
 glm::vec3 Light::getPosition() const {
-    return owner().component<Transform>()->getPosition();
+    return owner()->component<Transform>()->getPosition();
 }

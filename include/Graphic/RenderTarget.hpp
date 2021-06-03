@@ -22,7 +22,7 @@ class GRAPHIC_API RenderTarget {
 
     RenderTarget &operator=(const RenderTarget &) = delete;
 
-    void beginScene(Ref<Shader> shader, const CameraBase &camera,
+    void beginScene(Ref<Shader> shader, const Ref<CameraBase> &camera,
                     const std::vector<const LightBase *> &lights,
                     const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
 

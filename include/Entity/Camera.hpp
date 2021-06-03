@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <Entity/EntityBase.hpp>
 #include <Window/ActionTarget.hpp>
+#include <Component/Transform.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/CameraBase.hpp>
 
@@ -13,7 +14,7 @@ inline const float MOUSE_SENSITIVITY = 0.1f;
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
 class Camera : public CameraBase,
-               public EntityBase,
+               public Transform,
                protected ActionTarget<Movement> {
    public:
     using ActionTarget::processEvent;
@@ -21,10 +22,8 @@ class Camera : public CameraBase,
     using ActionTarget::setActive;
 
    public:
-    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
-           int width, int height, const glm::vec3 &position = glm::vec3(0.f));
-
-    virtual void draw(RenderTarget &target, RenderStates states) const override;
+    Camera(int x, int y, int width, int height,
+           const glm::vec3 &position = glm::vec3(0.f));
 
     virtual glm::mat4 getView() const override;
 
