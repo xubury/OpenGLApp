@@ -53,4 +53,4 @@ target_link_libraries(OpenGLApp glgraphic glfw imgui::imgui)
 target_include_directories(OpenGLApp PUBLIC include libs)
 endif()
 
-install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp DESTINATION include)
+install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp ${PROJECT_SOURCE_DIR}/include/Base.hpp DESTINATION include)

@@ -73,8 +73,6 @@ void Game::loadShaders() {
 
     m_shaders.add("FrameBuffer");
     m_shaders.get("FrameBuffer")->compile(fbVertex, fbFragment);
-    m_shaders.get("FrameBuffer")->bind();
-    m_shaders.get("FrameBuffer")->setInt("uScreenTexture", 0);
 
     m_shaders.add("Main");
     m_shaders.get("Main")->load("shader/vertex.glsl", "shader/fragment.glsl");
@@ -97,11 +95,12 @@ void Game::loadShaders() {
 
 void Game::loadScene() {
     uint32_t lightSource = m_app.entities.create<EntityBase>();
-    m_app.entities.get(lightSource).add<Light>();
+    m_app.entities.get(lightSource).setName("Directional Light");
     m_app.entities.get(lightSource).setPosition(glm::vec3(0, 8, 8));
     m_app.entities.get(lightSource)
         .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
 
+    m_app.entities.get(lightSource).add<Light>();
     auto light = m_app.entities.get(lightSource).component<Light>();
     light->amibent = glm::vec3(0.5f);
     light->diffuse = glm::vec3(0.5f);

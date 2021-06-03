@@ -5,6 +5,7 @@ if (POLICY CMP0072)
     set(OpenGL_GL_PREFERENCE LEGACY)
 endif()
 find_package(OpenGL REQUIRED)
+find_package(spdlog REQUIRED)
 find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
@@ -59,6 +60,7 @@ target_compile_definitions(glgraphic PRIVATE GRAPHIC_EXPORTS)
 
 target_link_libraries(glgraphic PUBLIC
     OpenGL::GL
+    spdlog::spdlog
     glbinding::glbinding
     glm
     assimp::assimp)

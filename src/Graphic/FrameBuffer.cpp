@@ -142,6 +142,7 @@ void FrameBuffer::endScene() const {
 void FrameBuffer::draw(Ref<Shader> shader) {
     glDisable(GL_DEPTH_TEST);
     shader->bind();
+    shader->setInt("uScreenTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_screenTextureId);
     glBindVertexArray(m_VAO);
