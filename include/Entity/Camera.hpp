@@ -8,6 +8,8 @@
 #include <Graphic/RenderTarget.hpp>
 #include <Graphic/CameraBase.hpp>
 
+namespace te {
+
 inline const float SPEED = 2.5f;
 inline const float MOUSE_SENSITIVITY = 0.1f;
 
@@ -45,5 +47,7 @@ class Camera : public CameraBase,
     float m_yaw;
     float m_pitch;
 };
+
+}
 
 #endif

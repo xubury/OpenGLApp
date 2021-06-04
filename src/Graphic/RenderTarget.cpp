@@ -11,6 +11,8 @@
 #include "Graphic/LightBase.hpp"
 #include <iostream>
 
+namespace te {
+
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
 void RenderTarget::beginScene(Ref<Shader> shader,
@@ -110,3 +112,5 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
         ++i;
     }
 }
+
+}  // namespace te

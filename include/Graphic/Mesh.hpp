@@ -8,6 +8,8 @@
 #include "Graphic/TextureArray.hpp"
 #include "Graphic/ElementBuffer.hpp"
 
+namespace te {
+
 class GRAPHIC_API Mesh : public Drawable {
    public:
     Mesh(GLenum type, const std::vector<Vertex> &vertices,
@@ -28,5 +30,7 @@ class GRAPHIC_API Mesh : public Drawable {
 
     ElementBuffer m_buffer;
 };
+
+}  // namespace te
 
 #endif

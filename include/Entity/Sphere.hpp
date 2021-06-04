@@ -4,6 +4,8 @@
 #include <Entity/EntityBase.hpp>
 #include <Graphic/ElementBuffer.hpp>
 
+namespace te {
+
 class Sphere : public EntityBase {
    public:
     Sphere(EntityManager<EntityBase> *manager, uint32_t id);
@@ -13,5 +15,8 @@ class Sphere : public EntityBase {
    private:
     ElementBuffer m_shpere;
 };
+
+}
+
 
 #endif /* SPHERE_HPP */

@@ -7,6 +7,8 @@
 #include <Component/Transform.hpp>
 #include <Component/BoundingBox.hpp>
 
+namespace te {
+
 Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
            float height, float length)
     : EntityBase(manager, id) {
@@ -55,3 +57,5 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
 void Cube::draw(RenderTarget &target, RenderStates states) const {
     target.draw(m_cube, states);
 }
+
+}  // namespace te

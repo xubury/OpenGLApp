@@ -4,6 +4,8 @@
 #include "Graphic/Export.hpp"
 #include <glm/glm.hpp>
 
+namespace te {
+
 class GRAPHIC_API CameraBase {
    public:
     CameraBase(int x, int y, int width, int height);
@@ -51,5 +53,7 @@ class GRAPHIC_API CameraBase {
     float m_nearZ;
     float m_farZ;
 };
+
+}
 
 #endif /* CAMERA_BASE_HPP */

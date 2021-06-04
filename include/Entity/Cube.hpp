@@ -4,6 +4,8 @@
 #include <Graphic/VertexBuffer.hpp>
 #include <Entity/EntityBase.hpp>
 
+namespace te {
+
 class Cube : public EntityBase {
    public:
     Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
@@ -14,5 +16,7 @@ class Cube : public EntityBase {
    private:
     VertexBuffer m_cube;
 };
+
+}  // namespace te
 
 #endif

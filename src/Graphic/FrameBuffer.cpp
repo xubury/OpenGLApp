@@ -6,6 +6,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <iostream>
 
+namespace te {
+
 static void attachScreenTexture(int framebuffer, int texture, int width,
                                 int height) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -151,3 +153,5 @@ void FrameBuffer::draw(Ref<Shader> shader) {
 }
 
 uint32_t FrameBuffer::getScreenTexture() const { return m_screenTextureId; }
+
+}  // namespace te

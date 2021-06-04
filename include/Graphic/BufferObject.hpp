@@ -6,6 +6,8 @@
 #include "Graphic/Drawable.hpp"
 #include "Graphic/OpenGL.hpp"
 
+namespace te {
+
 class GRAPHIC_API BufferObject : public Drawable {
    protected:
     std::size_t m_size;
@@ -36,5 +38,7 @@ class GRAPHIC_API BufferObject : public Drawable {
    private:
     uint32_t m_VAO;
 };
+
+}  // namespace te
 
 #endif /* BUFFER_OBJECT_HPP */

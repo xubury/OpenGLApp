@@ -1,5 +1,7 @@
 #include "Graphic/TextureArray.hpp"
-#include "ResourceManager.hpp"
+#include "Core/ResourceManager.hpp"
+
+namespace te {
 
 static ResourceManager<std::string, Texture> s_loadedTexture;
 
@@ -17,3 +19,5 @@ void TextureArray::loadFromValue(const glm::vec3 &value,
 std::size_t TextureArray::size() const { return m_list.size(); }
 
 const std::list<Ref<Texture>> &TextureArray::getList() const { return m_list; }
+
+}  // namespace te

@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include "Graphic/Export.hpp"
 
+namespace te {
+
 class Shader;
 
 class TextureArray;
@@ -21,5 +23,7 @@ class GRAPHIC_API RenderStates {
     glm::mat4 transform;
     const TextureArray *textures;
 };
+
+}  // namespace te
 
 #endif

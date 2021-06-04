@@ -8,6 +8,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+namespace te {
+
 class GRAPHIC_API Model : public Drawable {
    public:
     Model() = default;
@@ -39,5 +41,7 @@ class GRAPHIC_API Model : public Drawable {
 
     std::string m_directory;
 };
+
+}  // namespace te
 
 #endif

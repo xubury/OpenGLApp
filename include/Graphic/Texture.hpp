@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <string>
 
+namespace te {
+
 class GRAPHIC_API Texture {
    public:
     enum TextureType { AMBIENT, DIFFUSE, SPECULAR };
@@ -30,5 +32,7 @@ class GRAPHIC_API Texture {
 
     TextureType m_type;
 };
+
+}  // namespace te
 
 #endif

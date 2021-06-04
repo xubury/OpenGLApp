@@ -4,6 +4,8 @@
 #include "Graphic/Export.hpp"
 #include <glm/glm.hpp>
 
+namespace te {
+
 struct GRAPHIC_API Vertex {
     glm::vec3 position;
     glm::vec2 texCoord;
@@ -14,5 +16,7 @@ struct GRAPHIC_API Vertex {
     Vertex(const glm::vec3 &position, const glm::vec2 &texCoord,
            const glm::vec3 &normal);
 };
+
+}  // namespace te
 
 #endif

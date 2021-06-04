@@ -3,6 +3,8 @@
 
 #include <chrono>
 
+namespace te {
+
 using MicroSeconds = std::chrono::microseconds;
 using MilliSeconds = std::chrono::milliseconds;
 using Seconds = std::chrono::seconds;
@@ -40,5 +42,7 @@ Time seconds(float amount);
 Time milliseconds(int32_t amount);
 
 Time microseconds(int64_t amount);
+
+}  // namespace te
 
 #endif

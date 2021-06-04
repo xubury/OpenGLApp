@@ -3,6 +3,8 @@
 #include "stb_image.h"
 #include <iostream>
 
+namespace te {
+
 Texture::Texture() : m_id(0) {}
 
 Texture::~Texture() { glDeleteTextures(1, &m_id); }
@@ -54,3 +56,5 @@ bool Texture::load(const glm::vec3 &value, TextureType textureType) {
     glBindTexture(GL_TEXTURE_2D, 0);
     return true;
 }
+
+}  // namespace te

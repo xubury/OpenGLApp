@@ -4,6 +4,8 @@
 #include <ECS/Entity.hpp>
 #include <Graphic/TextureArray.hpp>
 
+namespace te {
+
 class EntityBase : public Entity<EntityBase>, public Drawable {
    public:
     EntityBase(const EntityBase &) = delete;
@@ -19,7 +21,7 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
     glm::vec3 getPosition() const;
 
     void setEulerAngle(const glm::vec3 &angle);
-    
+
     glm::vec3 getEulerAngle() const;
 
     std::string getName() const;
@@ -31,9 +33,12 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
     const TextureArray *getTextures() const;
 
     virtual void draw(RenderTarget &target, RenderStates states) const override;
+
    private:
     std::string m_name;
     TextureArray m_textures;
 };
+
+}  // namespace te
 
 #endif

@@ -4,6 +4,8 @@
 #include <memory>
 #include "Core/PlatformDetection.hpp"
 
+namespace te {
+
 template <typename T>
 using Scope = std::unique_ptr<T>;
 template <typename T, typename... Args>
@@ -16,6 +18,8 @@ using Ref = std::shared_ptr<T>;
 template <typename T, typename... Args>
 constexpr Ref<T> createRef(Args&&... args) {
     return std::make_shared<T>(std::forward<Args>(args)...);
+}
+
 }
 
 #ifdef DEBUG_BUILD

@@ -3,13 +3,15 @@
 
 #include <string>
 
-#include "ResourceManager.hpp"
 #include "Window/RenderWindow.hpp"
+#include "Entity/Camera.hpp"
 #include "Graphic/Shader.hpp"
 #include "ECS/ECS.hpp"
 #include "Utility/Time.hpp"
 #include "ECS/Application.hpp"
 #include "Graphic/FrameBuffer.hpp"
+
+using namespace te;
 
 struct Settings {
     int width;
@@ -20,7 +22,6 @@ struct Settings {
     int frameRateLimit;
 };
 
-class Camera;
 
 class Game {
    public:

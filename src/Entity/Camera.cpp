@@ -3,6 +3,8 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+namespace te {
+
 ActionMap<Movement> Camera::s_cameraMovement;
 
 Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position)
@@ -86,3 +88,5 @@ void Camera::zoom(float zoom) {
 }
 
 float Camera::getFOV() const { return m_zoom; }
+
+}  // namespace te

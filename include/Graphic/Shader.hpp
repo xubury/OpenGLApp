@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
+namespace te {
+
 class GRAPHIC_API Shader {
    public:
     Shader();
@@ -57,5 +59,7 @@ class GRAPHIC_API ShaderLibrary {
    private:
     std::unordered_map<std::string, Ref<Shader>> m_library;
 };
+
+}  // namespace te
 
 #endif

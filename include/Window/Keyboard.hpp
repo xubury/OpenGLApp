@@ -1,6 +1,8 @@
 #ifndef KEYBOARD_HPP
 #define KEYBOARD_HPP
 
+namespace te {
+
 class Keyboard {
    public:
     enum Key {
@@ -109,5 +111,7 @@ class Keyboard {
 
     static bool isKeyPressed(Key key);
 };
+
+}  // namespace te
 
 #endif

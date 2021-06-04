@@ -9,6 +9,8 @@
 #include <Window/RenderWindow.hpp>
 #include <Component/Transform.hpp>
 
+namespace te {
+
 class EditorContext {
    public:
     EditorContext();
@@ -76,5 +78,8 @@ class EditorContext {
 
     glm::vec2 m_renderOrigin;
 };
+
+}
+
 
 #endif /* RENDER_CONTEXT_HPP */

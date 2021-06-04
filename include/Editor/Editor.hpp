@@ -4,6 +4,8 @@
 #include <Editor/EditorContext.hpp>
 #include <Graphic/Vertex.hpp>
 
+namespace te {
+
 struct Axes {
     glm::vec3 origin;
     glm::vec3 axes[3];
@@ -72,5 +74,8 @@ class Editor {
 
     float m_axisSizeFactor;
 };
+
+
+}
 
 #endif /* EDITOR_HPP */

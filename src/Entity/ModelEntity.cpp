@@ -2,6 +2,8 @@
 #include <Component/BoundingBox.hpp>
 #include <Component/Transform.hpp>
 
+namespace te {
+
 ModelEntity::ModelEntity(EntityManager<EntityBase> *manager, uint32_t id)
     : EntityBase(manager, id) {
     manager->addComponent<BoundingBox>(id);
@@ -17,4 +19,6 @@ void ModelEntity::load(const std::string &path) {
 void ModelEntity::draw(RenderTarget &target, RenderStates states) const {
     states.transform = component<Transform>()->getMatrix();
     m_model.draw(target, states);
+}
+
 }

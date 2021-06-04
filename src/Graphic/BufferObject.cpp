@@ -2,6 +2,8 @@
 #include "Graphic/RenderTarget.hpp"
 #include <iostream>
 
+namespace te {
+
 BufferObject::BufferObject()
     : m_size(0),
       m_mode(GL_STATIC_DRAW),
@@ -39,3 +41,5 @@ std::size_t BufferObject::size() const { return m_size; }
 bool BufferObject::empty() const { return m_size == 0; }
 
 void BufferObject::bindVertexArray() const { glBindVertexArray(m_VAO); }
+
+}  // namespace te

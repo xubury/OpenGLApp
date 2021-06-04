@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+namespace te {
+
 class CameraBase;
 
 class GRAPHIC_API Primitive {
@@ -54,5 +56,7 @@ class GRAPHIC_API Primitive {
    private:
     Shader m_shader;
 };
+
+}  // namespace te
 
 #endif /* PRIMITIVE_HPP */

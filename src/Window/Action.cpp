@@ -1,5 +1,7 @@
 #include "Window/Action.hpp"
 
+namespace te {
+
 Action::Action(const Event::EventType &event) : m_type(Type::PRESSED) {
     m_event.type = event;
 }
@@ -59,3 +61,5 @@ bool Action::test() const {
     }
     return res;
 }
+
+}  // namespace te

@@ -4,6 +4,8 @@
 #include <Entity/EntityBase.hpp>
 #include <Graphic/Model.hpp>
 
+namespace te {
+
 class ModelEntity : public EntityBase {
    public:
     ModelEntity(EntityManager<EntityBase> *manager, uint32_t id);
@@ -15,5 +17,7 @@ class ModelEntity : public EntityBase {
    private:
     Model m_model;
 };
+
+}  // namespace te
 
 #endif

@@ -6,6 +6,8 @@
 #include <Graphic/Drawable.hpp>
 #include <Entity/EntityBase.hpp>
 
+namespace te {
+
 class BoundingBox : public Component<BoundingBox, EntityBase> {
    public:
     BoundingBox();
@@ -36,5 +38,7 @@ class BoundingBoxSystem : public System<BoundingBox, EntityBase> {
     virtual void update(EntityManager<EntityBase> &manager,
                         const Time &deltaTime) override;
 };
+
+}  // namespace te
 
 #endif

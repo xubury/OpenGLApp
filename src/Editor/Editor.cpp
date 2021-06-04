@@ -7,6 +7,8 @@
 #include <Component/Light.hpp>
 #include <iostream>
 
+namespace te {
+
 static const float quadMin = 0.4f;
 static const float quadMax = 0.8f;
 static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
@@ -410,3 +412,5 @@ void Editor::close() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
+
+}  // namespace te

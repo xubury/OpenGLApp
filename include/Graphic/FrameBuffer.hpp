@@ -5,6 +5,8 @@
 #include "Graphic/Shader.hpp"
 #include "Graphic/LightBase.hpp"
 
+namespace te {
+
 class GRAPHIC_API FrameBuffer {
    public:
     FrameBuffer(int width, int height, int sample);
@@ -42,5 +44,7 @@ class GRAPHIC_API FrameBuffer {
     int m_height;
     int m_sample;
 };
+
+}  // namespace te
 
 #endif /* FRAMEBUFFER_HPP */

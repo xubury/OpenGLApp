@@ -1,6 +1,8 @@
 #include "Graphic/Vertex.hpp"
 #include "Graphic/OpenGL.hpp"
 
+namespace te {
+
 void Vertex::setupAttribute() {
     // position attribute
     glEnableVertexAttribArray(0);
@@ -22,3 +24,5 @@ Vertex::Vertex(const glm::vec3 &position) : position(position) {}
 Vertex::Vertex(const glm::vec3 &position, const glm::vec2 &texCoord,
                const glm::vec3 &normal)
     : position(position), texCoord(texCoord), normal(normal) {}
+
+}  // namespace te

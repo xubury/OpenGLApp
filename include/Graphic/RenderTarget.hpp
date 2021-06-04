@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+namespace te {
+
 class CameraBase;
 
 class BufferObject;
@@ -25,7 +27,7 @@ class GRAPHIC_API RenderTarget {
     void beginScene(Ref<Shader> shader, const Ref<CameraBase> &camera);
 
     void setLighting(const std::vector<const LightBase *> &lights,
-                    const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
+                     const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
 
     void endScene();
 
@@ -51,5 +53,7 @@ class GRAPHIC_API RenderTarget {
 
     uint32_t m_textureReserved;
 };
+
+}  // namespace te
 
 #endif

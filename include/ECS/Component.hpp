@@ -4,6 +4,8 @@
 #include <Base.hpp>
 #include <ECS/Defines.hpp>
 
+namespace te {
+
 template <typename ENTITY>
 class EntityManager;
 
@@ -136,5 +138,7 @@ inline uint32_t Component<COMPONENT, ENTITY>::family() {
     TE_CORE_ASSERT(family < MAX_COMPONENTS, "components size reach maximum");
     return family;
 }
+
+}  // namespace te
 
 #endif

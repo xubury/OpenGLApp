@@ -10,6 +10,8 @@
 #include <sstream>
 #include <iostream>
 
+namespace te {
+
 Shader::Shader() : m_id(0) {}
 
 static void fileToString(const std::string& path, std::string& string) {
@@ -151,4 +153,6 @@ Ref<Shader> ShaderLibrary::get(const std::string& name) {
 
 bool ShaderLibrary::exists(const std::string& name) const {
     return m_library.find(name) != m_library.end();
+}
+
 }

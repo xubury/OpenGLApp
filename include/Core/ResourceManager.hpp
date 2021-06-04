@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <memory>
 
+namespace te {
+
 template <typename IDENTIFIER, typename RESOURCE>
 class ResourceManager {
    public:
@@ -69,5 +71,8 @@ template <typename IDENTIFIER, typename RESOURCE>
 void ResourceManager<IDENTIFIER, RESOURCE>::clear() {
     m_map.clear();
 }
+
+}
+
 
 #endif

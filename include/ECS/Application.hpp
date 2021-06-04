@@ -4,6 +4,8 @@
 #include <ECS/EntityManager.hpp>
 #include <ECS/System.hpp>
 
+namespace te {
+
 template <typename ENTITY>
 class Application {
    public:
@@ -25,5 +27,7 @@ void Application<ENTITY>::update(const Time &deltaTime) {
     systems.updateAll(deltaTime);
     entities.update();
 }
+
+}  // namespace te
 
 #endif

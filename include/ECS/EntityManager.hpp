@@ -11,6 +11,8 @@
 #include "ECS/System.hpp"
 #include "Utility/Memory.hpp"
 
+namespace te {
+
 template <typename COMPONENT, typename ENTITY>
 class ComponentHandle;
 
@@ -529,5 +531,7 @@ bool EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator!=(
     return m_iter != other.m_iter || m_view.m_mask != other.m_view.m_mask ||
            &(m_view.m_manager) != &(other.m_view.m_manager);
 }
+
+}  // namespace te
 
 #endif

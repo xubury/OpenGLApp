@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include "Window/Action.hpp"
 
+namespace te {
+
 template <typename T = int>
 class ActionMap {
    public:
@@ -30,5 +32,8 @@ template <typename T>
 const Action &ActionMap<T>::get(const T &key) const {
     return m_map.at(key);
 }
+
+}
+
 
 #endif

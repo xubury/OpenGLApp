@@ -1,6 +1,8 @@
 #include "Graphic/ElementBuffer.hpp"
 #include <iostream>
 
+namespace te {
+
 ElementBuffer::ElementBuffer() : m_VBO(0), m_EBO(0) {
     glGenBuffers(1, &m_VBO);
     glGenBuffers(1, &m_EBO);
@@ -74,3 +76,5 @@ void ElementBuffer::update(const Vertex *vertices, std::size_t vertexCnt,
     m_mode = mode;
     Vertex::setupAttribute();
 }
+
+}  // namespace te

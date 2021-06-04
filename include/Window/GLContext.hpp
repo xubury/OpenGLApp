@@ -7,6 +7,8 @@ class GLFWwindow;
 
 extern "C" GLFWwindow* glfwGetCurrentContext();
 
+namespace te {
+
 class GLContext {
    protected:
     GLContext(int width, int height, const std::string& title);
@@ -29,5 +31,7 @@ class GLContext {
     static void mouseWheelCallback(GLFWwindow* window, double xOffset,
                                    double yOffset);
 };
+
+}  // namespace te
 
 #endif

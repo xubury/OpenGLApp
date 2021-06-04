@@ -7,6 +7,8 @@
 
 #include <Window/ActionMap.hpp>
 
+namespace te {
+
 template <typename T>
 class ActionTarget {
    public:
@@ -38,6 +40,7 @@ class ActionTarget {
     void setActive(bool active);
 
     bool isActive() const;
+
    private:
     std::list<KeyPair> m_eventRealTime;
     std::list<KeyPair> m_eventPoll;
@@ -135,9 +138,11 @@ void ActionTarget<T>::setActive(bool active) {
     m_active = active;
 }
 
-template<typename T>
+template <typename T>
 bool ActionTarget<T>::isActive() const {
     return m_active;
 }
+
+}  // namespace te
 
 #endif

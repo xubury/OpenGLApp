@@ -5,6 +5,10 @@
 #include "Base.hpp"
 #include "Core/Assert.hpp"
 
+namespace te {
+
 const int MAX_COMPONENTS = 32;
+
+}
 
 #endif

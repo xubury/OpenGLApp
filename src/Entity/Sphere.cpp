@@ -1,5 +1,7 @@
 #include <Entity/Sphere.hpp>
 
+namespace te {
+
 static const float SECTOR_COUNT = 100;
 static const float STACK_COUNT = 100;
 
@@ -62,3 +64,5 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id)
 void Sphere::draw(RenderTarget &target, RenderStates states) const {
     target.draw(m_shpere, states);
 }
+
+}  // namespace te

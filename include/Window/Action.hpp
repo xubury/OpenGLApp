@@ -3,6 +3,8 @@
 
 #include "Window/Event.hpp"
 
+namespace te {
+
 class Action {
    public:
     enum Type { REAL_TIME = 1, PRESSED = 1 << 1, RELEASED = 1 << 2 };
@@ -26,5 +28,8 @@ class Action {
     Event m_event;
     int m_type;
 };
+
+}
+
 
 #endif

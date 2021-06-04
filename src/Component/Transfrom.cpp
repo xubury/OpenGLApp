@@ -1,6 +1,8 @@
 #include <Component/Transform.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+namespace te {
+
 Transform::Transform() : m_transform(1.0) {}
 
 void Transform::transform(const glm::mat4 &transform) {
@@ -82,3 +84,5 @@ void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
 void TransformSystem::draw(EntityManager<EntityBase> &, RenderTarget &,
                            RenderStates) const {}
+
+}

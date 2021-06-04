@@ -1,6 +1,8 @@
 #include <Graphic/Primitive.hpp>
 #include <Editor/EditorContext.hpp>
 
+namespace te {
+
 EditorContext::EditorContext() : m_activeEntityId(0), m_screenFactor(1.0f) {}
 
 void EditorContext::prepareContext() {
@@ -10,8 +12,8 @@ void EditorContext::prepareContext() {
     m_drawList = ImGui::GetWindowDrawList();
 
     glm::vec3 pos = getActiveEntityPtr()->component<Transform>()->getPosition();
-    float rightLen = m_camera->getSegmentLengthClipSpace(
-        pos, pos + m_camera->getRight());
+    float rightLen =
+        m_camera->getSegmentLengthClipSpace(pos, pos + m_camera->getRight());
     m_screenFactor = 1.0f / rightLen;
 
     m_frameBuffer->beginScene();
@@ -28,7 +30,7 @@ Ref<EntityBase> EditorContext::getActiveEntityPtr() {
     return m_entities->get(m_activeEntityId);
 }
 
-void EditorContext::setCamrea(const Ref<Camera> &camera) { m_camera = camera; }
+void EditorContext::setCamrea(const Ref<Camera>& camera) { m_camera = camera; }
 
 Ref<Camera> EditorContext::getCamera() { return m_camera; }
 
@@ -89,3 +91,5 @@ void EditorContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
 float EditorContext::getClipSizeInWorld(float clipSize) const {
     return m_screenFactor * clipSize;
 }
+
+}  // namespace te

@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+namespace te {
+
 void GLContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
     Event event;
     event.type = Event::EventType::RESIZED;
@@ -135,3 +137,5 @@ GLContext::GLContext(int width, int height, const std::string& title) {
     // MSAA
     glEnable(GL_MULTISAMPLE);
 }
+
+}  // namespace te

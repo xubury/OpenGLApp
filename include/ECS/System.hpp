@@ -7,6 +7,8 @@
 #include <memory>
 #include <unordered_map>
 
+namespace te {
+
 template <typename ENTITY>
 class EntityManager;
 template <typename ENTITY>
@@ -133,5 +135,7 @@ template <typename SYSTEM>
 inline void SystemManager<ENTITY>::update(const Time& deltaTime) {
     system<SYSTEM>()->update(m_manager, deltaTime);
 }
+
+}  // namespace te
 
 #endif

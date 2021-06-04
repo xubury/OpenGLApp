@@ -4,6 +4,8 @@
 #include "Window/Keyboard.hpp"
 #include "Window/Mouse.hpp"
 
+namespace te {
+
 class Event {
    public:
     struct SizeEvent {
@@ -62,5 +64,7 @@ class Event {
 
     EventType type;
 };
+
+}  // namespace te
 
 #endif

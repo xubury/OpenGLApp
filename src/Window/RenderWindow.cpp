@@ -5,6 +5,8 @@
 #include <thread>
 #include <iostream>
 
+namespace te {
+
 RenderWindow::RenderWindow(int width, int height, const std::string& title)
     : GLContext(width, height, title) {}
 
@@ -60,3 +62,6 @@ bool RenderWindow::popEvent(Event& event, bool block) {
     }
     return false;
 }
+
+}
+

@@ -1,6 +1,8 @@
 #include <Entity/EntityBase.hpp>
 #include <Component/Transform.hpp>
 
+namespace te {
+
 ES_INIT_ENTITY(EntityBase)
 
 EntityBase::EntityBase(EntityManager<EntityBase> *manager, uint32_t id)
@@ -36,3 +38,5 @@ void EntityBase::setTextures(const TextureArray &textures) {
 const TextureArray *EntityBase::getTextures() const { return &m_textures; }
 
 void EntityBase::draw(RenderTarget &, RenderStates) const {}
+
+}  // namespace te

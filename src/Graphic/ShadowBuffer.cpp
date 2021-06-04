@@ -5,6 +5,8 @@
 #include "Graphic/BufferObject.hpp"
 #include <iostream>
 
+namespace te {
+
 static void attachDepthMapTexture(int framebuffer, int texture, int width,
                                   int height) {
     TE_CORE_ASSERT(width > 0 && height > 0,
@@ -76,3 +78,5 @@ void ShadowBuffer::draw(const BufferObject &buffer,
     applyTransform(states.transform);
     buffer.drawPrimitive();
 }
+
+}  // namespace te

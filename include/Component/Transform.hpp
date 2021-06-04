@@ -3,6 +3,8 @@
 
 #include <ECS/ECS.hpp>
 
+namespace te {
+
 class Transform : public Component<Transform, EntityBase> {
    public:
     Transform();
@@ -53,5 +55,7 @@ class TransformSystem : public System<Transform, EntityBase> {
 
    private:
 };
+
+}  // namespace te
 
 #endif

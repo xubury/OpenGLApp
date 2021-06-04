@@ -6,6 +6,8 @@
 #include "Graphic/Shader.hpp"
 #include "Graphic/RenderTarget.hpp"
 
+namespace te {
+
 class GRAPHIC_API ShadowBuffer : public RenderTarget {
    public:
     static Ref<ShadowBuffer> create(int width, int height);
@@ -39,5 +41,7 @@ class GRAPHIC_API ShadowBuffer : public RenderTarget {
     uint32_t m_frameBufferId;
     uint32_t m_textureId;
 };
+
+}  // namespace te
 
 #endif /* SHADOW_BUFFER_HPP */

@@ -9,6 +9,8 @@
 #include <Window/Event.hpp>
 #include <Utility/Time.hpp>
 
+namespace te {
+
 class RenderWindow : public GLContext, public RenderTarget {
    public:
     RenderWindow(int width, int height, const std::string& title);
@@ -44,5 +46,7 @@ class RenderWindow : public GLContext, public RenderTarget {
     Clock m_clock;
     float m_frameRate;
 };
+
+}  // namespace te
 
 #endif

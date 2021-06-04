@@ -4,6 +4,8 @@
 #include <Graphic/LightBase.hpp>
 #include <ECS/ECS.hpp>
 
+namespace te {
+
 class Light : public Component<Light, EntityBase>, public LightBase {
    public:
     Light() = default;
@@ -14,5 +16,8 @@ class Light : public Component<Light, EntityBase>, public LightBase {
 
     glm::vec3 getPosition() const override;
 };
+
+
+}
 
 #endif /* LIGHT_HPP */

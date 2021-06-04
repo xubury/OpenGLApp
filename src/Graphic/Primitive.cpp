@@ -4,6 +4,8 @@
 #include "Graphic/ElementBuffer.hpp"
 #include "Graphic/CameraBase.hpp"
 
+namespace te {
+
 Primitive::Primitive() {
     const char *primitiveVertex =
         "#version 330 core\n"
@@ -207,3 +209,5 @@ void Primitive::drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
     m_shader.setVec4("uColor", color);
     m_elements.drawPrimitive();
 }
+
+}  // namespace te

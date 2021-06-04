@@ -5,6 +5,8 @@
 #include "Graphic/Export.hpp"
 #include "Graphic/ShadowBuffer.hpp"
 
+namespace te {
+
 class GRAPHIC_API LightBase {
    public:
     enum LightType { DIRECTIONAL, POINT };
@@ -17,5 +19,7 @@ class GRAPHIC_API LightBase {
     glm::vec3 diffuse;
     glm::vec3 specular;
 };
+
+}  // namespace te
 
 #endif /* LIGHT_BASE_HPP */

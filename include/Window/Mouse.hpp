@@ -3,6 +3,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+namespace te {
+
 class Mouse {
    public:
     enum Button { LEFT = 0, RIGHT = 1, MIDDLE = 2, XBUTTON1 = 3, XBUTTON2 = 4 };
@@ -13,5 +15,7 @@ class Mouse {
 
     static void setPosition(const glm::vec2 &pos);
 };
+
+}  // namespace te
 
 #endif

@@ -2,6 +2,8 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+namespace te {
+
 CameraBase::CameraBase(int x, int y, int width, int height)
     : m_viewportX(x),
       m_viewportY(y),
@@ -93,3 +95,5 @@ float CameraBase::getSegmentLengthClipSpace(const glm::vec3 &start,
     clipSpaceAxis.y /= getAspect();
     return glm::length(clipSpaceAxis);
 }
+
+}  // namespace te

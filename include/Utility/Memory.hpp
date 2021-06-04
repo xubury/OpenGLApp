@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace te {
+
 class VPool {
    public:
     VPool(const VPool&) = delete;
@@ -159,6 +161,8 @@ VPool::Iterator<T> Pool<T>::begin() const {
 template <typename T>
 VPool::Iterator<T> Pool<T>::end() const {
     return VPool::Iterator<T>(m_memory.size(), *this);
+}
+
 }
 
 #endif

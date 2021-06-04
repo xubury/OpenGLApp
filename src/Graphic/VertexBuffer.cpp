@@ -1,6 +1,8 @@
 #include "Graphic/VertexBuffer.hpp"
 #include <iostream>
 
+namespace te {
+
 VertexBuffer::VertexBuffer() : m_VBO(0) { glGenBuffers(1, &m_VBO); }
 
 VertexBuffer::~VertexBuffer() { glDeleteBuffers(1, &m_VBO); }
@@ -50,3 +52,5 @@ void VertexBuffer::update(const Vertex *vertices, std::size_t cnt, GLenum type,
     m_primitiveType = type;
     Vertex::setupAttribute();
 }
+
+}  // namespace te

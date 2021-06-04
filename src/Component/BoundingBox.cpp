@@ -4,6 +4,8 @@
 #include <Component/BoundingBox.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+namespace te {
+
 BoundingBox::BoundingBox()
     : m_min(std::numeric_limits<float>::max()),
       m_max(std::numeric_limits<float>::min()) {}
@@ -64,3 +66,4 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
     }
 }
 
+}  // namespace te

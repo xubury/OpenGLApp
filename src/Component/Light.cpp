@@ -3,6 +3,8 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+namespace te {
+
 glm::mat4 Light::getLightSpaceMatrix() const {
     auto trans = owner()->component<Transform>();
     const glm::vec3 &up = trans->getUp();
@@ -21,4 +23,6 @@ glm::vec3 Light::getDirection() const {
 
 glm::vec3 Light::getPosition() const {
     return owner()->component<Transform>()->getPosition();
+}
+
 }

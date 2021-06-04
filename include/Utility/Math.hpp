@@ -3,6 +3,8 @@
 
 #include <glm/glm.hpp>
 
+namespace te {
+
 template <glm::length_t L, typename T, glm::qualifier Q>
 inline glm::vec<L, T, Q> findClosestPoint(const glm::vec<L, T, Q> point,
                                           const glm::vec<L, T, Q> &start,
@@ -36,6 +38,8 @@ inline float intersectRayPlane(const glm::vec3 &rayOrigin, const glm::vec3 &dir,
     }
 
     return -numer / denom;
+}
+
 }
 
 #endif /* MATH_HPP */

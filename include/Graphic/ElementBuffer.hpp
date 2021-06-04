@@ -3,6 +3,8 @@
 
 #include "Graphic/BufferObject.hpp"
 
+namespace te {
+
 class GRAPHIC_API ElementBuffer : public BufferObject {
    public:
     ElementBuffer();
@@ -30,5 +32,7 @@ class GRAPHIC_API ElementBuffer : public BufferObject {
     uint32_t m_VBO;
     uint32_t m_EBO;
 };
+
+}  // namespace te
 
 #endif

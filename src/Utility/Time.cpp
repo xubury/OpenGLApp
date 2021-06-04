@@ -1,5 +1,7 @@
 #include <Utility/Time.hpp>
 
+namespace te {
+
 const Time Time::Zero;
 
 Time::Time() : MicroSeconds(0) {}
@@ -32,3 +34,5 @@ Time Clock::restart() {
     m_clock = now;
     return ret;
 }
+
+}  // namespace te

@@ -3,6 +3,8 @@
 
 #include "Graphic/BufferObject.hpp"
 
+namespace te {
+
 class GRAPHIC_API VertexBuffer : public BufferObject {
    public:
     VertexBuffer();
@@ -25,5 +27,7 @@ class GRAPHIC_API VertexBuffer : public BufferObject {
    private:
     uint32_t m_VBO;
 };
+
+}  // namespace te
 
 #endif

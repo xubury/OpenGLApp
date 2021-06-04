@@ -1,10 +1,13 @@
 #ifndef DRAWABLE_HPP
 #define DRAWABLE_HPP
 
-class RenderTarget;
 
 #include "Graphic/Export.hpp"
 #include "Graphic/RenderStates.hpp"
+
+namespace te {
+
+class RenderTarget;
 
 class GRAPHIC_API Drawable {
    public:
@@ -12,5 +15,7 @@ class GRAPHIC_API Drawable {
 
     virtual void draw(RenderTarget &target, RenderStates states) const = 0;
 };
+
+}  // namespace te
 
 #endif

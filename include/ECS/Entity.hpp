@@ -8,6 +8,8 @@
 #include <ECS/EntityManager.hpp>
 #include <ECS/Component.hpp>
 
+namespace te {
+
 template <typename ENTITY>
 class EntityManager;
 template <typename COMPONENT, typename ENTITY>
@@ -118,5 +120,7 @@ inline std::tuple<ComponentHandle<COMPONENT, ENTITY>...>
 Entity<ENTITY>::components() const {
     return m_manager->template getComponents<COMPONENT...>(m_id);
 }
+
+}  // namespace te
 
 #endif

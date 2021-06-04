@@ -1,7 +1,9 @@
 #include "Graphic/Model.hpp"
 #include "Graphic/RenderTarget.hpp"
-#include "ResourceManager.hpp"
+#include "Core/ResourceManager.hpp"
 #include <iostream>
+
+namespace te {
 
 ResourceManager<std::string, Model> s_loadedModels;
 
@@ -99,3 +101,5 @@ void Model::processTextures(TextureArray &textures, aiMaterial *mat,
         }
     }
 }
+
+}  // namespace te
