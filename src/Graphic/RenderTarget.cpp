@@ -12,6 +12,16 @@
 
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
+void RenderTarget::beginScene(Ref<Shader> shader,
+                              const Ref<CameraBase> &camera) {
+    applyShader(shader);
+    glViewport(camera->getViewportX(), camera->getViewportY(),
+               camera->getViewportWidth(), camera->getViewportHeight());
+    clear();
+    shader->setMat4("uProjection", camera->getProjection());
+    shader->setMat4("uView", camera->getView());
+}
+
 void RenderTarget::beginScene(
     Ref<Shader> shader, const Ref<CameraBase> &camera,
     const std::vector<const LightBase *> &lights,
@@ -25,6 +35,7 @@ void RenderTarget::beginScene(
 
     // reserve texture for depth map
     m_textureReserved = shadowBuffers.size();
+    if (!shadowBuffers.size()) return;
     // TODO: handle multiple lights
     for (int i = 0; i < 1; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
