@@ -157,7 +157,7 @@ Game::Game(const Settings& settings)
     loadShaders();
     loadScene();
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height,
-                                  glm::vec3(-8.f, 9.f, 13.f));
+                                     glm::vec3(-8.f, 9.f, 13.f));
     m_mainCamera->setEulerAngle(
         glm::vec3(glm::radians(-15.f), glm::radians(-35.f), glm::radians(5.f)));
 
@@ -186,6 +186,7 @@ void Game::render() {
     Light::Handle light;
     auto view = m_app.entities.getByComponents(light);
     auto end = view.end();
+    //TODO: refactor this to deferred shading
     for (auto begin = view.begin(); begin != end; ++begin) {
         buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map
@@ -201,7 +202,8 @@ void Game::render() {
 
     // normal draw
     m_frameBuffer.beginScene();
-    m_window.beginScene(m_shaders.get("Main"), m_mainCamera, lightList, buffers);
+    m_window.beginScene(m_shaders.get("Main"), m_mainCamera);
+    m_window.setLighting(lightList, buffers);
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
         states.transform =
             m_app.entities.get(*cur)->component<Transform>()->getMatrix();

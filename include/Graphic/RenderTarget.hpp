@@ -24,8 +24,7 @@ class GRAPHIC_API RenderTarget {
 
     void beginScene(Ref<Shader> shader, const Ref<CameraBase> &camera);
 
-    void beginScene(Ref<Shader> shader, const Ref<CameraBase> &camera,
-                    const std::vector<const LightBase *> &lights,
+    void setLighting(const std::vector<const LightBase *> &lights,
                     const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
 
     void endScene();
