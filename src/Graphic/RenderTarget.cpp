@@ -1,5 +1,6 @@
-#include <Graphic/RenderTarget.hpp>
+#include "Core/Assert.hpp"
 
+#include <Graphic/RenderTarget.hpp>
 #include <Graphic/OpenGL.hpp>
 
 #include <Graphic/Shader.hpp>
@@ -67,12 +68,15 @@ void RenderTarget::applyShader(Ref<Shader> shader) {
 }
 
 void RenderTarget::applyTransform(const glm::mat4 &transform) {
-    assert(m_shader != nullptr);
+    TE_CORE_ASSERT(m_shader != nullptr,
+                   "RenderTarget::applyTransform shader is not specified!");
+
     m_shader->setMat4("uModel", transform);
 }
 
 void RenderTarget::applyTexture(const TextureArray *textures) {
-    assert(m_shader != nullptr);
+    TE_CORE_ASSERT(m_shader != nullptr,
+                   "RenderTarget::applyTransform shader is not specified!");
     if (textures == nullptr || textures == m_textures) return;
     if (m_textures != nullptr) {
         // clean up old textures

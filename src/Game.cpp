@@ -186,7 +186,7 @@ void Game::render() {
     Light::Handle light;
     auto view = m_app.entities.getByComponents(light);
     auto end = view.end();
-    //TODO: refactor this to deferred shading
+    // TODO: refactor this to deferred shading
     for (auto begin = view.begin(); begin != end; ++begin) {
         buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map

@@ -1,3 +1,4 @@
+#include "Core/Assert.hpp"
 #include <Graphic/Primitive.hpp>
 #include <Graphic/VertexBuffer.hpp>
 #include <Graphic/ElementBuffer.hpp>
@@ -58,7 +59,7 @@ void Primitive::drawPath(const std::vector<glm::vec3> &pts,
 
 void Primitive::drawCircle(const glm::vec3 &center, const glm::vec4 &color,
                            float radius, int fragments) {
-    assert(fragments > 0);
+    TE_CORE_ASSERT(fragments > 0, "Primitive::drawCircle fragments <= 0");
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
@@ -75,7 +76,7 @@ void Primitive::drawCircle(const glm::vec3 &center, const glm::vec4 &color,
 void Primitive::drawCircleFilled(const glm::vec3 &center,
                                  const glm::vec4 &color, float radius,
                                  int fragments) {
-    assert(fragments > 0);
+    TE_CORE_ASSERT(fragments > 0, "Primitive::drawCircle fragments <= 0");
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
     vertex.emplace_back(center);
@@ -139,13 +140,13 @@ void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
 
 void Primitive::drawQuad(const std::vector<glm::vec3> &corners,
                          const glm::vec4 &color, float thickness) {
-    assert(corners.size() == 4);
+    TE_CORE_ASSERT(corners.size() == 4, "Primitive::drawQuad corners size > 4");
     drawPath(corners, color, thickness);
 }
 
 void Primitive::drawQuadFilled(const std::vector<glm::vec3> &corners,
                                const glm::vec4 &color) {
-    assert(corners.size() == 4);
+    TE_CORE_ASSERT(corners.size() == 4, "Primitive::drawQuad corners size > 4");
     const uint32_t indices[6] = {0, 1, 3, 1, 2, 3};
     std::vector<Vertex> vertices(4);
     for (int i = 0; i < 4; ++i) {

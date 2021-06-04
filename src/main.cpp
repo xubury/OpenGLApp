@@ -1,6 +1,9 @@
 #include <Game.hpp>
+#include "Core/Log.hpp"
 
 int main() {
+    te::Log::init();
+
     Settings settings;
     settings.width = 1440;
     settings.height = 960;

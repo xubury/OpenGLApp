@@ -4,8 +4,24 @@ project(opengl VERSION 0.1.0)
 
 find_package(imgui REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(spdlog REQUIRED)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions(DEBUG_BUILD)
+endif()
+
 
 add_subdirectory(src/Graphic)
+
+set(Public_Inc
+    include/Core/PlatformDetection.hpp
+    include/Core/Log.hpp
+    include/Core/Assert.hpp
+    include/Base.hpp
+    include/ResourceManager.hpp)
+
+set(Core_Src
+    src/Core/Log.cpp)
 
 set(Editor_Src
     libs/imgui_impl_glfw.cpp
@@ -45,12 +61,17 @@ add_executable(OpenGLApp
     ${Component_Src}
     ${Entity_Src}
     ${Window_Src}
+    ${Core_Src}
     ${Editor_Src})
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
-target_link_libraries(OpenGLApp glgraphic glfw imgui::imgui)
+target_link_libraries(OpenGLApp
+    glgraphic
+    glfw
+    imgui::imgui
+    spdlog::spdlog)
 target_include_directories(OpenGLApp PUBLIC include libs)
 endif()
 
-install(FILES ${PROJECT_SOURCE_DIR}/include/Config.hpp ${PROJECT_SOURCE_DIR}/include/Base.hpp DESTINATION include)
+install(FILES $(Public_Inc) DESTINATION include)

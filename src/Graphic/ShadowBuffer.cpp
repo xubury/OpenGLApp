@@ -1,3 +1,4 @@
+#include "Core/Assert.hpp"
 #include <Graphic/ShadowBuffer.hpp>
 #include <Graphic/OpenGL.hpp>
 #include <Graphic/LightBase.hpp>
@@ -6,7 +7,8 @@
 
 static void attachDepthMapTexture(int framebuffer, int texture, int width,
                                   int height) {
-    assert(width > 0 && height > 0);
+    TE_CORE_ASSERT(width > 0 && height > 0,
+                   "attachDepthMapTexture width or height <= 0");
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0,
                  GL_DEPTH_COMPONENT, GL_FLOAT, NULL);

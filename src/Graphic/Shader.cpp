@@ -1,3 +1,4 @@
+#include "Core/Assert.hpp"
 #include <Graphic/Shader.hpp>
 #include <Graphic/OpenGL.hpp>
 #include <Graphic/Vertex.hpp>
@@ -143,7 +144,8 @@ void ShaderLibrary::add(const std::string& name) {
 }
 
 Ref<Shader> ShaderLibrary::get(const std::string& name) {
-    assert(exists(name));
+    TE_CORE_ASSERT(exists(name),
+                   "ShaderLibrary::get requires for a non-existent shader");
     return m_library[name];
 }
 

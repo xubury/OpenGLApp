@@ -6,10 +6,10 @@
 #include <list>
 #include <tuple>
 #include <vector>
-#include <Base.hpp>
-#include <ECS/Component.hpp>
-#include <ECS/System.hpp>
-#include <Utility/Memory.hpp>
+#include "ECS/Defines.hpp"
+#include "ECS/Component.hpp"
+#include "ECS/System.hpp"
+#include "Utility/Memory.hpp"
 
 template <typename COMPONENT, typename ENTITY>
 class ComponentHandle;
@@ -296,7 +296,8 @@ inline ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::addComponent(
     checkComponent<COMPONENT>();
     uint32_t family = COMPONENT::family();
 
-    assert(!m_entitiesComponentMasks.at(id).test(family));
+    TE_CORE_ASSERT(!m_entitiesComponentMasks.at(id).test(family),
+                   "EntityManager::addComponent component already exists!");
     Pool<COMPONENT> *pool =
         static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get());
 
@@ -313,7 +314,8 @@ template <typename COMPONENT>
 inline void EntityManager<ENTITY>::removeComponent(uint32_t id) {
     // checkComponent<COMPONENT>();
     uint32_t family = COMPONENT::family();
-    assert(m_entitiesComponentMasks.at(id).test(family));
+    TE_CORE_ASSERT(m_entitiesComponentMasks.at(id).test(family),
+                   "EntityManager::removeComponent component not exists!");
 
     Pool<COMPONENT> *pool =
         static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get());

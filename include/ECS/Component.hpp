@@ -89,25 +89,25 @@ ComponentHandle<COMPONENT, ENTITY>::ComponentHandle(
 
 template <typename COMPONENT, typename ENTITY>
 inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() {
-    assert(isValid());
+    TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() const {
-    assert(isValid());
+    TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() {
-    assert(isValid());
+    TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
 inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() const {
-    assert(isValid());
+    TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
@@ -133,7 +133,7 @@ inline void Component<COMPONENT, ENTITY>::remove() {
 template <typename COMPONENT, typename ENTITY>
 inline uint32_t Component<COMPONENT, ENTITY>::family() {
     static uint32_t family = VComponent<ENTITY>::s_familyCounter++;
-    assert(family < MAX_COMPONENTS);
+    TE_CORE_ASSERT(family < MAX_COMPONENTS, "components size reach maximum");
     return family;
 }
 

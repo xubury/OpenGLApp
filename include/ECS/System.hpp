@@ -78,7 +78,7 @@ class SystemManager {
 template <typename COMPONENT, typename ENTITY>
 uint32_t System<COMPONENT, ENTITY>::family() {
     static uint32_t family = VSystem<ENTITY>::s_familyCounter++;
-    assert(family < MAX_COMPONENTS);
+    TE_CORE_ASSERT(family < MAX_COMPONENTS, "components size reach maximum");
     return family;
 }
 

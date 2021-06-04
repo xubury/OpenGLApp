@@ -2,7 +2,8 @@
 #define DEFINES_HPP
 
 #include <stdint.h>
-#include <cassert>
+#include "Base.hpp"
+#include "Core/Assert.hpp"
 
 const int MAX_COMPONENTS = 32;
 

@@ -1,3 +1,4 @@
+#include "Core/Assert.hpp"
 #include <Graphic/FrameBuffer.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -113,7 +114,8 @@ FrameBuffer::~FrameBuffer() {
 }
 
 void FrameBuffer::update(int width, int height, int sample) {
-    assert(width > 0 && height > 0);
+    TE_CORE_ASSERT(width > 0 && height > 0,
+                   "FrameBuffer::update width or height <= 0");
     // if width, height or sample changed, do an update
     if (m_width != width || m_height != height ||
         (sample > 0 && m_sample != sample)) {
