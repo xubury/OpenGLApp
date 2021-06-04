@@ -15,6 +15,8 @@ static const float quadUV[8] = {quadMin, quadMin, quadMin, quadMax,
                                 quadMax, quadMax, quadMax, quadMin};
 static const float axisOriginRadius = 0.1f;
 
+static const float axisRotateCircleRadius = 1.5;
+
 static const float lineThickness = 5.f;
 
 static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.7f);
@@ -56,7 +58,7 @@ Editor& Editor::instance() {
 Editor::Editor()
     : m_leftMouseDown(false),
       m_rightMouseDown(false),
-      m_translateType(TranslateType::NONE) {
+      m_moveType(MoveType::NONE) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -113,7 +115,7 @@ void Editor::renderModelAxes() {
         glm::vec4 axisColor(0.f);
         axisColor[i] = 1.0f;
         axisColor[3] = axisTransparency;
-        if (m_translateType == TRANSLATE_X + i) {
+        if (m_moveType == TRANSLATE_X + i) {
             axisColor = selectionColor;
         }
         Primitive::instance().drawLine(m_modelAxes.origin, axis, axisColor,
@@ -123,16 +125,29 @@ void Editor::renderModelAxes() {
         glm::vec4 panelColor(0.f);
         panelColor[i] = 1.0f;
         panelColor[3] = axisTransparency;
-        if (m_translateType == TRANSLATE_YZ + i) {
+        if (m_moveType == TRANSLATE_YZ + i) {
             panelColor = selectionColor;
         }
 
         Primitive::instance().drawQuadFilled(
             std::vector<glm::vec3>(m_modelQuads[i], m_modelQuads[i] + 4),
             panelColor);
+
+        glm::vec4 circleColor(0);
+        circleColor[i] = 1.0f;
+        circleColor[3] = axisTransparency;
+        if (m_moveType == ROTATE_X + i) {
+            circleColor = selectionColor;
+        }
+        Primitive::instance().drawCircle(
+            m_modelAxes.origin, axis - m_modelAxes.origin, circleColor,
+            m_axisSizeFactor * axisRotateCircleRadius);
+        Primitive::instance().drawLine(m_modelAxes.origin,
+                                       m_modelAxes.origin + m_rotationVector,
+                                       glm::vec4(1.0), 5);
     }
     float worldRadius = m_axisSizeFactor * axisOriginRadius;
-    if (m_translateType == TRANSLATE_XYZ) {
+    if (m_moveType == TRANSLATE_XYZ) {
         Primitive::instance().drawSphere(m_modelAxes.origin, selectionColor,
                                          worldRadius);
     } else {
@@ -167,7 +182,7 @@ void Editor::computeTranslateType() {
     const auto& trans = context.getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rotation = trans->getMatrix();
     glm::vec3 modelWorldPos = trans->getPosition();
-    m_translateType = TranslateType::NONE;
+    m_moveType = MoveType::NONE;
 
     // if on the model axis center
     glm::vec4 translatePlane = buildPlane(
@@ -176,7 +191,7 @@ void Editor::computeTranslateType() {
     glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
     if (glm::length(intersectWorldPos - modelWorldPos) <
         axisOriginRadius * m_axisSizeFactor) {
-        m_translateType = TranslateType::TRANSLATE_XYZ;
+        m_moveType = MoveType::TRANSLATE_XYZ;
         m_movePlane = translatePlane;
         m_intersectWorldPos = modelWorldPos;
         return;
@@ -196,7 +211,7 @@ void Editor::computeTranslateType() {
             lineThickness) {
             if (cloesetScreenPos.z < minZ) {
                 minZ = cloesetScreenPos.z;
-                m_translateType = static_cast<TranslateType>(TRANSLATE_X + i);
+                m_moveType = static_cast<MoveType>(TRANSLATE_X + i);
                 m_movePlane = translatePlane;
                 m_intersectWorldPos = intersectWorldPos;
                 onAxis = true;
@@ -212,6 +227,16 @@ void Editor::computeTranslateType() {
             intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
         if (len > 0) {
             intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
+            if (std::abs(glm::length(intersectWorldPos - modelWorldPos) -
+                         axisRotateCircleRadius * m_axisSizeFactor) <
+                0.1f * m_axisSizeFactor) {
+                glm::vec3 localPos = m_intersectWorldPos - m_modelAxes.origin;
+                m_rotationVector = glm::normalize(localPos);
+                m_movePlane = translatePlane;
+                m_intersectWorldPos = intersectWorldPos;
+                m_moveType = static_cast<MoveType>(ROTATE_X + i);
+                break;
+            }
             glm::vec3 intersectScreenPos =
                 context.getCamera()->computeWorldToSrceen(intersectWorldPos);
 
@@ -230,8 +255,7 @@ void Editor::computeTranslateType() {
                     minZ = intersectScreenPos.z;
                     m_movePlane = translatePlane;
                     m_intersectWorldPos = intersectWorldPos;
-                    m_translateType =
-                        static_cast<TranslateType>(TRANSLATE_YZ + i);
+                    m_moveType = static_cast<MoveType>(TRANSLATE_YZ + i);
                 }
             }
         }
@@ -243,21 +267,40 @@ void Editor::handleMouseLeftButton() {
     if (m_leftMouseDown) {
         ImGui::CaptureMouseFromApp();
         auto trans = context.getActiveEntityPtr()->component<Transform>();
-        if (m_translateType != NONE) {
+        if (m_moveType != NONE) {
             float len =
                 intersectRayPlane(m_camRayOrigin, m_camRayDir, m_movePlane);
             glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
             glm::vec3 translation = intersectWorldPos - m_intersectWorldPos;
-            if (m_translateType <= TRANSLATE_Z &&
-                m_translateType >= TRANSLATE_X) {
+            if (m_moveType <= TRANSLATE_Z && m_moveType >= TRANSLATE_X) {
                 const glm::vec3& axis =
-                    trans->getMatrix()[m_translateType - TRANSLATE_X];
+                    trans->getMatrix()[m_moveType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
                 m_movePlane = buildPlane(
                     trans->getPosition(),
                     context.getCamera()->component<Transform>()->getFront());
             }
-            trans->translateWorld(translation);
+            if (m_moveType <= TRANSLATE_XYZ) {
+                trans->translateWorld(translation);
+            } else {
+                // rotate
+                glm::vec3 localPos = intersectWorldPos - m_modelAxes.origin;
+                localPos = glm::normalize(localPos);
+                glm::vec3 perpendicularVec =
+                    glm::cross(m_rotationVector, glm::vec3(m_movePlane));
+                perpendicularVec = glm::normalize(perpendicularVec);
+                float acosAngle =
+                    std::clamp(glm::dot(localPos, m_rotationVector), -1.f, 1.f);
+                float angle = std::acos(acosAngle);
+                angle *=
+                    (glm::dot(localPos, perpendicularVec) < 0.f) ? 1.f : -1.f;
+
+                glm::vec3 localNormal =
+                    glm::inverse(trans->getMatrix()) * m_movePlane;
+                localNormal = glm::normalize(localNormal);
+                trans->rotateLocal(glm::radians(1.f), localNormal);
+                m_rotationVector = localPos;
+            }
             m_intersectWorldPos = intersectWorldPos;
         } else {
             glm::vec2 offset = (mousePos - m_mouseClickPos) * 0.1f;

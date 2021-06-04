@@ -24,11 +24,12 @@ class GRAPHIC_API Primitive {
     void drawPath(const std::vector<glm::vec3> &pts, const glm::vec4 &color,
                   float thickness);
 
-    void drawCircle(const glm::vec3 &center, const glm::vec4 &color,
-                    float radius, int fragments = 100);
+    void drawCircle(const glm::vec3 &center, const glm::vec3 &normal,
+                    const glm::vec4 &color, float radius, int fragments = 100);
 
-    void drawCircleFilled(const glm::vec3 &center, const glm::vec4 &color,
-                          float radius, int fragments = 100);
+    void drawCircleFilled(const glm::vec3 &center, const glm::vec3 &normal,
+                          const glm::vec4 &color, float radius,
+                          int fragments = 100);
 
     // TODO: optmize sphere drawing
     void drawSphere(const glm::vec3 &center, const glm::vec4 &color,

@@ -57,25 +57,29 @@ class Editor {
 
     glm::vec3 m_intersectWorldPos;
 
-    enum TranslateType {
+    glm::vec3 m_rotationVector;
+
+    enum MoveType {
         NONE = 0,
-        TRANSLATE_X = 1,
-        TRANSLATE_Y = 2,
-        TRANSLATE_Z = 3,
+        TRANSLATE_X,
+        TRANSLATE_Y,
+        TRANSLATE_Z,
         TRANSLATE_YZ,
         TRANSLATE_XZ,
         TRANSLATE_XY,
-        TRANSLATE_XYZ
+        TRANSLATE_XYZ,
+        ROTATE_X,
+        ROTATE_Y,
+        ROTATE_Z
     };
 
-    TranslateType m_translateType;
+    MoveType m_moveType;
 
     glm::vec4 m_movePlane;
 
     float m_axisSizeFactor;
 };
 
-
-}
+}  // namespace te
 
 #endif /* EDITOR_HPP */

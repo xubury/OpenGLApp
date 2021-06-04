@@ -1,9 +1,6 @@
 #include "Core/Assert.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/OpenGL.hpp"
-#include "Graphic/Vertex.hpp"
-#include "Graphic/FrameBuffer.hpp"
-#include "Graphic/Primitive.hpp"
 
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>

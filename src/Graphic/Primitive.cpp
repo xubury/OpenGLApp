@@ -59,15 +59,27 @@ void Primitive::drawPath(const std::vector<glm::vec3> &pts,
     glLineWidth(1.0f);
 }
 
-void Primitive::drawCircle(const glm::vec3 &center, const glm::vec4 &color,
-                           float radius, int fragments) {
+void Primitive::drawCircle(const glm::vec3 &center, const glm::vec3 &normal,
+                           const glm::vec4 &color, float radius,
+                           int fragments) {
     TE_CORE_ASSERT(fragments > 0, "Primitive::drawCircle fragments <= 0");
+    glm::vec3 v3 = glm::normalize(normal);
+    glm::vec3 v1(v3.z, 0, -v3.x);
+    if (std::abs(v1.x) < std::numeric_limits<float>::epsilon() &&
+        std::abs(v1.z) < std::numeric_limits<float>::epsilon()) {
+        v1.z = 1.f;
+    } else {
+        v1 = glm::normalize(v1);
+    }
+    glm::vec3 v2 = glm::cross(v3, v1);
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
-    for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
-        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.x,
-                                      radius * sin(angle) + center.y,
-                                      center.z));
+    glm::vec3 pt;
+    for (int i = 0; i <= fragments; ++i) {
+        float angle = i * increment;
+        pt = center +
+             radius * (v1 * glm::vec3(cos(angle)) + v2 * glm::vec3(sin(angle)));
+        vertex.emplace_back(pt);
     }
     m_vertices.update(vertex.data(), vertex.size(), GL_LINE_LOOP,
                       GL_DYNAMIC_DRAW);
@@ -76,16 +88,27 @@ void Primitive::drawCircle(const glm::vec3 &center, const glm::vec4 &color,
 }
 
 void Primitive::drawCircleFilled(const glm::vec3 &center,
+                                 const glm::vec3 &normal,
                                  const glm::vec4 &color, float radius,
                                  int fragments) {
     TE_CORE_ASSERT(fragments > 0, "Primitive::drawCircle fragments <= 0");
+    glm::vec3 v3 = glm::normalize(normal);
+    glm::vec3 v1(v3.z, 0, -v3.x);
+    if (std::abs(v1.x) < std::numeric_limits<float>::epsilon() &&
+        std::abs(v1.z) < std::numeric_limits<float>::epsilon()) {
+        v1.z = 1.f;
+    } else {
+        v1 = glm::normalize(v1);
+    }
+    glm::vec3 v2 = glm::cross(v3, v1);
     std::vector<Vertex> vertex;
     float increment = 2.0f * M_PI / fragments;
-    vertex.emplace_back(center);
-    for (float angle = 0.f; angle < 2.0f * M_PI; angle += increment) {
-        vertex.emplace_back(glm::vec3(radius * cos(angle) + center.x,
-                                      radius * sin(angle) + center.y,
-                                      center.z));
+    glm::vec3 pt;
+    for (int i = 0; i <= fragments; ++i) {
+        float angle = i * increment;
+        pt = center +
+             radius * (v1 * glm::vec3(cos(angle)) + v2 * glm::vec3(sin(angle)));
+        vertex.emplace_back(pt);
     }
     m_vertices.update(vertex.data(), vertex.size(), GL_TRIANGLE_FAN,
                       GL_DYNAMIC_DRAW);
