@@ -1,7 +1,7 @@
 #ifndef VERTEX_ELEMENT_HPP
 #define VERTEX_ELEMENT_HPP
 
-#include <Graphic/BufferObject.hpp>
+#include "Graphic/BufferObject.hpp"
 
 class GRAPHIC_API ElementBuffer : public BufferObject {
    public:

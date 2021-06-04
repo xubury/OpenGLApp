@@ -2,8 +2,8 @@
 #define LIGHT_BASE_HPP
 
 #include <glm/glm.hpp>
-#include <Graphic/Export.hpp>
-#include <Graphic/ShadowBuffer.hpp>
+#include "Graphic/Export.hpp"
+#include "Graphic/ShadowBuffer.hpp"
 
 class GRAPHIC_API LightBase {
    public:

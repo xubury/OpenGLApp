@@ -1,9 +1,9 @@
 #ifndef TEXTURE_ARRAY_HPP
 #define TEXTURE_ARRAY_HPP
 
-#include <Base.hpp>
-#include <Graphic/Export.hpp>
-#include <Graphic/Texture.hpp>
+#include "Base.hpp"
+#include "Graphic/Export.hpp"
+#include "Graphic/Texture.hpp"
 #include <list>
 
 class GRAPHIC_API TextureArray {

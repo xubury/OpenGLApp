@@ -1,4 +1,4 @@
-#include <Graphic/VertexBuffer.hpp>
+#include "Graphic/VertexBuffer.hpp"
 #include <iostream>
 
 VertexBuffer::VertexBuffer() : m_VBO(0) { glGenBuffers(1, &m_VBO); }

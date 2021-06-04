@@ -1,8 +1,8 @@
 #include "Core/Assert.hpp"
-#include <Graphic/ShadowBuffer.hpp>
-#include <Graphic/OpenGL.hpp>
-#include <Graphic/LightBase.hpp>
-#include <Graphic/BufferObject.hpp>
+#include "Graphic/ShadowBuffer.hpp"
+#include "Graphic/OpenGL.hpp"
+#include "Graphic/LightBase.hpp"
+#include "Graphic/BufferObject.hpp"
 #include <iostream>
 
 static void attachDepthMapTexture(int framebuffer, int texture, int width,

@@ -1,7 +1,7 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include <Graphic/Export.hpp>
+#include "Graphic/Export.hpp"
 #include <glm/glm.hpp>
 #include <string>
 

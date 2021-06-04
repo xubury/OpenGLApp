@@ -1,7 +1,7 @@
-#include <Graphic/Mesh.hpp>
-#include <Graphic/RenderTarget.hpp>
-#include <Graphic/Shader.hpp>
-#include <Graphic/OpenGL.hpp>
+#include "Graphic/Mesh.hpp"
+#include "Graphic/RenderTarget.hpp"
+#include "Graphic/Shader.hpp"
+#include "Graphic/OpenGL.hpp"
 
 Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
            const std::vector<uint32_t> &indices, const TextureArray &textures)

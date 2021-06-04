@@ -1,9 +1,7 @@
-#include <Graphic/OpenGL.hpp>
-#include <Graphic/Texture.hpp>
+#include "Graphic/OpenGL.hpp"
+#include "Graphic/Texture.hpp"
+#include "stb_image.h"
 #include <iostream>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
 Texture::Texture() : m_id(0) {}
 

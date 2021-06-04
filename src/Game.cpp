@@ -1,12 +1,12 @@
-#include <Game.hpp>
-#include <Component/BoundingBox.hpp>
-#include <Component/Transform.hpp>
-#include <Component/Light.hpp>
-#include <Entity/Camera.hpp>
-#include <Entity/ModelEntity.hpp>
-#include <Entity/Cube.hpp>
-#include <Entity/Sphere.hpp>
-#include <Editor/Editor.hpp>
+#include "Game.hpp"
+#include "Component/BoundingBox.hpp"
+#include "Component/Transform.hpp"
+#include "Component/Light.hpp"
+#include "Entity/Camera.hpp"
+#include "Entity/ModelEntity.hpp"
+#include "Entity/Cube.hpp"
+#include "Entity/Sphere.hpp"
+#include "Editor/Editor.hpp"
 
 #include <iostream>
 

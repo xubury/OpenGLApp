@@ -1,12 +1,10 @@
 #include "Core/Assert.hpp"
-#include <Graphic/FrameBuffer.hpp>
+#include "Graphic/FrameBuffer.hpp"
+#include "Graphic/OpenGL.hpp"
+#include <glm/glm.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <iostream>
-#include <glbinding/gl/gl.h>
-#include <glm/glm.hpp>
-
-using namespace gl;
 
 static void attachScreenTexture(int framebuffer, int texture, int width,
                                 int height) {

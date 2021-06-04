@@ -1,8 +1,8 @@
 #include "Core/Assert.hpp"
-#include <Graphic/Primitive.hpp>
-#include <Graphic/VertexBuffer.hpp>
-#include <Graphic/ElementBuffer.hpp>
-#include <Graphic/CameraBase.hpp>
+#include "Graphic/Primitive.hpp"
+#include "Graphic/VertexBuffer.hpp"
+#include "Graphic/ElementBuffer.hpp"
+#include "Graphic/CameraBase.hpp"
 
 Primitive::Primitive() {
     const char *primitiveVertex =

@@ -1,6 +1,6 @@
-#include <Graphic/Model.hpp>
-#include <Graphic/RenderTarget.hpp>
-#include <ResourceManager.hpp>
+#include "Graphic/Model.hpp"
+#include "Graphic/RenderTarget.hpp"
+#include "ResourceManager.hpp"
 #include <iostream>
 
 ResourceManager<std::string, Model> s_loadedModels;

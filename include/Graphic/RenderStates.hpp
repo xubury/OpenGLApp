@@ -1,8 +1,8 @@
 #ifndef RENDER_STATES_HPP
 #define RENDER_STATES_HPP
 
-#include <Graphic/Export.hpp>
 #include <glm/glm.hpp>
+#include "Graphic/Export.hpp"
 
 class Shader;
 

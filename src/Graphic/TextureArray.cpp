@@ -1,5 +1,5 @@
-#include <Graphic/TextureArray.hpp>
-#include <ResourceManager.hpp>
+#include "Graphic/TextureArray.hpp"
+#include "ResourceManager.hpp"
 
 static ResourceManager<std::string, Texture> s_loadedTexture;
 

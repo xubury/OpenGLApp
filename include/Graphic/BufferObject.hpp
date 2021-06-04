@@ -1,10 +1,10 @@
 #ifndef BUFFER_OBJECT_HPP
 #define BUFFER_OBJECT_HPP
 
-#include <Graphic/Export.hpp>
-#include <Graphic/Vertex.hpp>
-#include <Graphic/Drawable.hpp>
-#include <Graphic/OpenGL.hpp>
+#include "Graphic/Export.hpp"
+#include "Graphic/Vertex.hpp"
+#include "Graphic/Drawable.hpp"
+#include "Graphic/OpenGL.hpp"
 
 class GRAPHIC_API BufferObject : public Drawable {
    protected:

@@ -1,7 +1,7 @@
 #ifndef VERTEX_HPP
 #define VERTEX_HPP
 
-#include <Graphic/Export.hpp>
+#include "Graphic/Export.hpp"
 #include <glm/glm.hpp>
 
 struct GRAPHIC_API Vertex {

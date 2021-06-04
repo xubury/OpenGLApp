@@ -2,13 +2,14 @@
 #define GAME_HPP
 
 #include <string>
-#include <ResourceManager.hpp>
-#include <Window/RenderWindow.hpp>
-#include <Graphic/Shader.hpp>
-#include <ECS/ECS.hpp>
-#include <Utility/Time.hpp>
-#include <ECS/Application.hpp>
-#include <Graphic/FrameBuffer.hpp>
+
+#include "ResourceManager.hpp"
+#include "Window/RenderWindow.hpp"
+#include "Graphic/Shader.hpp"
+#include "ECS/ECS.hpp"
+#include "Utility/Time.hpp"
+#include "ECS/Application.hpp"
+#include "Graphic/FrameBuffer.hpp"
 
 struct Settings {
     int width;

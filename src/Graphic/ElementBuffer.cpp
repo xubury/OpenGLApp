@@ -1,4 +1,4 @@
-#include <Graphic/ElementBuffer.hpp>
+#include "Graphic/ElementBuffer.hpp"
 #include <iostream>
 
 ElementBuffer::ElementBuffer() : m_VBO(0), m_EBO(0) {

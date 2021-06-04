@@ -1,7 +1,7 @@
 #ifndef CAMERA_BASE_HPP
 #define CAMERA_BASE_HPP
 
-#include <Graphic/Export.hpp>
+#include "Graphic/Export.hpp"
 #include <glm/glm.hpp>
 
 class GRAPHIC_API CameraBase {

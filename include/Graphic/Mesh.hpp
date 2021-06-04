@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <stdint.h>
-#include <Graphic/Export.hpp>
-#include <Graphic/Drawable.hpp>
-#include <Graphic/TextureArray.hpp>
-#include <Graphic/ElementBuffer.hpp>
+#include "Graphic/Export.hpp"
+#include "Graphic/Drawable.hpp"
+#include "Graphic/TextureArray.hpp"
+#include "Graphic/ElementBuffer.hpp"
 
 class GRAPHIC_API Mesh : public Drawable {
    public:

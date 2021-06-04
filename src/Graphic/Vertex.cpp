@@ -1,5 +1,5 @@
-#include <Graphic/Vertex.hpp>
-#include <Graphic/OpenGL.hpp>
+#include "Graphic/Vertex.hpp"
+#include "Graphic/OpenGL.hpp"
 
 void Vertex::setupAttribute() {
     // position attribute

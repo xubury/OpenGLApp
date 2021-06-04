@@ -47,10 +47,9 @@ set(Graphic_Src
     ${Src_Root}/Mesh.cpp
     ${Src_Root}/Model.cpp
     ${Src_Root}/FrameBuffer.cpp
-    ${Src_Root}/ShadowBuffer.cpp
-    ${Src_Root}/LightBase.cpp)
+    ${Src_Root}/ShadowBuffer.cpp)
 
-add_library(glgraphic ${Graphic_Src})
+add_library(glgraphic ${Graphic_Src} ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
 
 set_property(TARGET glgraphic PROPERTY CXX_STANDARD 17)
 

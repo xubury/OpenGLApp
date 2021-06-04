@@ -1,10 +1,10 @@
 #ifndef PRIMITIVE_HPP
 #define PRIMITIVE_HPP
 
-#include <Graphic/Export.hpp>
-#include <Graphic/Shader.hpp>
-#include <Graphic/VertexBuffer.hpp>
-#include <Graphic/ElementBuffer.hpp>
+#include "Graphic/Export.hpp"
+#include "Graphic/Shader.hpp"
+#include "Graphic/VertexBuffer.hpp"
+#include "Graphic/ElementBuffer.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 

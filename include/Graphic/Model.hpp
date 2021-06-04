@@ -1,9 +1,9 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-#include <Graphic/Export.hpp>
-#include <Graphic/Drawable.hpp>
-#include <Graphic/Mesh.hpp>
+#include "Graphic/Export.hpp"
+#include "Graphic/Drawable.hpp"
+#include "Graphic/Mesh.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
