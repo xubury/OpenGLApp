@@ -12,8 +12,8 @@ void EditorContext::prepareContext() {
     m_drawList = ImGui::GetWindowDrawList();
 
     glm::vec3 pos = getActiveEntityPtr()->component<Transform>()->getPosition();
-    float rightLen =
-        m_camera->getSegmentLengthClipSpace(pos, pos + m_camera->getRight());
+    float rightLen = m_camera->getSegmentLengthClipSpace(
+        pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
 
     m_frameBuffer->beginScene();

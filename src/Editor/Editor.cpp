@@ -142,21 +142,22 @@ void Editor::renderModelAxes() {
 }
 
 void Editor::renderCameraAxes(float clipLen) {
-    auto cam = context.getCamera();
+    Ref<Camera> cam = context.getCamera();
+    Transform::Handle trans = context.getCamera()->component<Transform>();
     clipLen *= cam->getViewportHeight() / 2.f;
     glm::vec3 origin(cam->getViewportSize() - clipLen, 0);
     // draw x
-    glm::vec3 xAxis = cam->getRight();
+    glm::vec3 xAxis = trans->getRight();
     xAxis.y = -xAxis.y;
     xAxis = origin + xAxis * clipLen;
     context.addLine(origin, xAxis, 0xFF0000FF, 2);
     // draw y
-    glm::vec3 yAxis = cam->getUp();
+    glm::vec3 yAxis = trans->getUp();
     yAxis.y = -yAxis.y;
     yAxis = origin + yAxis * clipLen;
     context.addLine(origin, yAxis, 0xFF00FF00, 2);
     // draw z
-    glm::vec3 zAxis = cam->getFront();
+    glm::vec3 zAxis = trans->getFront();
     zAxis.y = -zAxis.y;
     zAxis = origin + zAxis * clipLen;
     context.addLine(origin, zAxis, 0xFFFF0000, 2);
@@ -169,8 +170,8 @@ void Editor::computeTranslateType() {
     m_translateType = TranslateType::NONE;
 
     // if on the model axis center
-    glm::vec4 translatePlane =
-        buildPlane(modelWorldPos, context.getCamera()->getFront());
+    glm::vec4 translatePlane = buildPlane(
+        modelWorldPos, context.getCamera()->component<Transform>()->getFront());
     float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
     glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
     if (glm::length(intersectWorldPos - modelWorldPos) <
@@ -252,16 +253,19 @@ void Editor::handleMouseLeftButton() {
                 const glm::vec3& axis =
                     trans->getMatrix()[m_translateType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
-                m_movePlane = buildPlane(trans->getPosition(),
-                                         context.getCamera()->getFront());
+                m_movePlane = buildPlane(
+                    trans->getPosition(),
+                    context.getCamera()->component<Transform>()->getFront());
             }
             trans->translateWorld(translation);
             m_intersectWorldPos = intersectWorldPos;
         } else {
             glm::vec2 offset = (mousePos - m_mouseClickPos) * 0.1f;
             glm::mat4 transform(1.0f);
-            const glm::vec3& cameraUp = context.getCamera()->getUp();
-            const glm::vec3& cameraRight = context.getCamera()->getRight();
+            const glm::vec3& cameraUp =
+                context.getCamera()->component<Transform>()->getUp();
+            const glm::vec3& cameraRight =
+                context.getCamera()->component<Transform>()->getRight();
             const glm::vec3& modelWorldPos =
                 context.getActiveEntityPtr()->getPosition();
             transform = glm::translate(transform, modelWorldPos);
@@ -270,7 +274,7 @@ void Editor::handleMouseLeftButton() {
             transform =
                 glm::rotate(transform, glm::radians(-offset.y), cameraRight);
             transform = glm::translate(transform, -modelWorldPos);
-            context.getCamera()->transform(transform);
+            context.getCamera()->component<Transform>()->transform(transform);
         }
 
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -311,7 +315,8 @@ void Editor::render() {
         ImGui::SetWindowPos(ImVec2(0, 0));
         if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
-            renderTransformProperty(*context.getCamera());
+            renderTransformProperty(
+                *context.getCamera()->component<Transform>().get());
             ImGui::Separator();
             ImGui::TreePop();
         }
@@ -372,7 +377,10 @@ void Editor::render() {
                 context.setActiveEntityId(i);
                 glm::vec3 worldPos =
                     context.getActiveEntityPtr()->getPosition() +
-                    glm::normalize(context.getCamera()->getFront()) * dist;
+                    glm::normalize(context.getCamera()
+                                       ->component<Transform>()
+                                       ->getFront()) *
+                        dist;
                 context.getCamera()->setPosition(worldPos);
             }
         }

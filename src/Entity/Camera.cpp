@@ -7,8 +7,10 @@ namespace te {
 
 ActionMap<Movement> Camera::s_cameraMovement;
 
-Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position)
+Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
+               int width, int height, const glm::vec3 &position)
     : CameraBase(x, y, width, height),
+      EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
       m_zoom(45.f),
       m_yaw(0),
@@ -39,9 +41,10 @@ Camera::Camera(int x, int y, int width, int height, const glm::vec3 &position)
 }
 
 glm::mat4 Camera::getView() const {
-    const glm::vec3 &up = getUp();
-    const glm::vec3 &front = getFront();
-    const glm::vec3 &pos = getPosition();
+    Transform::Handle trans = component<Transform>();
+    const glm::vec3 &up = trans->getUp();
+    const glm::vec3 &front = trans->getFront();
+    const glm::vec3 &pos = trans->getPosition();
     return glm::lookAt(pos, pos - front, up);
 }
 
@@ -51,18 +54,19 @@ glm::mat4 Camera::getProjection() const {
 }
 
 void Camera::move(Movement dir, float val) {
+    Transform::Handle trans = component<Transform>();
     if (dir == Movement::FORWARD) {
-        translateLocal(glm::vec3(0, 0, -1) * val);
+        trans->translateLocal(glm::vec3(0, 0, -1) * val);
     } else if (dir == Movement::BACKWRAD) {
-        translateLocal(glm::vec3(0, 0, 1) * val);
+        trans->translateLocal(glm::vec3(0, 0, 1) * val);
     } else if (dir == Movement::LEFT) {
-        translateLocal(glm::vec3(-1, 0, 0) * val);
+        trans->translateLocal(glm::vec3(-1, 0, 0) * val);
     } else if (dir == Movement::RIGHT) {
-        translateLocal(glm::vec3(1, 0, 0) * val);
+        trans->translateLocal(glm::vec3(1, 0, 0) * val);
     } else if (dir == Movement::UPWARD) {
-        translateLocal(glm::vec3(0, 1, 0) * val);
+        trans->translateLocal(glm::vec3(0, 1, 0) * val);
     } else if (dir == Movement::DOWNWARD) {
-        translateLocal(glm::vec3(0, -1, 0) * val);
+        trans->translateLocal(glm::vec3(0, -1, 0) * val);
     }
 }
 

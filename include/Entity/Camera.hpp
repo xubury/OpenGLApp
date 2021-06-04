@@ -16,7 +16,7 @@ inline const float MOUSE_SENSITIVITY = 0.1f;
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
 class Camera : public CameraBase,
-               public Transform,
+               public EntityBase,
                protected ActionTarget<Movement> {
    public:
     using ActionTarget::processEvent;
@@ -24,8 +24,8 @@ class Camera : public CameraBase,
     using ActionTarget::setActive;
 
    public:
-    Camera(int x, int y, int width, int height,
-           const glm::vec3 &position = glm::vec3(0.f));
+    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y, int width,
+           int height, const glm::vec3 &position = glm::vec3(0.f));
 
     virtual glm::mat4 getView() const override;
 
@@ -48,6 +48,6 @@ class Camera : public CameraBase,
     float m_pitch;
 };
 
-}
+}  // namespace te
 
 #endif

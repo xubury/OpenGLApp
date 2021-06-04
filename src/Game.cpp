@@ -156,8 +156,9 @@ Game::Game(const Settings& settings)
       m_editorMode(settings.editor) {
     loadShaders();
     loadScene();
-    m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height,
-                                     glm::vec3(-8.f, 9.f, 13.f));
+    uint32_t id = m_cameras.create<Camera>(0, 0, settings.width, settings.height,
+                             glm::vec3(-8.f, 9.f, 13.f));
+    m_mainCamera = std::dynamic_pointer_cast<Camera>(m_cameras.get(id));
     m_mainCamera->setEulerAngle(
         glm::vec3(glm::radians(-15.f), glm::radians(-35.f), glm::radians(5.f)));
 
