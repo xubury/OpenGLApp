@@ -21,14 +21,16 @@ add_library(te-core
 
 set_property(TARGET te-core PROPERTY CXX_STANDARD 17)
 
-target_compile_options(te-core PRIVATE -Wall -Wextra -Wundef -pedantic)
+target_compile_options(te-core PUBLIC -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(te-core PRIVATE TE_EXPORT)
 
 target_link_libraries(te-core PUBLIC spdlog::spdlog)
 
+target_include_directories(te-core PUBLIC
+    ${PROJECT_SOURCE_DIR}/include)
+
 target_include_directories(te-core PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/libs)
 
 install(TARGETS te-core LIBRARY DESTINATION lib)
