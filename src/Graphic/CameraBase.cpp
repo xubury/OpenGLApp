@@ -1,4 +1,5 @@
 #include "Graphic/CameraBase.hpp"
+#include "Core/Assert.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
@@ -10,7 +11,9 @@ CameraBase::CameraBase(int x, int y, int width, int height)
       m_viewportWidth(width),
       m_viewportHeight(height),
       m_nearZ(0.1),
-      m_farZ(100.f) {}
+      m_farZ(100.f) {
+    TE_CORE_ASSERT(width > 0 && height > 0, "CameraBase width or height <= 0.");
+}
 
 int CameraBase::getViewportX() const { return m_viewportX; }
 
