@@ -49,15 +49,9 @@ set(Graphic_Src
     ${Src_Root}/FrameBuffer.cpp
     ${Src_Root}/ShadowBuffer.cpp)
 
-if(BUILD_SHARED_LIBS)
-    add_library(te-graphic SHARED 
-        ${Graphic_Src} 
-        ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
-else()
-    add_library(te-graphic STATIC 
-        ${Graphic_Src} 
-        ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
-endif()
+add_library(te-graphic
+    ${Graphic_Src}
+    ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
 
 set_property(TARGET te-graphic PROPERTY CXX_STANDARD 17)
 

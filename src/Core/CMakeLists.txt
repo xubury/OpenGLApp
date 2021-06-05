@@ -16,13 +16,8 @@ set(Core_Include
 set(Core_Src
     ${Src_Root}/Log.cpp)
 
-if(BUILD_SHARED_LIBS)
-    add_library(te-core SHARED 
-        ${Core_Src})
-else()
-    add_library(te-core STATIC 
-        ${Core_Src})
-endif()
+add_library(te-core
+    ${Core_Src})
 
 set_property(TARGET te-core PROPERTY CXX_STANDARD 17)
 
