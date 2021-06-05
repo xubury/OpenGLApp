@@ -5,14 +5,12 @@ if (POLICY CMP0072)
     set(OpenGL_GL_PREFERENCE LEGACY)
 endif()
 find_package(OpenGL REQUIRED)
-find_package(spdlog REQUIRED)
 find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
 set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
 set(Graphic_Include
-    ${Include_Root}/Export.hpp
     ${Include_Root}/OpenGL.hpp
     ${Include_Root}/GLContext.hpp
     ${Include_Root}/Drawable.hpp
@@ -51,31 +49,38 @@ set(Graphic_Src
     ${Src_Root}/FrameBuffer.cpp
     ${Src_Root}/ShadowBuffer.cpp)
 
-add_library(glgraphic ${Graphic_Src} ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
-
-set_property(TARGET glgraphic PROPERTY CXX_STANDARD 17)
-
-target_compile_options(glgraphic PRIVATE -Wall -Wextra -Wundef -pedantic)
-
-target_compile_definitions(glgraphic PRIVATE GRAPHIC_EXPORTS)
-
-target_link_libraries(glgraphic PUBLIC
-    OpenGL::GL
-    spdlog::spdlog
-    glbinding::glbinding
-    glm
-    assimp::assimp)
-if(UNIX)
-    target_link_libraries(glgraphic PUBLIC X11 Xrandr Xi dl pthread)
+if(BUILD_SHARED_LIBS)
+    add_library(te-graphic SHARED 
+        ${Graphic_Src} 
+        ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
+else()
+    add_library(te-graphic STATIC 
+        ${Graphic_Src} 
+        ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
 endif()
 
-target_include_directories(glgraphic PRIVATE
+set_property(TARGET te-graphic PROPERTY CXX_STANDARD 17)
+
+target_compile_options(te-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
+
+target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
+
+target_link_libraries(te-graphic PUBLIC
+    OpenGL::GL
+    glbinding::glbinding
+    glm
+    assimp::assimp
+    te-core)
+if(UNIX)
+    target_link_libraries(te-graphic PUBLIC X11 Xrandr Xi dl pthread)
+endif()
+
+target_include_directories(te-graphic PRIVATE
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/libs)
 
-target_include_directories(glgraphic PUBLIC ${GLM_INCLUDE_DIRS})
+target_include_directories(te-graphic PUBLIC ${GLM_INCLUDE_DIRS})
 
-install(TARGETS glgraphic LIBRARY
-    DESTINATION lib)
+install(TARGETS te-graphic LIBRARY DESTINATION lib)
 
 install(FILES ${Graphic_Include} DESTINATION include/Graphic)

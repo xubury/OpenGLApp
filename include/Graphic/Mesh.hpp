@@ -3,14 +3,14 @@
 
 #include <vector>
 #include <stdint.h>
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Drawable.hpp"
 #include "Graphic/TextureArray.hpp"
 #include "Graphic/ElementBuffer.hpp"
 
 namespace te {
 
-class GRAPHIC_API Mesh : public Drawable {
+class TE_API Mesh : public Drawable {
    public:
     Mesh(GLenum type, const std::vector<Vertex> &vertices,
          const std::vector<uint32_t> &indices, const TextureArray &textures);

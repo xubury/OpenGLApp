@@ -1,14 +1,14 @@
 #ifndef TEXTURE_ARRAY_HPP
 #define TEXTURE_ARRAY_HPP
 
-#include "Base.hpp"
-#include "Graphic/Export.hpp"
+#include "Core/Base.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Texture.hpp"
 #include <list>
 
 namespace te {
 
-class GRAPHIC_API TextureArray {
+class TE_API TextureArray {
    public:
     void loadFromFile(const std::string& path,
                       Texture::TextureType textureType);

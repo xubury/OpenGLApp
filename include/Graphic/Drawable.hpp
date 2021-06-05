@@ -2,14 +2,14 @@
 #define DRAWABLE_HPP
 
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/RenderStates.hpp"
 
 namespace te {
 
 class RenderTarget;
 
-class GRAPHIC_API Drawable {
+class TE_API Drawable {
    public:
     virtual ~Drawable() = default;
 

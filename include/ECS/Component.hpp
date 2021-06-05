@@ -1,8 +1,7 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
-#include <Base.hpp>
-#include <ECS/Defines.hpp>
+#include "ECS/Defines.hpp"
 
 namespace te {
 

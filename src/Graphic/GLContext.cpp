@@ -1,5 +1,6 @@
-#include "Core/Assert.hpp"
 #include "Graphic/GLContext.hpp"
+#include "Graphic/OpenGL.hpp"
+#include "Core/Assert.hpp"
 
 namespace te {
 

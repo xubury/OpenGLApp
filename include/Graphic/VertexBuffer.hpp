@@ -5,7 +5,7 @@
 
 namespace te {
 
-class GRAPHIC_API VertexBuffer : public BufferObject {
+class TE_API VertexBuffer : public BufferObject {
    public:
     VertexBuffer();
 

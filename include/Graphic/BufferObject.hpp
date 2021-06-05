@@ -1,14 +1,14 @@
 #ifndef BUFFER_OBJECT_HPP
 #define BUFFER_OBJECT_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Vertex.hpp"
 #include "Graphic/Drawable.hpp"
 #include "Graphic/OpenGL.hpp"
 
 namespace te {
 
-class GRAPHIC_API BufferObject : public Drawable {
+class TE_API BufferObject : public Drawable {
    protected:
     std::size_t m_size;
     GLenum m_mode;

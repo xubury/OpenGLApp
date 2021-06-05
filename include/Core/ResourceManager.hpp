@@ -1,7 +1,7 @@
 #ifndef RESOURCE_MANAGER
 #define RESOURCE_MANAGER
 
-#include <Base.hpp>
+#include "Core/Base.hpp"
 #include <stdexcept>
 #include <unordered_map>
 #include <memory>

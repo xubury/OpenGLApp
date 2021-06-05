@@ -1,8 +1,8 @@
 #ifndef RENDER_STATES_HPP
 #define RENDER_STATES_HPP
 
+#include "Core/Export.hpp"
 #include <glm/glm.hpp>
-#include "Graphic/Export.hpp"
 
 namespace te {
 
@@ -14,7 +14,7 @@ class CameraBase;
 
 class LightBase;
 
-class GRAPHIC_API RenderStates {
+class TE_API RenderStates {
    public:
     RenderStates();
 

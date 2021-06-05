@@ -1,13 +1,13 @@
 #ifndef FRAMEBUFFER_HPP
 #define FRAMEBUFFER_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/LightBase.hpp"
 
 namespace te {
 
-class GRAPHIC_API FrameBuffer {
+class TE_API FrameBuffer {
    public:
     FrameBuffer(int width, int height, int sample);
 

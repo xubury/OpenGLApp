@@ -1,12 +1,12 @@
 #ifndef CAMERA_BASE_HPP
 #define CAMERA_BASE_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include <glm/glm.hpp>
 
 namespace te {
 
-class GRAPHIC_API CameraBase {
+class TE_API CameraBase {
    public:
     CameraBase(int x, int y, int width, int height);
 

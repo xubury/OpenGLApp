@@ -1,8 +1,8 @@
 #ifndef SAHDER_HPP
 #define SAHDER_HPP
 
-#include "Base.hpp"
-#include "Graphic/Export.hpp"
+#include "Core/Base.hpp"
+#include "Core/Export.hpp"
 #include <string>
 #include <stdint.h>
 #include <glm/glm.hpp>
@@ -10,7 +10,7 @@
 
 namespace te {
 
-class GRAPHIC_API Shader {
+class TE_API Shader {
    public:
     Shader();
 
@@ -48,7 +48,7 @@ class GRAPHIC_API Shader {
     uint32_t m_id;
 };
 
-class GRAPHIC_API ShaderLibrary {
+class TE_API ShaderLibrary {
    public:
     void add(const std::string& name);
 

@@ -1,14 +1,14 @@
 #ifndef SHADOW_BUFFER_HPP
 #define SHADOW_BUFFER_HPP
 
-#include <Base.hpp>
-#include "Graphic/Export.hpp"
+#include "Core/Base.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/RenderTarget.hpp"
 
 namespace te {
 
-class GRAPHIC_API ShadowBuffer : public RenderTarget {
+class TE_API ShadowBuffer : public RenderTarget {
    public:
     static Ref<ShadowBuffer> create(int width, int height);
 

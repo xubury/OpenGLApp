@@ -2,7 +2,7 @@
 #define DEFINES_HPP
 
 #include <stdint.h>
-#include "Base.hpp"
+#include "Core/Base.hpp"
 #include "Core/Assert.hpp"
 
 namespace te {

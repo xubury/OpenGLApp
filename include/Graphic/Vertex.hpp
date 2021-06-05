@@ -1,12 +1,12 @@
 #ifndef VERTEX_HPP
 #define VERTEX_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include <glm/glm.hpp>
 
 namespace te {
 
-struct GRAPHIC_API Vertex {
+struct TE_API Vertex {
     glm::vec3 position;
     glm::vec2 texCoord;
     glm::vec3 normal;

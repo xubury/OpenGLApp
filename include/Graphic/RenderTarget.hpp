@@ -1,8 +1,8 @@
 #ifndef RENDER_TARGET_HPP
 #define RENDER_TARGET_HPP
 
-#include "Base.hpp"
-#include "Graphic/Export.hpp"
+#include "Core/Base.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Drawable.hpp"
 
 #include <glm/glm.hpp>
@@ -18,7 +18,7 @@ class ShadowBuffer;
 
 class Shader;
 
-class GRAPHIC_API RenderTarget {
+class TE_API RenderTarget {
    public:
     RenderTarget(const RenderTarget &) = delete;
 

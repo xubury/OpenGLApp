@@ -1,13 +1,13 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include <glm/glm.hpp>
 #include <string>
 
 namespace te {
 
-class GRAPHIC_API Texture {
+class TE_API Texture {
    public:
     enum TextureType { AMBIENT, DIFFUSE, SPECULAR };
 

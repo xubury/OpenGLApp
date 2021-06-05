@@ -1,13 +1,14 @@
 #ifndef LIGHT_BASE_HPP
 #define LIGHT_BASE_HPP
 
-#include <glm/glm.hpp>
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/ShadowBuffer.hpp"
+
+#include <glm/glm.hpp>
 
 namespace te {
 
-class GRAPHIC_API LightBase {
+class TE_API LightBase {
    public:
     enum LightType { DIRECTIONAL, POINT };
     virtual ~LightBase() = default;

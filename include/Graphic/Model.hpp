@@ -1,7 +1,7 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Drawable.hpp"
 #include "Graphic/Mesh.hpp"
 #include <assimp/Importer.hpp>
@@ -10,7 +10,7 @@
 
 namespace te {
 
-class GRAPHIC_API Model : public Drawable {
+class TE_API Model : public Drawable {
    public:
     Model() = default;
 

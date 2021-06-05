@@ -5,7 +5,7 @@
 
 namespace te {
 
-class GRAPHIC_API ElementBuffer : public BufferObject {
+class TE_API ElementBuffer : public BufferObject {
    public:
     ElementBuffer();
 

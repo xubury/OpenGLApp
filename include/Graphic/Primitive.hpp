@@ -1,7 +1,7 @@
 #ifndef PRIMITIVE_HPP
 #define PRIMITIVE_HPP
 
-#include "Graphic/Export.hpp"
+#include "Core/Export.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/VertexBuffer.hpp"
 #include "Graphic/ElementBuffer.hpp"
@@ -12,7 +12,7 @@ namespace te {
 
 class CameraBase;
 
-class GRAPHIC_API Primitive {
+class TE_API Primitive {
    public:
     static Primitive &instance();
 
