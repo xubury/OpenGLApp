@@ -1,5 +1,6 @@
 #include "Graphic/Model.hpp"
 #include "Graphic/RenderTarget.hpp"
+#include "Core/Log.hpp"
 #include "Core/ResourceManager.hpp"
 #include <iostream>
 
@@ -23,7 +24,7 @@ bool Model::load(const std::string &path) {
         import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
-        std::cerr << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        TE_CORE_ERROR("Assimp Error:{0}", import.GetErrorString());
         return false;
     }
     m_directory = path.substr(0, path.find_last_of('/') + 1);

@@ -51,8 +51,7 @@ static void attachMultisampleTexture(int frameBuffer, int renderBuffer,
                               GL_RENDERBUFFER, renderBuffer);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!"
-                  << std::endl;
+        TE_CORE_ERROR("FrameBuffer is not complete!");
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);

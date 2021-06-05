@@ -26,7 +26,7 @@ static void fileToString(const std::string& path, std::string& string) {
         // convert stream into string
         string = fileStream.str();
     } catch (std::ifstream::failure& e) {
-        std::cerr << "ERROR::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        TE_CORE_ERROR("File not successfully read!");
     }
 }
 
@@ -92,7 +92,8 @@ void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(shader, 1024, NULL, infoLog.data());
-            TE_CORE_ERROR("{0} Shader compilation error:\n{1}\n", type, infoLog);
+            TE_CORE_ERROR("{0} Shader compilation error:\n{1}\n", type,
+                          infoLog);
         }
     } else {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
@@ -142,4 +143,4 @@ bool ShaderLibrary::exists(const std::string& name) const {
     return m_library.find(name) != m_library.end();
 }
 
-}
+}  // namespace te

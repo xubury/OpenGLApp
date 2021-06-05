@@ -1,4 +1,5 @@
 #include "Graphic/OpenGL.hpp"
+#include "Core/Log.hpp"
 #include "Graphic/Texture.hpp"
 #include "stb_image.h"
 #include <iostream>
@@ -33,7 +34,7 @@ bool Texture::load(const std::string &path, TextureType textureType) {
                      GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Failed to load texture." << std::endl;
+        TE_CORE_ERROR("Failed to load texture!");
         return false;
     }
     stbi_image_free(data);

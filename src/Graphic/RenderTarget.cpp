@@ -103,7 +103,7 @@ void RenderTarget::applyTexture(const TextureArray *textures) {
         } else if (texture->getType() == Texture::SPECULAR) {
             name = "uMaterial.specular" + std::to_string(specular++);
         } else {
-            std::cout << "Invalid Texture." << std::endl;
+            TE_CORE_WARN("Invalid Texture");
         }
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, texture->id());
