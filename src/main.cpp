@@ -2,7 +2,7 @@
 #include "Core/Log.hpp"
 
 int main() {
-    te::Log::init();
+    Log::init();
 
     Settings settings;
     settings.width = 1440;

@@ -48,7 +48,6 @@ set(Utility_Src
 
 set(Window_Src
     src/Window/RenderWindow.cpp
-    src/Window/GLContext.cpp
     src/Window/Keyboard.cpp
     src/Window/Mouse.cpp
     src/Window/Action.cpp)

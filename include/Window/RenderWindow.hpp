@@ -4,14 +4,15 @@
 #include <queue>
 #include <string>
 
-#include <Window/GLContext.hpp>
-#include <Graphic/RenderTarget.hpp>
-#include <Window/Event.hpp>
-#include <Utility/Time.hpp>
+#include "Graphic/RenderTarget.hpp"
+#include "Window/Event.hpp"
+#include "Utility/Time.hpp"
+
+class GLFWwindow;
 
 namespace te {
 
-class RenderWindow : public GLContext, public RenderTarget {
+class RenderWindow : public RenderTarget {
    public:
     RenderWindow(int width, int height, const std::string& title, int samples);
 
@@ -31,9 +32,9 @@ class RenderWindow : public GLContext, public RenderTarget {
 
     float getFrameRate() const;
 
-   private:
-    friend class GLContext;
+    static ::GLFWwindow* getCurrentContext();
 
+   private:
     void pollEvents();
 
     void pushEvent(const Event& event);
@@ -45,6 +46,22 @@ class RenderWindow : public GLContext, public RenderTarget {
     Time m_framerateLimit;
     Clock m_clock;
     float m_frameRate;
+
+   private:
+    static void errorCallback(int error, const char* description);
+
+    static void framebufferSizeCB(GLFWwindow* window, int width, int height);
+
+    static void keyCallback(GLFWwindow* window, int key, int scanCode,
+                            int action, int mod);
+
+    static void mouseMovementCallback(GLFWwindow* window, double x, double y);
+
+    static void mouseButtonCallback(GLFWwindow* window, int button, int type,
+                                    int mod);
+
+    static void mouseWheelCallback(GLFWwindow* window, double xOffset,
+                                   double yOffset);
 };
 
 }  // namespace te

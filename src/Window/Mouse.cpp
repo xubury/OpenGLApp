@@ -1,5 +1,4 @@
 #include <Window/Mouse.hpp>
-#include <Window/GLContext.hpp>
 #include <GLFW/glfw3.h>
 
 namespace te {

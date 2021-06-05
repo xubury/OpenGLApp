@@ -70,7 +70,7 @@ Editor::Editor()
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(glfwGetCurrentContext(), true);
+    ImGui_ImplGlfw_InitForOpenGL(RenderWindow::getCurrentContext(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
