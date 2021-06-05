@@ -59,14 +59,14 @@ target_compile_options(te-graphic PUBLIC -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
 
+target_link_libraries(te-graphic PRIVATE OpenGL::GL)
 target_link_libraries(te-graphic PUBLIC
     te-core
-    OpenGL::GL
     glbinding::glbinding
     glm
     assimp::assimp)
 if(UNIX)
-    target_link_libraries(te-graphic PUBLIC X11 Xrandr Xi dl pthread)
+    target_link_libraries(te-graphic PRIVATE X11 Xrandr Xi dl pthread)
 endif()
 
 target_include_directories(te-graphic PRIVATE 
