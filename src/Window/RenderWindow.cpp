@@ -1,7 +1,7 @@
-#include <Window/RenderWindow.hpp>
-#include <Window/Event.hpp>
-#include <GLFW/glfw3.h>
+#include "Window/RenderWindow.hpp"
+#include "Window/Event.hpp"
 
+#include <GLFW/glfw3.h>
 #include <thread>
 #include <iostream>
 

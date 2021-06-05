@@ -23,8 +23,7 @@ static void attachScreenTexture(int framebuffer, int texture, int width,
                            texture, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!"
-                  << std::endl;
+        TE_CORE_ERROR("Framebuffer is not complete!");
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);

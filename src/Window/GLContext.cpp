@@ -1,9 +1,9 @@
-#include <glbinding/gl/gl.h>
-#include <glbinding/glbinding.h>
-#include <Window/GLContext.hpp>
-#include <Graphic/Shader.hpp>
-#include <Window/Event.hpp>
-#include <Window/RenderWindow.hpp>
+#include "Graphic/OpenGL.hpp"
+#include "Core/Log.hpp"
+#include "Window/GLContext.hpp"
+#include "Graphic/Shader.hpp"
+#include "Window/Event.hpp"
+#include "Window/RenderWindow.hpp"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -20,7 +20,7 @@ void GLContext::framebufferSizeCB(GLFWwindow* window, int width, int height) {
 }
 
 void GLContext::errorCallback(int error, const char* description) {
-    std::cerr << "Error: " << description << ", Code: " << error << std::endl;
+    TE_CORE_ERROR("GLFW error: {0}, code: {1}", description, error);
 }
 
 void GLContext::keyCallback(GLFWwindow* window, int key, int, int action,
@@ -130,7 +130,6 @@ GLContext::GLContext(int width, int height, const std::string& title) {
     glfwSetScrollCallback(win, mouseWheelCallback);
     // glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    using namespace gl;
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
