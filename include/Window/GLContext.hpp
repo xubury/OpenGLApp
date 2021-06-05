@@ -11,7 +11,7 @@ namespace te {
 
 class GLContext {
    protected:
-    GLContext(int width, int height, const std::string& title);
+    GLContext(int width, int height, const std::string& title, int samples);
 
     virtual ~GLContext() = default;
 

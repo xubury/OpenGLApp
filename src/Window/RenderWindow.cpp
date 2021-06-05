@@ -7,8 +7,9 @@
 
 namespace te {
 
-RenderWindow::RenderWindow(int width, int height, const std::string& title)
-    : GLContext(width, height, title) {}
+RenderWindow::RenderWindow(int width, int height, const std::string& title,
+                           int samples)
+    : GLContext(width, height, title, samples) {}
 
 RenderWindow::~RenderWindow() { close(); }
 
@@ -63,5 +64,4 @@ bool RenderWindow::popEvent(Event& event, bool block) {
     return false;
 }
 
-}
-
+}  // namespace te

@@ -1,5 +1,5 @@
 #include "Graphic/OpenGL.hpp"
-#include "Core/Log.hpp"
+#include "Core/Assert.hpp"
 #include "Window/GLContext.hpp"
 #include "Graphic/Shader.hpp"
 #include "Window/Event.hpp"
@@ -99,22 +99,25 @@ void GLContext::mouseWheelCallback(GLFWwindow* window, double xOffset,
     if (win) win->pushEvent(event);
 }
 
-GLContext::GLContext(int width, int height, const std::string& title) {
+GLContext::GLContext(int width, int height, const std::string& title,
+                     int samples) {
+    TE_CORE_ASSERT(width > 0 && height > 0);
+    TE_CORE_ASSERT(samples > 0);
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
-        std::cout << "Failed to initialize glfw." << std::endl;
+        TE_CORE_ERROR("Failed to initialize GLFW!");
         exit(-1);
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // MSAA
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_SAMPLES, samples);
 
     GLFWwindow* win =
         glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (win == NULL) {
-        std::cout << "Failed to create GLFW window." << std::endl;
+        TE_CORE_ERROR("Failed to create GLFW window!");
         glfwTerminate();
         exit(-1);
     }

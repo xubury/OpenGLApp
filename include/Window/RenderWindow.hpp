@@ -13,7 +13,7 @@ namespace te {
 
 class RenderWindow : public GLContext, public RenderTarget {
    public:
-    RenderWindow(int width, int height, const std::string& title);
+    RenderWindow(int width, int height, const std::string& title, int samples);
 
     ~RenderWindow();
 
