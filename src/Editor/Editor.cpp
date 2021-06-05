@@ -142,9 +142,6 @@ void Editor::renderModelAxes() {
         Primitive::instance().drawCircle(
             m_modelAxes.origin, axis - m_modelAxes.origin, circleColor,
             m_axisSizeFactor * axisRotateCircleRadius);
-        Primitive::instance().drawLine(m_modelAxes.origin,
-                                       m_modelAxes.origin + m_rotationVector,
-                                       glm::vec4(1.0), 5);
     }
     float worldRadius = m_axisSizeFactor * axisOriginRadius;
     if (m_moveType == TRANSLATE_XYZ) {
@@ -230,8 +227,8 @@ void Editor::computeTranslateType() {
             if (std::abs(glm::length(intersectWorldPos - modelWorldPos) -
                          axisRotateCircleRadius * m_axisSizeFactor) <
                 0.1f * m_axisSizeFactor) {
-                glm::vec3 localPos = m_intersectWorldPos - m_modelAxes.origin;
-                m_rotationVector = glm::normalize(localPos);
+                m_rotationVector =
+                    glm::normalize(m_intersectWorldPos - m_modelAxes.origin);
                 m_movePlane = translatePlane;
                 m_intersectWorldPos = intersectWorldPos;
                 m_moveType = static_cast<MoveType>(ROTATE_X + i);
@@ -296,9 +293,10 @@ void Editor::handleMouseLeftButton() {
                     (glm::dot(localPos, perpendicularVec) < 0.f) ? 1.f : -1.f;
 
                 glm::vec3 localNormal =
-                    glm::inverse(trans->getMatrix()) * m_movePlane;
+                    glm::inverse(trans->getMatrix()) *
+                    glm::vec4(m_movePlane.x, m_movePlane.y, m_movePlane.z, 0);
                 localNormal = glm::normalize(localNormal);
-                trans->rotateLocal(glm::radians(1.f), localNormal);
+                trans->rotateLocal(angle, localNormal);
                 m_rotationVector = localPos;
             }
             m_intersectWorldPos = intersectWorldPos;
