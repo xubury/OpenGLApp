@@ -2,7 +2,7 @@
 #include "Core/Log.hpp"
 
 int main() {
-    Log::init();
+    Log::init("Debug.log");
 
     Settings settings;
     settings.width = 1440;

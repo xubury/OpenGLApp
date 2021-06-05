@@ -10,8 +10,6 @@ if(NOT BUILD_SHARED_LIBS)
     add_compile_definitions(TE_STATIC)
 endif()
 
-find_package(imgui REQUIRED)
-find_package(glfw3 REQUIRED)
 
 add_subdirectory(src/Core)
 add_subdirectory(src/Graphic)
@@ -46,6 +44,10 @@ set(Window_Src
     src/Window/Action.cpp)
 
 if (NOT BUILD_LIBS_ONLY)
+
+find_package(imgui REQUIRED)
+find_package(glfw3 REQUIRED)
+
 add_executable(OpenGLApp
     src/main.cpp
     src/Game.cpp

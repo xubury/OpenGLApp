@@ -7,12 +7,12 @@ namespace te {
 Ref<spdlog::logger> Log::s_coreLogger;
 Ref<spdlog::logger> Log::s_clientLogger;
 
-void Log::init() {
+void Log::init(const std::string &logFileName) {
     std::vector<spdlog::sink_ptr> logSinks;
     logSinks.emplace_back(
         std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     logSinks.emplace_back(
-        std::make_shared<spdlog::sinks::basic_file_sink_mt>("Terra.log", true));
+        std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFileName, true));
 
     logSinks[0]->set_pattern("%^[%T] %n: %v%$");
     logSinks[1]->set_pattern("[%T] [%l] %n: %v");

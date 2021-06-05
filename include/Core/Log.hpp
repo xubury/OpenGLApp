@@ -9,7 +9,7 @@ namespace te {
 
 class Log {
    public:
-    static void init();
+    static void init(const std::string &logFileName);
 
     static Ref<spdlog::logger> &getCoreLogger();
 
