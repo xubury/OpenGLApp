@@ -204,6 +204,7 @@ void Game::render() {
 
     // normal draw
     m_frameBuffer.beginScene();
+    m_window.clear();
     m_window.beginScene(m_shaders.get("Main"), m_mainCamera);
     m_window.setLighting(lightList, buffers);
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {

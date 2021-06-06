@@ -20,7 +20,7 @@ void RenderTarget::beginScene(Ref<Shader> shader,
     applyShader(shader);
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
-    clear();
+    // clear();
     shader->setMat4("uProjection", camera->getProjection());
     shader->setMat4("uView", camera->getView());
 }
