@@ -31,7 +31,7 @@ Primitive &Primitive::instance() {
     return s_instance;
 }
 
-void Primitive::setDrawingView(const CameraBase *camera) {
+void Primitive::setDrawingView(const Ref<CameraBase> &camera) {
     m_shader.bind();
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());

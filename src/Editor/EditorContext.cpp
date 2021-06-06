@@ -17,7 +17,7 @@ void EditorContext::prepareContext() {
     m_screenFactor = 1.0f / rightLen;
 
     m_frameBuffer->beginScene();
-    Primitive::instance().setDrawingView(m_camera.get());
+    Primitive::instance().setDrawingView(m_camera);
 }
 
 void EditorContext::unloadContext() { m_frameBuffer->endScene(); }
