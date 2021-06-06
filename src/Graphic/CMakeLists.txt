@@ -5,7 +5,6 @@ find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
-set_target_properties(assimp::assimp PROPERTIES MAP_IMPORTED_CONFIG_DEBUG Release)
 
 set(Graphic_Include
     ${Include_Root}/OpenGL.hpp
