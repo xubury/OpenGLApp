@@ -25,6 +25,10 @@ target_compile_options(te-core PRIVATE -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(te-core PRIVATE TE_EXPORT)
 
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(te-core PUBLIC TE_SHARED)
+endif()
+
 target_link_libraries(te-core PUBLIC spdlog::spdlog)
 
 target_include_directories(te-core PUBLIC

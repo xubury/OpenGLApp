@@ -55,6 +55,11 @@ target_compile_options(te-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
 
+if(BUILD_SHARED_LIBS)
+    target_compile_definitions(te-core PUBLIC TE_SHARED)
+endif()
+
+
 target_link_libraries(te-graphic 
     PUBLIC
     te-core

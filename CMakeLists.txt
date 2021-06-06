@@ -6,11 +6,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG_BUILD)
 endif()
 
-if(BUILD_SHARED_LIBS)
-    add_compile_definitions(TE_SHARED)
-endif()
-
-
 add_subdirectory(src/Core)
 add_subdirectory(src/Graphic)
 
