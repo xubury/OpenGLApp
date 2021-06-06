@@ -3,7 +3,7 @@
 
 #include "Core/PlatformDetection.hpp"
 
-#if !defined(TE_STATIC)
+#if defined(TE_SHARED)
 
 #if defined(TE_PLATFORM_WINDOWS)
 
