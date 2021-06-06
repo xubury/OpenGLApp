@@ -25,7 +25,7 @@ void RenderTarget::beginScene(Ref<Shader> shader,
 }
 
 void RenderTarget::setLighting(
-    const std::vector<const LightBase *> &lights,
+    const std::vector<Ref<LightBase>> &lights,
     const std::vector<Ref<ShadowBuffer>> &shadowBuffers) {
     // reserve texture for depth map
     m_textureReserved = shadowBuffers.size();

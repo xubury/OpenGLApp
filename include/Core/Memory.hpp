@@ -1,6 +1,8 @@
 #ifndef MEMORY_HPP
 #define MEMORY_HPP
 
+#include "Core/Base.hpp"
+
 #include <vector>
 
 namespace te {
@@ -23,7 +25,7 @@ class VPool {
     bool isSet(std::size_t index) const;
 
     template <typename T>
-    T& at(std::size_t index) const;
+    const Ref<T> at(std::size_t index) const;
 
     template <typename T>
     void erase(std::size_t index);
@@ -50,7 +52,7 @@ class VPool {
    protected:
     template <typename T>
     friend class Iterator;
-    std::vector<void*> m_memory;
+    std::vector<Ref<void>> m_memory;
 };
 
 template <typename T>
@@ -65,7 +67,7 @@ class Pool : public VPool {
     Pool() = default;
     virtual ~Pool();
 
-    T& at(std::size_t index) const;
+    const Ref<T> at(std::size_t index) const;
 
     void erase(std::size_t index);
 
@@ -78,20 +80,18 @@ class Pool : public VPool {
 };
 
 template <typename T>
-T& VPool::at(std::size_t index) const {
-    return *static_cast<T*>(m_memory.at(index));
+const Ref<T> VPool::at(std::size_t index) const {
+    return std::static_pointer_cast<T>(m_memory.at(index));
 }
 
 template <typename T>
 void VPool::erase(std::size_t index) {
-    delete static_cast<T*>(m_memory.at(index));
-    m_memory[index] = nullptr;
+    m_memory[index].reset();
 }
 
 template <typename T, typename... Args>
 void VPool::emplace(std::size_t index, Args&&... args) {
-    delete static_cast<T*>(m_memory.at(index));
-    m_memory[index] = new T(args...);
+    m_memory[index] = createRef<T>(std::forward<Args>(args)...);
 }
 
 template <typename T>
@@ -126,7 +126,7 @@ std::size_t VPool::Iterator<T>::index() const {
 }
 
 template <typename T>
-T& Pool<T>::at(std::size_t index) const {
+const Ref<T> Pool<T>::at(std::size_t index) const {
     return VPool::at<T>(index);
 }
 
@@ -143,8 +143,6 @@ void Pool<T>::emplace(std::size_t index, Args&&... args) {
 
 template <typename T>
 Pool<T>::~Pool() {
-    const std::size_t size = m_memory.size();
-    for (std::size_t i = 0; i < size; ++i) delete static_cast<T*>(m_memory[i]);
     m_memory.clear();
 }
 
@@ -163,6 +161,6 @@ VPool::Iterator<T> Pool<T>::end() const {
     return VPool::Iterator<T>(m_memory.size(), *this);
 }
 
-}
+}  // namespace te
 
 #endif

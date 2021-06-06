@@ -102,7 +102,7 @@ class EntityManager {
     void checkComponent();
 
     template <typename COMPONENT>
-    COMPONENT *getComponentPtr(uint32_t id) const;
+    Ref<COMPONENT> getComponentPtr(uint32_t id) const;
 
     template <typename... COMPONENT>
     class View {
@@ -304,8 +304,8 @@ inline ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::addComponent(
         static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get());
 
     pool->emplace(id, std::forward<ARGS>(args)...);
-    pool->at(id).m_ownerID = id;
-    pool->at(id).m_manager = this;
+    pool->at(id)->m_ownerID = id;
+    pool->at(id)->m_manager = this;
 
     m_entitiesComponentMasks.at(id).set(family);
     return ComponentHandle<COMPONENT, ENTITY>(this, id);
@@ -352,10 +352,10 @@ EntityManager<ENTITY>::getComponents(uint32_t id) const {
 
 template <class ENTITY>
 template <typename COMPONENT>
-inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) const {
+inline Ref<COMPONENT> EntityManager<ENTITY>::getComponentPtr(
+    uint32_t id) const {
     uint32_t family = COMPONENT::family();
-    return &static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())
-                ->at(id);
+    return static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())->at(id);
 }
 
 template <typename COMPONENT>

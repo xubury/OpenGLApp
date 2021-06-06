@@ -184,7 +184,7 @@ void Game::render() {
 
     RenderStates states;
     std::vector<Ref<ShadowBuffer>> buffers;
-    std::vector<const LightBase*> lightList;
+    std::vector<Ref<LightBase>> lightList;
     Light::Handle light;
     auto view = m_app.entities.getByComponents(light);
     auto end = view.end();
@@ -192,7 +192,7 @@ void Game::render() {
     for (auto begin = view.begin(); begin != end; ++begin) {
         buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map
-        buffers.back()->beginScene(m_shaders.get("Shadow"), *light.get());
+        buffers.back()->beginScene(m_shaders.get("Shadow"), light.get());
         for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
             states.transform =
                 m_app.entities.get(*cur)->component<Transform>()->getMatrix();
