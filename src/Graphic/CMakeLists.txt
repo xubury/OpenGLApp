@@ -51,7 +51,7 @@ add_library(te-graphic
 
 set_property(TARGET te-graphic PROPERTY CXX_STANDARD 17)
 
-target_compile_options(te-graphic PUBLIC -Wall -Wextra -Wundef -pedantic)
+target_compile_options(te-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
 
