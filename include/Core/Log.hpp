@@ -2,12 +2,13 @@
 #define LOG_HPP
 
 #include "Core/Base.hpp"
+#include "Core/Export.hpp"
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
 namespace te {
 
-class Log {
+class TE_API Log {
    public:
     static void init(const std::string &logFileName);
 
