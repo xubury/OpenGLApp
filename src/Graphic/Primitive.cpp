@@ -102,6 +102,7 @@ void Primitive::drawCircleFilled(const glm::vec3 &center,
     }
     glm::vec3 v2 = glm::cross(v3, v1);
     std::vector<Vertex> vertex;
+    vertex.push_back(center);
     float increment = 2.0f * M_PI / fragments;
     glm::vec3 pt;
     for (int i = 0; i <= fragments; ++i) {
