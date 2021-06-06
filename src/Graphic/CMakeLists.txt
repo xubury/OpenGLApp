@@ -55,16 +55,17 @@ target_compile_options(te-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 
 target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
 
-target_link_libraries(te-graphic PUBLIC
+target_link_libraries(te-graphic 
+    PUBLIC
     te-core
     OpenGL::GL
     glbinding::glbinding
-    glm)
+    glm
+    PRIVATE
+    assimp::assimp)
 if(UNIX)
     target_link_libraries(te-graphic PUBLIC X11 Xrandr Xi dl pthread)
 endif()
-
-target_link_libraries(te-graphic PRIVATE assimp::assimp)
 
 target_include_directories(te-graphic PRIVATE
     ${PROJECT_SOURCE_DIR}/libs)

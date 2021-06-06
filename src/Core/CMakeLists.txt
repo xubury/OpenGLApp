@@ -23,9 +23,7 @@ set_property(TARGET te-core PROPERTY CXX_STANDARD 17)
 
 target_compile_options(te-core PRIVATE -Wall -Wextra -Wundef -pedantic)
 
-target_compile_definitions(te-core PRIVATE TE_EXPORT)
-
-target_compile_definitions(te-core PUBLIC SPDLOG_FMT_EXTERNAL)
+target_compile_definitions(te-core PRIVATE TE_EXPORT PUBLIC SPDLOG_FMT_EXTERNAL)
 
 target_link_libraries(te-core PUBLIC spdlog::spdlog)
 
