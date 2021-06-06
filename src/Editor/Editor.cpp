@@ -1,7 +1,7 @@
 #include <Editor/Editor.hpp>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <Utility/Math.hpp>
+#include <Core/Math.hpp>
 #include <Graphic/Primitive.hpp>
 #include <Component/BoundingBox.hpp>
 #include <Component/Light.hpp>

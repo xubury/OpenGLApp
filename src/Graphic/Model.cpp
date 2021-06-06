@@ -18,6 +18,14 @@ void Model::draw(RenderTarget &target, RenderStates states) const {
     }
 }
 
+const std::vector<Mesh> &Model::getMeshes() const {
+    return m_meshes;
+}
+
+std::vector<Mesh> &Model::getMeshes() {
+    return m_meshes;
+}
+
 bool Model::load(const std::string &path) {
     Assimp::Importer import;
     const aiScene *scene =

@@ -11,10 +11,15 @@ set(Core_Include
     ${Include_Root}/Log.hpp
     ${Include_Root}/Assert.hpp
     ${Include_Root}/Base.hpp
-    ${Include_Root}/ResourceManager.hpp)
+    ${Include_Root}/ResourceManager.hpp
+    ${Include_Root}/Math.hpp
+    ${Include_Root}/Memory.hpp
+    ${Include_Root}/Time.hpp)
 
 set(Core_Src
-    ${Src_Root}/Log.cpp)
+    ${Src_Root}/Log.cpp
+    ${Src_Root}/Memory.cpp
+    ${Src_Root}/Time.cpp)
 
 add_library(te-core
     ${Core_Src})

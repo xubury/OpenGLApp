@@ -20,11 +20,12 @@ class TE_API Model : public Drawable {
 
     void draw(RenderTarget &target, RenderStates states) const override;
 
+    const std::vector<Mesh> &getMeshes() const;
+
+    std::vector<Mesh> &getMeshes();
    private:
     template <typename, typename>
     friend class ResourceManager;
-
-    friend class ModelEntity;
 
     // Costly model load function, will not check if loaded before.
     // Use loadModel for fast loading.

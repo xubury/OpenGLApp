@@ -1,7 +1,7 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
-#include <Utility/Time.hpp>
+#include <Core/Time.hpp>
 #include <ECS/Defines.hpp>
 #include <Graphic/RenderTarget.hpp>
 #include <memory>

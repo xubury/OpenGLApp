@@ -6,7 +6,7 @@
 
 #include "Graphic/RenderTarget.hpp"
 #include "Window/Event.hpp"
-#include "Utility/Time.hpp"
+#include "Core/Time.hpp"
 
 class GLFWwindow;
 

@@ -8,6 +8,7 @@ endif()
 
 add_subdirectory(src/Core)
 add_subdirectory(src/Graphic)
+add_subdirectory(src/ECS)
 
 set(Editor_Src
     libs/imgui_impl_glfw.cpp
@@ -27,11 +28,6 @@ set(Entity_Src
     src/Entity/Cube.cpp
     src/Entity/Sphere.cpp)
 
-set(Utility_Src
-    src/Utility/Memory.cpp
-    src/Utility/Time.cpp)
-
-
 set(Window_Src
     src/Window/RenderWindow.cpp
     src/Window/Keyboard.cpp
@@ -46,7 +42,6 @@ find_package(glfw3 REQUIRED)
 add_executable(OpenGLApp
     src/main.cpp
     src/Game.cpp
-    ${Utility_Src}
     ${Component_Src}
     ${Entity_Src}
     ${Window_Src}

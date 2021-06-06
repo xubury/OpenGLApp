@@ -9,7 +9,7 @@
 #include "ECS/Defines.hpp"
 #include "ECS/Component.hpp"
 #include "ECS/System.hpp"
-#include "Utility/Memory.hpp"
+#include "Core/Memory.hpp"
 
 namespace te {
 

@@ -11,7 +11,7 @@ ModelEntity::ModelEntity(EntityManager<EntityBase> *manager, uint32_t id)
 
 void ModelEntity::load(const std::string &path) {
     m_model.loadModel(path);
-    for (const auto &mesh : m_model.m_meshes) {
+    for (const auto &mesh : m_model.getMeshes()) {
         component<BoundingBox>()->initialize(mesh.getVertex(), mesh.size());
     }
 }
@@ -21,4 +21,4 @@ void ModelEntity::draw(RenderTarget &target, RenderStates states) const {
     m_model.draw(target, states);
 }
 
-}
+}  // namespace te

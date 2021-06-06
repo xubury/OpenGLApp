@@ -7,7 +7,7 @@
 #include "Entity/Camera.hpp"
 #include "Graphic/Shader.hpp"
 #include "ECS/ECS.hpp"
-#include "Utility/Time.hpp"
+#include "Core/Time.hpp"
 #include "ECS/Application.hpp"
 #include "Graphic/FrameBuffer.hpp"
 
