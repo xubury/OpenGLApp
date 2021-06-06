@@ -1,9 +1,6 @@
 set(Include_Root ${PROJECT_SOURCE_DIR}/include/Graphic)
 set(Src_Root ${PROJECT_SOURCE_DIR}/src/Graphic)
 
-if (POLICY CMP0072)
-    set(OpenGL_GL_PREFERENCE LEGACY)
-endif()
 find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
