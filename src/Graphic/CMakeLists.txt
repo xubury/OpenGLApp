@@ -59,11 +59,12 @@ target_link_libraries(te-graphic PUBLIC
     te-core
     OpenGL::GL
     glbinding::glbinding
-    glm
-    assimp::assimp)
+    glm)
 if(UNIX)
     target_link_libraries(te-graphic PUBLIC X11 Xrandr Xi dl pthread)
 endif()
+
+target_link_libraries(te-graphic PRIVATE assimp::assimp)
 
 target_include_directories(te-graphic PRIVATE
     ${PROJECT_SOURCE_DIR}/libs)
