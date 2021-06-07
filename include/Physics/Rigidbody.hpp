@@ -14,6 +14,8 @@ struct Rigidbody : public CollisionObject {
 
     void addForce(const glm::vec3 &force, const glm::vec3 &pos);
 
+    void addImpulse(const glm::vec3 &impulse);
+
     float getMass() const;
 
     bool isKinematic() const;

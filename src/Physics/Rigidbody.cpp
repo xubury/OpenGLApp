@@ -4,7 +4,7 @@ namespace te {
 
 Rigidbody::Rigidbody(float mass, bool isKinematic)
     : CollisionObject(true),
-      m_gravity(0, 0, 0),
+      m_gravity(0, -9.8, 0),
       m_force(0),
       m_velocity(0),
       m_mass(mass),
@@ -24,6 +24,10 @@ void Rigidbody::step(const Time &deltaTime) {
 
 void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &) {
     m_force += force;
+}
+
+void Rigidbody::addImpulse(const glm::vec3 &impulse) {
+    m_velocity += impulse;
 }
 
 float Rigidbody::getMass() const { return m_mass; }

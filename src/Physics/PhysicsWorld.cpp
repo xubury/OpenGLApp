@@ -28,7 +28,7 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
     for (const ContactManifold &manifold : manifolds) {
         Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA.get());
         Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB.get());
-        const float percent = 0.8f;
+        const float percent = 200.0f;
         const float slop = 0.01f;
 
         const float massA = bodyA ? bodyA->getMass() : 0.f;
@@ -40,13 +40,15 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
                 (massA + massB);
             glm::vec3 deltaA = -massA * correction;
             glm::vec3 deltaB = massB * correction;
-            TE_TRACE("massA:{0}, deltaA:{1} {2} {3}", massA, deltaA.x, deltaA.y,
-                     deltaA.z);
+            TE_TRACE("massA:{0}, deltaA:{1} {2} {3},depth{4}", massA, deltaA.x,
+                     deltaA.y, deltaA.z, manifold.points[i].depth);
             if (bodyA && bodyA->isKinematic()) {
-                bodyA->addForce(deltaA, manifold.points[i].position);
+                bodyA->addForce(deltaA / deltaTime.count(),
+                                manifold.points[i].position);
             }
             if (bodyB && bodyB->isKinematic()) {
-                bodyB->addForce(deltaB, manifold.points[i].position);
+                bodyB->addForce(deltaB / deltaTime.count(),
+                                manifold.points[i].position);
             }
         }
     }
