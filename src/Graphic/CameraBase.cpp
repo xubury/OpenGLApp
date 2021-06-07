@@ -20,15 +20,15 @@ int CameraBase::getViewportX() const { return m_viewportX; }
 
 int CameraBase::getViewportY() const { return m_viewportY; }
 
-glm::vec2 CameraBase::getViewportPos() const {
+glm::i32vec2 CameraBase::getViewportPos() const {
     return glm::vec2(m_viewportX, m_viewportY);
 }
 
-int CameraBase::getViewportWidth() const { return m_viewportWidth; }
+uint32_t CameraBase::getViewportWidth() const { return m_viewportWidth; }
 
-int CameraBase::getViewportHeight() const { return m_viewportHeight; }
+uint32_t CameraBase::getViewportHeight() const { return m_viewportHeight; }
 
-glm::vec2 CameraBase::getViewportSize() const {
+glm::u32vec2 CameraBase::getViewportSize() const {
     return glm::vec2(m_viewportWidth, m_viewportHeight);
 }
 

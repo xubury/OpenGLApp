@@ -157,7 +157,7 @@ void Editor::renderCameraAxes(float clipLen) {
     Ref<Camera> cam = context.getCamera();
     Transform::Handle trans = context.getCamera()->component<Transform>();
     clipLen *= cam->getViewportHeight() / 2.f;
-    glm::vec3 origin(cam->getViewportSize() - clipLen, 0);
+    glm::vec3 origin(glm::vec2(cam->getViewportSize()) - clipLen, 0);
     // draw x
     glm::vec3 xAxis = trans->getRight();
     xAxis.y = -xAxis.y;

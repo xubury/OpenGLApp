@@ -18,13 +18,13 @@ class TE_API CameraBase {
 
     int getViewportY() const;
 
-    glm::vec2 getViewportPos() const;
+    glm::i32vec2 getViewportPos() const;
 
-    int getViewportWidth() const;
+    uint32_t getViewportWidth() const;
 
-    int getViewportHeight() const;
+    uint32_t getViewportHeight() const;
 
-    glm::vec2 getViewportSize() const;
+    glm::u32vec2 getViewportSize() const;
 
     void setViewportSize(float width, float height);
 
@@ -46,8 +46,8 @@ class TE_API CameraBase {
    private:
     int m_viewportX;
     int m_viewportY;
-    int m_viewportWidth;
-    int m_viewportHeight;
+    uint32_t m_viewportWidth;
+    uint32_t m_viewportHeight;
 
     float m_nearZ;
     float m_farZ;
