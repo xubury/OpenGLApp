@@ -13,13 +13,13 @@
 
 #include <iostream>
 
-void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
+void Game::addSphere(const glm::vec3& pos, const glm::vec3& impulse,
+                     const TextureArray& textures) {
     int id = m_app.entities.create<Sphere>();
     Ref<EntityBase> sphere = m_app.entities.get(id);
     sphere->add<Rigidbody>(10, true);
     sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
-    if (id == 2)
-        sphere->component<Rigidbody>()->addImpulse(glm::vec3(0, 100, 0));
+    sphere->component<Rigidbody>()->addImpulse(impulse);
     sphere->setTextures(textures);
     sphere->setPosition(pos);
     sphere->setName("Sphere");
@@ -87,13 +87,6 @@ void Game::loadScene() {
     // light2->diffuse = glm::vec3(0.5f);
     // light2->specular = glm::vec3(0.5f);
 
-    // ground
-    TextureArray groundTextures;
-    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
-    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
-    groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
-    addCube(glm::vec3(0), 50, 1, 50, groundTextures);
-
     TextureArray textures;
     textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
     textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
@@ -101,14 +94,23 @@ void Game::loadScene() {
 
     glm::vec3 positions[] = {
         glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
-        glm::vec3(-1.5f, 2.2f, -2.5f), glm::vec3(-3.8f, 2.0f, -12.3f)};
+        glm::vec3(-4.0f, 8.0f, 0.0f), glm::vec3(2.0, 9.0f, -4.0f)};
+    glm::vec3 impulse[] = {glm::vec3(0, 100, 0), glm::vec3(0, -50, 0),
+                           glm::vec3(100, 0, 0), glm::vec3(0, 0, 100.f)};
     for (int i = 0; i < 4; ++i) {
-        addSphere(positions[i], textures);
+        addSphere(positions[i], impulse[i], textures);
     }
 
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
+
+    // ground
+    TextureArray groundTextures;
+    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
+    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
+    groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
+    addCube(glm::vec3(0), 50, 1, 50, groundTextures);
 }
 
 Game::Game(const Settings& settings)
