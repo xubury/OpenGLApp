@@ -34,6 +34,12 @@ set(Window_Src
     src/Window/Mouse.cpp
     src/Window/Action.cpp)
 
+set(Physics_Src
+    src/Physics/PhysicsWorld.cpp
+    src/Physics/Rigidbody.cpp
+    src/Physics/SphereCollider.cpp
+    src/Physics/HullCollider.cpp)
+
 if (NOT BUILD_LIBS_ONLY)
 
 find_package(imgui REQUIRED)
@@ -45,6 +51,7 @@ add_executable(OpenGLApp
     ${Component_Src}
     ${Entity_Src}
     ${Window_Src}
+    ${Physics_Src}
     ${Editor_Src})
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)

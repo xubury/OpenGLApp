@@ -4,33 +4,29 @@ namespace te {
 
 const Time Time::Zero;
 
-Time::Time() : MicroSeconds(0) {}
+Time::Time() : Seconds(0) {}
 
-Time::Time(MicroSeconds time) : MicroSeconds(time) {}
+Time::Time(Seconds time) : Seconds(time) {}
 
-Time seconds(float amount) {
-    return Time(std::chrono::duration<int64_t, std::micro>(
-        static_cast<int64_t>(amount * 1000000)));
-}
+Time seconds(float amount) { return Time(Seconds(amount)); }
 
 Time milliseconds(int32_t amount) {
-    return Time(std::chrono::duration<int64_t, std::micro>(
-        static_cast<int64_t>(amount * 1000)));
+    return Time(MilliSeconds(static_cast<float>(amount) / 1e3));
 }
 
 Time microseconds(int64_t amount) {
-    return Time(std::chrono::duration<int64_t, std::micro>(amount));
+    return Time(MicroSeconds(static_cast<float>(amount) / 1e6));
 }
 
 Clock::Clock() : m_clock(ClockType::now()) {}
 
 Time Clock::getElapsedTime() {
-    return std::chrono::duration_cast<MicroSeconds>(ClockType::now() - m_clock);
+    return std::chrono::duration_cast<Seconds>(ClockType::now() - m_clock);
 }
 
 Time Clock::restart() {
     ClockType::time_point now = ClockType::now();
-    Time ret = std::chrono::duration_cast<MicroSeconds>(now - m_clock);
+    Time ret = std::chrono::duration_cast<Seconds>(now - m_clock);
     m_clock = now;
     return ret;
 }

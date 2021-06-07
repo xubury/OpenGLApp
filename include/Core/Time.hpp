@@ -5,15 +5,15 @@
 
 namespace te {
 
-using MicroSeconds = std::chrono::microseconds;
-using MilliSeconds = std::chrono::milliseconds;
-using Seconds = std::chrono::seconds;
+using MicroSeconds = std::chrono::duration<float, std::micro>;
+using MilliSeconds = std::chrono::duration<float, std::milli>;
+using Seconds = std::chrono::duration<float>;
 
-class Time : public MicroSeconds {
+class Time : public Seconds {
    public:
     Time();
 
-    Time(MicroSeconds time);
+    Time(Seconds time);
 
     template <typename T>
     T as() {

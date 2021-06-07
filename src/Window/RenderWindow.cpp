@@ -53,8 +53,7 @@ void RenderWindow::display() {
         std::this_thread::sleep_for(m_framerateLimit -
                                     m_clock.getElapsedTime());
     }
-    m_frameRate =
-        1.f / m_clock.getElapsedTime().as<MicroSeconds>().count() * 1e6;
+    m_frameRate = 1.f / m_clock.getElapsedTime().as<Seconds>().count();
     m_clock.restart();
 }
 

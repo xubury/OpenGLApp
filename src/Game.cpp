@@ -7,12 +7,18 @@
 #include "Entity/Cube.hpp"
 #include "Entity/Sphere.hpp"
 #include "Editor/Editor.hpp"
+#include "Physics/PhysicsWorld.hpp"
+#include "Physics/Rigidbody.hpp"
+#include "Physics/SphereCollider.hpp"
 
 #include <iostream>
 
 void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
     int id = m_app.entities.create<Sphere>();
     Ref<EntityBase> sphere = m_app.entities.get(id);
+    sphere->add<Rigidbody>(10, true);
+    sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
+    // sphere->component<Rigidbody>()->addForce(glm::vec3(0, 0, 1));
     sphere->setTextures(textures);
     sphere->setPosition(pos);
     sphere->setName("Sphere");
@@ -87,27 +93,19 @@ void Game::loadScene() {
     groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
     addCube(glm::vec3(0), 50, 1, 50, groundTextures);
 
-    // glm::vec3 positions[] = {
-    //     glm::vec3(-2.0f, 0.0f, 0.0f),   glm::vec3(2.0f, 5.0f, -15.0f),
-    //     glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
-    //     glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
-    //     glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
-    //     glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
     TextureArray textures;
     textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
     textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
     textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
 
-    // for (int i = 0; i < 10; ++i) {
-    //     glm::vec3 offset(0);
-    //     offset[i % 3] = i % 5;
-    //     addCube(positions[i] + offset, 1, 1, 1, textures);
-    //     addSphere(positions[i], textures);
-    // }
+    glm::vec3 positions[] = {
+        glm::vec3(2.0f, 10.0f, 0.0f), glm::vec3(2.0f, 10.8f, 0.f),
+        glm::vec3(-1.5f, 2.2f, -2.5f), glm::vec3(-3.8f, 2.0f, -12.3f)};
+    for (int i = 0; i < 4; ++i) {
+        addSphere(positions[i], textures);
+    }
 
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
-    addSphere(glm::vec3(0, 6, 0), textures);
-
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
 }
@@ -128,6 +126,7 @@ Game::Game(const Settings& settings)
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
+    m_app.systems.add<PhysicsWorld>();
 
     m_window.setFramerateLimit(settings.frameRateLimit);
 }
