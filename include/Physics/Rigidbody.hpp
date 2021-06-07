@@ -20,10 +20,19 @@ struct Rigidbody : public CollisionObject {
 
     bool isKinematic() const;
 
+    glm::vec3 getCenterOfMassInWorld() const;
+
+    const glm::vec3 &getVelocity() const;
+    
+    const glm::vec3 &getAngularVelocity() const;
    private:
+    glm::vec3 m_centerOfMass;
+
     glm::vec3 m_gravity;
     glm::vec3 m_force;
+
     glm::vec3 m_velocity;
+    glm::vec3 m_angularVelocity;
 
     float m_mass;
     bool m_isKinematic;

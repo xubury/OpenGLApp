@@ -4,9 +4,11 @@ namespace te {
 
 Rigidbody::Rigidbody(float mass, bool isKinematic)
     : CollisionObject(true),
-      m_gravity(0, -9.8, 0),
-      m_force(0),
-      m_velocity(0),
+      m_centerOfMass(0.f),
+      m_gravity(0.f, -9.8f, 0.f),
+      m_force(0.f),
+      m_velocity(0.f),
+      m_angularVelocity(0.f),
       m_mass(mass),
       m_isKinematic(isKinematic) {
     TE_ASSERT(mass > 0, "Rigidbody mass can't be less than zero!")
@@ -27,11 +29,22 @@ void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &) {
 }
 
 void Rigidbody::addImpulse(const glm::vec3 &impulse) {
-    m_velocity += impulse;
+    m_velocity += impulse / m_mass;
 }
 
 float Rigidbody::getMass() const { return m_mass; }
 
 bool Rigidbody::isKinematic() const { return m_isKinematic; }
+
+glm::vec3 Rigidbody::getCenterOfMassInWorld() const {
+    return owner()->component<Transform>()->getMatrix() *
+           glm::vec4(m_centerOfMass, 1.0f);
+}
+
+const glm::vec3 &Rigidbody::getVelocity() const { return m_velocity; }
+
+const glm::vec3 &Rigidbody::getAngularVelocity() const {
+    return m_angularVelocity;
+}
 
 }  // namespace te

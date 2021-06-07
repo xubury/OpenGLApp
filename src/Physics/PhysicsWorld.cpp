@@ -28,26 +28,28 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
     for (const ContactManifold &manifold : manifolds) {
         Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA.get());
         Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB.get());
-        const float percent = 200.0f;
-        const float slop = 0.01f;
 
-        const float massA = bodyA ? bodyA->getMass() : 0.f;
-        const float massB = bodyB ? bodyB->getMass() : 0.f;
+        const glm::vec3 &velA = bodyA ? bodyA->getVelocity() : glm::vec3(0);
+        const glm::vec3 &velB = bodyB ? bodyB->getVelocity() : glm::vec3(0);
+        const glm::vec3 &wA =
+            bodyA ? bodyA->getAngularVelocity() : glm::vec3(0);
+        const glm::vec3 &wB =
+            bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
+
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
-            glm::vec3 correction =
-                manifold.normal * percent *
-                std::max(manifold.points[i].depth + slop, 0.0f) /
-                (massA + massB);
-            glm::vec3 deltaA = -massA * correction;
-            glm::vec3 deltaB = massB * correction;
-            TE_TRACE("massA:{0}, deltaA:{1} {2} {3},depth{4}", massA, deltaA.x,
-                     deltaA.y, deltaA.z, manifold.points[i].depth);
+            float correction =
+                -0.1f * manifold.points[i].depth / deltaTime.count();
+            const glm::vec3 rA =
+                manifold.points[i].position - bodyA->getCenterOfMassInWorld();
+            const glm::vec3 rB =
+                manifold.points[i].position - bodyB->getCenterOfMassInWorld();
+            float velRelative =
+                glm::dot(velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA),
+                         manifold.normal);
+            TE_TRACE("relative speed: {0}", velRelative);
             if (bodyA && bodyA->isKinematic()) {
-                bodyA->addForce(deltaA / deltaTime.count(),
-                                manifold.points[i].position);
-            }
-            if (bodyB && bodyB->isKinematic()) {
-                bodyB->addForce(deltaB / deltaTime.count(),
+                bodyA->addForce((velRelative + correction) * manifold.normal *
+                                    bodyA->getMass() / deltaTime.count(),
                                 manifold.points[i].position);
             }
         }

@@ -19,7 +19,7 @@ void Game::addSphere(const glm::vec3& pos, const TextureArray& textures) {
     sphere->add<Rigidbody>(10, true);
     sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
     if (id == 2)
-        sphere->component<Rigidbody>()->addImpulse(glm::vec3(0, 10, 0));
+        sphere->component<Rigidbody>()->addImpulse(glm::vec3(0, 100, 0));
     sphere->setTextures(textures);
     sphere->setPosition(pos);
     sphere->setName("Sphere");
@@ -100,7 +100,7 @@ void Game::loadScene() {
     textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
 
     glm::vec3 positions[] = {
-        glm::vec3(2.0f, 5.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
+        glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
         glm::vec3(-1.5f, 2.2f, -2.5f), glm::vec3(-3.8f, 2.0f, -12.3f)};
     for (int i = 0; i < 4; ++i) {
         addSphere(positions[i], textures);
