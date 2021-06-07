@@ -411,18 +411,17 @@ void Editor::render() {
                     context.getEntityManager()->get(i)->getName().c_str());
             if (ImGui::Selectable(entityLabel,
                                   i == context.getActiveEntityId())) {
-                const float dist =
-                    glm::length(context.getActiveEntityPtr()->getPosition() -
-                                context.getCamera()->getPosition());
+                // const float dist =
+                //     glm::length(context.getActiveEntityPtr()->getPosition() -
+                //                 context.getCamera()->getPosition());
 
                 context.setActiveEntityId(i);
-                glm::vec3 worldPos =
-                    context.getActiveEntityPtr()->getPosition() +
-                    glm::normalize(context.getCamera()
-                                       ->component<Transform>()
-                                       ->getFront()) *
-                        dist;
-                context.getCamera()->setPosition(worldPos);
+                context.getCamera()->setPosition(
+                    context.getActiveEntityPtr()->getPosition());
+                context.getCamera()->setEulerAngle(
+                    glm::vec3(glm::radians(-45.f), glm::radians(45.f), 0));
+                context.getCamera()->component<Transform>()->translateLocal(
+                    glm::vec3(0, 0, 10));
             }
         }
         ImGui::EndChild();
