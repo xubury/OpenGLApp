@@ -11,7 +11,8 @@ CameraBase::CameraBase(int x, int y, int width, int height)
       m_viewportWidth(width),
       m_viewportHeight(height),
       m_nearZ(0.1),
-      m_farZ(100.f) {
+      m_farZ(100.f),
+      m_primary(false) {
     TE_CORE_ASSERT(width > 0 && height > 0, "CameraBase width or height <= 0.");
 }
 

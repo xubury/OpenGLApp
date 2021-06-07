@@ -24,8 +24,8 @@ class Camera : public CameraBase,
     using ActionTarget::setActive;
 
    public:
-    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y, int width,
-           int height, const glm::vec3 &position = glm::vec3(0.f));
+    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
+           int width, int height);
 
     virtual glm::mat4 getView() const override;
 

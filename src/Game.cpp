@@ -36,7 +36,6 @@ void Game::addModel(const std::string& path, const glm::vec3& pos) {
 }
 
 void Game::loadShaders() {
-
     m_shaders.add("Main");
     m_shaders.get("Main")->load("shader/vertex.glsl", "shader/fragment.glsl");
     m_shaders.get("Main")->bind();
@@ -120,9 +119,10 @@ Game::Game(const Settings& settings)
       m_editorMode(settings.editor) {
     loadShaders();
     loadScene();
-    uint32_t id = m_cameras.create<Camera>(
-        0, 0, settings.width, settings.height, glm::vec3(-8.f, 9.f, 13.f));
-    m_mainCamera = std::dynamic_pointer_cast<Camera>(m_cameras.get(id));
+    uint32_t id =
+        m_app.entities.create<Camera>(0, 0, settings.width, settings.height);
+    m_mainCamera = std::dynamic_pointer_cast<Camera>(m_app.entities.get(id));
+    m_mainCamera->setPosition(glm::vec3(-8.f, 9.f, 13.f));
     m_mainCamera->setEulerAngle(
         glm::vec3(glm::radians(-15.f), glm::radians(-35.f), glm::radians(5.f)));
 

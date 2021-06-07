@@ -43,7 +43,6 @@ class TE_API CameraBase {
 
     float getSegmentLengthClipSpace(const glm::vec3 &start,
                                     const glm::vec3 &end) const;
-
    private:
     int m_viewportX;
     int m_viewportY;
@@ -52,8 +51,10 @@ class TE_API CameraBase {
 
     float m_nearZ;
     float m_farZ;
+
+    bool m_primary;
 };
 
-}
+}  // namespace te
 
 #endif /* CAMERA_BASE_HPP */

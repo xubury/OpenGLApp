@@ -8,14 +8,13 @@ namespace te {
 ActionMap<Movement> Camera::s_cameraMovement;
 
 Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
-               int width, int height, const glm::vec3 &position)
+               int width, int height)
     : CameraBase(x, y, width, height),
       EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
       m_zoom(45.f),
       m_yaw(0),
       m_pitch(0) {
-    setPosition(position);
     setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
     s_cameraMovement.map(Movement::FORWARD, Keyboard::Key::W);
     s_cameraMovement.map(Movement::BACKWRAD, Keyboard::Key::S);
