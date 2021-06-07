@@ -16,11 +16,11 @@ void EditorContext::prepareContext() {
         pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
 
-    m_frameBuffer->beginScene();
+    m_frameBuffer->activate();
     Primitive::instance().setDrawingView(m_camera);
 }
 
-void EditorContext::unloadContext() { m_frameBuffer->endScene(); }
+void EditorContext::unloadContext() { m_frameBuffer->deactivate(); }
 
 void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 

@@ -19,11 +19,11 @@ class TE_API FrameBuffer {
 
     void update(int width, int height, int smaple = 0);
 
-    void beginScene() const;
+    void activate() const;
 
-    void endScene() const;
+    void deactivate() const;
 
-    void draw(Ref<Shader> shader);
+    void draw();
 
     uint32_t getScreenTexture() const;
 
@@ -43,6 +43,8 @@ class TE_API FrameBuffer {
     int m_width;
     int m_height;
     int m_sample;
+
+    static ShaderLibrary s_shaders;
 };
 
 }  // namespace te

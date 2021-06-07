@@ -7,6 +7,8 @@
 
 namespace te {
 
+ShaderLibrary ShadowBuffer::s_shaders;
+
 static void attachDepthMapTexture(int framebuffer, int texture, int width,
                                   int height) {
     TE_CORE_ASSERT(width > 0 && height > 0,
@@ -40,6 +42,23 @@ Ref<ShadowBuffer> ShadowBuffer::create(int width, int height) {
 
 ShadowBuffer::ShadowBuffer(int width, int height)
     : m_width(width), m_height(height) {
+    if (!s_shaders.exists("shadow")) {
+        const char *shadowVertex =
+            "#version 330 core\n"
+            "layout (location = 0) in vec3 aPos;\n"
+            "uniform mat4 uLightSpaceMatrix;\n"
+            "uniform mat4 uModel;\n"
+            "void main() {\n"
+            "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
+            "}";
+        const char *shadowFragment =
+            "#version 330 core\n"
+            "void main() {\n"
+            "}";
+
+        s_shaders.add("shadow");
+        s_shaders.get("shadow")->compile(shadowVertex, shadowFragment);
+    }
     glGenFramebuffers(1, &m_frameBufferId);
     glGenTextures(1, &m_textureId);
     attachDepthMapTexture(m_frameBufferId, m_textureId, m_width, m_height);
@@ -58,12 +77,13 @@ uint32_t ShadowBuffer::getWidth() const { return m_width; }
 
 uint32_t ShadowBuffer::getHeight() const { return m_height; }
 
-void ShadowBuffer::beginScene(Ref<Shader> shader, const Ref<LightBase> &light) {
-    applyShader(shader);
+void ShadowBuffer::beginScene(const Ref<LightBase> &light) {
+    applyShader(s_shaders.get("shadow"));
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
     glViewport(0, 0, m_width, m_height);
     glClear(GL_DEPTH_BUFFER_BIT);
-    shader->setMat4("uLightSpaceMatrix", light->getLightSpaceMatrix());
+    s_shaders.get("shadow")->setMat4("uLightSpaceMatrix",
+                                     light->getLightSpaceMatrix());
     glCullFace(GL_FRONT);
 }
 

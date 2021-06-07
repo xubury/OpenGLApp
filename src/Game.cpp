@@ -36,43 +36,6 @@ void Game::addModel(const std::string& path, const glm::vec3& pos) {
 }
 
 void Game::loadShaders() {
-    const char* shadowVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 uLightSpaceMatrix;\n"
-        "uniform mat4 uModel;\n"
-        "void main() {\n"
-        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
-        "}";
-    const char* shadowFragment =
-        "#version 330 core\n"
-        "void main() {\n"
-        "}";
-
-    m_shaders.add("Shadow");
-    m_shaders.get("Shadow")->compile(shadowVertex, shadowFragment);
-
-    const char* fbVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec2 aPos;\n"
-        "layout (location = 1) in vec2 aTexCoords;\n"
-        "out vec2 texCoords;\n"
-        "void main() {\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-        "    texCoords = aTexCoords;\n"
-        "}";
-
-    const char* fbFragment =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "in vec2 texCoords;\n"
-        "uniform sampler2D uScreenTexture;\n"
-        "void main() {\n"
-        "    fragColor = texture(uScreenTexture, texCoords);\n"
-        "}";
-
-    m_shaders.add("FrameBuffer");
-    m_shaders.get("FrameBuffer")->compile(fbVertex, fbFragment);
 
     m_shaders.add("Main");
     m_shaders.get("Main")->load("shader/vertex.glsl", "shader/fragment.glsl");
@@ -192,7 +155,7 @@ void Game::render() {
     for (auto begin = view.begin(); begin != end; ++begin) {
         buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map
-        buffers.back()->beginScene(m_shaders.get("Shadow"), light.get());
+        buffers.back()->beginScene(light.get());
         for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
             states.transform =
                 m_app.entities.get(*cur)->component<Transform>()->getMatrix();
@@ -203,7 +166,7 @@ void Game::render() {
     }
 
     // normal draw
-    m_frameBuffer.beginScene();
+    m_frameBuffer.activate();
     m_window.clear();
     m_window.beginScene(m_shaders.get("Main"), m_mainCamera);
     m_window.setLighting(lightList, buffers);
@@ -214,12 +177,12 @@ void Game::render() {
         m_app.entities.get(*cur)->draw(m_window, states);
     }
     m_window.endScene();
-    m_frameBuffer.endScene();
+    m_frameBuffer.deactivate();
 
     if (m_editorMode) {
         Editor::instance().render();
     } else {
-        m_frameBuffer.draw(m_shaders.get("FrameBuffer"));
+        m_frameBuffer.draw();
     }
 
     m_window.display();

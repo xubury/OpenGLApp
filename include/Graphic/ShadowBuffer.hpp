@@ -20,7 +20,7 @@ class TE_API ShadowBuffer : public RenderTarget {
 
     ShadowBuffer &operator=(const ShadowBuffer &) = delete;
 
-    void beginScene(Ref<Shader> shader, const Ref<LightBase> &light);
+    void beginScene(const Ref<LightBase> &light);
 
     void endScene();
 
@@ -40,6 +40,8 @@ class TE_API ShadowBuffer : public RenderTarget {
 
     uint32_t m_frameBufferId;
     uint32_t m_textureId;
+
+    static ShaderLibrary s_shaders;
 };
 
 }  // namespace te

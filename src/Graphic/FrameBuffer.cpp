@@ -8,6 +8,8 @@
 
 namespace te {
 
+ShaderLibrary FrameBuffer::s_shaders;
+
 static void attachScreenTexture(int framebuffer, int texture, int width,
                                 int height) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -69,6 +71,29 @@ FrameBuffer::FrameBuffer(int width, int height, int sample)
       m_width(0),
       m_height(0),
       m_sample(1) {
+    if (!s_shaders.exists("frameBuffer")) {
+        const char* fbVertex =
+            "#version 330 core\n"
+            "layout (location = 0) in vec2 aPos;\n"
+            "layout (location = 1) in vec2 aTexCoords;\n"
+            "out vec2 texCoords;\n"
+            "void main() {\n"
+            "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+            "    texCoords = aTexCoords;\n"
+            "}";
+
+        const char* fbFragment =
+            "#version 330 core\n"
+            "out vec4 fragColor;\n"
+            "in vec2 texCoords;\n"
+            "uniform sampler2D uScreenTexture;\n"
+            "void main() {\n"
+            "    fragColor = texture(uScreenTexture, texCoords);\n"
+            "}";
+
+        s_shaders.add("frameBuffer");
+        s_shaders.get("frameBuffer")->compile(fbVertex, fbFragment);
+    }
     glGenFramebuffers(1, &m_multiSampleFrameBufferId);
     glGenFramebuffers(1, &m_frameBufferId);
 
@@ -93,10 +118,10 @@ FrameBuffer::FrameBuffer(int width, int height, int sample)
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)0);
+                          (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)(2 * sizeof(float)));
+                          (void*)(2 * sizeof(float)));
 
     update(width, height, sample);
 }
@@ -127,11 +152,11 @@ void FrameBuffer::update(int width, int height, int sample) {
     }
 }
 
-void FrameBuffer::beginScene() const {
+void FrameBuffer::activate() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_multiSampleFrameBufferId);
 }
 
-void FrameBuffer::endScene() const {
+void FrameBuffer::deactivate() const {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_multiSampleFrameBufferId);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBufferId);
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
@@ -139,10 +164,10 @@ void FrameBuffer::endScene() const {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FrameBuffer::draw(Ref<Shader> shader) {
+void FrameBuffer::draw() {
     glDisable(GL_DEPTH_TEST);
-    shader->bind();
-    shader->setInt("uScreenTexture", 0);
+    s_shaders.get("frameBuffer")->bind();
+    s_shaders.get("frameBuffer")->setInt("uScreenTexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_screenTextureId);
     glBindVertexArray(m_VAO);
