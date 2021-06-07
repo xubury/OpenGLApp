@@ -355,7 +355,7 @@ template <typename COMPONENT>
 inline Ref<COMPONENT> EntityManager<ENTITY>::getComponentPtr(
     uint32_t id) const {
     uint32_t family = COMPONENT::family();
-    return static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())->at(id);
+    return dynamic_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())->at(id);
 }
 
 template <typename COMPONENT>

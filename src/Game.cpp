@@ -146,7 +146,7 @@ void Game::loadScene() {
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
     addSphere(glm::vec3(0, 6, 0), textures);
 
-    // addmodel("resources/models/backpack/backpack.obj",
+    // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
 }
 
