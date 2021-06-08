@@ -86,7 +86,7 @@ class EntityManager {
 
    private:
     // Stores every entity that have been allocated
-    std::vector<Scope<ENTITY>> m_entitesAllocated;
+    std::vector<Scope<ENTITY>> m_entitiesAllocated;
     // Stores what components does a entity of index has
     std::vector<std::bitset<MAX_COMPONENTS>> m_entitiesComponentMasks;
     // Stores entities that has component of index
@@ -166,13 +166,13 @@ inline uint32_t EntityManager<ENTITY>::create(ARGS &&...args) {
     if (!m_entitiesIndexFree.empty()) {
         index = m_entitiesIndexFree.front();
         m_entitiesIndexFree.pop_front();
-        m_entitesAllocated[index] =
+        m_entitiesAllocated[index] =
             createScope<T>(this, index, std::forward<ARGS>(args)...);
     } else {
         m_entitiesComponentMasks.emplace_back();
 
-        index = m_entitesAllocated.size();
-        m_entitesAllocated.emplace_back(nullptr);
+        index = m_entitiesAllocated.size();
+        m_entitiesAllocated.emplace_back(nullptr);
 
         std::size_t comp_size = m_componentsEntities.size();
         for (std::size_t i = 0; i < comp_size; ++i) {
@@ -180,7 +180,7 @@ inline uint32_t EntityManager<ENTITY>::create(ARGS &&...args) {
                 m_componentsEntities[i]->resize(index + 1);
             }
         }
-        m_entitesAllocated[index] =
+        m_entitiesAllocated[index] =
             createScope<T>(this, index, std::forward<ARGS>(args)...);
     }
     m_entitiesIndex.emplace_back(index);
@@ -190,9 +190,9 @@ inline uint32_t EntityManager<ENTITY>::create(ARGS &&...args) {
 template <class ENTITY>
 template <typename... ARGS>
 inline void EntityManager<ENTITY>::emplace(uint32_t index, ARGS &&...args) {
-    std::size_t size = m_entitesAllocated.size();
+    std::size_t size = m_entitiesAllocated.size();
     if (size <= index) {
-        m_entitesAllocated.resize(index + 1);
+        m_entitiesAllocated.resize(index + 1);
         m_entitiesComponentMasks.resize(index + 1, 0);
         m_entitiesIndex.emplace_back(index);
 
@@ -208,7 +208,7 @@ inline void EntityManager<ENTITY>::emplace(uint32_t index, ARGS &&...args) {
                 m_componentsEntities[i]->resize(index + 1);
             }
         }
-    } else if (m_entitesAllocated[index] != nullptr) {
+    } else if (m_entitiesAllocated[index] != nullptr) {
         // already in use, free it
         reset(index);
     } else {
@@ -216,7 +216,7 @@ inline void EntityManager<ENTITY>::emplace(uint32_t index, ARGS &&...args) {
         m_entitiesIndex.emplace_back(index);
     }
 
-    m_entitesAllocated[index] =
+    m_entitiesAllocated[index] =
         createScope<ENTITY>(this, index, std::forward<ARGS>(args)...);
 }
 
@@ -232,7 +232,7 @@ inline void EntityManager<ENTITY>::update() {
         Container::iterator end = m_entitiesToDestroy.end();
         for (; iter != end; ++iter) {
             uint32_t id = *iter;
-            if (m_entitesAllocated.at(id) != nullptr) {
+            if (m_entitiesAllocated.at(id) != nullptr) {
                 reset(id);
                 m_entitiesIndex.erase(std::find(m_entitiesIndex.begin(),
                                                 m_entitiesIndex.end(), id));
@@ -257,26 +257,26 @@ inline void EntityManager<ENTITY>::reset() {
     }
     m_componentsEntities.clear();
     m_entitiesComponentMasks.clear();
-    m_entitesAllocated.clear();
+    m_entitiesAllocated.clear();
 }
 
 template <class ENTITY>
 inline std::size_t EntityManager<ENTITY>::size() {
-    return m_entitesAllocated.size() - m_entitiesIndexFree.size();
+    return m_entitiesAllocated.size() - m_entitiesIndexFree.size();
 }
 
 template <class ENTITY>
 inline bool EntityManager<ENTITY>::isValid(uint32_t id) const {
-    return id < m_entitesAllocated.size() && m_entitesAllocated[id] != nullptr;
+    return id < m_entitiesAllocated.size() && m_entitiesAllocated[id] != nullptr;
 }
 template <class ENTITY>
 inline const ENTITY *EntityManager<ENTITY>::get(std::size_t id) const {
-    return m_entitesAllocated.at(id).get();
+    return m_entitiesAllocated.at(id).get();
 }
 
 template <class ENTITY>
 inline ENTITY *EntityManager<ENTITY>::get(std::size_t id) {
-    return m_entitesAllocated.at(id).get();
+    return m_entitiesAllocated.at(id).get();
 }
 
 template <class ENTITY>
@@ -388,7 +388,7 @@ inline void EntityManager<ENTITY>::reset(uint32_t id) {
         }
     }
     m_entitiesComponentMasks.at(id).reset();
-    m_entitesAllocated[id] = nullptr;
+    m_entitiesAllocated[id] = nullptr;
 }
 
 template <class ENTITY>
@@ -401,7 +401,7 @@ inline void EntityManager<ENTITY>::checkComponent() {
 
     if (m_componentsEntities[family] == nullptr) {
         Scope<Pool<COMPONENT>> pool = createScope<Pool<COMPONENT>>();
-        pool->resize(m_entitesAllocated.size());
+        pool->resize(m_entitiesAllocated.size());
         m_componentsEntities[family] = std::move(pool);
     }
 }
