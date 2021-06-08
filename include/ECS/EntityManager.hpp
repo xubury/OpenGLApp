@@ -488,7 +488,7 @@ EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator++() {
     ++m_iter;
     while (m_iter != m_iterEnd) {
         std::uint32_t index = *m_iter;
-        if (m_view.m_manager.m_entitesAllocated.at(index) != nullptr &&
+        if (m_view.m_manager.m_entitiesAllocated.at(index) != nullptr &&
             (m_view.m_manager.m_entitiesComponentMasks.at(index) &
              m_view.m_mask) == m_view.m_mask) {
             m_view.unpackId<0, COMPONENT...>(index);
@@ -504,7 +504,7 @@ template <typename... COMPONENT>
 inline const ENTITY &
 EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator*() const {
     if (m_iter == m_iterEnd) return nullptr;
-    return *m_view.m_manager.m_entitesAllocated.at(*m_iter).get();
+    return *m_view.m_manager.m_entitiesAllocated.at(*m_iter).get();
 }
 
 template <class ENTITY>
@@ -512,7 +512,7 @@ template <typename... COMPONENT>
 inline const ENTITY *
 EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator->() const {
     if (m_iter == m_iterEnd) return nullptr;
-    return m_view.m_manager.m_entitesAllocated.at(*m_iter).get();
+    return m_view.m_manager.m_entitiesAllocated.at(*m_iter).get();
 }
 
 template <class ENTITY>

@@ -5,8 +5,6 @@
 
 namespace te {
 
-class Collider;
-
 struct CollisionObject : Component<CollisionObject, EntityBase> {
    public:
     CollisionObject(bool isDynamic)
