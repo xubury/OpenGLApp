@@ -1,4 +1,6 @@
 #include "Physics/SphereCollider.hpp"
+#include "Physics/HullCollider.hpp"
+#include "Physics/GJK.hpp"
 
 namespace te {
 
@@ -23,8 +25,8 @@ ContactManifold SphereCollider::testCollision(
                           glm::vec4(sphere.m_center, 1.0);
     float dist = glm::length(aWorldPos - bWorldPos);
 
-    float depth = dist - m_radius - sphere.m_radius;
-    if (depth <= 0) {
+    float depth = m_radius + sphere.m_radius - dist;
+    if (depth >= 0) {
         manifold.objA = owner()->component<CollisionObject>().get();
         manifold.objB = sphere.owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
@@ -35,7 +37,12 @@ ContactManifold SphereCollider::testCollision(
     return manifold;
 }
 
-ContactManifold SphereCollider::testCollision(const HullCollider&) const {
-    return ContactManifold();
+ContactManifold SphereCollider::testCollision(const HullCollider& hull) const {
+    auto [collide, simlex] = gjk(*this, hull, 32);
+    if (collide) {
+        return epa(simlex, *this, hull, 32);
+    }
+    return {};
 }
+
 }  // namespace te

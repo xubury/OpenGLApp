@@ -30,8 +30,15 @@ class Simplex {
     uint32_t m_size;
 };
 
-bool gjk(const Collider& colliderA, const Collider& colliderB,
-         std::size_t maxIterartion);
+glm::vec3 findSupport(const Collider& colliderA, const Collider& colliderB,
+                      const glm::vec3& direction);
+
+std::pair<bool, Simplex> gjk(const Collider& colliderA,
+                             const Collider& colliderB,
+                             std::size_t maxIterartion);
+
+ContactManifold epa(const Simplex& simplex, const Collider& colliderA,
+                    const Collider& colliderB, std::size_t maxIterartion);
 
 }  // namespace te
 

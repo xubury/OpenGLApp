@@ -38,19 +38,19 @@ ContactManifold HullCollider::testCollision(const Collider& collider) const {
 
 ContactManifold HullCollider::testCollision(
     const SphereCollider& sphere) const {
-    bool collide = gjk(*this, sphere, 32);
+    auto [collide, simplex] = gjk(*this, sphere, 32);
     if (collide) {
-        TE_TRACE("gjk collide!");
+        return epa(simplex, *this, sphere, 32);
     }
-    return ContactManifold();
+    return {};
 }
 
 ContactManifold HullCollider::testCollision(const HullCollider& hull) const {
-    bool collide = gjk(*this, hull, 32);
+    auto [collide, simlex] = gjk(*this, hull, 32);
     if (collide) {
-        TE_TRACE("gjk collide!");
+        return epa(simlex, *this, hull, 32);
     }
-    return ContactManifold();
+    return {};
 }
 
 }  // namespace te

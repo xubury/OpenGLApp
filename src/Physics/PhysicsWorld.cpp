@@ -19,7 +19,6 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
                         *b->component<Collider>().get());
                 if (manifold.hasCollision()) {
                     manifolds.emplace_back(manifold);
-                    TE_TRACE("Collide! id:{0} and id:{1}", a->id(), b->id());
                 }
             }
         }
@@ -37,8 +36,9 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
             bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
 
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
-            float correction =
-                -0.1f * manifold.points[i].depth / deltaTime.count();
+            float correction = 0.01f *
+                               std::max(manifold.points[i].depth - 0.01, 0.0) /
+                               deltaTime.count();
             const glm::vec3 rA =
                 manifold.points[i].position - bodyA->getCenterOfMassInWorld();
             const glm::vec3 rB =
@@ -46,10 +46,9 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
             float velRelative =
                 glm::dot(velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA),
                          manifold.normal);
-            TE_TRACE("relative speed: {0}", velRelative);
             if (bodyB) {
                 bodyB->addForce((correction - velRelative) * manifold.normal *
-                                    bodyA->getMass() / deltaTime.count(),
+                                    bodyB->getMass() / deltaTime.count(),
                                 manifold.points[i].position);
             }
         }
