@@ -36,7 +36,7 @@ class Game {
                    const TextureArray &textures);
 
     void addCube(const glm::vec3 &pos, float width, float height, float length,
-                 const TextureArray &textures);
+                 const TextureArray &textures, bool kinematic);
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 

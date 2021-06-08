@@ -10,6 +10,8 @@ class SphereCollider : public Collider {
    public:
     SphereCollider(const glm::vec3& center, float radius);
 
+    glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
+
     ContactManifold testCollision(const Collider& collider) const override;
 
     ContactManifold testCollision(const SphereCollider& sphere) const override;

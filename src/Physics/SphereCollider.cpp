@@ -5,6 +5,11 @@ namespace te {
 SphereCollider::SphereCollider(const glm::vec3& center, float radius)
     : m_center(center), m_radius(radius) {}
 
+glm::vec3 SphereCollider::findFurthestPoint(const glm::vec3& direction) const {
+    return m_center + owner()->getPosition() +
+           m_radius * glm::normalize(direction);
+}
+
 ContactManifold SphereCollider::testCollision(const Collider& collider) const {
     return collider.testCollision(*this);
 }

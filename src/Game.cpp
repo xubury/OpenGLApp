@@ -10,6 +10,7 @@
 #include "Physics/PhysicsWorld.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Physics/SphereCollider.hpp"
+#include "Physics/HullCollider.hpp"
 
 #include <iostream>
 
@@ -26,9 +27,13 @@ void Game::addSphere(const glm::vec3& pos, const glm::vec3& impulse,
 }
 
 void Game::addCube(const glm::vec3& pos, float width, float height,
-                   float length, const TextureArray& textures) {
+                   float length, const TextureArray& textures, bool kinematic) {
     int id = m_app.entities.create<Cube>(width, height, length);
     Ref<EntityBase> cube = m_app.entities.get(id);
+    cube->add<Rigidbody>(10, kinematic);
+    cube->add<HullCollider>();
+    MakeCubeCollider(*cube->component<HullCollider>().get().get(), width,
+                     height, length);
     cube->setTextures(textures);
     cube->setPosition(pos);
     cube->setName("Cube");
@@ -101,7 +106,7 @@ void Game::loadScene() {
         addSphere(positions[i], impulse[i], textures);
     }
 
-    addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures);
+    addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures, true);
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
 
@@ -110,7 +115,7 @@ void Game::loadScene() {
     groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
     groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
     groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
-    addCube(glm::vec3(0), 50, 1, 50, groundTextures);
+    addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
 }
 
 Game::Game(const Settings& settings)

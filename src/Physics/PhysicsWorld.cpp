@@ -47,7 +47,7 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
                 glm::dot(velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA),
                          manifold.normal);
             TE_TRACE("relative speed: {0}", velRelative);
-            if (bodyB && bodyB->isKinematic()) {
+            if (bodyB) {
                 bodyB->addForce((correction - velRelative) * manifold.normal *
                                     bodyA->getMass() / deltaTime.count(),
                                 manifold.points[i].position);

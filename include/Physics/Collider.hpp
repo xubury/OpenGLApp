@@ -34,6 +34,8 @@ class HullCollider;
 
 class Collider : public Component<Collider, EntityBase> {
    public:
+    virtual glm::vec3 findFurthestPoint(const glm::vec3 &direction) const = 0;
+
     virtual ContactManifold testCollision(const Collider &collider) const = 0;
 
     virtual ContactManifold testCollision(

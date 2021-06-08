@@ -9,12 +9,37 @@ class HullCollider : public Collider {
    public:
     HullCollider() = default;
 
+    HullCollider(const std::vector<glm::vec3>& vertices);
+
+    void addVertex(const glm::vec3& vertex);
+
+    void clear();
+
+    glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
+
     ContactManifold testCollision(const Collider& collider) const override;
 
-    ContactManifold testCollision(const SphereCollider&) const override;
+    ContactManifold testCollision(const SphereCollider& sphere) const override;
 
-    ContactManifold testCollision(const HullCollider&) const override;
+    ContactManifold testCollision(const HullCollider& hull) const override;
+
+   private:
+    std::vector<glm::vec3> m_vertices;
 };
+
+inline void MakeCubeCollider(HullCollider& collider, float width, float height,
+                             float length) {
+    collider.clear();
+    collider.addVertex(glm::vec3(-width, -height, -length));  // 0
+    collider.addVertex(glm::vec3(-width, height, -length));   // 1
+    collider.addVertex(glm::vec3(width, height, -length));    // 2
+    collider.addVertex(glm::vec3(width, -height, -length));   // 3
+
+    collider.addVertex(glm::vec3(-width, -height, length));  // 7
+    collider.addVertex(glm::vec3(width, -height, length));   // 6
+    collider.addVertex(glm::vec3(width, height, length));    // 5
+    collider.addVertex(glm::vec3(-width, height, length));   // 4
+}
 
 }  // namespace te
 

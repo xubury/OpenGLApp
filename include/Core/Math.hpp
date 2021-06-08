@@ -40,6 +40,10 @@ inline float intersectRayPlane(const glm::vec3 &rayOrigin, const glm::vec3 &dir,
     return -numer / denom;
 }
 
+inline bool sameDirection(const glm::vec3 &v1, const glm::vec3 &v2) {
+    return glm::dot(v1, v2) > 0;
 }
+
+}  // namespace te
 
 #endif /* MATH_HPP */
