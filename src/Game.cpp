@@ -17,7 +17,7 @@
 void Game::addSphere(const glm::vec3& pos, const glm::vec3& impulse,
                      const TextureArray& textures) {
     int id = m_app.entities.create<Sphere>();
-    Ref<EntityBase> sphere = m_app.entities.get(id);
+    EntityBase* sphere = m_app.entities.get(id);
     sphere->add<Rigidbody>(10, true);
     sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
     sphere->component<Rigidbody>()->addImpulse(impulse);
@@ -29,11 +29,11 @@ void Game::addSphere(const glm::vec3& pos, const glm::vec3& impulse,
 void Game::addCube(const glm::vec3& pos, float width, float height,
                    float length, const TextureArray& textures, bool kinematic) {
     int id = m_app.entities.create<Cube>(width, height, length);
-    Ref<EntityBase> cube = m_app.entities.get(id);
+    EntityBase* cube = m_app.entities.get(id);
     cube->add<Rigidbody>(10, kinematic);
     cube->add<HullCollider>();
-    MakeCubeCollider(*cube->component<HullCollider>().get().get(), width,
-                     height, length);
+    MakeCubeCollider(*cube->component<HullCollider>().get(), width, height,
+                     length);
     cube->setTextures(textures);
     cube->setPosition(pos);
     cube->setName("Cube");
@@ -41,8 +41,8 @@ void Game::addCube(const glm::vec3& pos, float width, float height,
 
 void Game::addModel(const std::string& path, const glm::vec3& pos) {
     int id = m_app.entities.create<ModelEntity>();
-    Ref<EntityBase> model = m_app.entities.get(id);
-    dynamic_cast<ModelEntity*>(model.get())->load(path);
+    EntityBase* model = m_app.entities.get(id);
+    dynamic_cast<ModelEntity*>(model)->load(path);
     model->setPosition(pos);
     model->setName("model");
 }
@@ -127,7 +127,7 @@ Game::Game(const Settings& settings)
     loadScene();
     uint32_t id =
         m_app.entities.create<Camera>(0, 0, settings.width, settings.height);
-    m_mainCamera = std::dynamic_pointer_cast<Camera>(m_app.entities.get(id));
+    m_mainCamera = dynamic_cast<Camera*>(m_app.entities.get(id));
     m_mainCamera->setPosition(glm::vec3(-8.f, 9.f, 13.f));
     m_mainCamera->setEulerAngle(
         glm::vec3(glm::radians(-15.f), glm::radians(-35.f), glm::radians(5.f)));
@@ -154,7 +154,7 @@ void Game::render() {
 
     RenderStates states;
     std::vector<Ref<ShadowBuffer>> buffers;
-    std::vector<Ref<LightBase>> lightList;
+    std::vector<const LightBase*> lightList;
     Light::Handle light;
     auto view = m_app.entities.getByComponents(light);
     auto end = view.end();
@@ -162,7 +162,7 @@ void Game::render() {
     for (auto begin = view.begin(); begin != end; ++begin) {
         buffers.emplace_back(ShadowBuffer::create(1024, 1024));
         // draw depth map
-        buffers.back()->beginScene(light.get());
+        buffers.back()->beginScene(*light.get());
         for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
             states.transform =
                 m_app.entities.get(*cur)->component<Transform>()->getMatrix();
@@ -175,7 +175,7 @@ void Game::render() {
     // normal draw
     m_frameBuffer.activate();
     m_window.clear();
-    m_window.beginScene(m_shaders.get("Main"), m_mainCamera);
+    m_window.beginScene(m_shaders.get("Main"), *m_mainCamera);
     m_window.setLighting(lightList, buffers);
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
         states.transform =
@@ -199,7 +199,7 @@ void Game::run(int minFps) {
     Clock clock;
     Time timeSinceLastUpdate = Time::Zero;
     Time timePerFrame = seconds(1.0 / minFps);
-    Ref<Camera> camera = m_mainCamera;
+    Camera* camera = m_mainCamera;
 
     if (m_editorMode) {
         Editor::instance().context.setFrameBuffer(&m_frameBuffer);

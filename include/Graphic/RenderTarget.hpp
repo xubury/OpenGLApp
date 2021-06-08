@@ -24,9 +24,9 @@ class TE_API RenderTarget {
 
     RenderTarget &operator=(const RenderTarget &) = delete;
 
-    void beginScene(Ref<Shader> shader, const Ref<CameraBase> &camera);
+    void beginScene(Ref<Shader> shader, const CameraBase &camera);
 
-    void setLighting(const std::vector<Ref<LightBase>> &lights,
+    void setLighting(const std::vector<const LightBase *> &lights,
                      const std::vector<Ref<ShadowBuffer>> &shadowBuffers);
 
     void endScene();

@@ -19,11 +19,11 @@ class EditorContext {
 
     uint32_t getActiveEntityId() const;
 
-    Ref<EntityBase> getActiveEntityPtr();
+    EntityBase *getActiveEntityPtr();
 
-    void setCamrea(const Ref<Camera> &camera);
+    void setCamrea(Camera *camera);
 
-    Ref<Camera> getCamera();
+    Camera *getCamera();
 
     void setWindow(RenderWindow *window);
 
@@ -66,7 +66,7 @@ class EditorContext {
 
     FrameBuffer *m_frameBuffer;
 
-    Ref<Camera> m_camera;
+    Camera *m_camera;
 
     EntityManager<EntityBase> *m_entities;
 
@@ -79,7 +79,6 @@ class EditorContext {
     glm::vec2 m_renderOrigin;
 };
 
-}
-
+}  // namespace te
 
 #endif /* RENDER_CONTEXT_HPP */

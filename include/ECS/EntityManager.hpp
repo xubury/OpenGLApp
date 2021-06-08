@@ -55,9 +55,9 @@ class EntityManager {
 
     bool isValid(uint32_t id) const;
 
-    const Ref<ENTITY> &get(std::size_t id) const;
+    const ENTITY *get(std::size_t id) const;
 
-    Ref<ENTITY> get(std::size_t id);
+    ENTITY *get(std::size_t id);
 
     Container::const_iterator begin() const;
 
@@ -86,7 +86,7 @@ class EntityManager {
 
    private:
     // Stores every entity that have been allocated
-    std::vector<Ref<ENTITY>> m_entitesAllocated;
+    std::vector<Scope<ENTITY>> m_entitesAllocated;
     // Stores what components does a entity of index has
     std::vector<std::bitset<MAX_COMPONENTS>> m_entitiesComponentMasks;
     // Stores entities that has component of index
@@ -102,7 +102,7 @@ class EntityManager {
     void checkComponent();
 
     template <typename COMPONENT>
-    Ref<COMPONENT> getComponentPtr(uint32_t id) const;
+    COMPONENT *getComponentPtr(uint32_t id) const;
 
     template <typename... COMPONENT>
     class View {
@@ -138,8 +138,8 @@ class EntityManager {
             Iterator(View &view, EntityManager<ENTITY>::Container::iterator it,
                      EntityManager<ENTITY>::Container::iterator it_end);
             Iterator &operator++();
-            Ref<ENTITY> operator*() const;
-            Ref<ENTITY> operator->() const;
+            const ENTITY &operator*() const;
+            const ENTITY *operator->() const;
 
             bool operator==(const Iterator &other) const;
             bool operator!=(const Iterator &other) const;
@@ -167,7 +167,7 @@ inline uint32_t EntityManager<ENTITY>::create(ARGS &&...args) {
         index = m_entitiesIndexFree.front();
         m_entitiesIndexFree.pop_front();
         m_entitesAllocated[index] =
-            createRef<T>(this, index, std::forward<ARGS>(args)...);
+            createScope<T>(this, index, std::forward<ARGS>(args)...);
     } else {
         m_entitiesComponentMasks.emplace_back();
 
@@ -181,7 +181,7 @@ inline uint32_t EntityManager<ENTITY>::create(ARGS &&...args) {
             }
         }
         m_entitesAllocated[index] =
-            createRef<T>(this, index, std::forward<ARGS>(args)...);
+            createScope<T>(this, index, std::forward<ARGS>(args)...);
     }
     m_entitiesIndex.emplace_back(index);
     return index;
@@ -217,7 +217,7 @@ inline void EntityManager<ENTITY>::emplace(uint32_t index, ARGS &&...args) {
     }
 
     m_entitesAllocated[index] =
-        createRef<ENTITY>(this, index, std::forward<ARGS>(args)...);
+        createScope<ENTITY>(this, index, std::forward<ARGS>(args)...);
 }
 
 template <class ENTITY>
@@ -270,13 +270,13 @@ inline bool EntityManager<ENTITY>::isValid(uint32_t id) const {
     return id < m_entitesAllocated.size() && m_entitesAllocated[id] != nullptr;
 }
 template <class ENTITY>
-inline const Ref<ENTITY> &EntityManager<ENTITY>::get(std::size_t id) const {
-    return m_entitesAllocated.at(id);
+inline const ENTITY *EntityManager<ENTITY>::get(std::size_t id) const {
+    return m_entitesAllocated.at(id).get();
 }
 
 template <class ENTITY>
-inline Ref<ENTITY> EntityManager<ENTITY>::get(std::size_t id) {
-    return m_entitesAllocated.at(id);
+inline ENTITY *EntityManager<ENTITY>::get(std::size_t id) {
+    return m_entitesAllocated.at(id).get();
 }
 
 template <class ENTITY>
@@ -304,8 +304,8 @@ inline ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::addComponent(
         static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get());
 
     pool->emplace(id, std::forward<ARGS>(args)...);
-    pool->at(id)->m_ownerID = id;
-    pool->at(id)->m_manager = this;
+    pool->at(id).m_ownerID = id;
+    pool->at(id).m_manager = this;
 
     m_entitiesComponentMasks.at(id).set(family);
     return ComponentHandle<COMPONENT, ENTITY>(this, id);
@@ -352,10 +352,9 @@ EntityManager<ENTITY>::getComponents(uint32_t id) const {
 
 template <class ENTITY>
 template <typename COMPONENT>
-inline Ref<COMPONENT> EntityManager<ENTITY>::getComponentPtr(
-    uint32_t id) const {
+inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) const {
     uint32_t family = COMPONENT::family();
-    return static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())
+    return &static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())
         ->at(id);
 }
 
@@ -382,7 +381,6 @@ EntityManager<ENTITY>::getByComponents(
 
 template <class ENTITY>
 inline void EntityManager<ENTITY>::reset(uint32_t id) {
-    Ref<ENTITY> entity = m_entitesAllocated.at(id);
     std::size_t comp_size = m_componentsEntities.size();
     for (std::size_t i = 0; i < comp_size; ++i) {
         if (m_componentsEntities[i] != nullptr) {
@@ -503,18 +501,18 @@ EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator++() {
 
 template <class ENTITY>
 template <typename... COMPONENT>
-inline Ref<ENTITY>
+inline const ENTITY &
 EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator*() const {
     if (m_iter == m_iterEnd) return nullptr;
-    return m_view.m_manager.m_entitesAllocated.at(*m_iter);
+    return *m_view.m_manager.m_entitesAllocated.at(*m_iter).get();
 }
 
 template <class ENTITY>
 template <typename... COMPONENT>
-inline Ref<ENTITY>
+inline const ENTITY *
 EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator->() const {
     if (m_iter == m_iterEnd) return nullptr;
-    return m_view.m_manager.m_entitesAllocated.at(*m_iter);
+    return m_view.m_manager.m_entitesAllocated.at(*m_iter).get();
 }
 
 template <class ENTITY>

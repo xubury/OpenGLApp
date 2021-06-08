@@ -31,12 +31,12 @@ Primitive &Primitive::instance() {
     return s_instance;
 }
 
-void Primitive::setDrawingView(const Ref<CameraBase> &camera) {
+void Primitive::setDrawingView(const CameraBase &camera) {
     m_shader.bind();
-    glViewport(camera->getViewportX(), camera->getViewportY(),
-               camera->getViewportWidth(), camera->getViewportHeight());
-    m_shader.setMat4("uProjection", camera->getProjection());
-    m_shader.setMat4("uView", camera->getView());
+    glViewport(camera.getViewportX(), camera.getViewportY(),
+               camera.getViewportWidth(), camera.getViewportHeight());
+    m_shader.setMat4("uProjection", camera.getProjection());
+    m_shader.setMat4("uView", camera.getView());
 }
 
 void Primitive::drawLine(const glm::vec3 &start, const glm::vec3 &end,

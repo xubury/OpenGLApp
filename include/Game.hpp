@@ -49,7 +49,7 @@ class Game {
     RenderWindow m_window;
     ShaderLibrary m_shaders;
     Application<EntityBase> m_app;
-    Ref<Camera> m_mainCamera;
+    Camera *m_mainCamera;
     FrameBuffer m_frameBuffer;
 
     bool m_editorMode;

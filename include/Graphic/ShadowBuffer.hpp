@@ -20,7 +20,7 @@ class TE_API ShadowBuffer : public RenderTarget {
 
     ShadowBuffer &operator=(const ShadowBuffer &) = delete;
 
-    void beginScene(const Ref<LightBase> &light);
+    void beginScene(const LightBase &light);
 
     void endScene();
 

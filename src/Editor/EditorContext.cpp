@@ -17,7 +17,7 @@ void EditorContext::prepareContext() {
     m_screenFactor = 1.0f / rightLen;
 
     m_frameBuffer->activate();
-    Primitive::instance().setDrawingView(m_camera);
+    Primitive::instance().setDrawingView(*m_camera);
 }
 
 void EditorContext::unloadContext() { m_frameBuffer->deactivate(); }
@@ -26,13 +26,13 @@ void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
 uint32_t EditorContext::getActiveEntityId() const { return m_activeEntityId; }
 
-Ref<EntityBase> EditorContext::getActiveEntityPtr() {
+EntityBase* EditorContext::getActiveEntityPtr() {
     return m_entities->get(m_activeEntityId);
 }
 
-void EditorContext::setCamrea(const Ref<Camera>& camera) { m_camera = camera; }
+void EditorContext::setCamrea(Camera* camera) { m_camera = camera; }
 
-Ref<Camera> EditorContext::getCamera() { return m_camera; }
+Camera* EditorContext::getCamera() { return m_camera; }
 
 void EditorContext::setWindow(RenderWindow* window) { m_window = window; }
 

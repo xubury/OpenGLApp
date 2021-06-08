@@ -25,7 +25,7 @@ class VPool {
     bool isSet(std::size_t index) const;
 
     template <typename T>
-    const Ref<T> at(std::size_t index) const;
+    T& at(std::size_t index);
 
     template <typename T>
     void erase(std::size_t index);
@@ -52,7 +52,7 @@ class VPool {
    protected:
     template <typename T>
     friend class Iterator;
-    std::vector<Ref<void>> m_memory;
+    std::vector<void*> m_memory;
 };
 
 template <typename T>
@@ -67,7 +67,7 @@ class Pool : public VPool {
     Pool() = default;
     virtual ~Pool();
 
-    const Ref<T> at(std::size_t index) const;
+    T& at(std::size_t index);
 
     void erase(std::size_t index);
 
@@ -80,18 +80,20 @@ class Pool : public VPool {
 };
 
 template <typename T>
-const Ref<T> VPool::at(std::size_t index) const {
-    return std::static_pointer_cast<T>(m_memory.at(index));
+T& VPool::at(std::size_t index) {
+    return *static_cast<T*>(m_memory.at(index));
 }
 
 template <typename T>
 void VPool::erase(std::size_t index) {
-    m_memory[index].reset();
+    delete static_cast<T*>(m_memory.at(index));
+    m_memory[index] = nullptr;
 }
 
 template <typename T, typename... Args>
 void VPool::emplace(std::size_t index, Args&&... args) {
-    m_memory[index] = createRef<T>(std::forward<Args>(args)...);
+    delete static_cast<T*>(m_memory.at(index));
+    m_memory[index] = new T(std::forward<Args>(args)...);
 }
 
 template <typename T>
@@ -126,7 +128,7 @@ std::size_t VPool::Iterator<T>::index() const {
 }
 
 template <typename T>
-const Ref<T> Pool<T>::at(std::size_t index) const {
+T& Pool<T>::at(std::size_t index) {
     return VPool::at<T>(index);
 }
 
@@ -143,6 +145,10 @@ void Pool<T>::emplace(std::size_t index, Args&&... args) {
 
 template <typename T>
 Pool<T>::~Pool() {
+    const std::size_t size = m_memory.size();
+    for (std::size_t i = 0; i < size; ++i) {
+        delete static_cast<T*>(m_memory[i]);
+    }
     m_memory.clear();
 }
 

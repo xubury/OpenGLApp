@@ -77,13 +77,13 @@ uint32_t ShadowBuffer::getWidth() const { return m_width; }
 
 uint32_t ShadowBuffer::getHeight() const { return m_height; }
 
-void ShadowBuffer::beginScene(const Ref<LightBase> &light) {
+void ShadowBuffer::beginScene(const LightBase &light) {
     applyShader(s_shaders.get("shadow"));
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
     glViewport(0, 0, m_width, m_height);
     glClear(GL_DEPTH_BUFFER_BIT);
     s_shaders.get("shadow")->setMat4("uLightSpaceMatrix",
-                                     light->getLightSpaceMatrix());
+                                     light.getLightSpaceMatrix());
     glCullFace(GL_FRONT);
 }
 

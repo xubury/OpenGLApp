@@ -29,7 +29,7 @@ glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
         }
     }
 
-    return maxPoint;  // mp.xyz();
+    return maxPoint;
 }
 
 ContactManifold HullCollider::testCollision(const Collider& collider) const {

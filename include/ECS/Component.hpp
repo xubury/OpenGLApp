@@ -18,11 +18,11 @@ class ComponentHandle {
 
     bool isValid() const;
 
-    Ref<COMPONENT> get();
-    const Ref<COMPONENT> get() const;
+    COMPONENT *get();
+    const COMPONENT *get() const;
 
-    Ref<COMPONENT> operator->();
-    const Ref<COMPONENT> operator->() const;
+    COMPONENT *operator->();
+    const COMPONENT *operator->() const;
 
    private:
     friend class EntityManager<ENTITY>;
@@ -40,7 +40,7 @@ class VComponent {
 
     uint32_t ownerID() const;
 
-    const Ref<ENTITY> owner() const;
+    const ENTITY *owner() const;
 
     EntityManager<ENTITY> *manager() { return m_manager; }
 
@@ -89,26 +89,25 @@ ComponentHandle<COMPONENT, ENTITY>::ComponentHandle(
     : m_manager(manager), m_entityID(entity_id) {}
 
 template <typename COMPONENT, typename ENTITY>
-inline Ref<COMPONENT> ComponentHandle<COMPONENT, ENTITY>::get() {
+inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
-inline const Ref<COMPONENT> ComponentHandle<COMPONENT, ENTITY>::get() const {
+inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() const {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
-inline Ref<COMPONENT> ComponentHandle<COMPONENT, ENTITY>::operator->() {
+inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
-inline const Ref<COMPONENT> ComponentHandle<COMPONENT, ENTITY>::operator->()
-    const {
+inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() const {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
@@ -122,7 +121,7 @@ inline uint32_t VComponent<ENTITY>::ownerID() const {
 }
 
 template <typename ENTITY>
-inline const Ref<ENTITY> VComponent<ENTITY>::owner() const {
+inline const ENTITY *VComponent<ENTITY>::owner() const {
     return m_manager->get(m_ownerID);
 }
 

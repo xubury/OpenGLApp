@@ -15,17 +15,16 @@ namespace te {
 
 RenderTarget::RenderTarget() : m_shader(nullptr), m_textures(nullptr) {}
 
-void RenderTarget::beginScene(Ref<Shader> shader,
-                              const Ref<CameraBase> &camera) {
+void RenderTarget::beginScene(Ref<Shader> shader, const CameraBase &camera) {
     applyShader(shader);
-    glViewport(camera->getViewportX(), camera->getViewportY(),
-               camera->getViewportWidth(), camera->getViewportHeight());
-    shader->setMat4("uProjection", camera->getProjection());
-    shader->setMat4("uView", camera->getView());
+    glViewport(camera.getViewportX(), camera.getViewportY(),
+               camera.getViewportWidth(), camera.getViewportHeight());
+    shader->setMat4("uProjection", camera.getProjection());
+    shader->setMat4("uView", camera.getView());
 }
 
 void RenderTarget::setLighting(
-    const std::vector<Ref<LightBase>> &lights,
+    const std::vector<const LightBase *> &lights,
     const std::vector<Ref<ShadowBuffer>> &shadowBuffers) {
     // reserve texture for depth map
     m_textureReserved = shadowBuffers.size();

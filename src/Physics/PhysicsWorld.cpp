@@ -26,8 +26,8 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
     }
 
     for (const ContactManifold &manifold : manifolds) {
-        Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA.get());
-        Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB.get());
+        Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA);
+        Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB);
 
         const glm::vec3 &velA = bodyA ? bodyA->getVelocity() : glm::vec3(0);
         const glm::vec3 &velB = bodyB ? bodyB->getVelocity() : glm::vec3(0);

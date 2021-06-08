@@ -16,7 +16,7 @@ class TE_API Primitive {
    public:
     static Primitive &instance();
 
-    void setDrawingView(const Ref<CameraBase> &camera);
+    void setDrawingView(const CameraBase &camera);
 
     void drawLine(const glm::vec3 &start, const glm::vec3 &end,
                   const glm::vec4 &color, float thickness);
