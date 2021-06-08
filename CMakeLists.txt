@@ -36,6 +36,7 @@ set(Window_Src
 
 set(Physics_Src
     src/Physics/PhysicsWorld.cpp
+    src/Physics/ImpulseSolver.cpp
     src/Physics/Rigidbody.cpp
     src/Physics/SphereCollider.cpp
     src/Physics/HullCollider.cpp

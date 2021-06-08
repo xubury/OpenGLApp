@@ -1,8 +1,25 @@
 #include "Physics/PhysicsWorld.hpp"
+#include "Physics/ImpulseSolver.hpp"
 #include "Physics/Collider.hpp"
 #include "Physics/Rigidbody.hpp"
 
 namespace te {
+
+PhysicsWorld::PhysicsWorld() : m_gravity(0, -9.8, 0) {
+    addSolver(createRef<ImpulseSolver>());
+}
+
+void PhysicsWorld::addSolver(Ref<Solver> solver) {
+    m_solvers.push_back(solver);
+}
+
+void PhysicsWorld::removeSolver(Ref<Solver> solver) {
+    auto iter = std::find(m_solvers.begin(), m_solvers.end(), solver);
+    if (iter == m_solvers.end()) {
+        TE_CORE_WARN("Trying to remove a non-exixtent solver!");
+    }
+    m_solvers.erase(iter);
+}
 
 void PhysicsWorld::update(EntityManager<EntityBase> &manager,
                           const Time &deltaTime) {
@@ -11,6 +28,11 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
     auto view = manager.getByComponents<CollisionObject>(collisonObj);
     auto end = view.end();
     for (auto a = view.begin(); a != end; ++a) {
+        if (collisonObj->isDynamic()) {
+            Rigidbody *body = dynamic_cast<Rigidbody *>(collisonObj.get());
+            body->addForce(m_gravity * body->getMass(),
+                           body->getCenterOfMass());
+        }
         for (auto b = view.begin(); b != end; ++b) {
             if (a == b) continue;
             if (a->has<Collider>() && b->has<Collider>()) {
@@ -24,37 +46,17 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
         }
     }
 
-    for (const ContactManifold &manifold : manifolds) {
-        Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA);
-        Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB);
+    solveManifolds(manifolds, deltaTime);
 
-        const glm::vec3 &velA = bodyA ? bodyA->getVelocity() : glm::vec3(0);
-        const glm::vec3 &velB = bodyB ? bodyB->getVelocity() : glm::vec3(0);
-        const glm::vec3 &wA =
-            bodyA ? bodyA->getAngularVelocity() : glm::vec3(0);
-        const glm::vec3 &wB =
-            bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
-
-        for (uint8_t i = 0; i < manifold.pointCount; ++i) {
-            float correction = 0.01f *
-                               std::max(manifold.points[i].depth - 0.01, 0.0) /
-                               deltaTime.count();
-            const glm::vec3 rA =
-                manifold.points[i].position - bodyA->getCenterOfMassInWorld();
-            const glm::vec3 rB =
-                manifold.points[i].position - bodyB->getCenterOfMassInWorld();
-            float velRelative =
-                glm::dot(velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA),
-                         manifold.normal);
-            if (bodyB) {
-                bodyB->addForce((correction - velRelative) * manifold.normal *
-                                    bodyB->getMass() / deltaTime.count(),
-                                manifold.points[i].position);
-            }
-        }
-    }
     for (auto entity = view.begin(); entity != end; ++entity) {
         collisonObj->step(deltaTime);
+    }
+}
+
+void PhysicsWorld::solveManifolds(const std::vector<ContactManifold> &manifolds,
+                                  const Time &deltaTime) {
+    for (const auto &solver : m_solvers) {
+        solver->solve(manifolds, deltaTime);
     }
 }
 
