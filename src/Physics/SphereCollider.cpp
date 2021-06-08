@@ -18,12 +18,13 @@ ContactManifold SphereCollider::testCollision(
                           glm::vec4(sphere.m_center, 1.0);
     float dist = glm::length(aWorldPos - bWorldPos);
 
-    if (dist <= m_radius + sphere.m_radius) {
+    float depth = dist - m_radius - sphere.m_radius;
+    if (depth <= 0) {
         manifold.objA = owner()->component<CollisionObject>().get();
         manifold.objB = sphere.owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
         manifold.points[0].position = (aWorldPos + bWorldPos) / 2.f;
-        manifold.points[0].depth = m_radius + sphere.m_radius - dist;
+        manifold.points[0].depth = depth;
         manifold.normal = (bWorldPos - aWorldPos) / dist;
     }
     return manifold;
