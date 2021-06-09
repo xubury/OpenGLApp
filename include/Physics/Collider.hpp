@@ -1,28 +1,31 @@
 #ifndef COLLIDER_HPP
 #define COLLIDER_HPP
 
-#include "Core/Base.hpp"
 #include "ECS/ECS.hpp"
-#include "Physics/CollisionObject.hpp"
 
 #include <glm/glm.hpp>
 
 namespace te {
 
-class SphereCollider;
-
-class HullCollider;
-
 class Collider : public Component<Collider, EntityBase> {
    public:
+    enum Type {
+        SPHERE_COLLIDER,
+        HULL_COLLIDER,
+        CAPSULE_COLLIDER,
+        MESH_COLLIDER,
+        COLLIDIER_TYPE_COUNT
+    };
+
+    Collider(Type type) : m_type(type) {}
+
     // find the furthest point in direction using dot product
     virtual glm::vec3 findFurthestPoint(const glm::vec3 &direction) const = 0;
 
-    virtual ContactManifold testCollision(Collider &collider) = 0;
+    virtual Type getType() const { return m_type; };
 
-    virtual ContactManifold testCollision(SphereCollider &sphere) = 0;
-
-    virtual ContactManifold testCollision(HullCollider &plane) = 0;
+   private:
+    Type m_type;
 };
 
 }  // namespace te

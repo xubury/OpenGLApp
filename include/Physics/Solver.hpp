@@ -1,7 +1,7 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
 
-#include "Physics/Collider.hpp"
+#include "Physics/Manifold.hpp"
 
 namespace te {
 

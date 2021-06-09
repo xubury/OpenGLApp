@@ -4,8 +4,10 @@
 
 namespace te {
 
+HullCollider::HullCollider() : Collider(Type::HULL_COLLIDER) {}
+
 HullCollider::HullCollider(const std::vector<glm::vec3>& vertices)
-    : m_vertices(vertices) {}
+    : Collider(Type::HULL_COLLIDER), m_vertices(vertices) {}
 
 void HullCollider::addVertex(const glm::vec3& vertice) {
     m_vertices.push_back(vertice);
@@ -30,26 +32,6 @@ glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
     }
 
     return maxPoint;
-}
-
-ContactManifold HullCollider::testCollision(Collider& collider) {
-    return collider.testCollision(*this);
-}
-
-ContactManifold HullCollider::testCollision(SphereCollider& sphere) {
-    auto [collide, simplex] = gjk(*this, sphere, 32);
-    if (collide) {
-        return epa(simplex, *this, sphere, 32);
-    }
-    return {};
-}
-
-ContactManifold HullCollider::testCollision(HullCollider& hull) {
-    auto [collide, simlex] = gjk(*this, hull, 32);
-    if (collide) {
-        return epa(simlex, *this, hull, 32);
-    }
-    return {};
 }
 
 }  // namespace te

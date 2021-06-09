@@ -3,6 +3,7 @@
 #include "Physics/PositionSolver.hpp"
 #include "Physics/Collider.hpp"
 #include "Physics/Rigidbody.hpp"
+#include "Physics/Collision.hpp"
 
 namespace te {
 
@@ -39,8 +40,8 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
             if (a == b) continue;
             if (a->has<Collider>() && b->has<Collider>()) {
                 ContactManifold manifold =
-                    a->component<Collider>()->testCollision(
-                        *b->component<Collider>().get());
+                    Collision::collide(a->component<Collider>().get(),
+                                       b->component<Collider>().get());
                 if (manifold.hasCollision()) {
                     manifolds.emplace_back(manifold);
                 }

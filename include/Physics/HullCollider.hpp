@@ -7,7 +7,7 @@ namespace te {
 
 class HullCollider : public Collider {
    public:
-    HullCollider() = default;
+    HullCollider();
 
     HullCollider(const std::vector<glm::vec3>& vertices);
 
@@ -16,12 +16,6 @@ class HullCollider : public Collider {
     void clear();
 
     glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
-
-    ContactManifold testCollision(Collider& collider) override;
-
-    ContactManifold testCollision(SphereCollider& sphere) override;
-
-    ContactManifold testCollision(HullCollider& hull) override;
 
    private:
     std::vector<glm::vec3> m_vertices;

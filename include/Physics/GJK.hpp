@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "Physics/Collider.hpp"
+#include "Physics/Manifold.hpp"
 
 namespace te {
 
