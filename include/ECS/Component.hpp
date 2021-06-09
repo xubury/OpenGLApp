@@ -19,17 +19,19 @@ class ComponentHandle {
     bool isValid() const;
 
     COMPONENT *get();
-    const COMPONENT *get() const;
 
     COMPONENT *operator->();
+
+    const COMPONENT *get() const;
+
     const COMPONENT *operator->() const;
 
    private:
     friend class EntityManager<ENTITY>;
 
-    ComponentHandle(const EntityManager<ENTITY> *manager, uint32_t entity_id);
+    ComponentHandle(EntityManager<ENTITY> *manager, uint32_t entity_id);
 
-    const EntityManager<ENTITY> *m_manager;
+    EntityManager<ENTITY> *m_manager;
     uint32_t m_entityID;
 };
 
@@ -40,9 +42,9 @@ class VComponent {
 
     uint32_t ownerID() const;
 
-    const ENTITY *owner() const;
-
     ENTITY *owner();
+
+    const ENTITY *owner() const;
 
     EntityManager<ENTITY> *manager() { return m_manager; }
 
@@ -87,7 +89,7 @@ ComponentHandle<COMPONENT, ENTITY>::ComponentHandle()
 
 template <typename COMPONENT, typename ENTITY>
 ComponentHandle<COMPONENT, ENTITY>::ComponentHandle(
-    const EntityManager<ENTITY> *manager, uint32_t entity_id)
+    EntityManager<ENTITY> *manager, uint32_t entity_id)
     : m_manager(manager), m_entityID(entity_id) {}
 
 template <typename COMPONENT, typename ENTITY>
@@ -97,13 +99,13 @@ inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() {
 }
 
 template <typename COMPONENT, typename ENTITY>
-inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() const {
+inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename COMPONENT, typename ENTITY>
-inline COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() {
+inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::get() const {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }

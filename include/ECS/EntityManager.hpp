@@ -59,9 +59,13 @@ class EntityManager {
 
     ENTITY *get(std::size_t id);
 
-    Container::const_iterator begin() const;
+    Container::const_iterator cbegin() const;
 
-    Container::const_iterator end() const;
+    Container::const_iterator cend() const;
+
+    Container::iterator begin();
+
+    Container::iterator end();
 
     template <typename COMPONENT, typename... ARGS>
     ComponentHandle<COMPONENT, ENTITY> addComponent(uint32_t id,
@@ -74,11 +78,14 @@ class EntityManager {
     bool hasComponent(uint32_t id) const;
 
     template <typename COMPONENT>
-    ComponentHandle<COMPONENT, ENTITY> getComponent(uint32_t id) const;
+    ComponentHandle<COMPONENT, ENTITY> getComponent(uint32_t id);
+
+    template <typename COMPONENT>
+    const ComponentHandle<COMPONENT, ENTITY> getComponent(uint32_t id) const;
 
     template <typename... COMPONENT>
     std::tuple<ComponentHandle<COMPONENT, ENTITY>...> getComponents(
-        uint32_t id) const;
+        uint32_t id);
 
     template <typename... COMPONENT>
     View<COMPONENT...> getByComponents(
@@ -102,7 +109,7 @@ class EntityManager {
     void checkComponent();
 
     template <typename COMPONENT>
-    COMPONENT *getComponentPtr(uint32_t id) const;
+    COMPONENT *getComponentPtr(uint32_t id);
 
     template <typename... COMPONENT>
     class View {
@@ -140,6 +147,9 @@ class EntityManager {
             Iterator &operator++();
             const ENTITY &operator*() const;
             const ENTITY *operator->() const;
+
+            ENTITY &operator*();
+            ENTITY *operator->();
 
             bool operator==(const Iterator &other) const;
             bool operator!=(const Iterator &other) const;
@@ -267,8 +277,10 @@ inline std::size_t EntityManager<ENTITY>::size() {
 
 template <class ENTITY>
 inline bool EntityManager<ENTITY>::isValid(uint32_t id) const {
-    return id < m_entitiesAllocated.size() && m_entitiesAllocated[id] != nullptr;
+    return id < m_entitiesAllocated.size() &&
+           m_entitiesAllocated[id] != nullptr;
 }
+
 template <class ENTITY>
 inline const ENTITY *EntityManager<ENTITY>::get(std::size_t id) const {
     return m_entitiesAllocated.at(id).get();
@@ -281,14 +293,25 @@ inline ENTITY *EntityManager<ENTITY>::get(std::size_t id) {
 
 template <class ENTITY>
 inline EntityManager<ENTITY>::Container::const_iterator
-EntityManager<ENTITY>::begin() const {
+EntityManager<ENTITY>::cbegin() const {
     return m_entitiesIndex.cbegin();
 }
 
 template <class ENTITY>
 inline EntityManager<ENTITY>::Container::const_iterator
-EntityManager<ENTITY>::end() const {
+EntityManager<ENTITY>::cend() const {
     return m_entitiesIndex.cend();
+}
+
+template <class ENTITY>
+inline EntityManager<ENTITY>::Container::iterator
+EntityManager<ENTITY>::begin() {
+    return m_entitiesIndex.begin();
+}
+
+template <class ENTITY>
+inline EntityManager<ENTITY>::Container::iterator EntityManager<ENTITY>::end() {
+    return m_entitiesIndex.end();
 }
 
 template <class ENTITY>
@@ -336,6 +359,16 @@ inline bool EntityManager<ENTITY>::hasComponent(uint32_t id) const {
 template <class ENTITY>
 template <typename COMPONENT>
 inline ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::getComponent(
+    uint32_t id) {
+    if (hasComponent<COMPONENT>(id)) {
+        return ComponentHandle<COMPONENT, ENTITY>(this, id);
+    }
+    return ComponentHandle<COMPONENT, ENTITY>();
+}
+
+template <class ENTITY>
+template <typename COMPONENT>
+inline const ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::getComponent(
     uint32_t id) const {
     if (hasComponent<COMPONENT>(id)) {
         return ComponentHandle<COMPONENT, ENTITY>(this, id);
@@ -346,16 +379,16 @@ inline ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::getComponent(
 template <class ENTITY>
 template <typename... COMPONENT>
 inline std::tuple<ComponentHandle<COMPONENT, ENTITY>...>
-EntityManager<ENTITY>::getComponents(uint32_t id) const {
+EntityManager<ENTITY>::getComponents(uint32_t id) {
     return std::make_tuple(getComponent<COMPONENT>(id)...);
 }
 
 template <class ENTITY>
 template <typename COMPONENT>
-inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) const {
+inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) {
     uint32_t family = COMPONENT::family();
     return &static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())
-        ->at(id);
+                ->at(id);
 }
 
 template <typename COMPONENT>
@@ -511,6 +544,22 @@ template <class ENTITY>
 template <typename... COMPONENT>
 inline const ENTITY *
 EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator->() const {
+    if (m_iter == m_iterEnd) return nullptr;
+    return m_view.m_manager.m_entitiesAllocated.at(*m_iter).get();
+}
+
+template <class ENTITY>
+template <typename... COMPONENT>
+inline ENTITY &
+EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator*() {
+    if (m_iter == m_iterEnd) return nullptr;
+    return *m_view.m_manager.m_entitiesAllocated.at(*m_iter).get();
+}
+
+template <class ENTITY>
+template <typename... COMPONENT>
+inline ENTITY *
+EntityManager<ENTITY>::View<COMPONENT...>::Iterator::operator->() {
     if (m_iter == m_iterEnd) return nullptr;
     return m_view.m_manager.m_entitiesAllocated.at(*m_iter).get();
 }

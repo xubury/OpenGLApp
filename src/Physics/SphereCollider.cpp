@@ -12,12 +12,11 @@ glm::vec3 SphereCollider::findFurthestPoint(const glm::vec3& direction) const {
            m_radius * glm::normalize(direction);
 }
 
-ContactManifold SphereCollider::testCollision(const Collider& collider) const {
+ContactManifold SphereCollider::testCollision(Collider& collider) {
     return collider.testCollision(*this);
 }
 
-ContactManifold SphereCollider::testCollision(
-    const SphereCollider& sphere) const {
+ContactManifold SphereCollider::testCollision(SphereCollider& sphere) {
     ContactManifold manifold;
     glm::vec3 aWorldPos =
         owner()->component<Transform>()->getMatrix() * glm::vec4(m_center, 1.0);
@@ -37,7 +36,7 @@ ContactManifold SphereCollider::testCollision(
     return manifold;
 }
 
-ContactManifold SphereCollider::testCollision(const HullCollider& hull) const {
+ContactManifold SphereCollider::testCollision(HullCollider& hull) {
     auto [collide, simlex] = gjk(*this, hull, 32);
     if (collide) {
         return epa(simlex, *this, hull, 32);

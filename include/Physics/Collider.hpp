@@ -18,12 +18,11 @@ class Collider : public Component<Collider, EntityBase> {
     // find the furthest point in direction using dot product
     virtual glm::vec3 findFurthestPoint(const glm::vec3 &direction) const = 0;
 
-    virtual ContactManifold testCollision(const Collider &collider) const = 0;
+    virtual ContactManifold testCollision(Collider &collider) = 0;
 
-    virtual ContactManifold testCollision(
-        const SphereCollider &sphere) const = 0;
+    virtual ContactManifold testCollision(SphereCollider &sphere) = 0;
 
-    virtual ContactManifold testCollision(const HullCollider &plane) const = 0;
+    virtual ContactManifold testCollision(HullCollider &plane) = 0;
 };
 
 }  // namespace te

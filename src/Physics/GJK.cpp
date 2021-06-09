@@ -196,8 +196,8 @@ static void addUniqueEdge(EdgeList& edges,
     }
 }
 
-ContactManifold epa(const Simplex& simplex, const Collider& colliderA,
-                    const Collider& colliderB, std::size_t maxIterartion) {
+ContactManifold epa(const Simplex& simplex, Collider& colliderA,
+                    Collider& colliderB, std::size_t maxIterartion) {
     std::vector<glm::vec3> polytope(simplex.begin(), simplex.end());
     std::vector<std::size_t> faces = {0, 1, 2, 0, 3, 1, 0, 2, 3, 1, 3, 2};
     auto [normals, minFace] = getFaceNormals(polytope, faces);

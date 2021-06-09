@@ -46,10 +46,13 @@ class Entity {
     bool has() const;
 
     template <typename COMPONENT>
-    ComponentHandle<COMPONENT, ENTITY> component() const;
+    ComponentHandle<COMPONENT, ENTITY> component();
+
+    template <typename COMPONENT>
+    const ComponentHandle<COMPONENT, ENTITY> component() const;
 
     template <typename... COMPONENT>
-    std::tuple<ComponentHandle<COMPONENT, ENTITY>...> components() const;
+    std::tuple<ComponentHandle<COMPONENT, ENTITY>...> components();
 
    private:
     uint32_t m_id;
@@ -110,14 +113,20 @@ inline bool Entity<ENTITY>::has() const {
 
 template <typename ENTITY>
 template <typename COMPONENT>
-inline ComponentHandle<COMPONENT, ENTITY> Entity<ENTITY>::component() const {
+inline ComponentHandle<COMPONENT, ENTITY> Entity<ENTITY>::component() {
+    return m_manager->template getComponent<COMPONENT>(m_id);
+}
+
+template <typename ENTITY>
+template <typename COMPONENT>
+inline const ComponentHandle<COMPONENT, ENTITY> Entity<ENTITY>::component() const {
     return m_manager->template getComponent<COMPONENT>(m_id);
 }
 
 template <typename ENTITY>
 template <typename... COMPONENT>
 inline std::tuple<ComponentHandle<COMPONENT, ENTITY>...>
-Entity<ENTITY>::components() const {
+Entity<ENTITY>::components() {
     return m_manager->template getComponents<COMPONENT...>(m_id);
 }
 

@@ -17,11 +17,11 @@ class HullCollider : public Collider {
 
     glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
 
-    ContactManifold testCollision(const Collider& collider) const override;
+    ContactManifold testCollision(Collider& collider) override;
 
-    ContactManifold testCollision(const SphereCollider& sphere) const override;
+    ContactManifold testCollision(SphereCollider& sphere) override;
 
-    ContactManifold testCollision(const HullCollider& hull) const override;
+    ContactManifold testCollision(HullCollider& hull) override;
 
    private:
     std::vector<glm::vec3> m_vertices;

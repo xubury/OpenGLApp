@@ -32,12 +32,11 @@ glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
     return maxPoint;
 }
 
-ContactManifold HullCollider::testCollision(const Collider& collider) const {
+ContactManifold HullCollider::testCollision(Collider& collider) {
     return collider.testCollision(*this);
 }
 
-ContactManifold HullCollider::testCollision(
-    const SphereCollider& sphere) const {
+ContactManifold HullCollider::testCollision(SphereCollider& sphere) {
     auto [collide, simplex] = gjk(*this, sphere, 32);
     if (collide) {
         return epa(simplex, *this, sphere, 32);
@@ -45,7 +44,7 @@ ContactManifold HullCollider::testCollision(
     return {};
 }
 
-ContactManifold HullCollider::testCollision(const HullCollider& hull) const {
+ContactManifold HullCollider::testCollision(HullCollider& hull) {
     auto [collide, simlex] = gjk(*this, hull, 32);
     if (collide) {
         return epa(simlex, *this, hull, 32);
