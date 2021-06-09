@@ -100,8 +100,8 @@ void Game::loadScene() {
     glm::vec3 positions[] = {
         glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
         glm::vec3(-4.0f, 8.0f, 0.0f), glm::vec3(2.0, 9.0f, -4.0f)};
-    glm::vec3 impulse[] = {glm::vec3(0, 100, 0), glm::vec3(0, -50, 0),
-                           glm::vec3(100, 0, 0), glm::vec3(0, 0, 100.f)};
+    glm::vec3 impulse[] = {glm::vec3(0, 50, 0), glm::vec3(0, -50, 0),
+                           glm::vec3(50, 0, 0), glm::vec3(0, 0, 50.f)};
     for (int i = 0; i < 4; ++i) {
         addSphere(positions[i], impulse[i], textures);
     }
@@ -129,9 +129,9 @@ Game::Game(const Settings& settings)
     uint32_t id =
         m_app.entities.create<Camera>(0, 0, settings.width, settings.height);
     m_mainCamera = dynamic_cast<Camera*>(m_app.entities.get(id));
-    m_mainCamera->setPosition(glm::vec3(-8.f, 9.f, 13.f));
-    m_mainCamera->setEulerAngle(
-        glm::vec3(glm::radians(-15.f), glm::radians(-35.f), glm::radians(5.f)));
+    m_mainCamera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
+    m_mainCamera->setEulerAngle(glm::vec3(
+        glm::radians(-25.f), glm::radians(-28.f), glm::radians(1.5f)));
 
     m_app.systems.add<BoundingBoxSystem>();
     m_app.systems.add<TransformSystem>();
@@ -213,6 +213,16 @@ void Game::run(int minFps) {
         while (m_window.pollEvent(event)) {
             if (event.type == Event::KEY_PRESSED) {
                 switch (event.key.code) {
+                    case Keyboard::T: {
+                        TextureArray textures;
+                        textures.loadFromValue(glm::vec3(1.f),
+                                               Texture::AMBIENT);
+                        textures.loadFromValue(glm::vec3(0.6f),
+                                               Texture::DIFFUSE);
+                        textures.loadFromValue(glm::vec3(0.5f),
+                                               Texture::SPECULAR);
+                        addSphere(glm::vec3(5, 5, 0), glm::vec3(0), textures);
+                    } break;
                     case Keyboard::ESCAPE:
                         m_window.setShouldClose();
                         break;

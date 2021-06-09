@@ -10,6 +10,8 @@ Rigidbody::Rigidbody(float mass, bool isKinematic)
       m_angularVelocity(0.f),
       m_mass(mass),
       m_restitution(0.5f),
+      m_staticFriction(0.5f),
+      m_dynamicFriction(0.5f),
       m_isKinematic(isKinematic) {
     TE_ASSERT(mass > 0, "Rigidbody mass can't be less than zero!")
 }
@@ -37,6 +39,10 @@ float Rigidbody::getMass() const { return m_mass; }
 
 float Rigidbody::getRestitution() const { return m_restitution; }
 
+float Rigidbody::getStaticFriction() const { return m_staticFriction; }
+
+float Rigidbody::getDynamicFriction() const { return m_dynamicFriction; }
+
 bool Rigidbody::isKinematic() const { return m_isKinematic; }
 
 glm::vec3 Rigidbody::getCenterOfMass() const { return m_centerOfMass; }
@@ -46,10 +52,8 @@ glm::vec3 Rigidbody::getCenterOfMassInWorld() const {
            glm::vec4(m_centerOfMass, 1.0f);
 }
 
-const glm::vec3 &Rigidbody::getVelocity() const { return m_velocity; }
+glm::vec3 Rigidbody::getVelocity() const { return m_velocity; }
 
-const glm::vec3 &Rigidbody::getAngularVelocity() const {
-    return m_angularVelocity;
-}
+glm::vec3 Rigidbody::getAngularVelocity() const { return m_angularVelocity; }
 
 }  // namespace te

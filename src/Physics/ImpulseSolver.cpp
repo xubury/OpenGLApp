@@ -12,6 +12,9 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
         const glm::vec3 &velA = bodyA ? bodyA->getVelocity() : glm::vec3(0);
         const glm::vec3 &velB = bodyB ? bodyB->getVelocity() : glm::vec3(0);
 
+        const float massA = bodyA ? bodyA->getMass() : 1.0f;
+        const float massB = bodyB ? bodyB->getMass() : 1.0f;
+
         const glm::vec3 &wA =
             bodyA ? bodyA->getAngularVelocity() : glm::vec3(0);
         const glm::vec3 &wB =
@@ -26,16 +29,37 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
             const glm::vec3 rB = manifold.points[i].position -
                                  manifold.objB->owner()->getPosition() -
                                  bodyB->getCenterOfMass();
-            float velRelative =
-                glm::dot(velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA),
-                         manifold.normal);
+            glm::vec3 velRelative =
+                velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA);
+            float speed = glm::dot(velRelative, manifold.normal);
 
             float e = (bodyA ? bodyA->getRestitution() : 1.0f) *
                       (bodyB ? bodyB->getRestitution() : 1.0f);
-            glm::vec3 deltaVel =
-                (correction - (1.0f + e) * velRelative) * manifold.normal;
+            float j = (correction - (1.0f + e) * speed);
+            // friction
+            glm::vec3 tangent = velRelative - speed * manifold.normal;
+            if (glm::length(tangent) > 0.0001f) {  // safe normalize
+                tangent = glm::normalize(tangent);
+            }
+
+            float velFriction = glm::dot(velRelative, tangent);
+            float staticFrictionA = bodyA ? bodyA->getStaticFriction() : 0.0f;
+            float staticFrictionB = bodyB ? bodyB->getStaticFriction() : 0.0f;
+            float dynamicFrictionA = bodyA ? bodyA->getDynamicFriction() : 0.0f;
+            float dynamicFrictionB = bodyB ? bodyB->getDynamicFriction() : 0.0f;
+            float mu = glm::length(glm::vec2(staticFrictionA, staticFrictionB));
+
+            float f = -velFriction / (massA + massB);
+            glm::vec3 friction;
+            if (std::abs(f) < j * mu) {
+                friction = f * tangent;
+            } else {
+                mu = glm::length(glm::vec2(dynamicFrictionA, dynamicFrictionB));
+                friction = -j * tangent * mu;
+            }
             if (bodyB) {
-                bodyB->addForce(deltaVel * bodyB->getMass() / deltaTime.count(),
+                bodyB->addForce((j * manifold.normal + friction) * massB /
+                                    deltaTime.count(),
                                 manifold.points[i].position);
             }
         }
