@@ -40,7 +40,8 @@ set(Physics_Src
     src/Physics/Rigidbody.cpp
     src/Physics/SphereCollider.cpp
     src/Physics/HullCollider.cpp
-    src/Physics/GJK.cpp)
+    src/Physics/GJK.cpp
+    src/Physics/PositionSolver.cpp)
 
 if (NOT BUILD_LIBS_ONLY)
 

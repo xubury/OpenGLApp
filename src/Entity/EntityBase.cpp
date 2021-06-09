@@ -19,6 +19,10 @@ glm::vec3 EntityBase::getPosition() const {
     return component<Transform>()->getPosition();
 }
 
+void EntityBase::move(const glm::vec3 &offset) {
+    component<Transform>()->translateWorld(offset);
+}
+
 void EntityBase::setEulerAngle(const glm::vec3 &angle) {
     component<Transform>()->setEulerAngle(angle);
 }

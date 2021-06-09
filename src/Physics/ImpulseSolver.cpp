@@ -2,6 +2,7 @@
 #include "Physics/Rigidbody.hpp"
 
 namespace te {
+
 void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
                           const Time &deltaTime) {
     for (const ContactManifold &manifold : manifolds) {
@@ -38,4 +39,5 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
         }
     }
 }
+
 }  // namespace te

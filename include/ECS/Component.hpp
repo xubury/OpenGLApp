@@ -42,6 +42,8 @@ class VComponent {
 
     const ENTITY *owner() const;
 
+    ENTITY *owner();
+
     EntityManager<ENTITY> *manager() { return m_manager; }
 
    protected:
@@ -118,6 +120,11 @@ VComponent<ENTITY>::VComponent() : m_manager(nullptr), m_ownerID(-1) {}
 template <typename ENTITY>
 inline uint32_t VComponent<ENTITY>::ownerID() const {
     return m_ownerID;
+}
+
+template <typename ENTITY>
+inline ENTITY *VComponent<ENTITY>::owner() {
+    return m_manager->get(m_ownerID);
 }
 
 template <typename ENTITY>

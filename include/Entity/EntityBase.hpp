@@ -20,6 +20,8 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     glm::vec3 getPosition() const;
 
+    void move(const glm::vec3 &offset);
+
     void setEulerAngle(const glm::vec3 &angle);
 
     glm::vec3 getEulerAngle() const;

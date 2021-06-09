@@ -1,5 +1,6 @@
 #include "Physics/PhysicsWorld.hpp"
 #include "Physics/ImpulseSolver.hpp"
+#include "Physics/PositionSolver.hpp"
 #include "Physics/Collider.hpp"
 #include "Physics/Rigidbody.hpp"
 
@@ -7,6 +8,7 @@ namespace te {
 
 PhysicsWorld::PhysicsWorld() : m_gravity(0, -9.8, 0) {
     addSolver(createRef<ImpulseSolver>());
+    addSolver(createRef<PositionSolver>());
 }
 
 void PhysicsWorld::addSolver(Ref<Solver> solver) {

@@ -16,6 +16,8 @@ struct CollisionObject : Component<CollisionObject, EntityBase> {
 
     virtual void step(const Time &deltaTime) = 0;
 
+    void move(const glm::vec3 &offset);
+
    protected:
     bool m_isDynamic;
     bool m_isTrigger;
