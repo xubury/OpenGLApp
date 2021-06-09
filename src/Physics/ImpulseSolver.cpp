@@ -20,10 +20,12 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
             float correction =
                 0.01f * manifold.points[i].depth / deltaTime.count();
-            const glm::vec3 rA =
-                manifold.points[i].position - bodyA->getCenterOfMassInWorld();
-            const glm::vec3 rB =
-                manifold.points[i].position - bodyB->getCenterOfMassInWorld();
+            const glm::vec3 rA = manifold.points[i].position -
+                                 manifold.objA->owner()->getPosition() -
+                                 bodyA->getCenterOfMass();
+            const glm::vec3 rB = manifold.points[i].position -
+                                 manifold.objB->owner()->getPosition() -
+                                 bodyB->getCenterOfMass();
             float velRelative =
                 glm::dot(velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA),
                          manifold.normal);
