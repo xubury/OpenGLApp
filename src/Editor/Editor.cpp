@@ -1,10 +1,11 @@
-#include <Editor/Editor.hpp>
+#include "Editor/Editor.hpp"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <Core/Math.hpp>
-#include <Graphic/Primitive.hpp>
-#include <Component/BoundingBox.hpp>
-#include <Component/Light.hpp>
+#include "Core/Math.hpp"
+#include "Graphic/Primitive.hpp"
+#include "Component/BoundingBox.hpp"
+#include "Component/Light.hpp"
+#include "Physics/Rigidbody.hpp"
 #include <iostream>
 
 namespace te {
@@ -43,6 +44,26 @@ static void renderLightProperty(Light& light) {
     ImGui::InputFloat3("Ambient", &light.amibent[0], "%.3f");
     ImGui::InputFloat3("Diffuse", &light.diffuse[0], "%.3f");
     ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
+}
+
+static void renderRigidbodyProperty(Rigidbody& body) {
+    ImGui::Separator();
+    ImGui::Text("Rigidbody");
+    bool kinematic = body.isKinematic();
+    ImGui::Checkbox("Kinematic", &kinematic);
+    body.setKinematic(kinematic);
+    float mass = body.getMass();
+    float restitution = body.getRestitution();
+    float staticFriction = body.getStaticFriction();
+    float dynamicFriction = body.getDynamicFriction();
+    ImGui::InputFloat("Mass", &mass);
+    ImGui::InputFloat("Restitution", &restitution);
+    ImGui::InputFloat("Static friction", &staticFriction);
+    ImGui::InputFloat("Dynamic friction", &dynamicFriction);
+    glm::vec3 velocity = body.getVelocity();
+    glm::vec3 angularVelocity = body.getAngularVelocity();
+    ImGui::InputFloat3("Velocity", &velocity[0]);
+    ImGui::InputFloat3("Angular velocity", &angularVelocity[0]);
 }
 
 static bool canActive(ImGuiMouseButton button) {
@@ -368,6 +389,9 @@ void Editor::render() {
             renderTransformProperty(*entity->component<Transform>().get());
             if (entity->has<Light>()) {
                 renderLightProperty(*entity->component<Light>().get());
+            }
+            if (entity->has<Rigidbody>()) {
+                renderRigidbodyProperty(*entity->component<Rigidbody>().get());
             }
             ImGui::Separator();
             ImGui::TreePop();

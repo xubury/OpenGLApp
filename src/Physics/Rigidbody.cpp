@@ -45,6 +45,8 @@ float Rigidbody::getDynamicFriction() const { return m_dynamicFriction; }
 
 bool Rigidbody::isKinematic() const { return m_isKinematic; }
 
+void Rigidbody::setKinematic(bool kinematic) { m_isKinematic = kinematic; }
+
 glm::vec3 Rigidbody::getCenterOfMass() const { return m_centerOfMass; }
 
 glm::vec3 Rigidbody::getCenterOfMassInWorld() const {

@@ -22,6 +22,8 @@ struct Rigidbody : public CollisionObject {
 
     bool isKinematic() const;
 
+    void setKinematic(bool kinematic);
+
     glm::vec3 getCenterOfMass() const;
 
     glm::vec3 getCenterOfMassInWorld() const;

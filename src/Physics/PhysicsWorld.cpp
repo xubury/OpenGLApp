@@ -33,8 +33,10 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
     for (auto a = view.begin(); a != end; ++a) {
         if (collisonObj->isDynamic()) {
             Rigidbody *body = dynamic_cast<Rigidbody *>(collisonObj.get());
-            body->addForce(m_gravity * body->getMass(),
-                           body->getCenterOfMass());
+            if (body->isKinematic()) {
+                body->addForce(m_gravity * body->getMass(),
+                               body->getCenterOfMass());
+            }
         }
         for (auto b = view.begin(); b != end; ++b) {
             if (a == b) continue;
