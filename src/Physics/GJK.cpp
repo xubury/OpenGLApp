@@ -213,7 +213,8 @@ ContactManifold epa(const Simplex& simplex, const Collider& colliderA,
         }
         glm::vec3 support = findSupport(colliderA, colliderB, minNormal);
         float sDistance = glm::dot(minNormal, support);
-        if (std::abs(sDistance - minDist) < 0.001) {
+        if (std::abs(sDistance - minDist) >
+            std::numeric_limits<float>::epsilon()) {
             minDist = std::numeric_limits<float>::max();
             EdgeList uniqueEdges;
             for (std::size_t i = 0; i < normals.size(); ++i) {
