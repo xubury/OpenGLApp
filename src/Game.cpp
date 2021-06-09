@@ -221,7 +221,7 @@ void Game::run(int minFps) {
                                                Texture::DIFFUSE);
                         textures.loadFromValue(glm::vec3(0.5f),
                                                Texture::SPECULAR);
-                        addSphere(glm::vec3(5, 5, 0), glm::vec3(0), textures);
+                        addCube(glm::vec3(5, 5, 0), 1, 1, 1, textures, true);
                     } break;
                     case Keyboard::ESCAPE:
                         m_window.setShouldClose();

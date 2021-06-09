@@ -21,8 +21,6 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
             bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
 
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
-            float correction =
-                0.01f * manifold.points[i].depth / deltaTime.count();
             const glm::vec3 rA = manifold.points[i].position -
                                  manifold.objA->owner()->getPosition() -
                                  bodyA->getCenterOfMass();
@@ -35,7 +33,7 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
 
             float e = (bodyA ? bodyA->getRestitution() : 1.0f) *
                       (bodyB ? bodyB->getRestitution() : 1.0f);
-            float j = (correction - (1.0f + e) * speed);
+            float j = -(1.0f + e) * speed;
             // friction
             glm::vec3 tangent = velRelative - speed * manifold.normal;
             if (glm::length(tangent) > 0.0001f) {  // safe normalize
