@@ -1,23 +1,26 @@
-#include <Entity/ModelEntity.hpp>
-#include <Component/BoundingBox.hpp>
-#include <Component/Transform.hpp>
+#include "Entity/ModelEntity.hpp"
+#include "Component/BoundingBox.hpp"
+#include "Component/Transform.hpp"
+#include "Core/ResourceManager.hpp"
 
 namespace te {
+
+ResourceManager<std::string, Model> s_loadedModels;
 
 ModelEntity::ModelEntity(EntityManager<EntityBase> *manager, uint32_t id)
     : EntityBase(manager, id) {
     manager->addComponent<BoundingBox>(id);
 }
 
-void ModelEntity::load(const std::string &path) {
-    m_model.loadModel(path);
-    for (const auto &mesh : m_model.getMeshes()) {
+void ModelEntity::loadFromFile(const std::string &path) {
+    m_model = s_loadedModels.getOrLoad(path, path);
+    for (const auto &mesh : m_model->getMeshes()) {
         component<BoundingBox>()->initialize(mesh.getVertex(), mesh.size());
     }
 }
 
-void ModelEntity::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
-    m_model.draw(shader, transform);
+void ModelEntity::draw(const Ref<Shader> &shader) const {
+    m_model->draw(shader, component<Transform>()->getMatrix());
 }
 
 }  // namespace te

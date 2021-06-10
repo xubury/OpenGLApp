@@ -1,5 +1,6 @@
 #include "Entity/Sphere.hpp"
 #include "Graphic/Vertex.hpp"
+#include "Component/Transform.hpp"
 
 namespace te {
 
@@ -70,9 +71,10 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
         createRef<IndexBuffer>(indices.data(), indices.size()));
 }
 
-void Sphere::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
+void Sphere::draw(const Ref<Shader> &shader) const {
     m_textures.prepare(shader);
-    Renderer::submit(shader, m_sphere, GL_TRIANGLES, true, transform);
+    Renderer::submit(shader, m_sphere, GL_TRIANGLES, true,
+                     component<Transform>()->getMatrix());
 }
 
 }  // namespace te

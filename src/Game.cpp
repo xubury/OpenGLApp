@@ -41,14 +41,15 @@ void Game::addCube(const glm::vec3& pos, float width, float height,
 void Game::addModel(const std::string& path, const glm::vec3& pos) {
     int id = m_app.entities.create<ModelEntity>();
     EntityBase* model = m_app.entities.get(id);
-    dynamic_cast<ModelEntity*>(model)->load(path);
+    dynamic_cast<ModelEntity*>(model)->loadFromFile(path);
     model->setPosition(pos);
     model->setName("model");
 }
 
 void Game::loadShaders() {
     m_shaders.add("Main");
-    m_shaders.get("Main")->loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
+    m_shaders.get("Main")->loadFromFile("shader/vertex.glsl",
+                                        "shader/fragment.glsl");
     m_shaders.get("Main")->bind();
     m_shaders.get("Main")->setVec3("pointLight.position",
                                    glm::vec3(0.0f, 0.0f, 2.0f));
@@ -179,9 +180,7 @@ void Game::render() {
     Renderer::beginScene(*m_mainCamera);
     m_shaders.get("Main")->bind();
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
-        const glm::mat4 model =
-            m_app.entities.get(*cur)->component<Transform>()->getMatrix();
-        m_app.entities.get(*cur)->draw(m_shaders.get("Main"), model);
+        m_app.entities.get(*cur)->draw(m_shaders.get("Main"));
     }
     Renderer::endScene();
     m_screenLayer.end();

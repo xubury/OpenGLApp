@@ -12,8 +12,7 @@ class Sphere : public EntityBase {
     Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
            const ModelTextures &textures);
 
-    void draw(const Ref<Shader> &shader,
-              const glm::mat4 &transform) const override;
+    void draw(const Ref<Shader> &shader) const override;
 
    private:
     Ref<VertexArray> m_sphere;

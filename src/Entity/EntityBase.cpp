@@ -35,6 +35,6 @@ void EntityBase::setName(const std::string &name) { m_name = name; }
 
 std::string EntityBase::getName() const { return m_name; }
 
-void EntityBase::draw(const Ref<Shader> &, const glm::mat4 &) const {}
+void EntityBase::draw(const Ref<Shader> &) const {}
 
 }  // namespace te

@@ -10,12 +10,12 @@ class ModelEntity : public EntityBase {
    public:
     ModelEntity(EntityManager<EntityBase> *manager, uint32_t id);
 
-    void load(const std::string &path);
+    void loadFromFile(const std::string &path);
 
-    void draw(const Ref<Shader> &shader, const glm::mat4 &transform) const override;
+    void draw(const Ref<Shader> &shader) const override;
 
    private:
-    Model m_model;
+    Ref<Model> m_model;
 };
 
 }  // namespace te

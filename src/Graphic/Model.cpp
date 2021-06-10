@@ -5,12 +5,6 @@
 
 namespace te {
 
-ResourceManager<std::string, Model> s_loadedModels;
-
-void Model::loadModel(const std::string &path) {
-    *this = *s_loadedModels.getOrLoad(path, path);
-}
-
 void Model::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
     for (const auto &mesh : m_meshes) {
         mesh.draw(shader, transform);

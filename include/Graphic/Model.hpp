@@ -15,23 +15,16 @@ class TE_API Model : public Drawable {
    public:
     Model() = default;
 
-    // This function check if the model is loaded before.
-    // If loaded, take it out and skip the loadFromFile process.
-    void loadModel(const std::string &path);
+    bool loadFromFile(const std::string &path);
 
-    void draw(const Ref<Shader> &shader, const glm::mat4 &transform) const override;
+    void draw(const Ref<Shader> &shader,
+              const glm::mat4 &transform) const override;
 
     const std::vector<Mesh> &getMeshes() const;
 
     std::vector<Mesh> &getMeshes();
+
    private:
-    template <typename, typename>
-    friend class ResourceManager;
-
-    // Costly model load function, will not check if loaded before.
-    // Use loadModel for fast loading.
-    bool loadFromFile(const std::string &path);
-
     void processNode(aiNode *node, const aiScene *scene);
 
     void processMesh(aiMesh *mesh, const aiScene *scene);
