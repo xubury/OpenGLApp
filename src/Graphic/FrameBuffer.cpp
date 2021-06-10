@@ -132,6 +132,12 @@ void FrameBuffer::invalidate() {
         for (std::size_t i = 0; i < m_colorAttachments.size(); ++i) {
             bindTexture(multiSample, m_colorAttachments[i]);
             switch (m_colorAttachmentSpecs[i].textureFormat) {
+                case FramebufferTextureFormat::RED_INTEGER:
+                    attachColorTexture(m_colorAttachments[i],
+                                       m_specification.samples, GL_R32I,
+                                       GL_RED_INTEGER, m_specification.width,
+                                       m_specification.height, i);
+                    break;
                 case FramebufferTextureFormat::RGB:
                     attachColorTexture(m_colorAttachments[i],
                                        m_specification.samples, GL_RGB, GL_RGB,
@@ -141,13 +147,13 @@ void FrameBuffer::invalidate() {
                 case FramebufferTextureFormat::RGBA8:
                     attachColorTexture(m_colorAttachments[i],
                                        m_specification.samples, GL_RGBA8,
-                                       GL_RGB, m_specification.width,
+                                       GL_RGBA, m_specification.width,
                                        m_specification.height, i);
                     break;
-                case FramebufferTextureFormat::RED_INTEGER:
+                case FramebufferTextureFormat::RGBA16F:
                     attachColorTexture(m_colorAttachments[i],
-                                       m_specification.samples, GL_R32I,
-                                       GL_RED_INTEGER, m_specification.width,
+                                       m_specification.samples, GL_RGBA16F,
+                                       GL_RGBA, m_specification.width,
                                        m_specification.height, i);
                     break;
                 default:
