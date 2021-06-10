@@ -36,7 +36,7 @@ class TE_API Model : public Drawable {
 
     void processMesh(aiMesh *mesh, const aiScene *scene);
 
-    void processTextures(TextureArray &textures, aiMaterial *mat,
+    void processTextures(ModelTextures &textures, aiMaterial *mat,
                          aiTextureType type);
 
     std::vector<Mesh> m_meshes;

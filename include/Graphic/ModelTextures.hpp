@@ -9,7 +9,7 @@
 
 namespace te {
 
-class TE_API TextureArray {
+class TE_API ModelTextures {
    public:
     void loadFromFile(const std::string& path,
                       Texture::TextureType textureType);

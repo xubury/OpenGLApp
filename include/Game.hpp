@@ -10,6 +10,7 @@
 #include "Core/Time.hpp"
 #include "ECS/Application.hpp"
 #include "Graphic/ScreenLayer.hpp"
+#include "Graphic/ModelTextures.hpp"
 
 using namespace te;
 
@@ -33,10 +34,10 @@ class Game {
     void render();
 
     void addSphere(const glm::vec3 &pos, float radius, const glm::vec3 &impulse,
-                   const TextureArray &textures);
+                   const ModelTextures &textures);
 
     void addCube(const glm::vec3 &pos, float width, float height, float length,
-                 const TextureArray &textures, bool kinematic);
+                 const ModelTextures &textures, bool kinematic);
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 

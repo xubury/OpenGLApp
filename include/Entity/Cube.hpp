@@ -3,13 +3,14 @@
 
 #include "Entity/EntityBase.hpp"
 #include "Graphic/VertexArray.hpp"
+#include "Graphic/ModelTextures.hpp"
 
 namespace te {
 
 class Cube : public EntityBase {
    public:
     Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
-         float height, float length, const TextureArray &textures);
+         float height, float length, const ModelTextures &textures);
 
     void draw(const Ref<Shader> &shader,
               const glm::mat4 &transform) const override;
@@ -17,7 +18,7 @@ class Cube : public EntityBase {
    private:
     Ref<VertexArray> m_cube;
 
-    TextureArray m_textures;
+    ModelTextures m_textures;
 };
 
 }  // namespace te

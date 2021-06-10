@@ -18,7 +18,7 @@ set(Graphic_Include
     ${Include_Root}/Shader.hpp
     ${Include_Root}/Texture.hpp
     ${Include_Root}/Vertex.hpp
-    ${Include_Root}/TextureArray.hpp
+    ${Include_Root}/ModelTextures.hpp
     ${Include_Root}/Primitive.hpp
     ${Include_Root}/Mesh.hpp
     ${Include_Root}/Model.hpp
@@ -37,10 +37,10 @@ set(Graphic_Src
     ${Src_Root}/Shader.cpp
     ${Src_Root}/Texture.cpp
     ${Src_Root}/Vertex.cpp
-    ${Src_Root}/TextureArray.cpp
     ${Src_Root}/Primitive.cpp
     ${Src_Root}/Mesh.cpp
     ${Src_Root}/Model.cpp
+    ${Src_Root}/ModelTextures.cpp
     ${Src_Root}/FrameBuffer.cpp
     ${Src_Root}/ShadowBuffer.cpp
     ${Src_Root}/ScreenLayer.cpp)

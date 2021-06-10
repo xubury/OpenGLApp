@@ -5,7 +5,7 @@
 namespace te {
 
 Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
-           const std::vector<uint32_t> &indices, const TextureArray &textures)
+           const std::vector<uint32_t> &indices, const ModelTextures &textures)
     : m_vertices(vertices), m_indices(indices), m_textures(textures) {
     m_vertexArray = createRef<VertexArray>(type);
     Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(

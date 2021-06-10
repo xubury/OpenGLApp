@@ -2,7 +2,6 @@
 #define ENTITY_BASE_HPP
 
 #include <ECS/Entity.hpp>
-#include <Graphic/TextureArray.hpp>
 
 namespace te {
 

@@ -1,4 +1,4 @@
-#include "Graphic/TextureArray.hpp"
+#include "Graphic/ModelTextures.hpp"
 #include "Graphic/OpenGL.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/Log.hpp"
@@ -7,22 +7,22 @@ namespace te {
 
 static ResourceManager<std::string, Texture> s_loadedTexture;
 
-void TextureArray::loadFromFile(const std::string &path,
+void ModelTextures::loadFromFile(const std::string &path,
                                 Texture::TextureType textureType) {
     m_list.emplace_back(s_loadedTexture.getOrLoad(path, path, textureType));
 }
 
-void TextureArray::loadFromValue(const glm::vec3 &value,
+void ModelTextures::loadFromValue(const glm::vec3 &value,
                                  Texture::TextureType textureType) {
     m_list.emplace_back(createRef<Texture>());
     m_list.back()->load(value, textureType);
 }
 
-std::size_t TextureArray::size() const { return m_list.size(); }
+std::size_t ModelTextures::size() const { return m_list.size(); }
 
-const std::list<Ref<Texture>> &TextureArray::getList() const { return m_list; }
+const std::list<Ref<Texture>> &ModelTextures::getList() const { return m_list; }
 
-void TextureArray::prepare(const Ref<Shader> &shader) const {
+void ModelTextures::prepare(const Ref<Shader> &shader) const {
     for (std::size_t i = size(); i < 32; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, 0);

@@ -9,7 +9,7 @@
 namespace te {
 
 Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
-         float height, float length, const TextureArray &textures)
+         float height, float length, const ModelTextures &textures)
     : EntityBase(manager, id), m_textures(textures) {
     Vertex vertices[] = {
         {{-width, -height, -length}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},

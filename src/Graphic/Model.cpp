@@ -48,7 +48,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
 void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    TextureArray textures;
+    ModelTextures textures;
     for (std::size_t i = 0; i < mesh->mNumVertices; ++i) {
         Vertex vertex;
         vertex.position.x = mesh->mVertices[i].x;
@@ -82,7 +82,7 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
                           textures);
 }
 
-void Model::processTextures(TextureArray &textures, aiMaterial *mat,
+void Model::processTextures(ModelTextures &textures, aiMaterial *mat,
                             aiTextureType type) {
     for (std::size_t i = 0; i < mat->GetTextureCount(type); ++i) {
         aiString path;

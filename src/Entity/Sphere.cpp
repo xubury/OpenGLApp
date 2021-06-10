@@ -7,7 +7,7 @@ static const float SECTOR_COUNT = 100;
 static const float STACK_COUNT = 100;
 
 Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
-               const TextureArray &textures)
+               const ModelTextures &textures)
     : EntityBase(manager, id), m_textures(textures) {
     int sectorCount = SECTOR_COUNT;
     int stackCount = STACK_COUNT;

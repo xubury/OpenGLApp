@@ -15,7 +15,7 @@
 #include <iostream>
 
 void Game::addSphere(const glm::vec3& pos, float radius,
-                     const glm::vec3& impulse, const TextureArray& textures) {
+                     const glm::vec3& impulse, const ModelTextures& textures) {
     int id = m_app.entities.create<Sphere>(radius, textures);
     EntityBase* sphere = m_app.entities.get(id);
     sphere->add<Rigidbody>(10, true);
@@ -26,7 +26,7 @@ void Game::addSphere(const glm::vec3& pos, float radius,
 }
 
 void Game::addCube(const glm::vec3& pos, float width, float height,
-                   float length, const TextureArray& textures, bool kinematic) {
+                   float length, const ModelTextures& textures, bool kinematic) {
     int id = m_app.entities.create<Cube>(width, height, length, textures);
     EntityBase* cube = m_app.entities.get(id);
     cube->add<Rigidbody>(10, kinematic);
@@ -90,7 +90,7 @@ void Game::loadScene() {
     // light2->diffuse = glm::vec3(0.5f);
     // light2->specular = glm::vec3(0.5f);
 
-    TextureArray textures;
+    ModelTextures textures;
     textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
     textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
     textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
@@ -110,7 +110,7 @@ void Game::loadScene() {
     //          glm::vec3(0.f, 6.f, 6.f));
 
     // ground
-    TextureArray groundTextures;
+    ModelTextures groundTextures;
     groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
     groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
     groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
@@ -209,7 +209,7 @@ void Game::run(int minFps) {
             if (event.type == Event::KEY_PRESSED) {
                 switch (event.key.code) {
                     case Keyboard::T: {
-                        TextureArray textures;
+                        ModelTextures textures;
                         textures.loadFromValue(glm::vec3(1.f),
                                                Texture::AMBIENT);
                         textures.loadFromValue(glm::vec3(0.6f),
