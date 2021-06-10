@@ -51,6 +51,9 @@ class TE_API Primitive {
 
    private:
     Ref<Shader> m_shader;
+    Ref<VertexArray> m_vertexArray;
+    Ref<VertexBuffer> m_vertexBuffer;
+    Ref<IndexBuffer> m_indexBuffer;
 };
 
 }  // namespace te

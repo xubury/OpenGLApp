@@ -33,7 +33,7 @@ ScreenLayer::ScreenLayer(int width, int height, int samples)
 
                                   -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  -1.0f,
                                   1.0f,  0.0f, 1.0f, 1.0f,  1.0f,  1.0f};
-    m_quad = createRef<VertexArray>(GL_TRIANGLES);
+    m_quad = createRef<VertexArray>();
     Ref<VertexBuffer> buffer =
         createRef<VertexBuffer>(quadVertices, sizeof(quadVertices));
     buffer->setLayout({{ShaderDataType::Float2, "aPos"},
@@ -71,7 +71,7 @@ void ScreenLayer::end() const {
     Ref<VertexBuffer> buffer = m_quad->getVertexBuffers()[0];
     std::size_t cnt = buffer->getSize() / buffer->getLayout().getStride();
     m_quad->bind();
-    glDrawArrays(m_quad->getType(), 0, cnt);
+    glDrawArrays(GL_TRIANGLES, 0, cnt);
     glEnable(GL_DEPTH_TEST);
     m_shader->unbind();
 }

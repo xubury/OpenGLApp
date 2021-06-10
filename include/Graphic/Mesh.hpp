@@ -31,6 +31,8 @@ class TE_API Mesh : public Drawable {
     ModelTextures m_textures;
 
     Ref<VertexArray> m_vertexArray;
+
+    GLenum m_type;
 };
 
 }  // namespace te

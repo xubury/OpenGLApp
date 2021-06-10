@@ -28,6 +28,9 @@ class VertexBuffer {
     void setLayout(const BufferLayout &layout);
 
     std::size_t getSize() const;
+
+    void update(const void *vertices, std::size_t size);
+
    private:
     uint32_t m_bufferId;
     BufferLayout m_layout;
@@ -36,7 +39,7 @@ class VertexBuffer {
 
 class IndexBuffer {
    public:
-    IndexBuffer(const uint32_t *indices, std::size_t m_count);
+    IndexBuffer(const uint32_t *indices, std::size_t count);
 
     ~IndexBuffer();
 
@@ -49,6 +52,8 @@ class IndexBuffer {
     void unbind() const;
 
     std::size_t getCount() const;
+
+    void update(const uint32_t *indices, std::size_t count);
 
    private:
     uint32_t m_bufferId;

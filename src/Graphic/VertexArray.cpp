@@ -34,8 +34,7 @@ static inline GLenum shaderDataTypeToOpenGLBaseType(ShaderDataType type) {
     return {};
 }
 
-VertexArray::VertexArray(GLenum type)
-    : m_arrayId(0), m_vertexBufferId(0), m_type(type) {
+VertexArray::VertexArray() : m_arrayId(0), m_vertexBufferId(0) {
     glCreateVertexArrays(1, &m_arrayId);
 }
 
@@ -114,7 +113,5 @@ const std::vector<Ref<VertexBuffer>> &VertexArray::getVertexBuffers() const {
 const Ref<IndexBuffer> &VertexArray::getIndexBuffer() const {
     return m_indexBuffer;
 }
-
-GLenum VertexArray::getType() const { return m_type; }
 
 }  // namespace te

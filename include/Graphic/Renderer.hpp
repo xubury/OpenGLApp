@@ -12,9 +12,12 @@ class Renderer {
     static void init();
     static void beginScene(const CameraBase &camera);
     static void endScene();
-    static void submit(const Ref<Shader> &shader, const Ref<VertexArray> &vertexArray,
+    static void submit(const Ref<Shader> &shader,
+                       const Ref<VertexArray> &vertexArray, GLenum type,
+                       bool indexed,
                        const glm::mat4 &transform = glm::mat4(1.0));
-    static void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f, float a = 1.f);
+    static void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f,
+                      float a = 1.f);
 
    private:
     struct SceneData {

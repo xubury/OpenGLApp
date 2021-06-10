@@ -8,7 +8,7 @@ namespace te {
 
 class VertexArray {
    public:
-    VertexArray(GLenum type);
+    VertexArray();
 
     ~VertexArray();
 
@@ -28,14 +28,11 @@ class VertexArray {
 
     const Ref<IndexBuffer> &getIndexBuffer() const;
 
-    GLenum getType() const;
-
    private:
     uint32_t m_arrayId;
     uint32_t m_vertexBufferId;
     std::vector<Ref<VertexBuffer>> m_vertexBuffers;
     Ref<IndexBuffer> m_indexBuffer;
-    GLenum m_type;
 };
 
 }  // namespace te

@@ -9,7 +9,7 @@
 namespace te {
 
 Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
-         float height, float length, const ModelTextures &textures)
+           float height, float length, const ModelTextures &textures)
     : EntityBase(manager, id), m_textures(textures) {
     Vertex vertices[] = {
         {{-width, -height, -length}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
@@ -51,7 +51,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
 
     manager->addComponent<BoundingBox>(id)->initialize(vertices, 36);
 
-    m_cube = createRef<VertexArray>(GL_TRIANGLES);
+    m_cube = createRef<VertexArray>();
     Ref<VertexBuffer> vertexBuffer =
         createRef<VertexBuffer>(vertices, 36 * sizeof(Vertex));
     vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
@@ -62,7 +62,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
 
 void Cube::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
     m_textures.prepare(shader);
-    Renderer::submit(shader, m_cube, transform);
+    Renderer::submit(shader, m_cube, GL_TRIANGLES, false, transform);
 }
 
 }  // namespace te

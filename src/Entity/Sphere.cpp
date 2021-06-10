@@ -58,7 +58,7 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
             }
         }
     }
-    m_sphere = createRef<VertexArray>(GL_TRIANGLES);
+    m_sphere = createRef<VertexArray>();
 
     Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
         vertices.data(), vertices.size() * sizeof(Vertex));
@@ -72,7 +72,7 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
 
 void Sphere::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
     m_textures.prepare(shader);
-    Renderer::submit(shader, m_sphere, transform);
+    Renderer::submit(shader, m_sphere, GL_TRIANGLES, true, transform);
 }
 
 }  // namespace te

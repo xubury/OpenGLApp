@@ -35,6 +35,15 @@ Primitive::Primitive() {
         "}";
     m_shader = createRef<Shader>();
     m_shader->compile(primitiveVertex, primitiveFragment);
+    m_vertexArray = createRef<VertexArray>();
+
+    m_vertexBuffer = createRef<VertexBuffer>(nullptr, 0);
+    m_vertexBuffer->setLayout(
+        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
+    m_vertexArray->addVertexBuffer(m_vertexBuffer);
+
+    m_indexBuffer = createRef<IndexBuffer>(nullptr, 0);
+    m_vertexArray->setIndexBuffer(m_indexBuffer);
 }
 
 Primitive &Primitive::instance() {
@@ -59,14 +68,10 @@ void Primitive::drawPath(const std::vector<glm::vec3> &pts,
         vertices[i].position = pts[i];
         vertices[i].color = color;
     }
-    Ref<VertexArray> path = createRef<VertexArray>(GL_LINE_LOOP);
-    Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
-        vertices.data(), vertices.size() * sizeof(PrimitiveVertex));
-    vertexBuffer->setLayout(
-        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
-    path->addVertexBuffer(vertexBuffer);
+    m_vertexBuffer->update(vertices.data(),
+                           vertices.size() * sizeof(PrimitiveVertex));
     glLineWidth(thickness);
-    Renderer::submit(m_shader, path);
+    Renderer::submit(m_shader, m_vertexArray, GL_LINE_LOOP, false);
     glLineWidth(1.0f);
 }
 
@@ -92,13 +97,9 @@ void Primitive::drawCircle(const glm::vec3 &center, const glm::vec3 &normal,
              radius * (v1 * glm::vec3(cos(angle)) + v2 * glm::vec3(sin(angle)));
         vertices.emplace_back(pt, color);
     }
-    Ref<VertexArray> circle = createRef<VertexArray>(GL_LINE_LOOP);
-    Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
-        vertices.data(), vertices.size() * sizeof(PrimitiveVertex));
-    vertexBuffer->setLayout(
-        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
-    circle->addVertexBuffer(vertexBuffer);
-    Renderer::submit(m_shader, circle);
+    m_vertexBuffer->update(vertices.data(),
+                           vertices.size() * sizeof(PrimitiveVertex));
+    Renderer::submit(m_shader, m_vertexArray, GL_LINE_LOOP, false);
 }
 
 void Primitive::drawCircleFilled(const glm::vec3 &center,
@@ -125,13 +126,9 @@ void Primitive::drawCircleFilled(const glm::vec3 &center,
              radius * (v1 * glm::vec3(cos(angle)) + v2 * glm::vec3(sin(angle)));
         vertices.emplace_back(pt, color);
     }
-    Ref<VertexArray> circleFilled = createRef<VertexArray>(GL_TRIANGLE_FAN);
-    Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
-        vertices.data(), vertices.size() * sizeof(PrimitiveVertex));
-    vertexBuffer->setLayout(
-        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
-    circleFilled->addVertexBuffer(vertexBuffer);
-    Renderer::submit(m_shader, circleFilled);
+    m_vertexBuffer->update(vertices.data(),
+                           vertices.size() * sizeof(PrimitiveVertex));
+    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLE_FAN, false);
 }
 
 void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
@@ -175,15 +172,10 @@ void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
             }
         }
     }
-    Ref<VertexArray> sphere = createRef<VertexArray>(GL_TRIANGLES);
-    Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
-        vertices.data(), vertices.size() * sizeof(PrimitiveVertex));
-    vertexBuffer->setLayout(
-        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
-    sphere->addVertexBuffer(vertexBuffer);
-    sphere->setIndexBuffer(
-        createRef<IndexBuffer>(indices.data(), indices.size()));
-    Renderer::submit(m_shader, sphere);
+    m_vertexBuffer->update(vertices.data(),
+                           vertices.size() * sizeof(PrimitiveVertex));
+    m_indexBuffer->update(indices.data(), indices.size());
+    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, true);
 }
 
 void Primitive::drawQuad(const std::vector<glm::vec3> &corners,
@@ -201,14 +193,10 @@ void Primitive::drawQuadFilled(const std::vector<glm::vec3> &corners,
         vertices[i].position = corners[i];
         vertices[i].color = color;
     }
-    Ref<VertexArray> sphere = createRef<VertexArray>(GL_TRIANGLES);
-    Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
-        vertices.data(), vertices.size() * sizeof(PrimitiveVertex));
-    vertexBuffer->setLayout(
-        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
-    sphere->addVertexBuffer(vertexBuffer);
-    sphere->setIndexBuffer(createRef<IndexBuffer>(indices, 6));
-    Renderer::submit(m_shader, sphere);
+    m_vertexBuffer->update(vertices.data(),
+                           vertices.size() * sizeof(PrimitiveVertex));
+    m_indexBuffer->update(indices, 6);
+    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, true);
 }
 
 void Primitive::drawCube(const glm::vec3 &min, const glm::vec3 &max,
@@ -264,14 +252,9 @@ void Primitive::drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
     vertices[7].position[2] = min.z;
     vertices[7].color = color;
 
-    Ref<VertexArray> cube = createRef<VertexArray>(GL_TRIANGLES);
-    Ref<VertexBuffer> vertexBuffer =
-        createRef<VertexBuffer>(vertices, 8 * sizeof(PrimitiveVertex));
-    vertexBuffer->setLayout(
-        {{ShaderDataType::Float3, "aPos"}, {ShaderDataType::Float4, "aColor"}});
-    cube->addVertexBuffer(vertexBuffer);
-    cube->setIndexBuffer(createRef<IndexBuffer>(indices, 36));
-    Renderer::submit(m_shader, cube);
+    m_vertexBuffer->update(vertices, 8 * sizeof(PrimitiveVertex));
+    m_indexBuffer->update(indices, 36);
+    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, true);
 }
 
 }  // namespace te
