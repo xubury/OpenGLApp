@@ -51,7 +51,7 @@ ScreenLayer::ScreenLayer(int width, int height, int samples)
     spec.samples = samples;
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
                              {FramebufferTextureFormat::DEPTH24STENCIL8}};
-    m_multiSampleFramebuffer = createScope<FrameBuffer>(spec);
+    m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, false);
 }
 void ScreenLayer::begin() const { m_multiSampleFramebuffer->bind(); }
 

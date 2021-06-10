@@ -53,7 +53,7 @@ struct FrameBufferSpecification {
 
 class TE_API FrameBuffer {
    public:
-    FrameBuffer(const FrameBufferSpecification &spec);
+    FrameBuffer(const FrameBufferSpecification &spec, bool depthWriteOnly = false);
 
     ~FrameBuffer();
 
@@ -74,6 +74,8 @@ class TE_API FrameBuffer {
     FrameBufferSpecification getSpecification() const;
 
     uint32_t getId() const;
+
+    void destroy();
    private:
     FrameBufferSpecification m_specification;
     uint32_t m_bufferId;
@@ -83,6 +85,7 @@ class TE_API FrameBuffer {
 
     FramebufferTextureSpecification m_depthAttachmentSpec;
     uint32_t m_depthAttachment;
+    const bool m_depthWriteOnly;
 };
 
 }  // namespace te
