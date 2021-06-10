@@ -1,8 +1,8 @@
 #ifndef CUBE_HPP
 #define CUBE_HPP
 
-#include <Graphic/VertexBuffer.hpp>
-#include <Entity/EntityBase.hpp>
+#include "Entity/EntityBase.hpp"
+#include "Graphic/VertexArray.hpp"
 
 namespace te {
 
@@ -11,10 +11,10 @@ class Cube : public EntityBase {
     Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
          float height, float length);
 
-    virtual void draw(RenderTarget &target, RenderStates states) const override;
+    void draw(const Ref<Shader> &shader, const glm::mat4 &transform) const override;
 
    private:
-    VertexBuffer m_cube;
+    Ref<VertexArray> m_cube;
 };
 
 }  // namespace te

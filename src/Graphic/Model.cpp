@@ -1,5 +1,4 @@
 #include "Graphic/Model.hpp"
-#include "Graphic/RenderTarget.hpp"
 #include "Core/Log.hpp"
 #include "Core/ResourceManager.hpp"
 #include <iostream>
@@ -12,19 +11,15 @@ void Model::loadModel(const std::string &path) {
     *this = *s_loadedModels.getOrLoad(path, path);
 }
 
-void Model::draw(RenderTarget &target, RenderStates states) const {
+void Model::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
     for (const auto &mesh : m_meshes) {
-        mesh.draw(target, states);
+        mesh.draw(shader, transform);
     }
 }
 
-const std::vector<Mesh> &Model::getMeshes() const {
-    return m_meshes;
-}
+const std::vector<Mesh> &Model::getMeshes() const { return m_meshes; }
 
-std::vector<Mesh> &Model::getMeshes() {
-    return m_meshes;
-}
+std::vector<Mesh> &Model::getMeshes() { return m_meshes; }
 
 bool Model::load(const std::string &path) {
     Assimp::Importer import;

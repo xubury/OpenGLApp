@@ -9,7 +9,7 @@
 #include "ECS/ECS.hpp"
 #include "Core/Time.hpp"
 #include "ECS/Application.hpp"
-#include "Graphic/FrameBuffer.hpp"
+#include "Graphic/ScreenLayer.hpp"
 
 using namespace te;
 
@@ -50,7 +50,7 @@ class Game {
     ShaderLibrary m_shaders;
     Application<EntityBase> m_app;
     Camera *m_mainCamera;
-    FrameBuffer m_frameBuffer;
+    ScreenLayer m_screenLayer;
 
     bool m_editorMode;
 };

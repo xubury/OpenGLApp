@@ -412,12 +412,12 @@ void Editor::render() {
         // if game window not active, disable camera response
         context.getCamera()->setActive(ImGui::IsWindowFocused() &&
                                        ImGui::IsWindowHovered());
-        context.getFrameBuffer()->update(wsize.x, wsize.y);
+        context.getScreenLayer()->onResize(wsize.x, wsize.y);
         context.getCamera()->setViewportSize(wsize.x, wsize.y);
         // Because I use the texture from OpenGL, I need to invert the V
         // from the UV.
         ImGui::Image(
-            (void*)(intptr_t)context.getFrameBuffer()->getScreenTexture(),
+            (void*)(intptr_t)context.getScreenLayer()->getScreenTexture(),
             wsize, ImVec2(0, 1), ImVec2(1, 0));
         ImGui::EndChild();
     }

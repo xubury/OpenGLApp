@@ -122,7 +122,7 @@ void Game::loadScene() {
 Game::Game(const Settings& settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples),
-      m_frameBuffer(settings.width, settings.height, settings.samples),
+      m_screenLayer(settings.width, settings.height, settings.samples),
       m_editorMode(settings.editor) {
     loadShaders();
     loadScene();
@@ -153,46 +153,43 @@ void Game::update(Time& deltaTime) {
 void Game::render() {
     auto entityIterEnd = m_app.entities.end();
 
-    RenderStates states;
-    std::vector<Ref<ShadowBuffer>> buffers;
-    std::vector<const LightBase*> lightList;
-    Light::Handle light;
-    auto view = m_app.entities.getByComponents(light);
-    auto end = view.end();
-    // TODO: refactor this to deferred shading
-    for (auto begin = view.begin(); begin != end; ++begin) {
-        buffers.emplace_back(ShadowBuffer::create(1024, 1024));
-        // draw depth map
-        buffers.back()->beginScene(*light.get());
-        for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
-            states.transform =
-                m_app.entities.get(*cur)->component<Transform>()->getMatrix();
-            m_app.entities.get(*cur)->draw(*buffers.back(), states);
-        }
-        buffers.back()->endScene();
-        lightList.push_back(light.get());
-    }
+    // std::vector<Ref<ShadowBuffer>> buffers;
+    // std::vector<const LightBase*> lightList;
+    // Light::Handle light;
+    // auto view = m_app.entities.getByComponents(light);
+    // auto end = view.end();
+    // // TODO: refactor this to deferred shading
+    // for (auto begin = view.begin(); begin != end; ++begin) {
+    //     buffers.emplace_back(ShadowBuffer::create(1024, 1024));
+    //     // draw depth map
+    //     buffers.back()->beginScene(*light.get());
+    //     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur)
+    //     {
+    //         states.transform =
+    //             m_app.entities.get(*cur)->component<Transform>()->getMatrix();
+    //         m_app.entities.get(*cur)->draw(*buffers.back(), states);
+    //     }
+    //     buffers.back()->endScene();
+    //     lightList.push_back(light.get());
+    // }
 
     // normal draw
-    m_frameBuffer.activate();
-    m_window.clear();
-    m_window.beginScene(m_shaders.get("Main"), *m_mainCamera);
-    m_window.setLighting(lightList, buffers);
+
+    m_screenLayer.begin();
+    Renderer::clear();
+    Renderer::beginScene(*m_mainCamera);
+    m_shaders.get("Main")->bind();
     for (auto cur = m_app.entities.begin(); cur != entityIterEnd; ++cur) {
-        states.transform =
+        const glm::mat4 model =
             m_app.entities.get(*cur)->component<Transform>()->getMatrix();
-        states.textures = m_app.entities.get(*cur)->getTextures();
-        m_app.entities.get(*cur)->draw(m_window, states);
+        m_app.entities.get(*cur)->draw(m_shaders.get("Main"), model);
     }
-    m_window.endScene();
-    m_frameBuffer.deactivate();
+    Renderer::endScene();
+    m_screenLayer.end();
 
     if (m_editorMode) {
         Editor::instance().render();
-    } else {
-        m_frameBuffer.draw();
     }
-
     m_window.display();
 }
 
@@ -203,7 +200,7 @@ void Game::run(int minFps) {
     Camera* camera = m_mainCamera;
 
     if (m_editorMode) {
-        Editor::instance().context.setFrameBuffer(&m_frameBuffer);
+        Editor::instance().context.setScreenLayer(&m_screenLayer);
         Editor::instance().context.setWindow(&m_window);
         Editor::instance().context.setEntityManager(&m_app.entities);
         Editor::instance().context.setCamrea(camera);
@@ -232,7 +229,7 @@ void Game::run(int minFps) {
             } else if (event.type == Event::EventType::RESIZED) {
                 // When minimized， the width and height will drop to zero
                 if (event.size.width > 0 && event.size.height > 0) {
-                    m_frameBuffer.update(event.size.width, event.size.height);
+                    m_screenLayer.onResize(event.size.width, event.size.height);
                     camera->setViewportSize(event.size.width,
                                             event.size.height);
                 }

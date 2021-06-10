@@ -4,11 +4,10 @@
 #include "Core/Base.hpp"
 #include "Core/Export.hpp"
 #include "Graphic/Shader.hpp"
-#include "Graphic/RenderTarget.hpp"
 
 namespace te {
 
-class TE_API ShadowBuffer : public RenderTarget {
+class TE_API ShadowBuffer  {
    public:
     static Ref<ShadowBuffer> create(int width, int height);
 
@@ -19,12 +18,6 @@ class TE_API ShadowBuffer : public RenderTarget {
     ShadowBuffer(const ShadowBuffer &) = delete;
 
     ShadowBuffer &operator=(const ShadowBuffer &) = delete;
-
-    void beginScene(const LightBase &light);
-
-    void endScene();
-
-    void draw(const BufferObject &buffer, const RenderStates &states) override;
 
     uint32_t getDepthMap() const;
 

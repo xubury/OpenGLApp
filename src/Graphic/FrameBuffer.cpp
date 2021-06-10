@@ -8,173 +8,198 @@
 
 namespace te {
 
-ShaderLibrary FrameBuffer::s_shaders;
-
-static void attachScreenTexture(int framebuffer, int texture, int width,
-                                int height) {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    // create multisample texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // attach texture to currently bound framebuffer object
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                           texture, 0);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        TE_CORE_ERROR("Framebuffer is not complete!");
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+static GLenum textureTarget(bool multisampled) {
+    return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 }
 
-static void attachMultisampleTexture(int frameBuffer, int renderBuffer,
-                                     int texture, int width, int height,
-                                     int samples) {
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, texture);
+static void createTextures(bool multisampled, uint32_t* outId,
+                           std::size_t count) {
+    glCreateTextures(textureTarget(multisampled), count, outId);
+}
 
-    // create multisample texture
-    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGB, width,
-                            height, GL_TRUE);
-    // attach texture to currently bound framebuffer object
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                           GL_TEXTURE_2D_MULTISAMPLE, texture, 0);
+static void bindTexture(bool multisampled, uint32_t id) {
+    glBindTexture(textureTarget(multisampled), id);
+}
 
-    // create render buffer
-    glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples,
-                                     GL_DEPTH24_STENCIL8, width, height);
-    // attach render buffer to currently bound framebuffer object
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                              GL_RENDERBUFFER, renderBuffer);
+static void attachColorTexture(uint32_t id, int samples, GLenum internalFormat,
+                               GLenum format, uint32_t width, uint32_t height,
+                               int index) {
+    bool multisampled = samples > 1;
+    if (multisampled) {
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples,
+                                internalFormat, width, height, GL_FALSE);
+    } else {
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format,
+                     GL_UNSIGNED_BYTE, nullptr);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index,
+                           textureTarget(multisampled), id, 0);
+}
+
+static void attachDepthTexture(uint32_t id, int samples, GLenum format,
+                               GLenum attachmentType, uint32_t width,
+                               uint32_t height) {
+    bool multisampled = samples > 1;
+    if (multisampled) {
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format,
+                                width, height, GL_FALSE);
+    } else {
+        glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType,
+                           textureTarget(multisampled), id, 0);
+}
+
+static bool isDepthFormat(FramebufferTextureFormat format) {
+    switch (format) {
+        case FramebufferTextureFormat::DPETH:
+            return true;
+        case FramebufferTextureFormat::DEPTH24STENCIL8:
+            return true;
+        default:
+            return false;
+    }
+}
+
+FrameBuffer::FrameBuffer(const FrameBufferSpecification& spec)
+    : m_specification(spec),
+      m_bufferId(0),
+      m_depthAttachmentSpec(FramebufferTextureFormat::NONE),
+      m_depthAttachment(0) {
+    for (const auto& spec : m_specification.attachmentsSpecs.specifications) {
+        if (!isDepthFormat(spec.textureFormat)) {
+            m_colorAttachmentSpecs.emplace_back(spec);
+        } else {
+            m_depthAttachmentSpec = spec;
+        }
+    }
+    invalidate();
+}
+
+FrameBuffer::~FrameBuffer() {
+    glDeleteFramebuffers(1, &m_bufferId);
+    glDeleteTextures(m_colorAttachments.size(), m_colorAttachments.data());
+    glDeleteTextures(1, &m_depthAttachment);
+}
+
+void FrameBuffer::invalidate() {
+    if (m_bufferId) {
+        glDeleteFramebuffers(1, &m_bufferId);
+        glDeleteTextures(m_colorAttachments.size(), m_colorAttachments.data());
+        glDeleteTextures(1, &m_depthAttachment);
+
+        m_colorAttachments.clear();
+        m_depthAttachment = 0;
+    }
+    glCreateFramebuffers(1, &m_bufferId);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_bufferId);
+    bool multiSample = m_specification.samples > 1;
+    if (m_colorAttachmentSpecs.size()) {
+        m_colorAttachments.resize(m_colorAttachmentSpecs.size());
+        createTextures(multiSample, m_colorAttachments.data(),
+                       m_colorAttachments.size());
+        for (std::size_t i = 0; i < m_colorAttachments.size(); ++i) {
+            bindTexture(multiSample, m_colorAttachments[i]);
+            switch (m_colorAttachmentSpecs[i].textureFormat) {
+                case FramebufferTextureFormat::RGB:
+                    attachColorTexture(m_colorAttachments[i],
+                                       m_specification.samples, GL_RGB, GL_RGB,
+                                       m_specification.width,
+                                       m_specification.height, i);
+                    break;
+                case FramebufferTextureFormat::RGBA8:
+                    attachColorTexture(m_colorAttachments[i],
+                                       m_specification.samples, GL_RGBA8,
+                                       GL_RGB, m_specification.width,
+                                       m_specification.height, i);
+                    break;
+                case FramebufferTextureFormat::RED_INTEGER:
+                    attachColorTexture(m_colorAttachments[i],
+                                       m_specification.samples, GL_R32I,
+                                       GL_RED_INTEGER, m_specification.width,
+                                       m_specification.height, i);
+                    break;
+                default:
+                    TE_CORE_ASSERT(false,
+                                   "Framebuffer texture format not handled!");
+            }
+        }
+    }
+    if (m_depthAttachmentSpec.textureFormat != FramebufferTextureFormat::NONE) {
+        createTextures(multiSample, &m_depthAttachment, 1);
+        bindTexture(multiSample, m_depthAttachment);
+        switch (m_depthAttachmentSpec.textureFormat) {
+            case FramebufferTextureFormat::DPETH:
+                attachDepthTexture(m_depthAttachment, m_specification.samples,
+                                   GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT,
+                                   m_specification.width,
+                                   m_specification.height);
+                break;
+            case FramebufferTextureFormat::DEPTH24STENCIL8:
+                attachDepthTexture(
+                    m_depthAttachment, m_specification.samples,
+                    GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT,
+                    m_specification.width, m_specification.height);
+                break;
+            default:
+                TE_CORE_ASSERT(false,
+                               "Framebuffer texture format not handled!");
+        }
+    }
+    if (m_colorAttachments.size() > 1) {
+        TE_CORE_ASSERT(m_colorAttachments.size() <= 4, "color attachments > 4");
+        GLenum buffers[4] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+                             GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+        glDrawBuffers(m_colorAttachments.size(), buffers);
+    } else if (m_colorAttachments.empty()) {
+        glDrawBuffer(GL_NONE);
+    }
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         TE_CORE_ERROR("FrameBuffer is not complete!");
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-FrameBuffer::FrameBuffer(int width, int height, int sample)
-    : m_multiSampleFrameBufferId(0),
-      m_multiSampleTextureId(0),
-      m_multiSampleRenderBufferId(0),
-      m_frameBufferId(0),
-      m_screenTextureId(0),
-      m_VBO(0),
-      m_VAO(0),
-      m_width(0),
-      m_height(0),
-      m_sample(1) {
-    if (!s_shaders.exists("frameBuffer")) {
-        const char* fbVertex =
-            "#version 330 core\n"
-            "layout (location = 0) in vec2 aPos;\n"
-            "layout (location = 1) in vec2 aTexCoords;\n"
-            "out vec2 texCoords;\n"
-            "void main() {\n"
-            "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
-            "    texCoords = aTexCoords;\n"
-            "}";
-
-        const char* fbFragment =
-            "#version 330 core\n"
-            "out vec4 fragColor;\n"
-            "in vec2 texCoords;\n"
-            "uniform sampler2D uScreenTexture;\n"
-            "void main() {\n"
-            "    fragColor = texture(uScreenTexture, texCoords);\n"
-            "}";
-
-        s_shaders.add("frameBuffer");
-        s_shaders.get("frameBuffer")->compile(fbVertex, fbFragment);
-    }
-    glGenFramebuffers(1, &m_multiSampleFrameBufferId);
-    glGenFramebuffers(1, &m_frameBufferId);
-
-    glGenRenderbuffers(1, &m_multiSampleRenderBufferId);
-
-    glGenTextures(1, &m_multiSampleTextureId);
-    glGenTextures(1, &m_screenTextureId);
-
-    // screen texture vbo vao
-    const float quadVertices[] = {-1.0f, 1.0f, 0.0f, 1.0f,  -1.0f, -1.0f,
-                                  0.0f,  0.0f, 1.0f, -1.0f, 1.0f,  0.0f,
-
-                                  -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  -1.0f,
-                                  1.0f,  0.0f, 1.0f, 1.0f,  1.0f,  1.0f};
-    glGenBuffers(1, &m_VBO);
-    glGenVertexArrays(1, &m_VAO);
-
-    glBindVertexArray(m_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
-                 GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void*)(2 * sizeof(float)));
-
-    update(width, height, sample);
-}
-
-FrameBuffer::~FrameBuffer() {
-    glDeleteFramebuffers(1, &m_multiSampleFrameBufferId);
-    glDeleteFramebuffers(1, &m_frameBufferId);
-
-    glDeleteRenderbuffers(1, &m_multiSampleRenderBufferId);
-
-    glDeleteTextures(1, &m_multiSampleTextureId);
-    glDeleteTextures(1, &m_screenTextureId);
-}
-
-void FrameBuffer::update(int width, int height, int sample) {
+void FrameBuffer::resize(int width, int height) {
     TE_CORE_ASSERT(width > 0 && height > 0,
                    "FrameBuffer::update width or height <= 0");
-    // if width, height or sample changed, do an update
-    if (m_width != width || m_height != height ||
-        (sample > 0 && m_sample != sample)) {
-        m_width = width;
-        m_height = height;
-        if (sample > 0) m_sample = sample;
-        attachMultisampleTexture(
-            m_multiSampleFrameBufferId, m_multiSampleRenderBufferId,
-            m_multiSampleTextureId, m_width, m_height, m_sample);
-        attachScreenTexture(m_frameBufferId, m_screenTextureId, width, height);
-    }
+    m_specification.height = height;
+    m_specification.width = width;
+
+    invalidate();
 }
 
-void FrameBuffer::activate() const {
-    glBindFramebuffer(GL_FRAMEBUFFER, m_multiSampleFrameBufferId);
+void FrameBuffer::bind() const {
+    glBindFramebuffer(GL_FRAMEBUFFER, m_bufferId);
 }
 
-void FrameBuffer::deactivate() const {
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_multiSampleFrameBufferId);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBufferId);
-    glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
-                      GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+void FrameBuffer::unbind() const { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+uint32_t FrameBuffer::getColorAttachmentId(uint32_t index) const {
+    TE_CORE_ASSERT(index < m_colorAttachments.size(),
+                   "color attachment's index reach out of bound");
+    return m_colorAttachments[index];
 }
 
-void FrameBuffer::draw() {
-    glDisable(GL_DEPTH_TEST);
-    s_shaders.get("frameBuffer")->bind();
-    s_shaders.get("frameBuffer")->setInt("uScreenTexture", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_screenTextureId);
-    glBindVertexArray(m_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glEnable(GL_DEPTH_TEST);
+FrameBufferSpecification FrameBuffer::getSpecification() const {
+    return m_specification;
 }
 
-uint32_t FrameBuffer::getScreenTexture() const { return m_screenTextureId; }
+uint32_t FrameBuffer::getId() const { return m_bufferId; }
 
 }  // namespace te

@@ -3,11 +3,12 @@
 
 #include <imgui.h>
 #include <glm/glm.hpp>
-#include <Component/Transform.hpp>
-#include <Graphic/FrameBuffer.hpp>
-#include <Entity/Camera.hpp>
-#include <Window/RenderWindow.hpp>
-#include <Component/Transform.hpp>
+#include "Component/Transform.hpp"
+#include "Graphic/FrameBuffer.hpp"
+#include "Entity/Camera.hpp"
+#include "Window/RenderWindow.hpp"
+#include "Component/Transform.hpp"
+#include "Graphic/ScreenLayer.hpp"
 
 namespace te {
 
@@ -29,9 +30,9 @@ class EditorContext {
 
     RenderWindow *getWindow();
 
-    void setFrameBuffer(FrameBuffer *frameBuffer);
+    void setScreenLayer(ScreenLayer *layer);
 
-    FrameBuffer *getFrameBuffer();
+    ScreenLayer *getScreenLayer();
 
     EntityManager<EntityBase> *getEntityManager();
 
@@ -64,7 +65,7 @@ class EditorContext {
    private:
     RenderWindow *m_window;
 
-    FrameBuffer *m_frameBuffer;
+    ScreenLayer *m_screenLayer;
 
     Camera *m_camera;
 

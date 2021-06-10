@@ -1,4 +1,5 @@
-#include <Entity/Sphere.hpp>
+#include "Entity/Sphere.hpp"
+#include "Graphic/Vertex.hpp"
 
 namespace te {
 
@@ -57,12 +58,20 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id)
             }
         }
     }
-    m_shpere.update(vertices.data(), vertices.size(), indices.data(),
-                    indices.size(), GL_TRIANGLES, GL_STATIC_DRAW);
+    m_sphere = createRef<VertexArray>(GL_TRIANGLES);
+
+    Ref<VertexBuffer> vertexBuffer = createRef<VertexBuffer>(
+        vertices.data(), vertices.size() * sizeof(Vertex));
+    vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
+                             {ShaderDataType::Float2, "aTexCoord"},
+                             {ShaderDataType::Float3, "aNormal"}});
+    m_sphere->addVertexBuffer(vertexBuffer);
+    m_sphere->setIndexBuffer(
+        createRef<IndexBuffer>(indices.data(), indices.size()));
 }
 
-void Sphere::draw(RenderTarget &target, RenderStates states) const {
-    target.draw(m_shpere, states);
+void Sphere::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
+    Renderer::submit(shader, m_sphere, transform);
 }
 
 }  // namespace te

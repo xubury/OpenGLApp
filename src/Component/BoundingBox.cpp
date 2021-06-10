@@ -1,5 +1,4 @@
 #include <Graphic/Shader.hpp>
-#include <Graphic/RenderTarget.hpp>
 #include <Component/Transform.hpp>
 #include <Component/BoundingBox.hpp>
 #include <glm/ext/matrix_transform.hpp>

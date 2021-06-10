@@ -6,7 +6,9 @@
 #include "Core/Export.hpp"
 #include "Graphic/Drawable.hpp"
 #include "Graphic/TextureArray.hpp"
-#include "Graphic/ElementBuffer.hpp"
+#include "Graphic/OpenGL.hpp"
+#include "Graphic/Vertex.hpp"
+#include "Graphic/VertexArray.hpp"
 
 namespace te {
 
@@ -15,11 +17,11 @@ class TE_API Mesh : public Drawable {
     Mesh(GLenum type, const std::vector<Vertex> &vertices,
          const std::vector<uint32_t> &indices, const TextureArray &textures);
 
-    void draw(RenderTarget &target, RenderStates states) const override;
-
     const Vertex *getVertex() const;
 
     std::size_t size() const;
+
+    void draw(const Ref<Shader> &shader, const glm::mat4 &transform) const override;
 
    private:
     std::vector<Vertex> m_vertices;
@@ -28,7 +30,7 @@ class TE_API Mesh : public Drawable {
 
     TextureArray m_textures;
 
-    ElementBuffer m_buffer;
+    Ref<VertexArray> m_vertexArray;
 };
 
 }  // namespace te

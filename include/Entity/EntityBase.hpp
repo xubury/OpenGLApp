@@ -34,7 +34,8 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     const TextureArray *getTextures() const;
 
-    virtual void draw(RenderTarget &target, RenderStates states) const override;
+    virtual void draw(const Ref<Shader> &shader,
+                      const glm::mat4 &transform) const override;
 
    private:
     std::string m_name;

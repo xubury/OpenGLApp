@@ -82,7 +82,4 @@ TransformSystem::TransformSystem() {}
 
 void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
-void TransformSystem::draw(EntityManager<EntityBase> &, RenderTarget &,
-                           RenderStates) const {}
-
 }

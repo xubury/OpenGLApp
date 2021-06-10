@@ -3,8 +3,7 @@
 
 #include "Core/Export.hpp"
 #include "Graphic/Shader.hpp"
-#include "Graphic/VertexBuffer.hpp"
-#include "Graphic/ElementBuffer.hpp"
+#include "Graphic/VertexArray.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -50,12 +49,8 @@ class TE_API Primitive {
    private:
     Primitive();
 
-    VertexBuffer m_vertices;
-
-    ElementBuffer m_elements;
-
    private:
-    Shader m_shader;
+    Ref<Shader> m_shader;
 };
 
 }  // namespace te

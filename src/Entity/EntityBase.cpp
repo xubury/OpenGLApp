@@ -41,6 +41,6 @@ void EntityBase::setTextures(const TextureArray &textures) {
 
 const TextureArray *EntityBase::getTextures() const { return &m_textures; }
 
-void EntityBase::draw(RenderTarget &, RenderStates) const {}
+void EntityBase::draw(const Ref<Shader> &, const glm::mat4 &) const {}
 
 }  // namespace te

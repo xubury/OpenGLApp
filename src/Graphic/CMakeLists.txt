@@ -9,41 +9,41 @@ find_package(assimp REQUIRED)
 set(Graphic_Include
     ${Include_Root}/OpenGL.hpp
     ${Include_Root}/GLContext.hpp
+    ${Include_Root}/Buffer.hpp
+    ${Include_Root}/Layout.hpp
+    ${Include_Root}/Renderer.hpp
+    ${Include_Root}/VertexArray.hpp
     ${Include_Root}/Drawable.hpp
     ${Include_Root}/CameraBase.hpp
     ${Include_Root}/Shader.hpp
     ${Include_Root}/Texture.hpp
     ${Include_Root}/Vertex.hpp
     ${Include_Root}/TextureArray.hpp
-    ${Include_Root}/VertexBuffer.hpp
-    ${Include_Root}/BufferObject.hpp
-    ${Include_Root}/ElementBuffer.hpp
-    ${Include_Root}/RenderTarget.hpp
-    ${Include_Root}/RenderStates.hpp
     ${Include_Root}/Primitive.hpp
     ${Include_Root}/Mesh.hpp
     ${Include_Root}/Model.hpp
     ${Include_Root}/FrameBuffer.hpp
     ${Include_Root}/ShadowBuffer.hpp
-    ${Include_Root}/LightBase.hpp)
+    ${Include_Root}/LightBase.hpp
+    ${Include_Root}/ScreenLayer.hpp)
 
 set(Graphic_Src
     ${Src_Root}/GLContext.cpp
+    ${Src_Root}/Buffer.cpp
+    ${Src_Root}/Layout.cpp
+    ${Src_Root}/Renderer.cpp
+    ${Src_Root}/VertexArray.cpp
     ${Src_Root}/CameraBase.cpp
     ${Src_Root}/Shader.cpp
     ${Src_Root}/Texture.cpp
     ${Src_Root}/Vertex.cpp
     ${Src_Root}/TextureArray.cpp
-    ${Src_Root}/VertexBuffer.cpp
-    ${Src_Root}/BufferObject.cpp
-    ${Src_Root}/ElementBuffer.cpp
-    ${Src_Root}/RenderTarget.cpp
-    ${Src_Root}/RenderStates.cpp
     ${Src_Root}/Primitive.cpp
     ${Src_Root}/Mesh.cpp
     ${Src_Root}/Model.cpp
     ${Src_Root}/FrameBuffer.cpp
-    ${Src_Root}/ShadowBuffer.cpp)
+    ${Src_Root}/ShadowBuffer.cpp
+    ${Src_Root}/ScreenLayer.cpp)
 
 add_library(te-graphic
     ${Graphic_Src}

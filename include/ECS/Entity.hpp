@@ -4,9 +4,9 @@
 #include <Graphic/Drawable.hpp>
 #include <string>
 
-#include <ECS/System.hpp>
-#include <ECS/EntityManager.hpp>
-#include <ECS/Component.hpp>
+#include "ECS/System.hpp"
+#include "ECS/EntityManager.hpp"
+#include "ECS/Component.hpp"
 
 namespace te {
 

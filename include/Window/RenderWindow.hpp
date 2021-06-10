@@ -4,7 +4,6 @@
 #include <queue>
 #include <string>
 
-#include "Graphic/RenderTarget.hpp"
 #include "Window/Event.hpp"
 #include "Core/Time.hpp"
 
@@ -12,7 +11,7 @@ class GLFWwindow;
 
 namespace te {
 
-class RenderWindow : public RenderTarget {
+class RenderWindow {
    public:
     RenderWindow(int width, int height, const std::string& title, int samples);
 

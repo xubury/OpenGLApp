@@ -2,14 +2,58 @@
 #define FRAMEBUFFER_HPP
 
 #include "Core/Export.hpp"
+#include "Core/Assert.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/LightBase.hpp"
+#include <vector>
 
 namespace te {
 
+enum class FramebufferTextureFormat {
+    NONE = 0,
+
+    // Color
+    RGB,
+    RGBA8,
+    RED_INTEGER,
+
+    // Dpeth
+    DPETH,
+
+    // Depth/stencil
+    DEPTH24STENCIL8
+};
+
+struct FramebufferTextureSpecification {
+    FramebufferTextureSpecification()
+        : textureFormat(FramebufferTextureFormat::NONE) {}
+    FramebufferTextureSpecification(FramebufferTextureFormat format)
+        : textureFormat(format) {}
+
+    FramebufferTextureFormat textureFormat;
+};
+
+struct FramebufferAttachmentSpecification {
+    std::vector<FramebufferTextureSpecification> specifications;
+
+    FramebufferAttachmentSpecification() = default;
+    FramebufferAttachmentSpecification(
+        std::initializer_list<FramebufferTextureSpecification> specs)
+        : specifications(specs) {}
+};
+
+struct FrameBufferSpecification {
+    uint32_t width;
+    uint32_t height;
+    uint32_t samples;
+    FramebufferAttachmentSpecification attachmentsSpecs;
+
+    FrameBufferSpecification() : width(0), height(0), samples(0) {}
+};
+
 class TE_API FrameBuffer {
    public:
-    FrameBuffer(int width, int height, int sample);
+    FrameBuffer(const FrameBufferSpecification &spec);
 
     ~FrameBuffer();
 
@@ -17,34 +61,28 @@ class TE_API FrameBuffer {
 
     FrameBuffer &operator=(const FrameBuffer &) = delete;
 
-    void update(int width, int height, int smaple = 0);
+    void resize(int width, int height);
 
-    void activate() const;
+    void bind() const;
 
-    void deactivate() const;
+    void unbind() const;
 
-    void draw();
+    void invalidate();
 
-    uint32_t getScreenTexture() const;
+    uint32_t getColorAttachmentId(uint32_t index = 0) const;
 
+    FrameBufferSpecification getSpecification() const;
+
+    uint32_t getId() const;
    private:
-    uint32_t m_multiSampleFrameBufferId;
-    uint32_t m_multiSampleTextureId;
-    uint32_t m_multiSampleRenderBufferId;
+    FrameBufferSpecification m_specification;
+    uint32_t m_bufferId;
 
-    // multisample texture can't draw directly
-    // need to copy it to another framebuffer with normal texture
-    uint32_t m_frameBufferId;
-    uint32_t m_screenTextureId;
+    std::vector<FramebufferTextureSpecification> m_colorAttachmentSpecs;
+    std::vector<uint32_t> m_colorAttachments;
 
-    uint32_t m_VBO;
-    uint32_t m_VAO;
-
-    int m_width;
-    int m_height;
-    int m_sample;
-
-    static ShaderLibrary s_shaders;
+    FramebufferTextureSpecification m_depthAttachmentSpec;
+    uint32_t m_depthAttachment;
 };
 
 }  // namespace te

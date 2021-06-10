@@ -4,6 +4,7 @@
 #include "Core/Export.hpp"
 #include "Graphic/Drawable.hpp"
 #include "Graphic/Mesh.hpp"
+#include "Graphic/VertexArray.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -18,7 +19,7 @@ class TE_API Model : public Drawable {
     // If loaded, take it out and skip the loadFromFile process.
     void loadModel(const std::string &path);
 
-    void draw(RenderTarget &target, RenderStates states) const override;
+    void draw(const Ref<Shader> &shader, const glm::mat4 &transform) const override;
 
     const std::vector<Mesh> &getMeshes() const;
 

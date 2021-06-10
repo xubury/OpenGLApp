@@ -2,9 +2,8 @@
 #define BOUNDING_BOX_HPP
 
 #include <memory>
-#include <Graphic/ElementBuffer.hpp>
-#include <Graphic/Drawable.hpp>
-#include <Entity/EntityBase.hpp>
+#include "Entity/EntityBase.hpp"
+#include "Graphic/Vertex.hpp"
 
 namespace te {
 
