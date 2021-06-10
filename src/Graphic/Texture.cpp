@@ -14,7 +14,7 @@ uint32_t Texture::id() const { return m_id; }
 
 Texture::TextureType Texture::getType() const { return m_type; }
 
-bool Texture::load(const std::string &path, TextureType textureType) {
+bool Texture::loadFromFile(const std::string &path, TextureType textureType) {
     stbi_set_flip_vertically_on_load(true);
     if (m_id == 0) glGenTextures(1, &m_id);
     glBindTexture(GL_TEXTURE_2D, m_id);
@@ -43,7 +43,7 @@ bool Texture::load(const std::string &path, TextureType textureType) {
     return true;
 }
 
-bool Texture::load(const glm::vec3 &value, TextureType textureType) {
+void Texture::loadFromValue(const glm::vec3 &value, TextureType textureType) {
     if (m_id == 0) glGenTextures(1, &m_id);
     glBindTexture(GL_TEXTURE_2D, m_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -55,7 +55,6 @@ bool Texture::load(const glm::vec3 &value, TextureType textureType) {
     glGenerateMipmap(GL_TEXTURE_2D);
     m_type = textureType;
     glBindTexture(GL_TEXTURE_2D, 0);
-    return true;
 }
 
 }  // namespace te

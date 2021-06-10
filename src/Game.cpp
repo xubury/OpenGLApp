@@ -48,7 +48,7 @@ void Game::addModel(const std::string& path, const glm::vec3& pos) {
 
 void Game::loadShaders() {
     m_shaders.add("Main");
-    m_shaders.get("Main")->load("shader/vertex.glsl", "shader/fragment.glsl");
+    m_shaders.get("Main")->loadFromFile("shader/vertex.glsl", "shader/fragment.glsl");
     m_shaders.get("Main")->bind();
     m_shaders.get("Main")->setVec3("pointLight.position",
                                    glm::vec3(0.0f, 0.0f, 2.0f));

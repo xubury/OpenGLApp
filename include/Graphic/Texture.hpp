@@ -19,9 +19,9 @@ class TE_API Texture {
 
     Texture &operator=(const Texture &) = delete;
 
-    bool load(const std::string &path, TextureType textureType);
+    bool loadFromFile(const std::string &path, TextureType textureType);
 
-    bool load(const glm::vec3 &value, TextureType textureType);
+    void loadFromValue(const glm::vec3 &value, TextureType textureType);
 
     uint32_t id() const;
 

@@ -30,9 +30,9 @@ static void fileToString(const std::string& path, std::string& string) {
     }
 }
 
-void Shader::load(const std::string& vertexPath,
-                  const std::string& fragmentPath,
-                  const std::string& geometryPath) {
+void Shader::loadFromFile(const std::string& vertexPath,
+                          const std::string& fragmentPath,
+                          const std::string& geometryPath) {
     std::string vertexCode;
     std::string fragmentCode;
     fileToString(vertexPath, vertexCode);

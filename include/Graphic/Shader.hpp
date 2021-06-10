@@ -23,8 +23,9 @@ class TE_API Shader {
     void compile(const char* vertexCode, const char* fragmentCode,
                  const char* geometryCode = nullptr);
 
-    void load(const std::string& vertexPath, const std::string& fragmentPath,
-              const std::string& geometryPath = "");
+    void loadFromFile(const std::string& vertexPath,
+                      const std::string& fragmentPath,
+                      const std::string& geometryPath = "");
 
     void bind() const;
 

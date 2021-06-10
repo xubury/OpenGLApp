@@ -30,7 +30,7 @@ class TE_API Model : public Drawable {
 
     // Costly model load function, will not check if loaded before.
     // Use loadModel for fast loading.
-    bool load(const std::string &path);
+    bool loadFromFile(const std::string &path);
 
     void processNode(aiNode *node, const aiScene *scene);
 

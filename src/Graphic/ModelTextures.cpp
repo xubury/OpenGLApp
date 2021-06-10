@@ -15,7 +15,7 @@ void ModelTextures::loadFromFile(const std::string &path,
 void ModelTextures::loadFromValue(const glm::vec3 &value,
                                  Texture::TextureType textureType) {
     m_list.emplace_back(createRef<Texture>());
-    m_list.back()->load(value, textureType);
+    m_list.back()->loadFromValue(value, textureType);
 }
 
 std::size_t ModelTextures::size() const { return m_list.size(); }

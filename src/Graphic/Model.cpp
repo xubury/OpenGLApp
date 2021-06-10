@@ -21,7 +21,7 @@ const std::vector<Mesh> &Model::getMeshes() const { return m_meshes; }
 
 std::vector<Mesh> &Model::getMeshes() { return m_meshes; }
 
-bool Model::load(const std::string &path) {
+bool Model::loadFromFile(const std::string &path) {
     Assimp::Importer import;
     const aiScene *scene =
         import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
