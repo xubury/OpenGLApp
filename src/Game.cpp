@@ -26,7 +26,8 @@ void Game::addSphere(const glm::vec3& pos, float radius,
 }
 
 void Game::addCube(const glm::vec3& pos, float width, float height,
-                   float length, const ModelTextures& textures, bool kinematic) {
+                   float length, const ModelTextures& textures,
+                   bool kinematic) {
     int id = m_app.entities.create<Cube>(width, height, length, textures);
     EntityBase* cube = m_app.entities.get(id);
     cube->add<Rigidbody>(10, kinematic);
