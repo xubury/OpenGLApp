@@ -4,6 +4,7 @@
 #include "Core/Base.hpp"
 #include "Core/Export.hpp"
 #include "Graphic/Texture.hpp"
+#include "Graphic/Shader.hpp"
 #include <list>
 
 namespace te {
@@ -19,6 +20,8 @@ class TE_API TextureArray {
     std::size_t size() const;
 
     const std::list<std::shared_ptr<Texture>>& getList() const;
+
+    void prepare(const Ref<Shader>& shader) const;
 
    private:
     std::list<Ref<Texture>> m_list;

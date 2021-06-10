@@ -6,8 +6,9 @@ namespace te {
 static const float SECTOR_COUNT = 100;
 static const float STACK_COUNT = 100;
 
-Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id)
-    : EntityBase(manager, id) {
+Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
+               const TextureArray &textures)
+    : EntityBase(manager, id), m_textures(textures) {
     int sectorCount = SECTOR_COUNT;
     int stackCount = STACK_COUNT;
     std::vector<Vertex> vertices;
@@ -15,7 +16,6 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id)
     float s, t;
     float nx, ny, nz;
     float xy;
-    float radius = 1.0f;
 
     float sectorStep = 2 * M_PI / sectorCount;
     float stackStep = M_PI / stackCount;
@@ -71,6 +71,7 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id)
 }
 
 void Sphere::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
+    m_textures.prepare(shader);
     Renderer::submit(shader, m_sphere, transform);
 }
 

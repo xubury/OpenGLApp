@@ -140,5 +140,5 @@ void main() {
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 result = calculateDirLight(uDirLight, fragPos, normal, viewDir);
     result += calculatePointLight(uPointLight, fragPos, normal, viewDir);
-    fragColor = vec4(result, 1.0);
+    fragColor = vec4(texture(uMaterial.diffuse0, texCoord).rgb , 1.0);
 }

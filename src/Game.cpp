@@ -14,27 +14,25 @@
 
 #include <iostream>
 
-void Game::addSphere(const glm::vec3& pos, const glm::vec3& impulse,
-                     const TextureArray& textures) {
-    int id = m_app.entities.create<Sphere>();
+void Game::addSphere(const glm::vec3& pos, float radius,
+                     const glm::vec3& impulse, const TextureArray& textures) {
+    int id = m_app.entities.create<Sphere>(radius, textures);
     EntityBase* sphere = m_app.entities.get(id);
     sphere->add<Rigidbody>(10, true);
     sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
     sphere->component<Rigidbody>()->addImpulse(impulse);
-    sphere->setTextures(textures);
     sphere->setPosition(pos);
     sphere->setName("Sphere");
 }
 
 void Game::addCube(const glm::vec3& pos, float width, float height,
                    float length, const TextureArray& textures, bool kinematic) {
-    int id = m_app.entities.create<Cube>(width, height, length);
+    int id = m_app.entities.create<Cube>(width, height, length, textures);
     EntityBase* cube = m_app.entities.get(id);
     cube->add<Rigidbody>(10, kinematic);
     cube->add<HullCollider>();
     MakeCubeCollider(*cube->component<HullCollider>().get(), width, height,
                      length);
-    cube->setTextures(textures);
     cube->setPosition(pos);
     cube->setName("Cube");
 }
@@ -103,7 +101,7 @@ void Game::loadScene() {
     glm::vec3 impulse[] = {glm::vec3(0, 50, 0), glm::vec3(0, -50, 0),
                            glm::vec3(50, 0, 0), glm::vec3(0, 0, 50.f)};
     for (int i = 0; i < 4; ++i) {
-        addSphere(positions[i], impulse[i], textures);
+        addSphere(positions[i], 1.0, impulse[i], textures);
     }
 
     addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures, true);

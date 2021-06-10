@@ -9,8 +9,8 @@
 namespace te {
 
 Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
-           float height, float length)
-    : EntityBase(manager, id) {
+         float height, float length, const TextureArray &textures)
+    : EntityBase(manager, id), m_textures(textures) {
     Vertex vertices[] = {
         {{-width, -height, -length}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
         {{width, -height, -length}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
@@ -61,6 +61,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
 }
 
 void Cube::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
+    m_textures.prepare(shader);
     Renderer::submit(shader, m_cube, transform);
 }
 

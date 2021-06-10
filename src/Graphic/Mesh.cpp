@@ -19,6 +19,7 @@ Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
 }
 
 void Mesh::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
+    m_textures.prepare(shader);
     Renderer::submit(shader, m_vertexArray, transform);
 }
 

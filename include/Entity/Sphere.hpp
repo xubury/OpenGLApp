@@ -8,13 +8,15 @@ namespace te {
 
 class Sphere : public EntityBase {
    public:
-    Sphere(EntityManager<EntityBase> *manager, uint32_t id);
+    Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
+           const TextureArray &textures);
 
     void draw(const Ref<Shader> &shader,
               const glm::mat4 &transform) const override;
 
    private:
     Ref<VertexArray> m_sphere;
+    TextureArray m_textures;
 };
 
 }  // namespace te

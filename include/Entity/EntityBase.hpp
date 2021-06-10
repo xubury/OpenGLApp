@@ -30,16 +30,11 @@ class EntityBase : public Entity<EntityBase>, public Drawable {
 
     void setName(const std::string &name);
 
-    void setTextures(const TextureArray &textures);
-
-    const TextureArray *getTextures() const;
-
     virtual void draw(const Ref<Shader> &shader,
                       const glm::mat4 &transform) const override;
 
    private:
     std::string m_name;
-    TextureArray m_textures;
 };
 
 }  // namespace te

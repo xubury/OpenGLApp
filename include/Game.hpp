@@ -32,7 +32,7 @@ class Game {
 
     void render();
 
-    void addSphere(const glm::vec3 &pos, const glm::vec3 &impulse,
+    void addSphere(const glm::vec3 &pos, float radius, const glm::vec3 &impulse,
                    const TextureArray &textures);
 
     void addCube(const glm::vec3 &pos, float width, float height, float length,
