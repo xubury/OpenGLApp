@@ -16,6 +16,13 @@ CameraBase::CameraBase(int x, int y, int width, int height)
     TE_CORE_ASSERT(width > 0 && height > 0, "CameraBase width or height <= 0.");
 }
 
+glm::mat4 CameraBase::getView() const {
+    const glm::vec3 &up = getUp();
+    const glm::vec3 &front = getFront();
+    const glm::vec3 &pos = getPosition();
+    return glm::lookAt(pos, pos - front, up);
+}
+
 int CameraBase::getViewportX() const { return m_viewportX; }
 
 int CameraBase::getViewportY() const { return m_viewportY; }

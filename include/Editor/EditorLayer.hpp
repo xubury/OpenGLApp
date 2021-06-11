@@ -1,8 +1,9 @@
-#ifndef EDITOR_HPP
-#define EDITOR_HPP
+#ifndef EDITOR_LAYER_HPP
+#define EDITOR_LAYER_HPP
 
-#include <Editor/EditorContext.hpp>
-#include <Graphic/Vertex.hpp>
+#include "Editor/EditorContext.hpp"
+#include "Editor/EditorCamera.hpp"
+#include "Core/Layer.hpp"
 
 namespace te {
 
@@ -11,21 +12,25 @@ struct Axes {
     glm::vec3 axes[3];
 };
 
-class Editor {
+class EditorLayer : public Layer {
    public:
-    static Editor &instance();
+    EditorLayer();
 
-    void render();
+    void onRender() override;
 
     void close();
 
     EditorContext context;
 
     void begin();
-    
+
     void end();
+
+    Ref<CameraBase> getCamera() { return m_camera; }
+
    private:
-    Editor();
+    // return the size of clipSize in world space
+    float getClipSizeInWorld(float clipSize) const;
 
     // build the model's axes coordinate
     void buildModelAxes(float clipLen);
@@ -89,6 +94,10 @@ class Editor {
     glm::vec4 m_movePlane;
 
     float m_axisSizeFactor;
+
+    Ref<EditorCamera> m_camera;
+
+    float m_screenFactor;
 };
 
 }  // namespace te

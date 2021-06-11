@@ -14,12 +14,17 @@ set(Core_Include
     ${Include_Root}/ResourceManager.hpp
     ${Include_Root}/Math.hpp
     ${Include_Root}/Memory.hpp
-    ${Include_Root}/Time.hpp)
+    ${Include_Root}/Time.hpp
+    ${Include_Root}/Layer.hpp
+    ${Include_Root}/LayerStack.hpp
+    ${Include_Root}/Application.hpp)
 
 set(Core_Src
     ${Src_Root}/Log.cpp
     ${Src_Root}/Memory.cpp
-    ${Src_Root}/Time.cpp)
+    ${Src_Root}/Time.cpp
+    ${Src_Root}/LayerStack.cpp
+    ${Src_Root}/Application.cpp)
 
 add_library(te-core
     ${Core_Src})

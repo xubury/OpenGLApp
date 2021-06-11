@@ -1,4 +1,4 @@
-#include "Editor/Editor.hpp"
+#include "Editor/EditorLayer.hpp"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "Core/Math.hpp"
@@ -71,17 +71,14 @@ static bool canActive(ImGuiMouseButton button) {
            !ImGui::IsAnyItemActive();
 }
 
-Editor& Editor::instance() {
-    static Editor s_instance;
-    return s_instance;
-}
-
-Editor::Editor()
-    : m_width(800),
+EditorLayer::EditorLayer()
+    : Layer("Editor"),
+      m_width(800),
       m_height(600),
       m_leftMouseDown(false),
       m_rightMouseDown(false),
-      m_moveType(MoveType::NONE) {
+      m_moveType(MoveType::NONE),
+      m_screenFactor(1.0) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -106,16 +103,21 @@ Editor::Editor()
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
                              {FramebufferTextureFormat::DEPTH24STENCIL8}};
     m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, true);
+
+    m_camera = createRef<EditorCamera>(0, 0, 800, 600);
+    m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
+    m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
+                                      glm::radians(1.5f)));
 }
 
-void Editor::begin() {
+void EditorLayer::begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     m_multiSampleFramebuffer->bind();
 }
 
-void Editor::end() {
+void EditorLayer::end() {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_multiSampleFramebuffer->getId());
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBuffer->getId());
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
@@ -127,8 +129,8 @@ void Editor::end() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Editor::buildModelAxes(float clipLen) {
-    m_axisSizeFactor = context.getClipSizeInWorld(clipLen);
+void EditorLayer::buildModelAxes(float clipLen) {
+    m_axisSizeFactor = getClipSizeInWorld(clipLen);
     auto trans = context.getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rMatrix = trans->getMatrix();
     glm::vec3 originWorld = trans->getPosition();
@@ -147,13 +149,13 @@ void Editor::buildModelAxes(float clipLen) {
     }
 }
 
-void Editor::renderFps() {
+void EditorLayer::renderFps() {
     std::string frameRate =
         "FPS:" + std::to_string(context.getWindow()->getFrameRate());
     context.addText(glm::vec2(0), 0xFFFFFFFF, frameRate.c_str());
 }
 
-void Editor::renderBoundingBox() {
+void EditorLayer::renderBoundingBox() {
     if (context.getActiveEntityPtr()->has<BoundingBox>()) {
         const auto bbox =
             context.getActiveEntityPtr()->component<BoundingBox>();
@@ -162,7 +164,7 @@ void Editor::renderBoundingBox() {
     }
 }
 
-void Editor::renderModelAxes() {
+void EditorLayer::renderModelAxes() {
     for (int i = 0; i < 3; ++i) {
         const auto& axis = m_modelAxes.axes[i];
         glm::vec4 axisColor(0.f);
@@ -206,37 +208,34 @@ void Editor::renderModelAxes() {
     }
 }
 
-void Editor::renderCameraAxes(float clipLen) {
-    Camera* cam = context.getCamera();
-    Transform::Handle trans = context.getCamera()->component<Transform>();
-    clipLen *= cam->getViewportHeight() / 2.f;
-    glm::vec3 origin(glm::vec2(cam->getViewportSize()) - clipLen, 0);
+void EditorLayer::renderCameraAxes(float clipLen) {
+    clipLen *= m_camera->getViewportHeight() / 2.f;
+    glm::vec3 origin(glm::vec2(m_camera->getViewportSize()) - clipLen, 0);
     // draw x
-    glm::vec3 xAxis = trans->getRight();
+    glm::vec3 xAxis = m_camera->getRight();
     xAxis.y = -xAxis.y;
     xAxis = origin + xAxis * clipLen;
     context.addLine(origin, xAxis, 0xFF0000FF, 2);
     // draw y
-    glm::vec3 yAxis = trans->getUp();
+    glm::vec3 yAxis = m_camera->getUp();
     yAxis.y = -yAxis.y;
     yAxis = origin + yAxis * clipLen;
     context.addLine(origin, yAxis, 0xFF00FF00, 2);
     // draw z
-    glm::vec3 zAxis = trans->getFront();
+    glm::vec3 zAxis = m_camera->getFront();
     zAxis.y = -zAxis.y;
     zAxis = origin + zAxis * clipLen;
     context.addLine(origin, zAxis, 0xFFFF0000, 2);
 }
 
-void Editor::computeTranslateType() {
+void EditorLayer::computeTranslateType() {
     const auto& trans = context.getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rotation = trans->getMatrix();
     glm::vec3 modelWorldPos = trans->getPosition();
     m_moveType = MoveType::NONE;
 
     // if on the model axis center
-    glm::vec4 translatePlane = buildPlane(
-        modelWorldPos, context.getCamera()->component<Transform>()->getFront());
+    glm::vec4 translatePlane = buildPlane(modelWorldPos, m_camera->getFront());
     float len = intersectRayPlane(m_camRayOrigin, m_camRayDir, translatePlane);
     glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
     if (glm::length(intersectWorldPos - modelWorldPos) <
@@ -249,12 +248,10 @@ void Editor::computeTranslateType() {
     float minZ = std::numeric_limits<float>::max();
     bool onAxis = false;
     for (uint32_t i = 0; i < 3; ++i) {
-        glm::vec3 start =
-            context.getCamera()->computeWorldToSrceen(m_modelAxes.origin);
-        glm::vec3 end =
-            context.getCamera()->computeWorldToSrceen(m_modelAxes.axes[i]);
+        glm::vec3 start = m_camera->computeWorldToSrceen(m_modelAxes.origin);
+        glm::vec3 end = m_camera->computeWorldToSrceen(m_modelAxes.axes[i]);
         glm::vec3 intersectScreenPos =
-            context.getCamera()->computeWorldToSrceen(intersectWorldPos);
+            m_camera->computeWorldToSrceen(intersectWorldPos);
         glm::vec3 cloesetScreenPos =
             findClosestPoint(intersectScreenPos, start, end);
         if (glm::length(intersectScreenPos - cloesetScreenPos) <
@@ -288,7 +285,7 @@ void Editor::computeTranslateType() {
                 break;
             }
             glm::vec3 intersectScreenPos =
-                context.getCamera()->computeWorldToSrceen(intersectWorldPos);
+                m_camera->computeWorldToSrceen(intersectWorldPos);
 
             float projectionUV[2];
             for (int j = 1; j <= 2; ++j) {
@@ -312,7 +309,7 @@ void Editor::computeTranslateType() {
     }
 }
 
-void Editor::handleMouseLeftButton() {
+void EditorLayer::handleMouseLeftButton() {
     glm::vec2 mousePos(context.getCursorPos());
     if (m_leftMouseDown) {
         ImGui::CaptureMouseFromApp();
@@ -326,9 +323,8 @@ void Editor::handleMouseLeftButton() {
                 const glm::vec3& axis =
                     trans->getMatrix()[m_moveType - TRANSLATE_X];
                 translation = glm::dot(axis, translation) * axis;
-                m_movePlane = buildPlane(
-                    trans->getPosition(),
-                    context.getCamera()->component<Transform>()->getFront());
+                m_movePlane =
+                    buildPlane(trans->getPosition(), m_camera->getFront());
             }
             if (m_moveType <= TRANSLATE_XYZ) {
                 trans->translateWorld(translation);
@@ -356,10 +352,8 @@ void Editor::handleMouseLeftButton() {
         } else {
             glm::vec2 offset = (mousePos - m_mouseClickPos) * 0.1f;
             glm::mat4 transform(1.0f);
-            const glm::vec3& cameraUp =
-                context.getCamera()->component<Transform>()->getUp();
-            const glm::vec3& cameraRight =
-                context.getCamera()->component<Transform>()->getRight();
+            const glm::vec3& cameraUp = m_camera->getUp();
+            const glm::vec3& cameraRight = m_camera->getRight();
             const glm::vec3& modelWorldPos =
                 context.getActiveEntityPtr()->getPosition();
             transform = glm::translate(transform, modelWorldPos);
@@ -368,7 +362,7 @@ void Editor::handleMouseLeftButton() {
             transform =
                 glm::rotate(transform, glm::radians(-offset.y), cameraRight);
             transform = glm::translate(transform, -modelWorldPos);
-            context.getCamera()->component<Transform>()->transform(transform);
+            m_camera->transform(transform);
         }
 
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -383,7 +377,7 @@ void Editor::handleMouseLeftButton() {
     m_mouseClickPos = mousePos;
 }
 
-void Editor::handleMouseRightButton() {
+void EditorLayer::handleMouseRightButton() {
     glm::vec2 mousePos(context.getCursorPos());
     if (m_rightMouseDown) {
         ImGui::CaptureMouseFromApp();
@@ -398,15 +392,14 @@ void Editor::handleMouseRightButton() {
     m_mouseClickPos = mousePos;
 }
 
-void Editor::render() {
+void EditorLayer::onRender() {
     ImGui::Begin("Settings");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(0, 0));
         if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
-            renderTransformProperty(
-                *context.getCamera()->component<Transform>().get());
+            renderTransformProperty(*m_camera);
             ImGui::Separator();
             ImGui::TreePop();
         }
@@ -435,15 +428,20 @@ void Editor::render() {
         ImGui::BeginChild("GameRender");
         // prepare the context for ImGui drawing and framebuffer drawing
         context.prepareContext();
+        glm::vec3 pos =
+            context.getActiveEntityPtr()->component<Transform>()->getPosition();
+        float rightLen = m_camera->getSegmentLengthClipSpace(
+            pos, pos + m_camera->getRight());
+        m_screenFactor = 1.0f / rightLen;
 
         ImVec2 wsize = ImGui::GetWindowSize();
         // if game window not active, disable camera response
-        context.getCamera()->setActive(ImGui::IsWindowFocused() &&
-                                       ImGui::IsWindowHovered());
+        m_camera->setActive(ImGui::IsWindowFocused() &&
+                            ImGui::IsWindowHovered());
         if (m_width != wsize.x || m_height != wsize.y) {
             m_frameBuffer->resize(wsize.x, wsize.y);
             m_multiSampleFramebuffer->resize(wsize.x, wsize.y);
-            context.getCamera()->setViewportSize(wsize.x, wsize.y);
+            m_camera->setViewportSize(wsize.x, wsize.y);
             m_width = wsize.x;
             m_height = wsize.y;
         }
@@ -467,25 +465,20 @@ void Editor::render() {
                     context.getEntityManager()->get(i)->getName().c_str());
             if (ImGui::Selectable(entityLabel,
                                   i == context.getActiveEntityId())) {
-                // const float dist =
-                //     glm::length(context.getActiveEntityPtr()->getPosition() -
-                //                 context.getCamera()->getPosition());
-
                 context.setActiveEntityId(i);
-                context.getCamera()->setPosition(
+                m_camera->setPosition(
                     context.getActiveEntityPtr()->getPosition());
-                context.getCamera()->setEulerAngle(
+                m_camera->setEulerAngle(
                     glm::vec3(glm::radians(-45.f), glm::radians(45.f), 0));
-                context.getCamera()->component<Transform>()->translateLocal(
-                    glm::vec3(0, 0, 10));
+                m_camera->translateLocal(glm::vec3(0, 0, 10));
             }
         }
         ImGui::EndChild();
     }
     ImGui::End();
 
-    context.getCamera()->computeCameraRay(m_camRayOrigin, m_camRayDir,
-                                          context.getCursorPos());
+    m_camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
+                               context.getCursorPos());
     buildModelAxes(0.2);
 
     // clear depth buffer to make axes not hidden by object
@@ -503,10 +496,14 @@ void Editor::render() {
     renderCameraAxes(0.2);
 }
 
-void Editor::close() {
+void EditorLayer::close() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+float EditorLayer::getClipSizeInWorld(float clipSize) const {
+    return m_screenFactor * clipSize;
 }
 
 }  // namespace te

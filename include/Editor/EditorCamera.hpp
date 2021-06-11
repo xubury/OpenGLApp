@@ -14,19 +14,14 @@ inline const float MOUSE_SENSITIVITY = 0.1f;
 
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
-class Camera : public CameraBase,
-               public EntityBase,
-               protected ActionTarget<Movement> {
+class EditorCamera : public CameraBase, protected ActionTarget<Movement> {
    public:
     using ActionTarget::processEvent;
     using ActionTarget::processEvents;
     using ActionTarget::setActive;
 
    public:
-    Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
-           int width, int height);
-
-    virtual glm::mat4 getView() const override;
+    EditorCamera(int x, int y, int width, int height);
 
     virtual glm::mat4 getProjection() const override;
 

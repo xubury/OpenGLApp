@@ -13,8 +13,12 @@ add_subdirectory(src/ECS)
 set(Editor_Src
     libs/imgui_impl_glfw.cpp
     libs/imgui_impl_opengl3.cpp
-    src/Editor/Editor.cpp
-    src/Editor/EditorContext.cpp)
+    src/Editor/EditorLayer.cpp
+    src/Editor/EditorContext.cpp
+    src/Editor/EditorCamera.cpp)
+
+set(Layers_Src
+    src/Layers/SandboxLayer.cpp)
 
 set(Component_Src
     src/Component/Transfrom.cpp
@@ -23,7 +27,6 @@ set(Component_Src
 
 set(Entity_Src
     src/Entity/EntityBase.cpp
-    src/Entity/Camera.cpp
     src/Entity/ModelEntity.cpp
     src/Entity/Cube.cpp
     src/Entity/Sphere.cpp)
@@ -51,7 +54,7 @@ find_package(glfw3 REQUIRED)
 
 add_executable(OpenGLApp
     src/main.cpp
-    src/Game.cpp
+    ${Layers_Src}
     ${Component_Src}
     ${Entity_Src}
     ${Window_Src}

@@ -2,7 +2,7 @@ set(Include_Root ${PROJECT_SOURCE_DIR}/include/ECS)
 set(Src_Root ${PROJECT_SOURCE_DIR}/src/ECS)
 
 set(ECS_Include
-    ${Include_Root}/Application.hpp
+    ${Include_Root}/SceneManager.hpp
     ${Include_Root}/Component.hpp
     ${Include_Root}/Defines.hpp
     ${Include_Root}/ECS.hpp

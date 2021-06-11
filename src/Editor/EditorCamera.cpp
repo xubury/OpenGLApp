@@ -1,16 +1,14 @@
-#include <Entity/Camera.hpp>
+#include <Editor/EditorCamera.hpp>
 #include <Component/Transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 namespace te {
 
-ActionMap<Movement> Camera::s_cameraMovement;
+ActionMap<Movement> EditorCamera::s_cameraMovement;
 
-Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
-               int width, int height)
+EditorCamera::EditorCamera(int x, int y, int width, int height)
     : CameraBase(x, y, width, height),
-      EntityBase(manager, id),
       ActionTarget(s_cameraMovement),
       m_zoom(45.f),
       m_yaw(0),
@@ -39,37 +37,28 @@ Camera::Camera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
          [this](const Event &event) { zoom(event.mouseWheel.yOffset); });
 }
 
-glm::mat4 Camera::getView() const {
-    Transform::Handle trans = component<Transform>();
-    const glm::vec3 &up = trans->getUp();
-    const glm::vec3 &front = trans->getFront();
-    const glm::vec3 &pos = trans->getPosition();
-    return glm::lookAt(pos, pos - front, up);
-}
-
-glm::mat4 Camera::getProjection() const {
+glm::mat4 EditorCamera::getProjection() const {
     return glm::perspective(glm::radians(getFOV()), getAspect(), getNearZ(),
                             getFarZ());
 }
 
-void Camera::move(Movement dir, float val) {
-    Transform::Handle trans = component<Transform>();
+void EditorCamera::move(Movement dir, float val) {
     if (dir == Movement::FORWARD) {
-        trans->translateLocal(glm::vec3(0, 0, -1) * val);
+        translateLocal(glm::vec3(0, 0, -1) * val);
     } else if (dir == Movement::BACKWRAD) {
-        trans->translateLocal(glm::vec3(0, 0, 1) * val);
+        translateLocal(glm::vec3(0, 0, 1) * val);
     } else if (dir == Movement::LEFT) {
-        trans->translateLocal(glm::vec3(-1, 0, 0) * val);
+        translateLocal(glm::vec3(-1, 0, 0) * val);
     } else if (dir == Movement::RIGHT) {
-        trans->translateLocal(glm::vec3(1, 0, 0) * val);
+        translateLocal(glm::vec3(1, 0, 0) * val);
     } else if (dir == Movement::UPWARD) {
-        trans->translateLocal(glm::vec3(0, 1, 0) * val);
+        translateLocal(glm::vec3(0, 1, 0) * val);
     } else if (dir == Movement::DOWNWARD) {
-        trans->translateLocal(glm::vec3(0, -1, 0) * val);
+        translateLocal(glm::vec3(0, -1, 0) * val);
     }
 }
 
-void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
+void EditorCamera::rotate(float yaw, float pitch, bool constraintPitch) {
     m_yaw += yaw;
     m_pitch += pitch;
     if (constraintPitch) {
@@ -82,7 +71,7 @@ void Camera::rotate(float yaw, float pitch, bool constraintPitch) {
     setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
 }
 
-void Camera::zoom(float zoom) {
+void EditorCamera::zoom(float zoom) {
     m_zoom -= zoom;
     if (m_zoom < 1.f)
         m_zoom = 1.f;
@@ -90,6 +79,6 @@ void Camera::zoom(float zoom) {
         m_zoom = 45.f;
 }
 
-float Camera::getFOV() const { return m_zoom; }
+float EditorCamera::getFOV() const { return m_zoom; }
 
 }  // namespace te

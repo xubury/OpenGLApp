@@ -2,6 +2,7 @@
 
 #include "Graphic/Shader.hpp"
 #include "Graphic/Vertex.hpp"
+#include "Graphic/Renderer.hpp"
 
 #include "Component/Transform.hpp"
 #include "Component/BoundingBox.hpp"

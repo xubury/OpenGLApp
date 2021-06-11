@@ -1,6 +1,7 @@
 #include "Entity/Sphere.hpp"
 #include "Graphic/Vertex.hpp"
 #include "Component/Transform.hpp"
+#include "Graphic/Renderer.hpp"
 
 namespace te {
 

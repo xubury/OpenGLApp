@@ -2,17 +2,18 @@
 #define CAMERA_BASE_HPP
 
 #include "Core/Export.hpp"
+#include "Component/Transform.hpp"
 #include <glm/glm.hpp>
 
 namespace te {
 
-class TE_API CameraBase {
+class TE_API CameraBase : public Transform {
    public:
     CameraBase(int x, int y, int width, int height);
 
     virtual glm::mat4 getProjection() const = 0;
 
-    virtual glm::mat4 getView() const = 0;
+    glm::mat4 getView() const;
 
     int getViewportX() const;
 

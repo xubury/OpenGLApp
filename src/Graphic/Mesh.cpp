@@ -1,4 +1,5 @@
 #include "Graphic/Mesh.hpp"
+#include "Graphic/Renderer.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/OpenGL.hpp"
 

@@ -3,18 +3,13 @@
 
 namespace te {
 
-EditorContext::EditorContext() : m_activeEntityId(0), m_screenFactor(1.0f) {}
+EditorContext::EditorContext() : m_activeEntityId(0) {}
 
 void EditorContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
     m_drawList = ImGui::GetWindowDrawList();
-
-    glm::vec3 pos = getActiveEntityPtr()->component<Transform>()->getPosition();
-    float rightLen = m_camera->getSegmentLengthClipSpace(
-        pos, pos + m_camera->component<Transform>()->getRight());
-    m_screenFactor = 1.0f / rightLen;
 }
 
 void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
@@ -24,10 +19,6 @@ uint32_t EditorContext::getActiveEntityId() const { return m_activeEntityId; }
 EntityBase* EditorContext::getActiveEntityPtr() {
     return m_entities->get(m_activeEntityId);
 }
-
-void EditorContext::setCamrea(Camera* camera) { m_camera = camera; }
-
-Camera* EditorContext::getCamera() { return m_camera; }
 
 void EditorContext::setWindow(RenderWindow* window) { m_window = window; }
 
@@ -75,10 +66,6 @@ void EditorContext::addRectFilled(const glm::vec2& tl, const glm::vec2& br,
         ImVec2(m_renderOrigin.x + tl.x, m_renderOrigin.y + tl.y),
         ImVec2(m_renderOrigin.x + br.x, m_renderOrigin.y + br.y), color,
         rounding, roundingCorners);
-}
-
-float EditorContext::getClipSizeInWorld(float clipSize) const {
-    return m_screenFactor * clipSize;
 }
 
 }  // namespace te

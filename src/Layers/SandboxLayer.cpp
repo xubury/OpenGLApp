@@ -1,0 +1,162 @@
+#include "Layers/SandboxLayer.hpp"
+#include "Component/BoundingBox.hpp"
+#include "Component/Transform.hpp"
+#include "Component/Light.hpp"
+#include "Entity/ModelEntity.hpp"
+#include "Entity/Cube.hpp"
+#include "Entity/Sphere.hpp"
+#include "Physics/PhysicsWorld.hpp"
+#include "Physics/Rigidbody.hpp"
+#include "Physics/SphereCollider.hpp"
+#include "Physics/HullCollider.hpp"
+#include "Graphic/Renderer.hpp"
+
+#include <iostream>
+
+void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
+                             const glm::vec3& impulse,
+                             const ModelTextures& textures) {
+    int id = m_scene.entities.create<Sphere>(radius, textures);
+    EntityBase* sphere = m_scene.entities.get(id);
+    sphere->add<Rigidbody>(10, true);
+    sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
+    sphere->component<Rigidbody>()->addImpulse(impulse);
+    sphere->setPosition(pos);
+    sphere->setName("Sphere");
+}
+
+void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
+                           float length, const ModelTextures& textures,
+                           bool kinematic) {
+    int id = m_scene.entities.create<Cube>(width, height, length, textures);
+    EntityBase* cube = m_scene.entities.get(id);
+    cube->add<Rigidbody>(10, kinematic);
+    cube->add<HullCollider>();
+    MakeCubeCollider(*cube->component<HullCollider>().get(), width, height,
+                     length);
+    cube->setPosition(pos);
+    cube->setName("Cube");
+}
+
+void SandboxLayer::addModel(const std::string& path, const glm::vec3& pos) {
+    int id = m_scene.entities.create<ModelEntity>();
+    EntityBase* model = m_scene.entities.get(id);
+    dynamic_cast<ModelEntity*>(model)->loadFromFile(path);
+    model->setPosition(pos);
+    model->setName("model");
+}
+
+void SandboxLayer::loadShaders() {
+    m_shaders.add("Main");
+    m_shaders.get("Main")->loadFromFile("shader/vertex.glsl",
+                                        "shader/fragment.glsl");
+    m_shaders.get("Main")->bind();
+    m_shaders.get("Main")->setVec3("pointLight.position",
+                                   glm::vec3(0.0f, 0.0f, 2.0f));
+    m_shaders.get("Main")->setVec3("pointLight.direction",
+                                   glm::vec3(0.0f, 0.0f, -1.0f));
+    m_shaders.get("Main")->setVec3("pointLight.ambient", glm::vec3(0.5f));
+    m_shaders.get("Main")->setVec3("pointLight.diffuse", glm::vec3(0.5f));
+    m_shaders.get("Main")->setVec3("pointLight.specular", glm::vec3(1.0f));
+    m_shaders.get("Main")->setFloat("pointLight.constant", 1.0f);
+    m_shaders.get("Main")->setFloat("pointLight.linear", 0.09f);
+    m_shaders.get("Main")->setFloat("pointLight.quadratic", 0.032f);
+    m_shaders.get("Main")->setFloat("pointLight.cutOff",
+                                    glm::cos(glm::radians(12.5f)));
+    m_shaders.get("Main")->setFloat("pointLight.outerCutOff",
+                                    glm::cos(glm::radians(15.5f)));
+}
+
+void SandboxLayer::loadScene() {
+    uint32_t lightSource = m_scene.entities.create<EntityBase>();
+    m_scene.entities.get(lightSource)->setName("Directional Light");
+    m_scene.entities.get(lightSource)->setPosition(glm::vec3(0, 8, 8));
+    m_scene.entities.get(lightSource)
+        ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
+
+    m_scene.entities.get(lightSource)->add<Light>();
+    auto light = m_scene.entities.get(lightSource)->component<Light>();
+    light->amibent = glm::vec3(0.5f);
+    light->diffuse = glm::vec3(0.5f);
+    light->specular = glm::vec3(0.5f);
+
+    // uint32_t lightSource2 = m_app.entities.create<EntityBase>();
+    // m_app.entities.get(lightSource2).add<Light>();
+    // m_app.entities.get(lightSource2).setPosition(glm::vec3(0, 8, 8));
+    // m_app.entities.get(lightSource2)
+    //     .setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f),
+    //     0));
+
+    // auto light2 = m_app.entities.get(lightSource2).component<Light>();
+    // light2->amibent = glm::vec3(0.5f);
+    // light2->diffuse = glm::vec3(0.5f);
+    // light2->specular = glm::vec3(0.5f);
+
+    ModelTextures textures;
+    textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
+    textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
+    textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+
+    glm::vec3 positions[] = {
+        glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
+        glm::vec3(-4.0f, 8.0f, 0.0f), glm::vec3(2.0, 9.0f, -4.0f)};
+    glm::vec3 impulse[] = {glm::vec3(0, 50, 0), glm::vec3(0, -50, 0),
+                           glm::vec3(50, 0, 0), glm::vec3(0, 0, 50.f)};
+    for (int i = 0; i < 4; ++i) {
+        addSphere(positions[i], 1.0, impulse[i], textures);
+    }
+
+    addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures, true);
+    addCube(glm::vec3(2, 4, 0), 1, 1, 1, textures, true);
+    // addModel("resources/models/backpack/backpack.obj",
+    //          glm::vec3(0.f, 6.f, 6.f));
+
+    // ground
+    ModelTextures groundTextures;
+    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
+    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
+    groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
+    addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
+}
+
+SandboxLayer::SandboxLayer() : Layer("Sandbox") {}
+
+void SandboxLayer::onAttach() {
+    loadShaders();
+    loadScene();
+
+    m_scene.systems.add<BoundingBoxSystem>();
+    m_scene.systems.add<TransformSystem>();
+    m_scene.systems.add<PhysicsWorld>();
+}
+
+void SandboxLayer::onUpdate(const Time& deltaTime) {
+    m_scene.update(deltaTime);
+}
+
+void SandboxLayer::onRender() {
+    Renderer::clear();
+    auto entityIterEnd = m_scene.entities.end();
+    m_shaders.get("Main")->bind();
+    for (auto cur = m_scene.entities.begin(); cur != entityIterEnd; ++cur) {
+        m_scene.entities.get(*cur)->draw(m_shaders.get("Main"));
+    }
+}
+
+void SandboxLayer::onEventPoll(const Event& event) {
+    if (event.type == Event::KEY_PRESSED) {
+        switch (event.key.code) {
+            case Keyboard::T: {
+                ModelTextures textures;
+                textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
+                textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
+                textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+                addCube(glm::vec3(5, 5, 0), 1, 1, 1, textures, true);
+            } break;
+            default:
+                break;
+        }
+    }
+}
+
+void SandboxLayer::onEventProcess() {}

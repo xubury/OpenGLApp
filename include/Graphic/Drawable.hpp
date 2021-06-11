@@ -2,11 +2,9 @@
 #define DRAWABLE_HPP
 
 #include "Core/Export.hpp"
-#include "Graphic/Renderer.hpp"
+#include "Graphic/Shader.hpp"
 
 namespace te {
-
-class RenderTarget;
 
 class TE_API Drawable {
    public:

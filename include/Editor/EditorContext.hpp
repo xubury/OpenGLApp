@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include "Component/Transform.hpp"
 #include "Graphic/FrameBuffer.hpp"
-#include "Entity/Camera.hpp"
 #include "Window/RenderWindow.hpp"
 #include "Component/Transform.hpp"
 
@@ -20,10 +19,6 @@ class EditorContext {
     uint32_t getActiveEntityId() const;
 
     EntityBase *getActiveEntityPtr();
-
-    void setCamrea(Camera *camera);
-
-    Camera *getCamera();
 
     void setWindow(RenderWindow *window);
 
@@ -52,19 +47,13 @@ class EditorContext {
         float rounding = 0.f,
         ImDrawCornerFlags roundingCorners = ImDrawCornerFlags_All);
 
-    // return the size of clipSize in world space
-    float getClipSizeInWorld(float clipSize) const;
-
    private:
     RenderWindow *m_window;
-
-    Camera *m_camera;
 
     EntityManager<EntityBase> *m_entities;
 
     uint32_t m_activeEntityId;
 
-    float m_screenFactor;
 
     ImDrawList *m_drawList;
 
