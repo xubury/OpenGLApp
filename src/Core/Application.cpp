@@ -12,6 +12,9 @@ Application::Application(const Settings &settings)
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>();
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
+    m_mainCamera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
+    m_mainCamera->setEulerAngle(glm::vec3(
+        glm::radians(-25.f), glm::radians(-28.f), glm::radians(1.5f)));
     pushOverlay(m_imGuiLayer);
     s_instance = this;
 }
@@ -33,6 +36,9 @@ void Application::run(int minFps) {
                 event.key.code == Keyboard::ESCAPE) {
                 m_window.setShouldClose(true);
                 break;
+            } else if (event.type == Event::RESIZED) {
+                m_mainCamera->setViewportSize(event.size.width,
+                                              event.size.height);
             }
             for (auto &layer : m_layers) {
                 if (layer->isBlockEvent()) continue;
