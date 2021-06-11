@@ -463,11 +463,13 @@ void EditorLayer::onImGuiRender() {
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(1100, 0));
-        std::size_t size = m_scene->entities.size();
+        Ref<SceneManager<EntityBase>> scene =
+            Application::instance().getActiveScene();
+        std::size_t size = scene->entities.size();
         char entityLabel[128];
         for (std::size_t i = 0; i < size; ++i) {
             sprintf(entityLabel, "ID:%lld Name:%s", i,
-                    m_scene->entities.get(i)->getName().c_str());
+                    scene->entities.get(i)->getName().c_str());
             if (ImGui::Selectable(entityLabel, i == m_activeEntityId)) {
                 m_activeEntityId = i;
                 m_camera->setPosition(getActiveEntityPtr()->getPosition());
@@ -503,7 +505,8 @@ float EditorLayer::getClipSizeInWorld(float clipSize) const {
 }
 
 EntityBase* EditorLayer::getActiveEntityPtr() {
-    return m_scene->entities.get(m_activeEntityId);
+    return Application::instance().getActiveScene()->entities.get(
+        m_activeEntityId);
 }
 
 void EditorLayer::onEventPoll(const Event& event) {

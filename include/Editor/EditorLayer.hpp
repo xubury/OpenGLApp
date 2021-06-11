@@ -35,8 +35,6 @@ class EditorLayer : public Layer {
 
     Ref<Camera> getCamera() { return m_camera; }
 
-    void setActiveScene(Ref<SceneManager<EntityBase>> scene) { m_scene = scene; }
-
    private:
     EntityBase *getActiveEntityPtr();
 
@@ -111,8 +109,6 @@ class EditorLayer : public Layer {
     float m_screenFactor;
 
     glm::vec2 m_renderOrigin;
-
-    Ref<SceneManager<EntityBase>> m_scene;
 
     uint32_t m_activeEntityId;
 };
