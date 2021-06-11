@@ -23,7 +23,8 @@ std::size_t ModelTextures::size() const { return m_list.size(); }
 const std::list<Ref<Texture>> &ModelTextures::getList() const { return m_list; }
 
 void ModelTextures::prepare(const Ref<Shader> &shader) const {
-    for (std::size_t i = size(); i < 32; ++i) {
+    const int textureReserved = 1;
+    for (std::size_t i = size() + textureReserved; i < 32; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
@@ -31,7 +32,7 @@ void ModelTextures::prepare(const Ref<Shader> &shader) const {
     uint32_t ambient = 0;
     uint32_t diffuse = 0;
     uint32_t specular = 0;
-    std::size_t i = 0;
+    std::size_t i = textureReserved;
     for (const auto &texture : getList()) {
         std::string name;
         if (texture->getType() == Texture::AMBIENT) {

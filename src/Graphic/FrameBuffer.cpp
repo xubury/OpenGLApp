@@ -57,8 +57,7 @@ static void attachDepthTexture(uint32_t id, int samples, GLenum format,
         }
     } else {
         if (writeOnly) {
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width,
-                                  height);
+            glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
         } else {
             glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
 
@@ -80,7 +79,7 @@ static void attachDepthTexture(uint32_t id, int samples, GLenum format,
 
 static bool isDepthFormat(FramebufferTextureFormat format) {
     switch (format) {
-        case FramebufferTextureFormat::DPETH:
+        case FramebufferTextureFormat::DEPTH32:
             return true;
         case FramebufferTextureFormat::DEPTH24STENCIL8:
             return true;
@@ -171,9 +170,9 @@ void FrameBuffer::invalidate() {
             bindTexture(multiSample, m_depthAttachment);
         }
         switch (m_depthAttachmentSpec.textureFormat) {
-            case FramebufferTextureFormat::DPETH:
+            case FramebufferTextureFormat::DEPTH32:
                 attachDepthTexture(m_depthAttachment, m_specification.samples,
-                                   GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT,
+                                   GL_DEPTH_COMPONENT32, GL_DEPTH_ATTACHMENT,
                                    m_specification.width,
                                    m_specification.height, m_depthWriteOnly);
                 break;
@@ -225,6 +224,8 @@ uint32_t FrameBuffer::getColorAttachmentId(uint32_t index) const {
                    "color attachment's index reach out of bound");
     return m_colorAttachments[index];
 }
+
+uint32_t FrameBuffer::getDepthAttachmentId() const { return m_depthAttachment; }
 
 FrameBufferSpecification FrameBuffer::getSpecification() const {
     return m_specification;

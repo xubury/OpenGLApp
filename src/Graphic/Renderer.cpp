@@ -1,4 +1,5 @@
 #include "Graphic/Renderer.hpp"
+#include "Core/Application.hpp"
 #include "Graphic/OpenGL.hpp"
 
 namespace te {
@@ -14,10 +15,24 @@ void Renderer::beginScene(const Camera &camera) {
     s_sceneData.view = camera.getView();
 }
 
+void Renderer::setLightSource(LightBase *light) { s_sceneData.light = light; }
+
 void Renderer::submit(const Ref<Shader> &shader,
                       const Ref<VertexArray> &vertexArray, GLenum type,
                       bool indexed, const glm::mat4 &transform) {
     shader->bind();
+    if (s_sceneData.light != nullptr) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, s_sceneData.light->shadowMap);
+        shader->setInt("uDepthMap", 0);
+        shader->setMat4("uLightSpaceMatrix",
+                        s_sceneData.light->getLightSpaceMatrix());
+        shader->setVec3("uDirLight.direction",
+                        s_sceneData.light->getDirection());
+        shader->setVec3("uDirLight.ambient", s_sceneData.light->amibent);
+        shader->setVec3("uDirLight.diffuse", s_sceneData.light->diffuse);
+        shader->setVec3("uDirLight.specular", s_sceneData.light->specular);
+    }
     shader->setMat4("uProjection", s_sceneData.projection);
     shader->setMat4("uView", s_sceneData.view);
     shader->setMat4("uModel", transform);

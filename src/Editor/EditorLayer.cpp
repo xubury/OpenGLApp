@@ -7,6 +7,7 @@
 #include "Component/BoundingBox.hpp"
 #include "Component/Light.hpp"
 #include "Physics/Rigidbody.hpp"
+#include "Graphic/Renderer.hpp"
 #include <iostream>
 
 namespace te {
@@ -123,7 +124,7 @@ void EditorLayer::begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    Application::instance().setPrimaryCamera(m_camera);
+    Application::instance().setMainCamera(m_camera);
     m_multiSampleFramebuffer->bind();
 }
 
@@ -400,6 +401,8 @@ void EditorLayer::handleMouseRightButton() {
 }
 
 void EditorLayer::onImGuiRender() {
+    m_multiSampleFramebuffer->bind();
+    Renderer::beginScene(*m_camera);
     ImGui::Begin("Settings");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));

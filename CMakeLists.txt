@@ -21,7 +21,8 @@ set(App_Src
     src/Apps/SandboxApp.cpp)
 
 set(Layers_Src
-    src/Layers/SandboxLayer.cpp)
+    src/Layers/SandboxLayer.cpp
+    src/Layers/ShadowLayer.cpp)
 
 set(Component_Src
     src/Component/BoundingBox.cpp

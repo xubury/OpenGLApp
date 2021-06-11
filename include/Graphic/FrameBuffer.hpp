@@ -19,7 +19,7 @@ enum class FramebufferTextureFormat {
     RGBA16F,
 
     // Dpeth
-    DPETH,
+    DEPTH32,
 
     // Depth/stencil
     DEPTH24STENCIL8
@@ -54,7 +54,8 @@ struct FrameBufferSpecification {
 
 class TE_API FrameBuffer {
    public:
-    FrameBuffer(const FrameBufferSpecification &spec, bool depthWriteOnly = false);
+    FrameBuffer(const FrameBufferSpecification &spec,
+                bool depthWriteOnly = false);
 
     ~FrameBuffer();
 
@@ -72,11 +73,14 @@ class TE_API FrameBuffer {
 
     uint32_t getColorAttachmentId(uint32_t index = 0) const;
 
+    uint32_t getDepthAttachmentId() const;
+
     FrameBufferSpecification getSpecification() const;
 
     uint32_t getId() const;
 
     void destroy();
+
    private:
     FrameBufferSpecification m_specification;
     uint32_t m_bufferId;

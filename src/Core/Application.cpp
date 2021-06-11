@@ -70,7 +70,6 @@ void Application::render() {
     if (m_editorMode) {
         m_imGuiLayer->begin();
     }
-    Renderer::beginScene(*m_mainCamera);
     for (auto &layer : m_layers) {
         layer->onRender();
     }
@@ -79,8 +78,6 @@ void Application::render() {
             layer->onImGuiRender();
         }
     }
-
-    Renderer::endScene();
     if (m_editorMode) {
         m_imGuiLayer->end();
     }

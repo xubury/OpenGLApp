@@ -51,10 +51,6 @@ Primitive &Primitive::instance() {
     return s_instance;
 }
 
-void Primitive::setDrawingView(const Camera &camera) {
-    Renderer::beginScene(camera);
-}
-
 void Primitive::drawLine(const glm::vec3 &start, const glm::vec3 &end,
                          const glm::vec4 &color, float thickness) {
     drawPath({start, end}, color, thickness);

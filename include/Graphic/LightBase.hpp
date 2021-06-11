@@ -19,6 +19,7 @@ class TE_API LightBase {
     glm::vec3 amibent;
     glm::vec3 diffuse;
     glm::vec3 specular;
+    uint32_t shadowMap;
 };
 
 }  // namespace te

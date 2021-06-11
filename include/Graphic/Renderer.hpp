@@ -4,14 +4,22 @@
 #include "Graphic/Shader.hpp"
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Camera.hpp"
+#include "Graphic/LightBase.hpp"
 
 namespace te {
 
 class Renderer {
    public:
     static void init();
+
     static void beginScene(const Camera &camera);
+
+    static void setLightSource(LightBase *light);
+
+    static LightBase *getLightSource() { return s_sceneData.light; }
+
     static void endScene();
+
     static void submit(const Ref<Shader> &shader,
                        const Ref<VertexArray> &vertexArray, GLenum type,
                        bool indexed,
@@ -23,6 +31,8 @@ class Renderer {
     struct SceneData {
         glm::mat4 projection;
         glm::mat4 view;
+
+        LightBase *light;
     };
 
     static SceneData s_sceneData;

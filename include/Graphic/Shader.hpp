@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <glm/glm.hpp>
 #include <unordered_map>
+#include <vector>
 
 namespace te {
 

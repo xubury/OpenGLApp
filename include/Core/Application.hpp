@@ -45,7 +45,9 @@ class Application {
 
     RenderWindow &getWindow() { return m_window; }
 
-    void setPrimaryCamera(Ref<Camera> camera) { m_mainCamera = camera; }
+    void setMainCamera(Ref<Camera> camera) { m_mainCamera = camera; }
+
+    Ref<Camera> getMainCamera() { return m_mainCamera; }
 
     void setActiveScene(Ref<SceneManager<EntityBase>> scene) {
         m_activeScene = scene;
