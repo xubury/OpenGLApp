@@ -9,7 +9,7 @@ namespace te {
 
 class Layer {
    public:
-    Layer(const std::string &name) : m_name(name) {}
+    Layer(const std::string &name) : m_name(name), m_blockEvent(false) {}
 
     virtual ~Layer() = default;
 
@@ -27,8 +27,13 @@ class Layer {
 
     virtual void onEventProcess() {}
 
+    void setBlockEvent(bool block) { m_blockEvent = block; }
+
+    bool isBlockEvent() const { return m_blockEvent; }
+
    protected:
     std::string m_name;
+    bool m_blockEvent;
 };
 }  // namespace te
 

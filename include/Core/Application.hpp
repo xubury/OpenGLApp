@@ -8,6 +8,8 @@
 #include "Window/RenderWindow.hpp"
 #include "Editor/EditorLayer.hpp"
 
+int main(int argc, char **argv);
+
 namespace te {
 
 struct Settings {
@@ -21,9 +23,9 @@ struct Settings {
 
 class Application {
    public:
-    Application(const Settings &settings);
+    static Application &instance() { return *s_instance; }
 
-    virtual ~Application() = default;
+    ~Application() = default;
 
     Application(const Application &) = delete;
 
@@ -36,7 +38,16 @@ class Application {
     void run(int minFps);
 
     Ref<EditorLayer> getEditor() { return m_imGuiLayer; };
+
+    RenderWindow &getWindow() { return m_window; }
+
    private:
+    static Application *s_instance;
+
+    friend int ::main(int argc, char **argv);
+
+    Application(const Settings &settings);
+
     void update(const Time &deltaTime);
 
     void render();

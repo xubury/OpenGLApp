@@ -1,16 +1,19 @@
 #include "Core/Application.hpp"
 #include "Graphic/Renderer.hpp"
+#include "Graphic/GLContext.hpp"
 
 namespace te {
+
+Application *Application::s_instance = nullptr;
 
 Application::Application(const Settings &settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples) {
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>();
-    m_imGuiLayer->context.setWindow(&m_window);
     m_mainCamera = m_imGuiLayer->getCamera();
     pushOverlay(m_imGuiLayer);
+    s_instance = this;
 }
 
 void Application::pushLayer(Ref<Layer> layer) { m_layers.pushLayer(layer); }
@@ -32,10 +35,12 @@ void Application::run(int minFps) {
                 break;
             }
             for (auto &layer : m_layers) {
+                if (layer->isBlockEvent()) continue;
                 layer->onEventPoll(event);
             }
         }
         for (auto &layer : m_layers) {
+            if (layer->isBlockEvent()) continue;
             layer->onEventProcess();
         }
         timeSinceLastUpdate = clock.restart();
@@ -46,8 +51,6 @@ void Application::run(int minFps) {
         update(timeSinceLastUpdate);
         render();
     }
-    m_imGuiLayer->close();
-    m_window.close();
 }
 
 void Application::update(const Time &deltaTime) {

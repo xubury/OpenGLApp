@@ -2,7 +2,7 @@
 #include "Layers/SandboxLayer.hpp"
 #include "Core/Log.hpp"
 
-int main() {
+int main(int, char **) {
     te::Log::init("Debug.log");
 
     te::Settings settings;
@@ -15,7 +15,7 @@ int main() {
 
     te::Application app(settings);
     Ref<SandboxLayer> sandbox = te::createRef<SandboxLayer>();
-    app.getEditor()->context.setEntityManager(sandbox->getEntityManager());
+    app.getEditor()->setScene(sandbox->getScene());
     app.pushLayer(sandbox);
     app.run(30);
 

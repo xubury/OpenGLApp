@@ -1,4 +1,5 @@
 #include "Editor/EditorLayer.hpp"
+#include "Core/Application.hpp"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "Core/Math.hpp"
@@ -131,7 +132,7 @@ void EditorLayer::end() {
 
 void EditorLayer::buildModelAxes(float clipLen) {
     m_axisSizeFactor = getClipSizeInWorld(clipLen);
-    auto trans = context.getActiveEntityPtr()->component<Transform>();
+    auto trans = getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rMatrix = trans->getMatrix();
     glm::vec3 originWorld = trans->getPosition();
     m_modelAxes.origin = originWorld;
@@ -151,14 +152,14 @@ void EditorLayer::buildModelAxes(float clipLen) {
 
 void EditorLayer::renderFps() {
     std::string frameRate =
-        "FPS:" + std::to_string(context.getWindow()->getFrameRate());
+        "FPS:" +
+        std::to_string(Application::instance().getWindow().getFrameRate());
     context.addText(glm::vec2(0), 0xFFFFFFFF, frameRate.c_str());
 }
 
 void EditorLayer::renderBoundingBox() {
-    if (context.getActiveEntityPtr()->has<BoundingBox>()) {
-        const auto bbox =
-            context.getActiveEntityPtr()->component<BoundingBox>();
+    if (getActiveEntityPtr()->has<BoundingBox>()) {
+        const auto bbox = getActiveEntityPtr()->component<BoundingBox>();
         Primitive::instance().drawCube(bbox->getWorldMin(), bbox->getWorldMax(),
                                        glm::vec4(0.f, 1.0f, 0.f, 1.0f));
     }
@@ -229,7 +230,7 @@ void EditorLayer::renderCameraAxes(float clipLen) {
 }
 
 void EditorLayer::computeTranslateType() {
-    const auto& trans = context.getActiveEntityPtr()->component<Transform>();
+    const auto& trans = getActiveEntityPtr()->component<Transform>();
     const glm::mat3& rotation = trans->getMatrix();
     glm::vec3 modelWorldPos = trans->getPosition();
     m_moveType = MoveType::NONE;
@@ -313,7 +314,7 @@ void EditorLayer::handleMouseLeftButton() {
     glm::vec2 mousePos(context.getCursorPos());
     if (m_leftMouseDown) {
         ImGui::CaptureMouseFromApp();
-        auto trans = context.getActiveEntityPtr()->component<Transform>();
+        auto trans = getActiveEntityPtr()->component<Transform>();
         if (m_moveType != NONE) {
             float len =
                 intersectRayPlane(m_camRayOrigin, m_camRayDir, m_movePlane);
@@ -355,7 +356,7 @@ void EditorLayer::handleMouseLeftButton() {
             const glm::vec3& cameraUp = m_camera->getUp();
             const glm::vec3& cameraRight = m_camera->getRight();
             const glm::vec3& modelWorldPos =
-                context.getActiveEntityPtr()->getPosition();
+                getActiveEntityPtr()->getPosition();
             transform = glm::translate(transform, modelWorldPos);
             transform =
                 glm::rotate(transform, glm::radians(-offset.x), cameraUp);
@@ -392,7 +393,7 @@ void EditorLayer::handleMouseRightButton() {
     m_mouseClickPos = mousePos;
 }
 
-void EditorLayer::onRender() {
+void EditorLayer::onImGuiRender() {
     ImGui::Begin("Settings");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
@@ -405,7 +406,7 @@ void EditorLayer::onRender() {
         }
 
         if (ImGui::TreeNodeEx("Entity", ImGuiTreeNodeFlags_DefaultOpen)) {
-            auto entity = context.getActiveEntityPtr();
+            auto entity = getActiveEntityPtr();
             ImGui::Text("Name: %s", entity->getName().c_str());
             renderTransformProperty(*entity->component<Transform>().get());
             if (entity->has<Light>()) {
@@ -420,24 +421,24 @@ void EditorLayer::onRender() {
     }
     ImGui::End();
 
-    ImGui::Begin("GameWindow");
+    ImGui::Begin("Scene");
     {
         ImGui::SetWindowSize(ImVec2(800, 600));
         ImGui::SetWindowPos(ImVec2(300, 0));
 
-        ImGui::BeginChild("GameRender");
+        ImGui::BeginChild("SceneRenderer");
         // prepare the context for ImGui drawing and framebuffer drawing
         context.prepareContext();
         glm::vec3 pos =
-            context.getActiveEntityPtr()->component<Transform>()->getPosition();
+            getActiveEntityPtr()->component<Transform>()->getPosition();
         float rightLen = m_camera->getSegmentLengthClipSpace(
             pos, pos + m_camera->getRight());
         m_screenFactor = 1.0f / rightLen;
 
         ImVec2 wsize = ImGui::GetWindowSize();
         // if game window not active, disable camera response
-        m_camera->setActive(ImGui::IsWindowFocused() &&
-                            ImGui::IsWindowHovered());
+        bool isFocus = ImGui::IsWindowFocused() && ImGui::IsWindowHovered();
+        setBlockEvent(!isFocus);
         if (m_width != wsize.x || m_height != wsize.y) {
             m_frameBuffer->resize(wsize.x, wsize.y);
             m_multiSampleFramebuffer->resize(wsize.x, wsize.y);
@@ -453,27 +454,23 @@ void EditorLayer::onRender() {
     }
     ImGui::End();
 
-    ImGui::Begin("Scene");
+    ImGui::Begin("Entities");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(1100, 0));
-        ImGui::BeginChild("SceneList");
-        std::size_t size = context.getEntityManager()->size();
+        std::size_t size = m_scene->entities.size();
         char entityLabel[128];
         for (std::size_t i = 0; i < size; ++i) {
             sprintf(entityLabel, "ID:%lld Name:%s", i,
-                    context.getEntityManager()->get(i)->getName().c_str());
-            if (ImGui::Selectable(entityLabel,
-                                  i == context.getActiveEntityId())) {
-                context.setActiveEntityId(i);
-                m_camera->setPosition(
-                    context.getActiveEntityPtr()->getPosition());
+                    m_scene->entities.get(i)->getName().c_str());
+            if (ImGui::Selectable(entityLabel, i == m_activeEntityId)) {
+                m_activeEntityId = i;
+                m_camera->setPosition(getActiveEntityPtr()->getPosition());
                 m_camera->setEulerAngle(
                     glm::vec3(glm::radians(-45.f), glm::radians(45.f), 0));
                 m_camera->translateLocal(glm::vec3(0, 0, 10));
             }
         }
-        ImGui::EndChild();
     }
     ImGui::End();
 
@@ -496,7 +493,7 @@ void EditorLayer::onRender() {
     renderCameraAxes(0.2);
 }
 
-void EditorLayer::close() {
+EditorLayer::~EditorLayer() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -505,5 +502,15 @@ void EditorLayer::close() {
 float EditorLayer::getClipSizeInWorld(float clipSize) const {
     return m_screenFactor * clipSize;
 }
+
+EntityBase* EditorLayer::getActiveEntityPtr() {
+    return m_scene->entities.get(m_activeEntityId);
+}
+
+void EditorLayer::onEventPoll(const Event& event) {
+    m_camera->processEvent(event);
+}
+
+void EditorLayer::onEventProcess() { m_camera->processEvents(); }
 
 }  // namespace te

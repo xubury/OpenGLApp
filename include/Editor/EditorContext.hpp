@@ -14,20 +14,6 @@ class EditorContext {
    public:
     EditorContext();
 
-    void setActiveEntityId(int id);
-
-    uint32_t getActiveEntityId() const;
-
-    EntityBase *getActiveEntityPtr();
-
-    void setWindow(RenderWindow *window);
-
-    RenderWindow *getWindow();
-
-    EntityManager<EntityBase> *getEntityManager();
-
-    void setEntityManager(EntityManager<EntityBase> *entites);
-
     void prepareContext();
 
     // get window pos relateive to current context window
@@ -48,13 +34,6 @@ class EditorContext {
         ImDrawCornerFlags roundingCorners = ImDrawCornerFlags_All);
 
    private:
-    RenderWindow *m_window;
-
-    EntityManager<EntityBase> *m_entities;
-
-    uint32_t m_activeEntityId;
-
-
     ImDrawList *m_drawList;
 
     glm::vec2 m_renderOrigin;

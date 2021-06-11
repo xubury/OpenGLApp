@@ -18,7 +18,6 @@ class EditorCamera : public CameraBase, protected ActionTarget<Movement> {
    public:
     using ActionTarget::processEvent;
     using ActionTarget::processEvents;
-    using ActionTarget::setActive;
 
    public:
     EditorCamera(int x, int y, int width, int height);

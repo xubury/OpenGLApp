@@ -35,7 +35,7 @@ class SandboxLayer : public Layer {
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 
-    EntityManager<EntityBase> *getEntityManager() { return &m_scene.entities; }
+    SceneManager<EntityBase> *getScene() { return &m_scene; }
 
    private:
     void loadShaders();

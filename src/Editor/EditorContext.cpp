@@ -3,33 +3,13 @@
 
 namespace te {
 
-EditorContext::EditorContext() : m_activeEntityId(0) {}
+EditorContext::EditorContext() {}
 
 void EditorContext::prepareContext() {
     ImVec2 renderOrigin = ImGui::GetWindowPos();
     m_renderOrigin.x = renderOrigin.x;
     m_renderOrigin.y = renderOrigin.y;
     m_drawList = ImGui::GetWindowDrawList();
-}
-
-void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
-
-uint32_t EditorContext::getActiveEntityId() const { return m_activeEntityId; }
-
-EntityBase* EditorContext::getActiveEntityPtr() {
-    return m_entities->get(m_activeEntityId);
-}
-
-void EditorContext::setWindow(RenderWindow* window) { m_window = window; }
-
-RenderWindow* EditorContext::getWindow() { return m_window; }
-
-EntityManager<EntityBase>* EditorContext::getEntityManager() {
-    return m_entities;
-}
-
-void EditorContext::setEntityManager(EntityManager<EntityBase>* entites) {
-    m_entities = entites;
 }
 
 glm::vec2 EditorContext::getCursorPos() const {
