@@ -24,8 +24,7 @@ set(Graphic_Include
     ${Include_Root}/Model.hpp
     ${Include_Root}/FrameBuffer.hpp
     ${Include_Root}/ShadowBuffer.hpp
-    ${Include_Root}/LightBase.hpp
-    ${Include_Root}/ScreenLayer.hpp)
+    ${Include_Root}/LightBase.hpp)
 
 set(Graphic_Src
     ${Src_Root}/GLContext.cpp
@@ -42,8 +41,7 @@ set(Graphic_Src
     ${Src_Root}/Model.cpp
     ${Src_Root}/ModelTextures.cpp
     ${Src_Root}/FrameBuffer.cpp
-    ${Src_Root}/ShadowBuffer.cpp
-    ${Src_Root}/ScreenLayer.cpp)
+    ${Src_Root}/ShadowBuffer.cpp)
 
 add_library(te-graphic
     ${Graphic_Src}

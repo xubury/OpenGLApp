@@ -77,7 +77,9 @@ Editor& Editor::instance() {
 }
 
 Editor::Editor()
-    : m_leftMouseDown(false),
+    : m_width(800),
+      m_height(600),
+      m_leftMouseDown(false),
       m_rightMouseDown(false),
       m_moveType(MoveType::NONE) {
     IMGUI_CHECKVERSION();
@@ -93,6 +95,36 @@ Editor::Editor()
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(RenderWindow::getCurrentContext(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    FrameBufferSpecification spec;
+    spec.width = m_width;
+    spec.height = m_height;
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB}};
+    m_frameBuffer = createScope<FrameBuffer>(spec);
+
+    spec.samples = 4;
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
+                             {FramebufferTextureFormat::DEPTH24STENCIL8}};
+    m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, true);
+}
+
+void Editor::begin() {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    m_multiSampleFramebuffer->bind();
+}
+
+void Editor::end() {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_multiSampleFramebuffer->getId());
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBuffer->getId());
+    glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
+                      GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    m_multiSampleFramebuffer->unbind();
+    ImGui::Render();
+    glClearColor(0.3, 0.3, 0.3, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Editor::buildModelAxes(float clipLen) {
@@ -367,10 +399,6 @@ void Editor::handleMouseRightButton() {
 }
 
 void Editor::render() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
     ImGui::Begin("Settings");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
@@ -412,13 +440,17 @@ void Editor::render() {
         // if game window not active, disable camera response
         context.getCamera()->setActive(ImGui::IsWindowFocused() &&
                                        ImGui::IsWindowHovered());
-        context.getScreenLayer()->onResize(wsize.x, wsize.y);
-        context.getCamera()->setViewportSize(wsize.x, wsize.y);
+        if (m_width != wsize.x || m_height != wsize.y) {
+            m_frameBuffer->resize(wsize.x, wsize.y);
+            m_multiSampleFramebuffer->resize(wsize.x, wsize.y);
+            context.getCamera()->setViewportSize(wsize.x, wsize.y);
+            m_width = wsize.x;
+            m_height = wsize.y;
+        }
         // Because I use the texture from OpenGL, I need to invert the V
         // from the UV.
-        ImGui::Image(
-            (void*)(intptr_t)context.getScreenLayer()->getScreenTexture(),
-            wsize, ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::Image((void*)(intptr_t)m_frameBuffer->getColorAttachmentId(0),
+                     wsize, ImVec2(0, 1), ImVec2(1, 0));
         ImGui::EndChild();
     }
     ImGui::End();
@@ -469,14 +501,6 @@ void Editor::render() {
     renderModelAxes();
 
     renderCameraAxes(0.2);
-
-    // unload context and quit drawing drawing on the framebuffer
-    context.unloadContext();
-
-    ImGui::Render();
-    glClearColor(0.3, 0.3, 0.3, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Editor::close() {

@@ -122,7 +122,6 @@ void Game::loadScene() {
 Game::Game(const Settings& settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples),
-      m_screenLayer(settings.width, settings.height, settings.samples),
       m_editorMode(settings.editor) {
     loadShaders();
     loadScene();
@@ -175,7 +174,6 @@ void Game::render() {
 
     // normal draw
 
-    m_screenLayer.begin();
     Renderer::clear();
     Renderer::beginScene(*m_mainCamera);
     m_shaders.get("Main")->bind();
@@ -183,7 +181,6 @@ void Game::render() {
         m_app.entities.get(*cur)->draw(m_shaders.get("Main"));
     }
     Renderer::endScene();
-    m_screenLayer.end();
 
     if (m_editorMode) {
         Editor::instance().render();
@@ -198,7 +195,6 @@ void Game::run(int minFps) {
     Camera* camera = m_mainCamera;
 
     if (m_editorMode) {
-        Editor::instance().context.setScreenLayer(&m_screenLayer);
         Editor::instance().context.setWindow(&m_window);
         Editor::instance().context.setEntityManager(&m_app.entities);
         Editor::instance().context.setCamrea(camera);
@@ -227,7 +223,6 @@ void Game::run(int minFps) {
             } else if (event.type == Event::EventType::RESIZED) {
                 // When minimized， the width and height will drop to zero
                 if (event.size.width > 0 && event.size.height > 0) {
-                    m_screenLayer.onResize(event.size.width, event.size.height);
                     camera->setViewportSize(event.size.width,
                                             event.size.height);
                 }
@@ -241,7 +236,9 @@ void Game::run(int minFps) {
             update(timePerFrame);
         }
         update(timeSinceLastUpdate);
+        Editor::instance().begin();
         render();
+        Editor::instance().end();
     }
     Editor::instance().close();
     m_window.close();

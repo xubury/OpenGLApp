@@ -9,7 +9,6 @@
 #include "ECS/ECS.hpp"
 #include "Core/Time.hpp"
 #include "ECS/Application.hpp"
-#include "Graphic/ScreenLayer.hpp"
 #include "Graphic/ModelTextures.hpp"
 
 using namespace te;
@@ -51,7 +50,6 @@ class Game {
     ShaderLibrary m_shaders;
     Application<EntityBase> m_app;
     Camera *m_mainCamera;
-    ScreenLayer m_screenLayer;
 
     bool m_editorMode;
 };

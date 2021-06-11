@@ -8,7 +8,6 @@
 #include "Entity/Camera.hpp"
 #include "Window/RenderWindow.hpp"
 #include "Component/Transform.hpp"
-#include "Graphic/ScreenLayer.hpp"
 
 namespace te {
 
@@ -30,17 +29,11 @@ class EditorContext {
 
     RenderWindow *getWindow();
 
-    void setScreenLayer(ScreenLayer *layer);
-
-    ScreenLayer *getScreenLayer();
-
     EntityManager<EntityBase> *getEntityManager();
 
     void setEntityManager(EntityManager<EntityBase> *entites);
 
     void prepareContext();
-
-    void unloadContext();
 
     // get window pos relateive to current context window
     glm::vec2 getCursorPos() const;
@@ -64,8 +57,6 @@ class EditorContext {
 
    private:
     RenderWindow *m_window;
-
-    ScreenLayer *m_screenLayer;
 
     Camera *m_camera;
 

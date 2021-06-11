@@ -21,6 +21,9 @@ class Editor {
 
     EditorContext context;
 
+    void begin();
+    
+    void end();
    private:
     Editor();
 
@@ -40,6 +43,14 @@ class Editor {
     void handleMouseLeftButton();
 
     void handleMouseRightButton();
+
+    Scope<FrameBuffer> m_frameBuffer;
+
+    Scope<FrameBuffer> m_multiSampleFramebuffer;
+
+    int m_width;
+
+    int m_height;
 
     glm::vec3 m_camRayOrigin;
 

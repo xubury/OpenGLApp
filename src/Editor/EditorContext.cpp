@@ -15,12 +15,7 @@ void EditorContext::prepareContext() {
     float rightLen = m_camera->getSegmentLengthClipSpace(
         pos, pos + m_camera->component<Transform>()->getRight());
     m_screenFactor = 1.0f / rightLen;
-
-    m_screenLayer->begin();
-    Primitive::instance().setDrawingView(*m_camera);
 }
-
-void EditorContext::unloadContext() { m_screenLayer->end(); }
 
 void EditorContext::setActiveEntityId(int id) { m_activeEntityId = id; }
 
@@ -37,12 +32,6 @@ Camera* EditorContext::getCamera() { return m_camera; }
 void EditorContext::setWindow(RenderWindow* window) { m_window = window; }
 
 RenderWindow* EditorContext::getWindow() { return m_window; }
-
-void EditorContext::setScreenLayer(ScreenLayer* layer) {
-    m_screenLayer=  layer;
-}
-
-ScreenLayer* EditorContext::getScreenLayer() { return m_screenLayer; }
 
 EntityManager<EntityBase>* EditorContext::getEntityManager() {
     return m_entities;
