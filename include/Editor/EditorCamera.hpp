@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "Window/ActionTarget.hpp"
-#include "Graphic/CameraBase.hpp"
+#include "Graphic/Camera.hpp"
 
 namespace te {
 
@@ -12,7 +12,7 @@ inline const float MOUSE_SENSITIVITY = 0.1f;
 
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 
-class EditorCamera : public CameraBase, protected ActionTarget<Movement> {
+class EditorCamera : public Camera, protected ActionTarget<Movement> {
    public:
     using ActionTarget::processEvent;
     using ActionTarget::processEvents;

@@ -1,4 +1,4 @@
-#include <Editor/EditorCamera.hpp>
+#include "Editor/EditorCamera.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
@@ -7,7 +7,7 @@ namespace te {
 ActionMap<Movement> EditorCamera::s_cameraMovement;
 
 EditorCamera::EditorCamera(int x, int y, int width, int height)
-    : CameraBase(x, y, width, height),
+    : Camera(x, y, width, height),
       ActionTarget(s_cameraMovement),
       m_yaw(0),
       m_pitch(0) {

@@ -1,11 +1,11 @@
-#include "Graphic/CameraBase.hpp"
+#include "Graphic/Camera.hpp"
 #include "Core/Assert.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 namespace te {
 
-CameraBase::CameraBase(int x, int y, int width, int height)
+Camera::Camera(int x, int y, int width, int height)
     : m_viewportX(x),
       m_viewportY(y),
       m_viewportWidth(width),
@@ -13,56 +13,56 @@ CameraBase::CameraBase(int x, int y, int width, int height)
       m_nearZ(0.1),
       m_farZ(100.f),
       m_zoom(45.f) {
-    TE_CORE_ASSERT(width > 0 && height > 0, "CameraBase width or height <= 0.");
+    TE_CORE_ASSERT(width > 0 && height > 0, "Camera width or height <= 0.");
 }
 
-glm::mat4 CameraBase::getView() const {
+glm::mat4 Camera::getView() const {
     const glm::vec3 &up = getUp();
     const glm::vec3 &front = getFront();
     const glm::vec3 &pos = getPosition();
     return glm::lookAt(pos, pos - front, up);
 }
 
-glm::mat4 CameraBase::getProjection() const {
+glm::mat4 Camera::getProjection() const {
     return glm::perspective(glm::radians(getFOV()), getAspect(), getNearZ(),
                             getFarZ());
 }
 
-int CameraBase::getViewportX() const { return m_viewportX; }
+int Camera::getViewportX() const { return m_viewportX; }
 
-int CameraBase::getViewportY() const { return m_viewportY; }
+int Camera::getViewportY() const { return m_viewportY; }
 
-glm::i32vec2 CameraBase::getViewportPos() const {
+glm::i32vec2 Camera::getViewportPos() const {
     return glm::vec2(m_viewportX, m_viewportY);
 }
 
-uint32_t CameraBase::getViewportWidth() const { return m_viewportWidth; }
+uint32_t Camera::getViewportWidth() const { return m_viewportWidth; }
 
-uint32_t CameraBase::getViewportHeight() const { return m_viewportHeight; }
+uint32_t Camera::getViewportHeight() const { return m_viewportHeight; }
 
-glm::u32vec2 CameraBase::getViewportSize() const {
+glm::u32vec2 Camera::getViewportSize() const {
     return glm::vec2(m_viewportWidth, m_viewportHeight);
 }
 
-float CameraBase::getNearZ() const { return m_nearZ; }
+float Camera::getNearZ() const { return m_nearZ; }
 
-float CameraBase::getFarZ() const { return m_farZ; }
+float Camera::getFarZ() const { return m_farZ; }
 
-float CameraBase::getAspect() const {
+float Camera::getAspect() const {
     return (float)m_viewportWidth / m_viewportHeight;
 }
 
-void CameraBase::setViewportSize(float width, float height) {
+void Camera::setViewportSize(float width, float height) {
     m_viewportWidth = width;
     m_viewportHeight = height;
 }
 
-void CameraBase::setNearFar(float near, float far) {
+void Camera::setNearFar(float near, float far) {
     m_nearZ = near;
     m_farZ = far;
 }
 
-void CameraBase::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
+void Camera::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                                   const glm::vec2 &screenPos) const {
     glm::vec2 mouseClipPos((screenPos.x - m_viewportX) / m_viewportWidth,
                            (screenPos.y + m_viewportY) / m_viewportHeight);
@@ -82,7 +82,7 @@ void CameraBase::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
     rayDir = glm::normalize(glm::vec3(rayEnd) - rayOrigin);
 }
 
-glm::vec3 CameraBase::computeWorldToSrceen(const glm::vec3 &worldPos) const {
+glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
     glm::mat4 projectionView = getProjection() * getView();
     glm::vec4 clipPos = projectionView * glm::vec4(worldPos, 1.0f);
     clipPos /= clipPos.w;
@@ -94,7 +94,7 @@ glm::vec3 CameraBase::computeWorldToSrceen(const glm::vec3 &worldPos) const {
     return screenPos;
 }
 
-float CameraBase::getSegmentLengthClipSpace(const glm::vec3 &start,
+float Camera::getSegmentLengthClipSpace(const glm::vec3 &start,
                                             const glm::vec3 &end) const {
     glm::mat4 projectionView = getProjection() * getView();
     glm::vec4 segStart = projectionView * glm::vec4(start, 1.0f);
@@ -112,6 +112,6 @@ float CameraBase::getSegmentLengthClipSpace(const glm::vec3 &start,
     return glm::length(clipSpaceAxis);
 }
 
-float CameraBase::getFOV() const { return m_zoom; }
+float Camera::getFOV() const { return m_zoom; }
 
 }  // namespace te

@@ -41,7 +41,7 @@ class Application {
 
     RenderWindow &getWindow() { return m_window; }
 
-    void setPrimaryCamera(Ref<CameraBase> camera) { m_mainCamera = camera; }
+    void setPrimaryCamera(Ref<Camera> camera) { m_mainCamera = camera; }
 
    private:
     static Application *s_instance;
@@ -57,7 +57,7 @@ class Application {
     RenderWindow m_window;
     LayerStack m_layers;
     Ref<EditorLayer> m_imGuiLayer;
-    Ref<CameraBase> m_mainCamera;
+    Ref<Camera> m_mainCamera;
 };
 
 }  // namespace te

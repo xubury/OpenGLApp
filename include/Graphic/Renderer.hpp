@@ -3,14 +3,14 @@
 
 #include "Graphic/Shader.hpp"
 #include "Graphic/VertexArray.hpp"
-#include "Graphic/CameraBase.hpp"
+#include "Graphic/Camera.hpp"
 
 namespace te {
 
 class Renderer {
    public:
     static void init();
-    static void beginScene(const CameraBase &camera);
+    static void beginScene(const Camera &camera);
     static void endScene();
     static void submit(const Ref<Shader> &shader,
                        const Ref<VertexArray> &vertexArray, GLenum type,

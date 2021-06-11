@@ -11,7 +11,7 @@ Application::Application(const Settings &settings)
                settings.samples) {
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>();
-    m_mainCamera = createRef<CameraBase>(0, 0, settings.width, settings.height);
+    m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
     pushOverlay(m_imGuiLayer);
     s_instance = this;
 }

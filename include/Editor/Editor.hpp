@@ -1,7 +1,6 @@
 #ifndef EDITOR_LAYER_HPP
 #define EDITOR_LAYER_HPP
 
-#include "ECS/ECS.hpp"
 #include "Editor/EditorContext.hpp"
 #include "Editor/EditorCamera.hpp"
 #include "Core/Layer.hpp"
@@ -17,13 +16,9 @@ class EditorLayer : public Layer {
    public:
     EditorLayer();
 
-    ~EditorLayer();
+    void onRender() override;
 
-    void onImGuiRender() override;
-
-    void onEventPoll(const Event &event) override;
-
-    void onEventProcess() override;
+    void close();
 
     EditorContext context;
 
@@ -33,11 +28,7 @@ class EditorLayer : public Layer {
 
     Ref<Camera> getCamera() { return m_camera; }
 
-    void setScene(SceneManager<EntityBase> *scene) { m_scene = scene; }
-
    private:
-    EntityBase *getActiveEntityPtr();
-
     // return the size of clipSize in world space
     float getClipSizeInWorld(float clipSize) const;
 
@@ -107,12 +98,6 @@ class EditorLayer : public Layer {
     Ref<EditorCamera> m_camera;
 
     float m_screenFactor;
-
-    glm::vec2 m_renderOrigin;
-
-    SceneManager<EntityBase> *m_scene;
-
-    uint32_t m_activeEntityId;
 };
 
 }  // namespace te

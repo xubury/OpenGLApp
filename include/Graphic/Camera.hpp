@@ -7,9 +7,9 @@
 
 namespace te {
 
-class TE_API CameraBase : public Transformable {
+class TE_API Camera : public Transformable {
    public:
-    CameraBase(int x, int y, int width, int height);
+    Camera(int x, int y, int width, int height);
 
     glm::mat4 getProjection() const;
 

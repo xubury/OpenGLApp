@@ -7,7 +7,7 @@ Renderer::SceneData Renderer::s_sceneData;
 
 void Renderer::init() {}
 
-void Renderer::beginScene(const CameraBase &camera) {
+void Renderer::beginScene(const Camera &camera) {
     glViewport(camera.getViewportX(), camera.getViewportY(),
                camera.getViewportWidth(), camera.getViewportHeight());
     s_sceneData.projection = camera.getProjection();

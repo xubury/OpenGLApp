@@ -1,6 +1,6 @@
 #include "Core/Assert.hpp"
 #include "Graphic/Primitive.hpp"
-#include "Graphic/CameraBase.hpp"
+#include "Graphic/Camera.hpp"
 #include "Graphic/Renderer.hpp"
 
 namespace te {
@@ -51,7 +51,7 @@ Primitive &Primitive::instance() {
     return s_instance;
 }
 
-void Primitive::setDrawingView(const CameraBase &camera) {
+void Primitive::setDrawingView(const Camera &camera) {
     Renderer::beginScene(camera);
 }
 
