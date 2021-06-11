@@ -79,7 +79,9 @@ EditorLayer::EditorLayer()
       m_leftMouseDown(false),
       m_rightMouseDown(false),
       m_moveType(MoveType::NONE),
-      m_screenFactor(1.0) {
+      m_screenFactor(1.0) {}
+
+void EditorLayer::onAttach() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -104,11 +106,17 @@ EditorLayer::EditorLayer()
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
                              {FramebufferTextureFormat::DEPTH24STENCIL8}};
     m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, true);
-
-    m_camera = createRef<EditorCamera>(0, 0, 800, 600);
+    m_camera = createRef<EditorCamera>(0, 0, m_width, m_height);
     m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
     m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
                                       glm::radians(1.5f)));
+    Application::instance().setPrimaryCamera(m_camera);
+}
+
+void EditorLayer::onDetech() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void EditorLayer::begin() {
@@ -116,7 +124,6 @@ void EditorLayer::begin() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     m_multiSampleFramebuffer->bind();
-    Application::instance().setPrimaryCamera(m_camera);
 }
 
 void EditorLayer::end() {
@@ -488,12 +495,6 @@ void EditorLayer::onImGuiRender() {
     renderModelAxes();
 
     renderCameraAxes(0.2);
-}
-
-EditorLayer::~EditorLayer() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 }
 
 float EditorLayer::getClipSizeInWorld(float clipSize) const {

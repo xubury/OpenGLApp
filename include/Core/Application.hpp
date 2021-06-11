@@ -35,13 +35,19 @@ class Application {
 
     void pushLayer(Ref<Layer> layer);
 
+    void popLayer(Ref<Layer> layer);
+
     void pushOverlay(Ref<Layer> overlay);
+
+    void popOverlay(Ref<Layer> overlay);
 
     Ref<EditorLayer> getEditor() { return m_imGuiLayer; };
 
     RenderWindow &getWindow() { return m_window; }
 
     void setPrimaryCamera(Ref<Camera> camera) { m_mainCamera = camera; }
+
+    void toggleEditor(bool enable);
 
    private:
     static Application *s_instance;

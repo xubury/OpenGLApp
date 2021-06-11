@@ -17,7 +17,9 @@ class EditorLayer : public Layer {
    public:
     EditorLayer();
 
-    ~EditorLayer();
+    void onAttach() override;
+
+    void onDetech() override;
 
     void onImGuiRender() override;
 

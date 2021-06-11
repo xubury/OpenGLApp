@@ -35,7 +35,7 @@ void LayerStack::popLayer(Ref<Layer> layer) {
 void LayerStack::popOverlay(Ref<Layer> overlay) {
     auto iter =
         std::find(m_layers.begin() + m_layerInsertId, m_layers.end(), overlay);
-    if (iter != m_layers.begin() + m_layerInsertId) {
+    if (iter != m_layers.end()) {
         overlay->onDetech();
         m_layers.erase(iter);
     }

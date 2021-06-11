@@ -10,18 +10,22 @@ Application::Application(const Settings &settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples),
       m_editorMode(settings.editor) {
+    s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>();
     // default camera
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
-    pushOverlay(m_imGuiLayer);
-    s_instance = this;
 }
 
 void Application::pushLayer(Ref<Layer> layer) { m_layers.pushLayer(layer); }
 
 void Application::pushOverlay(Ref<Layer> overlay) {
     m_layers.pushOverlay(overlay);
+}
+void Application::popLayer(Ref<Layer> layer) { m_layers.popLayer(layer); }
+
+void Application::popOverlay(Ref<Layer> overlay) {
+    m_layers.popOverlay(overlay);
 }
 
 void Application::run(int minFps) {
@@ -80,6 +84,15 @@ void Application::render() {
         m_imGuiLayer->end();
     }
     m_window.display();
+}
+
+void Application::toggleEditor(bool enable) {
+    if (enable) {
+        pushOverlay(m_imGuiLayer);
+    } else {
+        popOverlay(m_imGuiLayer);
+    }
+    m_editorMode = enable;
 }
 
 }  // namespace te

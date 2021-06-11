@@ -13,6 +13,10 @@ class Layer {
 
     virtual ~Layer() = default;
 
+    Layer(const Layer &) = delete;
+
+    Layer &operator=(const Layer &) = delete;
+
     virtual void onAttach() {}
 
     virtual void onDetech() {}
