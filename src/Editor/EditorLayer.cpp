@@ -169,7 +169,7 @@ void EditorLayer::renderBoundingBox() {
     if (getActiveEntityPtr()->has<BoundingBox>()) {
         const auto bbox = getActiveEntityPtr()->component<BoundingBox>();
         Primitive::instance().drawCube(bbox->getWorldMin(), bbox->getWorldMax(),
-                                       glm::vec4(0.f, 1.0f, 0.f, 1.0f));
+                                       glm::vec4(0.f, 0.6f, 0.6f, 1.0f));
     }
 }
 
