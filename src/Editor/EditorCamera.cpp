@@ -10,7 +10,6 @@ ActionMap<Movement> EditorCamera::s_cameraMovement;
 EditorCamera::EditorCamera(int x, int y, int width, int height)
     : CameraBase(x, y, width, height),
       ActionTarget(s_cameraMovement),
-      m_zoom(45.f),
       m_yaw(0),
       m_pitch(0) {
     setEulerAngle(glm::radians(glm::vec3(m_pitch, m_yaw, 0)));
@@ -35,11 +34,6 @@ EditorCamera::EditorCamera(int x, int y, int width, int height)
          [this](const Event &) { this->move(Movement::DOWNWARD, 0.1f); });
     bind(Action(Event::EventType::MOUSE_WHEEL_SCROLLED),
          [this](const Event &event) { zoom(event.mouseWheel.yOffset); });
-}
-
-glm::mat4 EditorCamera::getProjection() const {
-    return glm::perspective(glm::radians(getFOV()), getAspect(), getNearZ(),
-                            getFarZ());
 }
 
 void EditorCamera::move(Movement dir, float val) {
@@ -78,7 +72,5 @@ void EditorCamera::zoom(float zoom) {
     else if (m_zoom > 45.f)
         m_zoom = 45.f;
 }
-
-float EditorCamera::getFOV() const { return m_zoom; }
 
 }  // namespace te

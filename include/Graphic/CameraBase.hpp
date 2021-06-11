@@ -11,7 +11,7 @@ class TE_API CameraBase : public Transform {
    public:
     CameraBase(int x, int y, int width, int height);
 
-    virtual glm::mat4 getProjection() const = 0;
+    glm::mat4 getProjection() const;
 
     glm::mat4 getView() const;
 
@@ -37,6 +37,8 @@ class TE_API CameraBase : public Transform {
 
     void setNearFar(float near, float far);
 
+    float getFOV() const;
+
     void computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
                           const glm::vec2 &screenPos) const;
 
@@ -44,7 +46,8 @@ class TE_API CameraBase : public Transform {
 
     float getSegmentLengthClipSpace(const glm::vec3 &start,
                                     const glm::vec3 &end) const;
-   private:
+
+   protected:
     int m_viewportX;
     int m_viewportY;
     uint32_t m_viewportWidth;
@@ -52,8 +55,7 @@ class TE_API CameraBase : public Transform {
 
     float m_nearZ;
     float m_farZ;
-
-    bool m_primary;
+    float m_zoom;
 };
 
 }  // namespace te

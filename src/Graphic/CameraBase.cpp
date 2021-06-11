@@ -12,7 +12,7 @@ CameraBase::CameraBase(int x, int y, int width, int height)
       m_viewportHeight(height),
       m_nearZ(0.1),
       m_farZ(100.f),
-      m_primary(false) {
+      m_zoom(45.f) {
     TE_CORE_ASSERT(width > 0 && height > 0, "CameraBase width or height <= 0.");
 }
 
@@ -21,6 +21,11 @@ glm::mat4 CameraBase::getView() const {
     const glm::vec3 &front = getFront();
     const glm::vec3 &pos = getPosition();
     return glm::lookAt(pos, pos - front, up);
+}
+
+glm::mat4 CameraBase::getProjection() const {
+    return glm::perspective(glm::radians(getFOV()), getAspect(), getNearZ(),
+                            getFarZ());
 }
 
 int CameraBase::getViewportX() const { return m_viewportX; }
@@ -106,5 +111,7 @@ float CameraBase::getSegmentLengthClipSpace(const glm::vec3 &start,
     clipSpaceAxis.y /= getAspect();
     return glm::length(clipSpaceAxis);
 }
+
+float CameraBase::getFOV() const { return m_zoom; }
 
 }  // namespace te

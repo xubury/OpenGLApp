@@ -116,6 +116,7 @@ void EditorLayer::begin() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     m_multiSampleFramebuffer->bind();
+    Application::instance().setPrimaryCamera(m_camera);
 }
 
 void EditorLayer::end() {

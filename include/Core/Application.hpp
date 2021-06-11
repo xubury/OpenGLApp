@@ -41,6 +41,8 @@ class Application {
 
     RenderWindow &getWindow() { return m_window; }
 
+    void setPrimaryCamera(Ref<CameraBase> camera) { m_mainCamera = camera; }
+
    private:
     static Application *s_instance;
 
