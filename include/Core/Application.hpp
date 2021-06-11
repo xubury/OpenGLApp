@@ -47,6 +47,11 @@ class Application {
 
     void setPrimaryCamera(Ref<Camera> camera) { m_mainCamera = camera; }
 
+    void setActiveScene(Ref<SceneManager<EntityBase>> scene) {
+        m_imGuiLayer->setActiveScene(scene);
+        m_activeScene = scene;
+    }
+
     void toggleEditor(bool enable);
 
    private:
@@ -64,6 +69,7 @@ class Application {
     LayerStack m_layers;
     Ref<EditorLayer> m_imGuiLayer;
     Ref<Camera> m_mainCamera;
+    Ref<SceneManager<EntityBase>> m_activeScene;
     bool m_editorMode;
 };
 

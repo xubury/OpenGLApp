@@ -34,10 +34,6 @@ class SandboxLayer : public te::Layer {
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 
-    te::SceneManager<te::EntityBase> *getScene() { return &m_scene; }
-
-    te::Ref<te::Camera> getCamera() { return m_camera; }
-
    private:
     void loadShaders();
 
@@ -45,7 +41,7 @@ class SandboxLayer : public te::Layer {
 
    private:
     te::ShaderLibrary m_shaders;
-    te::SceneManager<te::EntityBase> m_scene;
+    te::Ref<te::SceneManager<te::EntityBase>> m_scene;
     // TODO: make a follow camera
     te::Ref<te::Camera> m_camera;
 };
