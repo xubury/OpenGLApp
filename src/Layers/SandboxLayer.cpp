@@ -13,9 +13,10 @@
 
 #include <iostream>
 
-using namespace te;
+namespace te {
 
 void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
+
                              const glm::vec3& impulse,
                              const ModelTextures& textures) {
     int id = m_scene->entities.create<Sphere>(radius, textures);
@@ -171,3 +172,4 @@ void SandboxLayer::onEventPoll(const Event& event) {
 }
 
 void SandboxLayer::onEventProcess() {}
+}  // namespace te

@@ -3,9 +3,13 @@
 
 #include "Core/Application.hpp"
 
-class SandboxApp : public te::Application {
+namespace te {
+
+class SandboxApp : public Application {
    public:
-    SandboxApp(te::Settings settings);
+    SandboxApp(Settings settings);
 };
+
+}  // namespace te
 
 #endif /* SANDBOX_APP_HPP */

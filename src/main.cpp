@@ -13,7 +13,7 @@ int main(int, char **) {
     settings.editor = true;
     settings.frameRateLimit = 120;
 
-    SandboxApp app(settings);
+    te::SandboxApp app(settings);
     app.run(30);
 
     return 0;
