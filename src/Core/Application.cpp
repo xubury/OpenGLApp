@@ -12,9 +12,10 @@ Application::Application(const Settings &settings)
       m_editorMode(settings.editor) {
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
-    m_imGuiLayer = createRef<EditorLayer>();
+    m_imGuiLayer = createRef<EditorLayer>(settings.samples);
     // default camera
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
+    toggleEditor(settings.editor);
 }
 
 void Application::pushLayer(Ref<Layer> layer) { m_layers.pushLayer(layer); }

@@ -15,7 +15,7 @@ struct Axes {
 
 class EditorLayer : public Layer {
    public:
-    EditorLayer();
+    EditorLayer(int samples);
 
     void onAttach() override;
 

@@ -6,5 +6,4 @@ SandboxApp::SandboxApp(te::Settings settings) : te::Application(settings) {
         te::createRef<SandboxLayer>(settings.width, settings.height);
     getEditor()->setScene(sandbox->getScene());
     pushLayer(sandbox);
-    toggleEditor(settings.editor);
 }

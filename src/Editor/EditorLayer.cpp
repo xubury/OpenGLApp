@@ -72,14 +72,30 @@ static bool canActive(ImGuiMouseButton button) {
            !ImGui::IsAnyItemActive();
 }
 
-EditorLayer::EditorLayer()
+EditorLayer::EditorLayer(int samples)
     : Layer("Editor"),
       m_width(800),
       m_height(600),
       m_leftMouseDown(false),
       m_rightMouseDown(false),
       m_moveType(MoveType::NONE),
-      m_screenFactor(1.0) {}
+      m_screenFactor(1.0) {
+    m_camera = createRef<EditorCamera>(0, 0, m_width, m_height);
+
+    FrameBufferSpecification spec;
+    spec.width = m_width;
+    spec.height = m_height;
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB}};
+    m_frameBuffer = createScope<FrameBuffer>(spec);
+
+    spec.samples = samples;
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
+                             {FramebufferTextureFormat::DEPTH24STENCIL8}};
+    m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, true);
+    m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
+    m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
+                                      glm::radians(1.5f)));
+}
 
 void EditorLayer::onAttach() {
     IMGUI_CHECKVERSION();
@@ -95,22 +111,6 @@ void EditorLayer::onAttach() {
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(RenderWindow::getCurrentContext(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
-
-    FrameBufferSpecification spec;
-    spec.width = m_width;
-    spec.height = m_height;
-    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB}};
-    m_frameBuffer = createScope<FrameBuffer>(spec);
-
-    spec.samples = 4;
-    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
-                             {FramebufferTextureFormat::DEPTH24STENCIL8}};
-    m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, true);
-    m_camera = createRef<EditorCamera>(0, 0, m_width, m_height);
-    m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
-    m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
-                                      glm::radians(1.5f)));
-    Application::instance().setPrimaryCamera(m_camera);
 }
 
 void EditorLayer::onDetech() {
@@ -123,6 +123,7 @@ void EditorLayer::begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    Application::instance().setPrimaryCamera(m_camera);
     m_multiSampleFramebuffer->bind();
 }
 
