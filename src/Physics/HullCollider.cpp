@@ -21,8 +21,7 @@ glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
     for (const glm::vec3& vertex : m_vertices) {
         glm::vec4 v(vertex, 1);
 
-        glm::vec3 p =
-            glm::vec3(owner()->component<Transform>()->getMatrix() * v);
+        glm::vec3 p = glm::vec3(owner()->getTransform() * v);
 
         float distance = glm::dot(p, direction);
         if (distance > maxDistance) {

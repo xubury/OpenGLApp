@@ -2,9 +2,7 @@
 #define CAMERA_HPP
 
 #include <glm/glm.hpp>
-#include "Entity/EntityBase.hpp"
 #include "Window/ActionTarget.hpp"
-#include "Component/Transform.hpp"
 #include "Graphic/CameraBase.hpp"
 
 namespace te {

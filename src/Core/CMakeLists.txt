@@ -13,6 +13,7 @@ set(Core_Include
     ${Include_Root}/Base.hpp
     ${Include_Root}/ResourceManager.hpp
     ${Include_Root}/Math.hpp
+    ${Include_Root}/Transform.hpp
     ${Include_Root}/Memory.hpp
     ${Include_Root}/Time.hpp
     ${Include_Root}/Layer.hpp
@@ -23,6 +24,7 @@ set(Core_Src
     ${Src_Root}/Log.cpp
     ${Src_Root}/Memory.cpp
     ${Src_Root}/Time.cpp
+    ${Src_Root}/Transform.cpp
     ${Src_Root}/LayerStack.cpp
     ${Src_Root}/Application.cpp)
 

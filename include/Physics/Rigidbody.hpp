@@ -2,7 +2,6 @@
 #define RIGIDBODY_HPP
 
 #include "Physics/CollisionObject.hpp"
-#include "Component/Transform.hpp"
 
 namespace te {
 

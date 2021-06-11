@@ -21,7 +21,6 @@ set(Layers_Src
     src/Layers/SandboxLayer.cpp)
 
 set(Component_Src
-    src/Component/Transfrom.cpp
     src/Component/BoundingBox.cpp
     src/Component/Light.cpp)
 

@@ -1,5 +1,4 @@
 #include <Editor/EditorCamera.hpp>
-#include <Component/Transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 

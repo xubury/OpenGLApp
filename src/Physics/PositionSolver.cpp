@@ -22,12 +22,12 @@ void PositionSolver::solve(const std::vector<ContactManifold> &manifolds,
 
         if (bodyB) {
             if (bodyB->isKinematic()) {
-                bodyB->owner()->move(correction * massB);
+                bodyB->owner()->translateWorld(correction * massB);
             }
         }
         if (bodyA) {
             if (bodyA->isKinematic()) {
-                bodyA->owner()->move(-correction * massA);
+                bodyA->owner()->translateWorld(-correction * massA);
             }
         }
     }

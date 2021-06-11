@@ -1,6 +1,5 @@
 #include "Entity/ModelEntity.hpp"
 #include "Component/BoundingBox.hpp"
-#include "Component/Transform.hpp"
 #include "Core/ResourceManager.hpp"
 
 namespace te {
@@ -20,7 +19,7 @@ void ModelEntity::loadFromFile(const std::string &path) {
 }
 
 void ModelEntity::draw(const Ref<Shader> &shader) const {
-    m_model->draw(shader, component<Transform>()->getMatrix());
+    m_model->draw(shader, getTransform());
 }
 
 }  // namespace te

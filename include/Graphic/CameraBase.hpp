@@ -2,12 +2,12 @@
 #define CAMERA_BASE_HPP
 
 #include "Core/Export.hpp"
-#include "Component/Transform.hpp"
+#include "Core/Transform.hpp"
 #include <glm/glm.hpp>
 
 namespace te {
 
-class TE_API CameraBase : public Transform {
+class TE_API CameraBase : public Transformable {
    public:
     CameraBase(int x, int y, int width, int height);
 

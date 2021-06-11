@@ -3,10 +3,8 @@
 
 #include <imgui.h>
 #include <glm/glm.hpp>
-#include "Component/Transform.hpp"
 #include "Graphic/FrameBuffer.hpp"
 #include "Window/RenderWindow.hpp"
-#include "Component/Transform.hpp"
 
 namespace te {
 

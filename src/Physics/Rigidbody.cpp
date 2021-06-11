@@ -22,7 +22,7 @@ void Rigidbody::step(const Time &deltaTime) {
         m_velocity += m_force / m_mass * dt;
         // TE_TRACE("speed:{0} {1} {2}", m_velocity.x, m_velocity.y,
         // m_velocity.z);
-        owner()->component<Transform>()->translateWorld(m_velocity * dt);
+        owner()->translateWorld(m_velocity * dt);
         m_force = glm::vec3(0);
     }
 }
@@ -50,8 +50,7 @@ void Rigidbody::setKinematic(bool kinematic) { m_isKinematic = kinematic; }
 glm::vec3 Rigidbody::getCenterOfMass() const { return m_centerOfMass; }
 
 glm::vec3 Rigidbody::getCenterOfMassInWorld() const {
-    return owner()->component<Transform>()->getMatrix() *
-           glm::vec4(m_centerOfMass, 1.0f);
+    return owner()->getTransform() * glm::vec4(m_centerOfMass, 1.0f);
 }
 
 glm::vec3 Rigidbody::getVelocity() const { return m_velocity; }

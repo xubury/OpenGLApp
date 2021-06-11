@@ -4,7 +4,6 @@
 #include "Graphic/Vertex.hpp"
 #include "Graphic/Renderer.hpp"
 
-#include "Component/Transform.hpp"
 #include "Component/BoundingBox.hpp"
 
 namespace te {
@@ -63,8 +62,7 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
 
 void Cube::draw(const Ref<Shader> &shader) const {
     m_textures.prepare(shader);
-    Renderer::submit(shader, m_cube, GL_TRIANGLES, false,
-                     component<Transform>()->getMatrix());
+    Renderer::submit(shader, m_cube, GL_TRIANGLES, false, getTransform());
 }
 
 }  // namespace te

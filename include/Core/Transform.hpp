@@ -1,13 +1,13 @@
 #ifndef TRANSFORM_HPP
 #define TRANSFORM_HPP
 
-#include <ECS/ECS.hpp>
+#include <glm/glm.hpp>
 
 namespace te {
 
-class Transform : public Component<Transform, EntityBase> {
+class Transformable {
    public:
-    Transform();
+    Transformable();
 
     void transform(const glm::mat4 &transform);
 
@@ -27,7 +27,7 @@ class Transform : public Component<Transform, EntityBase> {
     // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
     glm::vec3 getEulerAngle() const;
 
-    const glm::mat4 &getMatrix() const;
+    const glm::mat4 &getTransform() const;
 
     void setPosition(const glm::vec3 &position);
 
@@ -41,16 +41,6 @@ class Transform : public Component<Transform, EntityBase> {
 
    protected:
     glm::mat4 m_transform;
-};
-
-class TransformSystem : public System<Transform, EntityBase> {
-   public:
-    TransformSystem();
-
-    virtual void update(EntityManager<EntityBase> &manager,
-                        const Time &deltaTime) override;
-
-   private:
 };
 
 }  // namespace te

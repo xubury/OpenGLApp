@@ -1,5 +1,4 @@
 #include <Graphic/Shader.hpp>
-#include <Component/Transform.hpp>
 #include <Component/BoundingBox.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
@@ -61,7 +60,7 @@ void BoundingBoxSystem::update(EntityManager<EntityBase> &manager,
     auto view = manager.getByComponents<BoundingBox>(box);
     auto end = view.end();
     for (auto cur = view.begin(); cur != end; ++cur) {
-        box->update(cur->component<Transform>()->getMatrix());
+        box->update(cur->getTransform());
     }
 }
 

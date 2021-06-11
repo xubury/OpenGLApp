@@ -1,6 +1,5 @@
 #include "Layers/SandboxLayer.hpp"
 #include "Component/BoundingBox.hpp"
-#include "Component/Transform.hpp"
 #include "Component/Light.hpp"
 #include "Entity/ModelEntity.hpp"
 #include "Entity/Cube.hpp"
@@ -126,7 +125,6 @@ void SandboxLayer::onAttach() {
     loadScene();
 
     m_scene.systems.add<BoundingBoxSystem>();
-    m_scene.systems.add<TransformSystem>();
     m_scene.systems.add<PhysicsWorld>();
 }
 

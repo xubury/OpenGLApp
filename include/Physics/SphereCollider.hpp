@@ -2,7 +2,6 @@
 #define SPHER_COLLIDER_HPP
 
 #include "Physics/Collider.hpp"
-#include "Component/Transform.hpp"
 
 namespace te {
 

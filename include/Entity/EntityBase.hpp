@@ -1,11 +1,12 @@
 #ifndef ENTITY_BASE_HPP
 #define ENTITY_BASE_HPP
 
-#include <ECS/Entity.hpp>
+#include "ECS/Entity.hpp"
+#include "Core/Transform.hpp"
 
 namespace te {
 
-class EntityBase : public Entity<EntityBase> {
+class EntityBase : public Entity<EntityBase>, public Transformable {
    public:
     EntityBase(const EntityBase &) = delete;
 
@@ -14,16 +15,6 @@ class EntityBase : public Entity<EntityBase> {
     virtual ~EntityBase() = default;
 
     EntityBase(EntityManager<EntityBase> *manager, uint32_t id);
-
-    void setPosition(const glm::vec3 &position);
-
-    glm::vec3 getPosition() const;
-
-    void move(const glm::vec3 &offset);
-
-    void setEulerAngle(const glm::vec3 &angle);
-
-    glm::vec3 getEulerAngle() const;
 
     std::string getName() const;
 

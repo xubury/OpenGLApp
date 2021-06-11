@@ -1,31 +1,31 @@
-#include <Component/Transform.hpp>
+#include "Core/Transform.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
 namespace te {
 
-Transform::Transform() : m_transform(1.0) {}
+Transformable::Transformable() : m_transform(1.0) {}
 
-void Transform::transform(const glm::mat4 &transform) {
+void Transformable::transform(const glm::mat4 &transform) {
     m_transform = transform * m_transform;
 }
 
-void Transform::translateLocal(const glm::vec3 &t) {
+void Transformable::translateLocal(const glm::vec3 &t) {
     m_transform = glm::translate(m_transform, t);
 }
 
-void Transform::translateWorld(const glm::vec3 &t) {
+void Transformable::translateWorld(const glm::vec3 &t) {
     m_transform = glm::translate(glm::mat4(1.0), t) * m_transform;
 }
 
-void Transform::rotateLocal(float radians, const glm::vec3 &axis) {
+void Transformable::rotateLocal(float radians, const glm::vec3 &axis) {
     m_transform = glm::rotate(m_transform, radians, axis);
 }
 
-void Transform::rotateWorld(float radians, const glm::vec3 &axis) {
+void Transformable::rotateWorld(float radians, const glm::vec3 &axis) {
     m_transform = glm::rotate(glm::mat4(1.0), radians, axis) * m_transform;
 }
 
-glm::vec3 Transform::getEulerAngle() const {
+glm::vec3 Transformable::getEulerAngle() const {
     glm::vec3 eulerAngle;
     if (m_transform[2][1] < 1.f) {
         if (m_transform[2][1] > -1.f) {
@@ -45,7 +45,7 @@ glm::vec3 Transform::getEulerAngle() const {
     return eulerAngle;
 }
 
-void Transform::setEulerAngle(glm::vec3 eulerAngle) {
+void Transformable::setEulerAngle(glm::vec3 eulerAngle) {
     glm::vec4 &right = m_transform[0];
     glm::vec4 &up = m_transform[1];
     glm::vec4 &front = m_transform[2];
@@ -64,22 +64,19 @@ void Transform::setEulerAngle(glm::vec3 eulerAngle) {
     up = glm::vec4(glm::cross(glm::vec3(front), glm::vec3(right)), 0);
 }
 
-const glm::mat4 &Transform::getMatrix() const { return m_transform; }
+const glm::mat4 &Transformable::getTransform() const { return m_transform; }
 
-void Transform::setPosition(const glm::vec3 &position) {
+void Transformable::setPosition(const glm::vec3 &position) {
     m_transform[3] = glm::vec4(position, 1.0);
 }
 
-glm::vec3 Transform::getPosition() const { return m_transform[3]; }
+glm::vec3 Transformable::getPosition() const { return m_transform[3]; }
 
-glm::vec3 Transform::getRight() const { return m_transform[0]; }
+glm::vec3 Transformable::getRight() const { return m_transform[0]; }
 
-glm::vec3 Transform::getUp() const { return m_transform[1]; }
+glm::vec3 Transformable::getUp() const { return m_transform[1]; }
 
-glm::vec3 Transform::getFront() const { return m_transform[2]; }
+glm::vec3 Transformable::getFront() const { return m_transform[2]; }
 
-TransformSystem::TransformSystem() {}
-
-void TransformSystem::update(EntityManager<EntityBase> &, const Time &) {}
 
 }
