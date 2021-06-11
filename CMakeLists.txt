@@ -17,6 +17,9 @@ set(Editor_Src
     src/Editor/EditorContext.cpp
     src/Editor/EditorCamera.cpp)
 
+set(App_Src
+    src/Apps/SandboxApp.cpp)
+
 set(Layers_Src
     src/Layers/SandboxLayer.cpp)
 
@@ -53,6 +56,7 @@ find_package(glfw3 REQUIRED)
 
 add_executable(OpenGLApp
     src/main.cpp
+    ${App_Src}
     ${Layers_Src}
     ${Component_Src}
     ${Entity_Src}

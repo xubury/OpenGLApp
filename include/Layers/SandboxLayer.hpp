@@ -5,37 +5,38 @@
 
 #include "Window/RenderWindow.hpp"
 #include "Graphic/Shader.hpp"
+#include "Graphic/Camera.hpp"
 #include "ECS/ECS.hpp"
 #include "Core/Time.hpp"
 #include "Core/Layer.hpp"
-#include "ECS/SceneManager.hpp"
 #include "Graphic/ModelTextures.hpp"
 
-using namespace te;
 
-class SandboxLayer : public Layer {
+class SandboxLayer : public te::Layer {
    public:
-    SandboxLayer();
+    SandboxLayer(int width, int height);
 
-    void onUpdate(const Time &deltaTime) override;
+    void onUpdate(const te::Time &deltaTime) override;
 
     void onRender() override;
 
     void onAttach() override;
 
-    void onEventPoll(const Event &event) override;
+    void onEventPoll(const te::Event &event) override;
 
     void onEventProcess() override;
 
     void addSphere(const glm::vec3 &pos, float radius, const glm::vec3 &impulse,
-                   const ModelTextures &textures);
+                   const te::ModelTextures &textures);
 
     void addCube(const glm::vec3 &pos, float width, float height, float length,
-                 const ModelTextures &textures, bool kinematic);
+                 const te::ModelTextures &textures, bool kinematic);
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 
-    SceneManager<EntityBase> *getScene() { return &m_scene; }
+    te::SceneManager<te::EntityBase> *getScene() { return &m_scene; }
+
+    te::Ref<te::Camera> getCamera() { return m_camera; }
 
    private:
     void loadShaders();
@@ -43,8 +44,10 @@ class SandboxLayer : public Layer {
     void loadScene();
 
    private:
-    ShaderLibrary m_shaders;
-    SceneManager<EntityBase> m_scene;
+    te::ShaderLibrary m_shaders;
+    te::SceneManager<te::EntityBase> m_scene;
+    // TODO: make a follow camera
+    te::Ref<te::Camera> m_camera;
 };
 
 #endif

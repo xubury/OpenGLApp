@@ -25,6 +25,8 @@ class Application {
    public:
     static Application &instance() { return *s_instance; }
 
+    Application(const Settings &settings);
+
     ~Application() = default;
 
     Application(const Application &) = delete;
@@ -34,8 +36,6 @@ class Application {
     void pushLayer(Ref<Layer> layer);
 
     void pushOverlay(Ref<Layer> overlay);
-
-    void run(int minFps);
 
     Ref<EditorLayer> getEditor() { return m_imGuiLayer; };
 
@@ -48,9 +48,9 @@ class Application {
 
     friend int ::main(int argc, char **argv);
 
-    Application(const Settings &settings);
-
     void update(const Time &deltaTime);
+
+    void run(int minFps);
 
     void render();
 
@@ -58,6 +58,7 @@ class Application {
     LayerStack m_layers;
     Ref<EditorLayer> m_imGuiLayer;
     Ref<Camera> m_mainCamera;
+    bool m_editorMode;
 };
 
 }  // namespace te

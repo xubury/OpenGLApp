@@ -1,4 +1,5 @@
 #include "Layers/SandboxLayer.hpp"
+#include "Core/Application.hpp"
 #include "Component/BoundingBox.hpp"
 #include "Component/Light.hpp"
 #include "Entity/ModelEntity.hpp"
@@ -11,6 +12,8 @@
 #include "Graphic/Renderer.hpp"
 
 #include <iostream>
+
+using namespace te;
 
 void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
                              const glm::vec3& impulse,
@@ -118,7 +121,12 @@ void SandboxLayer::loadScene() {
     addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
 }
 
-SandboxLayer::SandboxLayer() : Layer("Sandbox") {}
+SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
+    m_camera = createRef<Camera>(0, 0, width, height);
+    m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
+    m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
+                                      glm::radians(1.5f)));
+}
 
 void SandboxLayer::onAttach() {
     loadShaders();
@@ -126,6 +134,7 @@ void SandboxLayer::onAttach() {
 
     m_scene.systems.add<BoundingBoxSystem>();
     m_scene.systems.add<PhysicsWorld>();
+    Application::instance().setPrimaryCamera(m_camera);
 }
 
 void SandboxLayer::onUpdate(const Time& deltaTime) {
@@ -154,6 +163,8 @@ void SandboxLayer::onEventPoll(const Event& event) {
             default:
                 break;
         }
+    } else if (event.type == Event::RESIZED) {
+        m_camera->setViewportSize(event.size.width, event.size.height);
     }
 }
 

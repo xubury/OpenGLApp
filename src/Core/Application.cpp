@@ -8,13 +8,12 @@ Application *Application::s_instance = nullptr;
 
 Application::Application(const Settings &settings)
     : m_window(settings.width, settings.height, settings.title,
-               settings.samples) {
+               settings.samples),
+      m_editorMode(settings.editor) {
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>();
+    // default camera
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
-    m_mainCamera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
-    m_mainCamera->setEulerAngle(glm::vec3(
-        glm::radians(-25.f), glm::radians(-28.f), glm::radians(1.5f)));
     pushOverlay(m_imGuiLayer);
     s_instance = this;
 }
@@ -36,9 +35,6 @@ void Application::run(int minFps) {
                 event.key.code == Keyboard::ESCAPE) {
                 m_window.setShouldClose(true);
                 break;
-            } else if (event.type == Event::RESIZED) {
-                m_mainCamera->setViewportSize(event.size.width,
-                                              event.size.height);
             }
             for (auto &layer : m_layers) {
                 if (layer->isBlockEvent()) continue;
@@ -66,17 +62,23 @@ void Application::update(const Time &deltaTime) {
 }
 
 void Application::render() {
-    m_imGuiLayer->begin();
+    if (m_editorMode) {
+        m_imGuiLayer->begin();
+    }
     Renderer::beginScene(*m_mainCamera);
     for (auto &layer : m_layers) {
         layer->onRender();
     }
-
-    for (auto &layer : m_layers) {
-        layer->onImGuiRender();
+    if (m_editorMode) {
+        for (auto &layer : m_layers) {
+            layer->onImGuiRender();
+        }
     }
+
     Renderer::endScene();
-    m_imGuiLayer->end();
+    if (m_editorMode) {
+        m_imGuiLayer->end();
+    }
     m_window.display();
 }
 

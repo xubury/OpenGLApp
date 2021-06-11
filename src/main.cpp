@@ -1,6 +1,6 @@
 #include "Core/Application.hpp"
-#include "Layers/SandboxLayer.hpp"
 #include "Core/Log.hpp"
+#include "Apps/SandboxApp.hpp"
 
 int main(int, char **) {
     te::Log::init("Debug.log");
@@ -13,10 +13,7 @@ int main(int, char **) {
     settings.editor = true;
     settings.frameRateLimit = 120;
 
-    te::Application app(settings);
-    Ref<SandboxLayer> sandbox = te::createRef<SandboxLayer>();
-    app.getEditor()->setScene(sandbox->getScene());
-    app.pushLayer(sandbox);
+    SandboxApp app(settings);
     app.run(30);
 
     return 0;
