@@ -39,9 +39,22 @@ class Renderer {
     enum class RenderState { RENDER_NONE, RENDER_SCENE, RENDER_SHADOW };
 
     struct SceneData {
-        Ref<UniformBuffer> projectionViewUBO;
+        Ref<UniformBuffer> cameraUBO;
         Ref<UniformBuffer> lightUBO;
         uint32_t shadowMap;
+    };
+
+    struct CameraData {
+        glm::mat4 projectionView;
+        glm::vec3 viewPos;
+    };
+
+    struct ShadowData {
+        glm::mat4 lightSpaceMatrix;
+        glm::vec3 direction;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
     };
 
     static SceneData s_sceneData;

@@ -17,15 +17,16 @@ Primitive::Primitive() {
     const char *primitiveVertex = R"(
     #version 330 core
         
-    layout (location = 0) in vec3 aPos; layout(location = 1)
-    in vec4 aColor;
-    layout(std140) uniform ProjectionView {
-        mat4 uProjection;
-        mat4 uView;
+    layout (location = 0) in vec3 aPos;
+    layout(location = 1) in vec4 aColor;
+    layout (std140) uniform Camera
+    {
+        mat4 uProjectionView;
+        vec3 uViewPos;
     };
     out vec4 color;
     void main() {
-        gl_Position = uProjection * uView * vec4(aPos, 1.0f);
+        gl_Position = uProjectionView * vec4(aPos, 1.0f);
         color = aColor;
         ;
     }

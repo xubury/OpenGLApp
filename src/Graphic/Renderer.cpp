@@ -9,10 +9,8 @@ Renderer::SceneData Renderer::s_sceneData;
 Renderer::RenderState Renderer::s_state;
 
 void Renderer::init() {
-    s_sceneData.projectionViewUBO =
-        createRef<UniformBuffer>(2 * sizeof(glm::mat4));
-    s_sceneData.lightUBO =
-        createRef<UniformBuffer>(sizeof(glm::mat4) + 4 * sizeof(glm::vec3));
+    s_sceneData.cameraUBO = createRef<UniformBuffer>(sizeof(CameraData));
+    s_sceneData.lightUBO = createRef<UniformBuffer>(sizeof(ShadowData));
 }
 
 void Renderer::beginScene(const Ref<Camera> &camera,
@@ -30,11 +28,12 @@ void Renderer::beginScene(const Ref<Camera> &camera,
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
 
-    s_sceneData.projectionViewUBO->clearData();
-    s_sceneData.projectionViewUBO->setData(
-        glm::value_ptr(camera->getProjection()), sizeof(glm::mat4));
-    s_sceneData.projectionViewUBO->setData(glm::value_ptr(camera->getView()),
-                                           sizeof(glm::mat4));
+    s_sceneData.cameraUBO->clearData();
+    s_sceneData.cameraUBO->setData(
+        glm::value_ptr(camera->getProjection() * camera->getView()),
+        sizeof(glm::mat4));
+    s_sceneData.cameraUBO->setData(glm::value_ptr(camera->getPosition()),
+                                   sizeof(glm::vec3));
 }
 
 void Renderer::endScene() {
@@ -82,8 +81,8 @@ void Renderer::submit(const Ref<Shader> &shader,
     shader->bind();
     prepareTextures(shader, material);
     if (s_state == RenderState::RENDER_SCENE) {
-        shader->setUniformBlock(
-            "ProjectionView", s_sceneData.projectionViewUBO->getBindingPoint());
+        shader->setUniformBlock("Camera",
+                                s_sceneData.cameraUBO->getBindingPoint());
     }
     shader->setUniformBlock("Light", s_sceneData.lightUBO->getBindingPoint());
     shader->setMat4("uModel", transform);

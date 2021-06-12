@@ -1,6 +1,12 @@
 #version 330 core
 out vec4 fragColor;
 
+layout (std140) uniform Camera
+{
+    mat4 uProjectionView;
+    vec3 uViewPos;
+};
+
 uniform sampler2D uShadowMap;
 
 struct Material {
@@ -48,7 +54,6 @@ struct PointLight {
 in vec3 fragPos;
 in vec2 texCoord;
 in vec3 normal;
-in vec3 viewPos;
 in vec4 fragPosLightSpace;
 
 uniform PointLight uPointLight;
@@ -142,7 +147,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
 }
 
 void main() {
-    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 viewDir = normalize(uViewPos - fragPos);
     vec3 result = calculateDirLight(uDirLight, fragPos, normal, viewDir);
     result += calculatePointLight(uPointLight, fragPos, normal, viewDir);
     fragColor = vec4(result, 1.0);
