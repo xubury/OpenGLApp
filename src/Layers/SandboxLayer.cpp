@@ -16,9 +16,8 @@
 namespace te {
 
 void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
-
                              const glm::vec3& impulse,
-                             const ModelTextures& textures) {
+                             const Ref<Material>& textures) {
     int id = m_scene->entities.create<Sphere>(radius, textures);
     EntityBase* sphere = m_scene->entities.get(id);
     sphere->add<Rigidbody>(10, true);
@@ -29,7 +28,7 @@ void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
 }
 
 void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
-                           float length, const ModelTextures& textures,
+                           float length, const Ref<Material>& textures,
                            bool kinematic) {
     int id = m_scene->entities.create<Cube>(width, height, length, textures);
     EntityBase* cube = m_scene->entities.get(id);
@@ -84,10 +83,10 @@ void SandboxLayer::loadScene() {
     light->specular = glm::vec3(0.5f);
     light->castShadow = true;
 
-    ModelTextures textures;
-    textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
-    textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
-    textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+    Ref<Material> textures = createRef<Material>();
+    textures->loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
+    textures->loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
+    textures->loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
 
     glm::vec3 positions[] = {
         glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
@@ -104,10 +103,10 @@ void SandboxLayer::loadScene() {
     //          glm::vec3(0.f, 6.f, 6.f));
 
     // ground
-    ModelTextures groundTextures;
-    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
-    groundTextures.loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
-    groundTextures.loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
+    Ref<Material> groundTextures = createRef<Material>();
+    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
+    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
+    groundTextures->loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
     addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
 }
 
@@ -149,10 +148,10 @@ void SandboxLayer::onEventPoll(const Event& event) {
     if (event.type == Event::KEY_PRESSED) {
         switch (event.key.code) {
             case Keyboard::T: {
-                ModelTextures textures;
-                textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
-                textures.loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
-                textures.loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+                Ref<Material> textures = createRef<Material>();
+                textures->loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
+                textures->loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
+                textures->loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
                 addCube(glm::vec3(5, 5, 0), 1, 1, 1, textures, true);
             } break;
             default:

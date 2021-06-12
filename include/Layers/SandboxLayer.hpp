@@ -9,7 +9,7 @@
 #include "ECS/ECS.hpp"
 #include "Core/Time.hpp"
 #include "Core/Layer.hpp"
-#include "Graphic/ModelTextures.hpp"
+#include "Graphic/Material.hpp"
 
 namespace te {
 
@@ -28,10 +28,10 @@ class SandboxLayer : public Layer {
     void onEventProcess() override;
 
     void addSphere(const glm::vec3 &pos, float radius, const glm::vec3 &impulse,
-                   const ModelTextures &textures);
+                   const Ref<Material> &textures);
 
     void addCube(const glm::vec3 &pos, float width, float height, float length,
-                 const ModelTextures &textures, bool kinematic);
+                 const Ref<Material> &textures, bool kinematic);
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 

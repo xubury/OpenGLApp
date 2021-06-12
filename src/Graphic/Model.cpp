@@ -42,7 +42,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
 void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
-    ModelTextures textures;
+    Ref<Material> textures = createRef<Material>();
     for (std::size_t i = 0; i < mesh->mNumVertices; ++i) {
         Vertex vertex;
         vertex.position.x = mesh->mVertices[i].x;
@@ -69,14 +69,14 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     }
 
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-    processTextures(textures, material, aiTextureType_AMBIENT);
-    processTextures(textures, material, aiTextureType_DIFFUSE);
-    processTextures(textures, material, aiTextureType_SPECULAR);
+    processTextures(*textures, material, aiTextureType_AMBIENT);
+    processTextures(*textures, material, aiTextureType_DIFFUSE);
+    processTextures(*textures, material, aiTextureType_SPECULAR);
     m_meshes.emplace_back((GLenum)mesh->mPrimitiveTypes, vertices, indices,
                           textures);
 }
 
-void Model::processTextures(ModelTextures &textures, aiMaterial *mat,
+void Model::processTextures(Material &textures, aiMaterial *mat,
                             aiTextureType type) {
     for (std::size_t i = 0; i < mat->GetTextureCount(type); ++i) {
         aiString path;

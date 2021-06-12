@@ -21,8 +21,6 @@ class TE_API Material {
 
     const std::list<std::shared_ptr<Texture>>& getList() const;
 
-    void prepare(const Ref<Shader>& shader) const;
-
    private:
     std::list<Ref<Texture>> m_list;
 };

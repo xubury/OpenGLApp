@@ -126,7 +126,7 @@ void EditorLayer::begin() {
     ImGui::NewFrame();
     Application::instance().setMainCamera(m_camera);
     Application::instance().setFramebuffer(m_multiSampleFramebuffer);
-    Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
+    // Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
 }
 
 void EditorLayer::end() {
@@ -134,7 +134,7 @@ void EditorLayer::end() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBuffer->getId());
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
                       GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    Renderer::endScene();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);

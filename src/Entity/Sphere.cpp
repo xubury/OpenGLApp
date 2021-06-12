@@ -8,8 +8,8 @@ static const float SECTOR_COUNT = 100;
 static const float STACK_COUNT = 100;
 
 Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
-               const ModelTextures &textures)
-    : EntityBase(manager, id), m_textures(textures) {
+               Ref<Material> material)
+    : EntityBase(manager, id), m_material(material) {
     int sectorCount = SECTOR_COUNT;
     int stackCount = STACK_COUNT;
     std::vector<Vertex> vertices;
@@ -72,8 +72,8 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
 }
 
 void Sphere::draw(const Ref<Shader> &shader) const {
-    m_textures.prepare(shader);
-    Renderer::submit(shader, m_sphere, GL_TRIANGLES, true, getTransform());
+    Renderer::submit(shader, m_sphere, GL_TRIANGLES, true, getTransform(),
+                     m_material);
 }
 
 }  // namespace te

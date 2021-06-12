@@ -6,6 +6,7 @@
 #include "Graphic/Camera.hpp"
 #include "Graphic/LightBase.hpp"
 #include "Graphic/FrameBuffer.hpp"
+#include "Graphic/Material.hpp"
 
 namespace te {
 
@@ -16,22 +17,27 @@ class Renderer {
     static void beginScene(const Ref<Camera> &camera,
                            const Ref<FrameBuffer> &framebuffer = nullptr);
 
+    static void endScene();
+
+    static void setShadowCaster(LightBase *light);
+
     static void beginShadowCast(const Ref<FrameBuffer> &framebuffer);
 
     static void endShadowCast();
 
-    static void setShadowCaster(LightBase *light);
-
-    static void endScene();
-
     static void submit(const Ref<Shader> &shader,
                        const Ref<VertexArray> &vertexArray, GLenum type,
                        bool indexed,
-                       const glm::mat4 &transform = glm::mat4(1.0));
+                       const glm::mat4 &transform = glm::mat4(1.0),
+                       const Ref<Material> &material = nullptr);
     static void clear(float r = 0.1f, float g = 0.2f, float b = 0.3f,
                       float a = 1.f);
 
    private:
+    static void prepareTextures(const Ref<Shader> &shader,
+                                const Ref<Material> &material);
+    enum class RenderState { RENDER_NONE, RENDER_SCENE, RENDER_SHADOW };
+
     struct SceneData {
         Ref<UniformBuffer> projectionViewUBO;
         Ref<UniformBuffer> lightUBO;
@@ -39,6 +45,7 @@ class Renderer {
     };
 
     static SceneData s_sceneData;
+    static RenderState s_state;
 };
 }  // namespace te
 

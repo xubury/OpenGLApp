@@ -3,21 +3,21 @@
 
 #include "Entity/EntityBase.hpp"
 #include "Graphic/VertexArray.hpp"
-#include "Graphic/ModelTextures.hpp"
+#include "Graphic/Material.hpp"
 
 namespace te {
 
 class Cube : public EntityBase {
    public:
     Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
-         float height, float length, const ModelTextures &textures);
+         float height, float length, Ref<Material> material);
 
     void draw(const Ref<Shader> &shader) const override;
 
    private:
     Ref<VertexArray> m_cube;
 
-    ModelTextures m_textures;
+    Ref<Material> m_material;
 };
 
 }  // namespace te

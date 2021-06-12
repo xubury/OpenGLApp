@@ -6,6 +6,8 @@ namespace te {
 
 Renderer::SceneData Renderer::s_sceneData;
 
+Renderer::RenderState Renderer::s_state;
+
 void Renderer::init() {
     s_sceneData.projectionViewUBO =
         createRef<UniformBuffer>(2 * sizeof(glm::mat4));
@@ -15,6 +17,11 @@ void Renderer::init() {
 
 void Renderer::beginScene(const Ref<Camera> &camera,
                           const Ref<FrameBuffer> &framebuffer) {
+    TE_CORE_ASSERT(
+        s_state == RenderState::RENDER_NONE,
+        "Render state conflict detected! Please check beginScene() and "
+        "endScene() call!");
+    s_state = RenderState::RENDER_SCENE;
     if (framebuffer != nullptr) {
         framebuffer->bind();
     } else {
@@ -30,16 +37,10 @@ void Renderer::beginScene(const Ref<Camera> &camera,
                                            sizeof(glm::mat4));
 }
 
-void Renderer::beginShadowCast(const Ref<FrameBuffer> &framebuffer) {
-    framebuffer->bind();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_FRONT);
-    glViewport(0, 0, framebuffer->getSpecification().width,
-               framebuffer->getSpecification().height);
-    s_sceneData.shadowMap = framebuffer->getDepthAttachmentId();
+void Renderer::endScene() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    s_state = RenderState::RENDER_NONE;
 }
-
-void Renderer::endShadowCast() { glCullFace(GL_BACK); }
 
 void Renderer::setShadowCaster(LightBase *light) {
     s_sceneData.lightUBO->clearData();
@@ -55,16 +56,36 @@ void Renderer::setShadowCaster(LightBase *light) {
                                   sizeof(glm::vec3));
 }
 
+void Renderer::beginShadowCast(const Ref<FrameBuffer> &framebuffer) {
+    TE_CORE_ASSERT(
+        s_state == RenderState::RENDER_NONE,
+        "Render state conflict detected! Please check beginShadowCast() and "
+        "endShadowCast() call!");
+    s_state = RenderState::RENDER_SHADOW;
+    framebuffer->bind();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_FRONT);
+    glViewport(0, 0, framebuffer->getSpecification().width,
+               framebuffer->getSpecification().height);
+    s_sceneData.shadowMap = framebuffer->getDepthAttachmentId();
+}
+
+void Renderer::endShadowCast() {
+    glCullFace(GL_BACK);
+    s_state = RenderState::RENDER_NONE;
+}
+
 void Renderer::submit(const Ref<Shader> &shader,
                       const Ref<VertexArray> &vertexArray, GLenum type,
-                      bool indexed, const glm::mat4 &transform) {
+                      bool indexed, const glm::mat4 &transform,
+                      const Ref<Material> &material) {
     shader->bind();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, s_sceneData.shadowMap);
-    shader->setInt("uShadowMap", 0);
+    prepareTextures(shader, material);
+    if (s_state == RenderState::RENDER_SCENE) {
+        shader->setUniformBlock(
+            "ProjectionView", s_sceneData.projectionViewUBO->getBindingPoint());
+    }
     shader->setUniformBlock("Light", s_sceneData.lightUBO->getBindingPoint());
-    shader->setUniformBlock("ProjectionView",
-                            s_sceneData.projectionViewUBO->getBindingPoint());
     shader->setMat4("uModel", transform);
     vertexArray->bind();
     if (indexed) {
@@ -80,11 +101,41 @@ void Renderer::submit(const Ref<Shader> &shader,
     }
 }
 
-void Renderer::endScene() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-
 void Renderer::clear(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::prepareTextures(const Ref<Shader> &shader,
+                               const Ref<Material> &material) {
+    std::size_t textureIndex = 0;
+    uint32_t ambient = 0;
+    uint32_t diffuse = 0;
+    uint32_t specular = 0;
+
+    if (s_state == RenderState::RENDER_SCENE && material != nullptr) {
+        shader->setFloat("uMaterial.shininess", 64);
+        for (const auto &texture : material->getList()) {
+            std::string name;
+            if (texture->getType() == Texture::AMBIENT) {
+                name = "uMaterial.ambient" + std::to_string(ambient++);
+            } else if (texture->getType() == Texture::DIFFUSE) {
+                name = "uMaterial.diffuse" + std::to_string(diffuse++);
+            } else if (texture->getType() == Texture::SPECULAR) {
+                name = "uMaterial.specular" + std::to_string(specular++);
+            } else {
+                TE_CORE_WARN("Invalid Texture");
+            }
+            glActiveTexture(GL_TEXTURE0 + textureIndex);
+            glBindTexture(GL_TEXTURE_2D, texture->id());
+            // set the GL_TEXTUREX correspondence
+            shader->setInt(name, textureIndex);
+            ++textureIndex;
+        }
+    }
+    glActiveTexture(GL_TEXTURE0 + textureIndex);
+    glBindTexture(GL_TEXTURE_2D, s_sceneData.shadowMap);
+    shader->setInt("uShadowMap", textureIndex);
 }
 
 }  // namespace te

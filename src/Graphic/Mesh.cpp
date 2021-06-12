@@ -6,7 +6,7 @@
 namespace te {
 
 Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
-           const std::vector<uint32_t> &indices, const ModelTextures &textures)
+           const std::vector<uint32_t> &indices, Ref<Material> textures)
     : m_vertices(vertices),
       m_indices(indices),
       m_textures(textures),
@@ -23,9 +23,8 @@ Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
 }
 
 void Mesh::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
-    m_textures.prepare(shader);
     Renderer::submit(shader, m_vertexArray, m_type, !m_indices.empty(),
-                     transform);
+                     transform, m_textures);
 }
 
 const Vertex *Mesh::getVertex() const { return m_vertices.data(); }
