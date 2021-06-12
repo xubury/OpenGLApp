@@ -16,7 +16,7 @@ class TE_API LightBase {
     virtual glm::mat4 getLightSpaceMatrix() const = 0;
     virtual glm::vec3 getDirection() const = 0;
     virtual glm::vec3 getPosition() const = 0;
-    glm::vec3 amibent;
+    glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
     uint32_t shadowMap;

@@ -29,12 +29,13 @@ void Renderer::beginScene(const Ref<Camera> &camera,
     glViewport(camera->getViewportX(), camera->getViewportY(),
                camera->getViewportWidth(), camera->getViewportHeight());
 
-    s_sceneData.cameraUBO->clearData();
     s_sceneData.cameraUBO->setData(
         glm::value_ptr(camera->getProjection() * camera->getView()),
-        sizeof(glm::mat4));
+        offsetof(CameraData, projectionView),
+        sizeof(CameraData::projectionView));
     s_sceneData.cameraUBO->setData(glm::value_ptr(camera->getPosition()),
-                                   sizeof(glm::vec3));
+                                   offsetof(CameraData, viewPos),
+                                   sizeof(CameraData::viewPos));
 }
 
 void Renderer::endScene() {
@@ -43,17 +44,25 @@ void Renderer::endScene() {
 }
 
 void Renderer::setShadowCaster(LightBase *light) {
-    s_sceneData.lightUBO->clearData();
     s_sceneData.lightUBO->setData(glm::value_ptr(light->getLightSpaceMatrix()),
-                                  sizeof(glm::mat4));
+                                  offsetof(ShadowData, lightSpaceMatrix),
+                                  sizeof(ShadowData::lightSpaceMatrix));
+
     s_sceneData.lightUBO->setData(glm::value_ptr(light->getDirection()),
-                                  sizeof(glm::vec3));
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->amibent),
-                                  sizeof(glm::vec3));
+                                  offsetof(ShadowData, direction),
+                                  sizeof(ShadowData::direction));
+
+    s_sceneData.lightUBO->setData(glm::value_ptr(light->ambient),
+                                  offsetof(ShadowData, ambient),
+                                  sizeof(ShadowData::ambient));
+
     s_sceneData.lightUBO->setData(glm::value_ptr(light->specular),
-                                  sizeof(glm::vec3));
+                                  offsetof(ShadowData, specular),
+                                  sizeof(ShadowData::specular));
+
     s_sceneData.lightUBO->setData(glm::value_ptr(light->diffuse),
-                                  sizeof(glm::vec3));
+                                  offsetof(ShadowData, diffuse),
+                                  sizeof(ShadowData::diffuse));
 }
 
 void Renderer::beginShadowCast(const Ref<FrameBuffer> &framebuffer) {

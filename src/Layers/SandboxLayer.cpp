@@ -78,7 +78,7 @@ void SandboxLayer::loadScene() {
 
     m_scene->entities.get(lightSource)->add<Light>();
     auto light = m_scene->entities.get(lightSource)->component<Light>();
-    light->amibent = glm::vec3(0.5f);
+    light->ambient = glm::vec3(0.5f);
     light->diffuse = glm::vec3(0.5f);
     light->specular = glm::vec3(0.5f);
     light->castShadow = true;
@@ -137,7 +137,6 @@ void SandboxLayer::onRender() {
                          Application::instance().getFramebuffer());
     Renderer::clear();
     auto entityIterEnd = m_scene->entities.end();
-    // m_shaders.get("Main")->bind();
     for (auto cur = m_scene->entities.begin(); cur != entityIterEnd; ++cur) {
         m_scene->entities.get(*cur)->draw(m_shaders.get("Main"));
     }

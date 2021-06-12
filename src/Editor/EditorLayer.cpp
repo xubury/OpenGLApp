@@ -43,7 +43,7 @@ static void renderTransformProperty(Transformable& trans) {
 static void renderLightProperty(Light& light) {
     ImGui::Separator();
     ImGui::Text("Light");
-    ImGui::InputFloat3("Ambient", &light.amibent[0], "%.3f");
+    ImGui::InputFloat3("Ambient", &light.ambient[0], "%.3f");
     ImGui::InputFloat3("Diffuse", &light.diffuse[0], "%.3f");
     ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
 }
