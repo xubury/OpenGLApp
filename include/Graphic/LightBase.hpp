@@ -2,7 +2,6 @@
 #define LIGHT_BASE_HPP
 
 #include "Core/Export.hpp"
-#include "Graphic/ShadowBuffer.hpp"
 
 #include <glm/glm.hpp>
 

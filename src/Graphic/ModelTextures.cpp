@@ -24,10 +24,6 @@ const std::list<Ref<Texture>> &ModelTextures::getList() const { return m_list; }
 
 void ModelTextures::prepare(const Ref<Shader> &shader) const {
     const int textureReserved = 1;
-    for (std::size_t i = size() + textureReserved; i < 32; ++i) {
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
     shader->setFloat("uMaterial.shininess", 64);
     uint32_t ambient = 0;
     uint32_t diffuse = 0;
