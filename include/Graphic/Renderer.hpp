@@ -5,6 +5,7 @@
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Camera.hpp"
 #include "Graphic/LightBase.hpp"
+#include "Graphic/FrameBuffer.hpp"
 
 namespace te {
 
@@ -12,11 +13,16 @@ class Renderer {
    public:
     static void init();
 
-    static void beginScene(const Camera &camera);
+    static void beginScene(const Ref<Camera> &camera,
+                           const Ref<FrameBuffer> &framebuffer = nullptr);
 
-    static void setLightSource(LightBase *light);
+    static void beginShadowCast(const Ref<FrameBuffer> &framebuffer);
 
-    static LightBase *getLightSource() { return s_sceneData.light; }
+    static void endShadowCast();
+
+    static void setShadowCaster(LightBase *light);
+
+    static LightBase *getLightSource() { return s_sceneData.shadowCaster; }
 
     static void endScene();
 
@@ -32,7 +38,7 @@ class Renderer {
         glm::mat4 projection;
         glm::mat4 view;
 
-        LightBase *light;
+        LightBase *shadowCaster;
     };
 
     static SceneData s_sceneData;

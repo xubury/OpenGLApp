@@ -82,8 +82,7 @@ void SandboxLayer::loadScene() {
     light->amibent = glm::vec3(0.5f);
     light->diffuse = glm::vec3(0.5f);
     light->specular = glm::vec3(0.5f);
-    Renderer::setLightSource(light.get());
-
+    Renderer::setShadowCaster(light.get());
 
     ModelTextures textures;
     textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
@@ -135,13 +134,15 @@ void SandboxLayer::onUpdate(const Time& deltaTime) {
 }
 
 void SandboxLayer::onRender() {
+    Renderer::beginScene(Application::instance().getMainCamera(),
+                         Application::instance().getFramebuffer());
     Renderer::clear();
-    Renderer::beginScene(*Application::instance().getMainCamera());
     auto entityIterEnd = m_scene->entities.end();
-    m_shaders.get("Main")->bind();
+    // m_shaders.get("Main")->bind();
     for (auto cur = m_scene->entities.begin(); cur != entityIterEnd; ++cur) {
         m_scene->entities.get(*cur)->draw(m_shaders.get("Main"));
     }
+    Renderer::endScene();
 }
 
 void SandboxLayer::onEventPoll(const Event& event) {

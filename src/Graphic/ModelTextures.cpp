@@ -23,6 +23,7 @@ std::size_t ModelTextures::size() const { return m_list.size(); }
 const std::list<Ref<Texture>> &ModelTextures::getList() const { return m_list; }
 
 void ModelTextures::prepare(const Ref<Shader> &shader) const {
+    shader->bind();
     const int textureReserved = 1;
     shader->setFloat("uMaterial.shininess", 64);
     uint32_t ambient = 0;

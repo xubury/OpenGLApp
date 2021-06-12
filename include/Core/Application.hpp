@@ -49,6 +49,12 @@ class Application {
 
     Ref<Camera> getMainCamera() { return m_mainCamera; }
 
+    void setFramebuffer(Ref<FrameBuffer> framebuffer) {
+        m_framebuffer = framebuffer;
+    }
+
+    Ref<FrameBuffer> getFramebuffer() { return m_framebuffer; }
+
     void setActiveScene(Ref<SceneManager<EntityBase>> scene) {
         m_activeScene = scene;
     }
@@ -73,6 +79,7 @@ class Application {
     Ref<EditorLayer> m_imGuiLayer;
     Ref<Camera> m_mainCamera;
     Ref<SceneManager<EntityBase>> m_activeScene;
+    Ref<FrameBuffer> m_framebuffer;
     bool m_editorMode;
 };
 

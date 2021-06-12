@@ -14,7 +14,7 @@ class ShadowLayer : public Layer {
 
    private:
     Ref<Shader> m_shader;
-    Scope<FrameBuffer> m_framebuffer;
+    Ref<FrameBuffer> m_framebuffer;
 };
 
 }  // namespace te

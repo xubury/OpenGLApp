@@ -58,9 +58,9 @@ class EditorLayer : public Layer {
 
     void handleMouseRightButton();
 
-    Scope<FrameBuffer> m_frameBuffer;
+    Ref<FrameBuffer> m_frameBuffer;
 
-    Scope<FrameBuffer> m_multiSampleFramebuffer;
+    Ref<FrameBuffer> m_multiSampleFramebuffer;
 
     int m_width;
 

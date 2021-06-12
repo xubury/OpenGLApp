@@ -87,12 +87,12 @@ EditorLayer::EditorLayer(int samples)
     spec.width = m_width;
     spec.height = m_height;
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB}};
-    m_frameBuffer = createScope<FrameBuffer>(spec);
+    m_frameBuffer = createRef<FrameBuffer>(spec);
 
     spec.samples = samples;
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
                              {FramebufferTextureFormat::DEPTH24STENCIL8}};
-    m_multiSampleFramebuffer = createScope<FrameBuffer>(spec, true);
+    m_multiSampleFramebuffer = createRef<FrameBuffer>(spec, true);
     m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
     m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
                                       glm::radians(1.5f)));
@@ -125,7 +125,8 @@ void EditorLayer::begin() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     Application::instance().setMainCamera(m_camera);
-    m_multiSampleFramebuffer->bind();
+    Application::instance().setFramebuffer(m_multiSampleFramebuffer);
+    Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
 }
 
 void EditorLayer::end() {
@@ -133,7 +134,8 @@ void EditorLayer::end() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBuffer->getId());
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
                       GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    m_multiSampleFramebuffer->unbind();
+    Renderer::endScene();
+
     ImGui::Render();
     glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -401,8 +403,7 @@ void EditorLayer::handleMouseRightButton() {
 }
 
 void EditorLayer::onImGuiRender() {
-    m_multiSampleFramebuffer->bind();
-    Renderer::beginScene(*m_camera);
+    Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
     ImGui::Begin("Settings");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
@@ -501,6 +502,8 @@ void EditorLayer::onImGuiRender() {
     renderModelAxes();
 
     renderCameraAxes(0.2);
+
+    Renderer::endScene();
 }
 
 float EditorLayer::getClipSizeInWorld(float clipSize) const {

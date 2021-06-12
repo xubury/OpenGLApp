@@ -5,8 +5,8 @@
 namespace te {
 
 SandboxApp::SandboxApp(Settings settings) : Application(settings) {
-    pushLayer(createRef<SandboxLayer>(settings.width, settings.height));
     pushLayer(createRef<ShadowLayer>());
+    pushLayer(createRef<SandboxLayer>(settings.width, settings.height));
 }
 
 }  // namespace te
