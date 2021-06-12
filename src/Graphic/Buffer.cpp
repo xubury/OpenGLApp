@@ -52,4 +52,33 @@ void IndexBuffer::update(const uint32_t *indices, std::size_t count) {
     m_count = count;
 }
 
+uint32_t UniformBuffer::s_count = 0;
+
+UniformBuffer::UniformBuffer(std::size_t size) : m_size(size), m_offset(0) {
+    glCreateBuffers(1, &m_bufferId);
+    glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
+    glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_STATIC_DRAW);
+    m_slot = s_count;
+    glBindBufferRange(GL_UNIFORM_BUFFER, m_slot, m_bufferId, 0, size);
+    ++s_count;
+}
+
+UniformBuffer::~UniformBuffer() { glDeleteBuffers(1, &m_bufferId); }
+
+void UniformBuffer::clearData() { m_offset = 0; }
+
+void UniformBuffer::setData(const void *data, std::size_t size) {
+    bind();
+    glBufferSubData(GL_UNIFORM_BUFFER, m_offset, size, data);
+    m_offset += size;
+}
+
+void UniformBuffer::bind() const {
+    glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
+}
+
+void UniformBuffer::unbind() const { glBindBuffer(GL_UNIFORM_BUFFER, 0); }
+
+uint32_t UniformBuffer::getBindingPoint() const { return m_slot; }
+
 }  // namespace te

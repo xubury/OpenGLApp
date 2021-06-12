@@ -16,6 +16,7 @@ Application::Application(const Settings &settings)
     // default camera
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
     toggleEditor(settings.editor);
+    Renderer::init();
 }
 
 void Application::pushLayer(Ref<Layer> layer) { m_layers.pushLayer(layer); }

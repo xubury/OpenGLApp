@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 fragColor;
 
-uniform sampler2D uDepthMap;
+uniform sampler2D uShadowMap;
 
 struct Material {
     sampler2D ambient0;
@@ -15,12 +15,18 @@ struct Material {
     float shininess;
 };
 
+
 struct DirLight {
     vec3 direction;
-
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+};
+
+layout (std140) uniform Light
+{
+    mat4 uLightSpaceMatrix;
+    DirLight uDirLight;
 };
 
 struct PointLight {
@@ -46,7 +52,6 @@ in vec3 viewPos;
 in vec4 fragPosLightSpace;
 
 uniform PointLight uPointLight;
-uniform DirLight uDirLight;
 
 uniform Material uMaterial;
 
@@ -62,16 +67,16 @@ float shadowCalculation(vec4 fragPosLightSpace)
         return 0.0;
 
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    float closestDepth = texture(uDepthMap, projCoords.xy).r;
+    float closestDepth = texture(uShadowMap, projCoords.xy).r;
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     // check whether current frag pos is in shadow
     float bias = 0.005;
     float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(uDepthMap, 0);
+    vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
     for(int x = -1; x <= 1; ++x) {
         for(int y = -1; y <= 1; ++y) {
-            float pcfDepth = texture(uDepthMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            float pcfDepth = texture(uShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
             shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
         }
     }

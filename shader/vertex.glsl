@@ -9,10 +9,25 @@ out vec3 normal;
 out vec3 viewPos;
 out vec4 fragPosLightSpace;
 
-uniform mat4 uProjection;
-uniform mat4 uView;
+layout (std140) uniform ProjectionView
+{
+    mat4 uProjection;
+    mat4 uView;
+};
 uniform mat4 uModel;
-uniform mat4 uLightSpaceMatrix;
+
+struct DirLight {
+    vec3 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+layout (std140) uniform Light
+{
+    mat4 uLightSpaceMatrix;
+    DirLight uDirLight;
+};
 
 
 void main() {

@@ -22,8 +22,6 @@ class Renderer {
 
     static void setShadowCaster(LightBase *light);
 
-    static LightBase *getLightSource() { return s_sceneData.shadowCaster; }
-
     static void endScene();
 
     static void submit(const Ref<Shader> &shader,
@@ -35,10 +33,9 @@ class Renderer {
 
    private:
     struct SceneData {
-        glm::mat4 projection;
-        glm::mat4 view;
-
-        LightBase *shadowCaster;
+        Ref<UniformBuffer> projectionViewUBO;
+        Ref<UniformBuffer> lightUBO;
+        uint32_t shadowMap;
     };
 
     static SceneData s_sceneData;

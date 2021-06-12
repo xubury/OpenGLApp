@@ -14,25 +14,30 @@ struct PrimitiveVertex {
 };
 
 Primitive::Primitive() {
-    const char *primitiveVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "layout (location = 1) in vec4 aColor;\n"
-        "uniform mat4 uProjection; "
-        "uniform mat4 uView;"
-        "out vec4 color;"
-        "void main() {\n"
-        "    gl_Position = uProjection * uView * vec4(aPos, 1.0f);\n"
-        "    color = aColor;\n"
-        "}";
-
-    const char *primitiveFragment =
-        "#version 330 core\n"
-        "out vec4 fragColor;\n"
-        "in vec4 color;\n"
-        "void main() {\n"
-        "    fragColor = color;\n"
-        "}";
+    const char *primitiveVertex = R"(
+    #version 330 core
+        
+    layout (location = 0) in vec3 aPos; layout(location = 1)
+    in vec4 aColor;
+    layout(std140) uniform ProjectionView {
+        mat4 uProjection;
+        mat4 uView;
+    };
+    out vec4 color;
+    void main() {
+        gl_Position = uProjection * uView * vec4(aPos, 1.0f);
+        color = aColor;
+        ;
+    }
+    )";
+    const char *primitiveFragment = R"(
+        #version 330 core
+        out vec4 fragColor;
+        in vec4 color;
+        void main() {
+            fragColor = color;
+        }
+    )";
     m_shader = createRef<Shader>();
     m_shader->compile(primitiveVertex, primitiveFragment);
     m_vertexArray = createRef<VertexArray>();

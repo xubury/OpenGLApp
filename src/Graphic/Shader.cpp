@@ -129,6 +129,13 @@ void Shader::setMat4(const std::string& name, const glm::mat4& value) const {
                        glm::value_ptr(value));
 }
 
+void Shader::setUniformBlock(const std::string& name,
+                             uint32_t bindingPoint) const {
+    uint32_t index = glGetUniformBlockIndex(m_id, name.c_str());
+    if (index != GL_INVALID_INDEX)
+        glUniformBlockBinding(m_id, index, bindingPoint);
+}
+
 void ShaderLibrary::add(const std::string& name) {
     m_library.emplace(name, createRef<Shader>());
 }

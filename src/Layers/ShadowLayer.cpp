@@ -1,6 +1,7 @@
 #include "Layers/ShadowLayer.hpp"
 #include "Core/Application.hpp"
 #include "Graphic/Renderer.hpp"
+#include "Component/Light.hpp"
 
 namespace te {
 
@@ -14,14 +15,27 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
     spec.attachmentsSpecs = {{FramebufferTextureFormat::DEPTH32}};
     m_framebuffer = createRef<FrameBuffer>(spec, false);
 
-    const char *shadowVertex =
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "uniform mat4 uLightSpaceMatrix;\n"
-        "uniform mat4 uModel;\n"
-        "void main() {\n"
-        "    gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);\n"
-        "}";
+    const char *shadowVertex = R"(
+        #version 330 core
+        layout (location = 0) in vec3 aPos;
+        struct DirLight {
+            vec3 direction;
+            vec3 ambient;
+            vec3 diffuse;
+            vec3 specular;
+        };
+
+        layout (std140) uniform Light
+        {
+            mat4 uLightSpaceMatrix;
+            DirLight uDirLight;
+        };
+        uniform mat4 uModel;
+        void main() {
+            gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);
+        }
+
+    )";
     const char *shadowFragment =
         "#version 330 core\n"
         "void main() {\n"
@@ -32,12 +46,18 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
 
 void ShadowLayer::onRender() {
     Renderer::beginShadowCast(m_framebuffer);
-    m_shader->bind();
-    LightBase *light = Renderer::getLightSource();
-    m_shader->setMat4("uLightSpaceMatrix", light->getLightSpaceMatrix());
-
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
+    Light::Handle light;
+    auto view = scene->entities.getByComponents(light);
+    auto end = view.end();
+    for (auto cur = view.begin(); cur != end; ++cur) {
+        if (light->castShadow) {
+            // TODO: mutitple shadow caster is not supproted
+            Renderer::setShadowCaster(light.get());
+            break;
+        }
+    }
     std::size_t size = scene->entities.size();
     for (std::size_t i = 0; i < size; ++i) {
         scene->entities.get(i)->draw(m_shader);

@@ -60,6 +60,33 @@ class IndexBuffer {
     std::size_t m_count;
 };
 
+class UniformBuffer {
+   public:
+    UniformBuffer(std::size_t size);
+
+    ~UniformBuffer();
+
+    UniformBuffer(const UniformBuffer &) = delete;
+
+    UniformBuffer &operator=(const UniformBuffer &) = delete;
+
+    void clearData();
+
+    void setData(const void *data, std::size_t size);
+
+    void bind() const;
+
+    void unbind() const;
+
+    uint32_t getBindingPoint() const;
+   private:
+    uint32_t m_bufferId;
+    std::size_t m_size;
+    uint32_t m_slot;
+    uint32_t m_offset;
+    static uint32_t s_count;
+};
+
 }  // namespace te
 
 #endif /* GL_BUFFER_HPP */

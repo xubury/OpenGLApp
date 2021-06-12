@@ -82,7 +82,7 @@ void SandboxLayer::loadScene() {
     light->amibent = glm::vec3(0.5f);
     light->diffuse = glm::vec3(0.5f);
     light->specular = glm::vec3(0.5f);
-    Renderer::setShadowCaster(light.get());
+    light->castShadow = true;
 
     ModelTextures textures;
     textures.loadFromValue(glm::vec3(1.f), Texture::AMBIENT);

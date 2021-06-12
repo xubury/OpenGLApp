@@ -44,6 +44,8 @@ class TE_API Shader {
 
     void setMat4(const std::string& name, const glm::mat4& value) const;
 
+    void setUniformBlock(const std::string& name, uint32_t bindingPoint) const;
+
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
 

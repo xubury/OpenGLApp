@@ -10,6 +10,7 @@ namespace te {
 class TE_API LightBase {
    public:
     enum LightType { DIRECTIONAL, POINT };
+    LightBase() : castShadow(false) {}
     virtual ~LightBase() = default;
 
     virtual glm::mat4 getLightSpaceMatrix() const = 0;
@@ -19,6 +20,7 @@ class TE_API LightBase {
     glm::vec3 diffuse;
     glm::vec3 specular;
     uint32_t shadowMap;
+    bool castShadow;
 };
 
 }  // namespace te
