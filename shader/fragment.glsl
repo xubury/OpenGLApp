@@ -144,6 +144,6 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
 void main() {
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 result = calculateDirLight(uDirLight, fragPos, normal, viewDir);
-    // result += calculatePointLight(uPointLight, fragPos, normal, viewDir);
+    result += calculatePointLight(uPointLight, fragPos, normal, viewDir);
     fragColor = vec4(result, 1.0);
 }

@@ -54,19 +54,19 @@ void SandboxLayer::loadShaders() {
     m_shaders.get("Main")->loadFromFile("shader/vertex.glsl",
                                         "shader/fragment.glsl");
     m_shaders.get("Main")->bind();
-    m_shaders.get("Main")->setVec3("pointLight.position",
+    m_shaders.get("Main")->setVec3("uPointLight.position",
                                    glm::vec3(0.0f, 0.0f, 2.0f));
-    m_shaders.get("Main")->setVec3("pointLight.direction",
+    m_shaders.get("Main")->setVec3("uPointLight.direction",
                                    glm::vec3(0.0f, 0.0f, -1.0f));
-    m_shaders.get("Main")->setVec3("pointLight.ambient", glm::vec3(0.5f));
-    m_shaders.get("Main")->setVec3("pointLight.diffuse", glm::vec3(0.5f));
-    m_shaders.get("Main")->setVec3("pointLight.specular", glm::vec3(1.0f));
-    m_shaders.get("Main")->setFloat("pointLight.constant", 1.0f);
-    m_shaders.get("Main")->setFloat("pointLight.linear", 0.09f);
-    m_shaders.get("Main")->setFloat("pointLight.quadratic", 0.032f);
-    m_shaders.get("Main")->setFloat("pointLight.cutOff",
+    m_shaders.get("Main")->setVec3("uPointLight.ambient", glm::vec3(0.5f));
+    m_shaders.get("Main")->setVec3("uPointLight.diffuse", glm::vec3(0.5f));
+    m_shaders.get("Main")->setVec3("uPointLight.specular", glm::vec3(1.0f));
+    m_shaders.get("Main")->setFloat("uPointLight.constant", 1.0f);
+    m_shaders.get("Main")->setFloat("uPointLight.linear", 0.09f);
+    m_shaders.get("Main")->setFloat("uPointLight.quadratic", 0.032f);
+    m_shaders.get("Main")->setFloat("uPointLight.cutOff",
                                     glm::cos(glm::radians(12.5f)));
-    m_shaders.get("Main")->setFloat("pointLight.outerCutOff",
+    m_shaders.get("Main")->setFloat("uPointLight.outerCutOff",
                                     glm::cos(glm::radians(15.5f)));
 }
 
