@@ -1,6 +1,7 @@
 #include "Graphic/Renderer.hpp"
-#include "Core/Application.hpp"
+#include "Apps/Application.hpp"
 #include "Graphic/OpenGL.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace te {
 

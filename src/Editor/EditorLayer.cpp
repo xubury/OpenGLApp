@@ -1,5 +1,5 @@
 #include "Editor/EditorLayer.hpp"
-#include "Core/Application.hpp"
+#include "Apps/Application.hpp"
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "Core/Math.hpp"

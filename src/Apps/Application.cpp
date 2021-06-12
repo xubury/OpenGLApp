@@ -1,4 +1,4 @@
-#include "Core/Application.hpp"
+#include "Apps/Application.hpp"
 #include "Graphic/Renderer.hpp"
 #include "Graphic/GLContext.hpp"
 

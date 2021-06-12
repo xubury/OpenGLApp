@@ -18,6 +18,7 @@ set(Editor_Src
     src/Editor/EditorCamera.cpp)
 
 set(App_Src
+    src/Apps/Application.cpp
     src/Apps/SandboxApp.cpp)
 
 set(Layers_Src

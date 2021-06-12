@@ -1,4 +1,3 @@
-#include "Core/Application.hpp"
 #include "Core/Log.hpp"
 #include "Apps/SandboxApp.hpp"
 

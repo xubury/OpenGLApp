@@ -1,7 +1,7 @@
 #ifndef SANDBOX_APP_HPP
 #define SANDBOX_APP_HPP
 
-#include "Core/Application.hpp"
+#include "Apps/Application.hpp"
 
 namespace te {
 
