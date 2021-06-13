@@ -54,13 +54,12 @@ class Application {
 
     Ref<FrameBuffer> getFramebuffer() { return m_framebuffer; }
 
-    void setActiveScene(Ref<SceneManager<EntityBase>> scene) {
-        m_activeScene = scene;
-    }
-
-    Ref<SceneManager<EntityBase>> getActiveScene() { return m_activeScene; }
+    Ref<SceneManager<EntityBase>> getActiveScene() { return m_scene; }
 
     void toggleEditor(bool enable);
+
+   protected:
+    Ref<SceneManager<EntityBase>> m_scene;
 
    private:
     static Application *s_instance;
@@ -77,7 +76,6 @@ class Application {
     LayerStack m_layers;
     Ref<EditorLayer> m_imGuiLayer;
     Ref<Camera> m_mainCamera;
-    Ref<SceneManager<EntityBase>> m_activeScene;
     Ref<FrameBuffer> m_framebuffer;
     bool m_editorMode;
 };

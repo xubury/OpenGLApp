@@ -13,10 +13,12 @@ Application::Application(const Settings &settings)
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>(settings.samples);
-    // default camera
-    m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
     toggleEditor(settings.editor);
     Renderer::init();
+
+    // default camera
+    m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
+    m_scene = createRef<SceneManager<EntityBase>>();
 }
 
 void Application::pushLayer(Ref<Layer> layer) { m_layers.pushLayer(layer); }
@@ -62,6 +64,7 @@ void Application::run(int minFps) {
 }
 
 void Application::update(const Time &deltaTime) {
+    m_scene->update(deltaTime);
     for (auto &layer : m_layers) {
         layer->onUpdate(deltaTime);
     }

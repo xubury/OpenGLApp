@@ -42,7 +42,6 @@ class SandboxLayer : public Layer {
 
    private:
     ShaderLibrary m_shaders;
-    Ref<SceneManager<EntityBase>> m_scene;
     // TODO: make a follow camera
     Ref<Camera> m_camera;
 };

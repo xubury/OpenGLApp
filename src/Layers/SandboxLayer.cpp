@@ -18,8 +18,10 @@ namespace te {
 void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
                              const glm::vec3& impulse,
                              const Ref<Material>& textures) {
-    int id = m_scene->entities.create<Sphere>(radius, textures);
-    EntityBase* sphere = m_scene->entities.get(id);
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
+    int id = scene->entities.create<Sphere>(radius, textures);
+    EntityBase* sphere = scene->entities.get(id);
     sphere->add<Rigidbody>(10, true);
     sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
     sphere->component<Rigidbody>()->addImpulse(impulse);
@@ -30,8 +32,10 @@ void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
 void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
                            float length, const Ref<Material>& textures,
                            bool kinematic) {
-    int id = m_scene->entities.create<Cube>(width, height, length, textures);
-    EntityBase* cube = m_scene->entities.get(id);
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
+    int id = scene->entities.create<Cube>(width, height, length, textures);
+    EntityBase* cube = scene->entities.get(id);
     cube->add<Rigidbody>(10, kinematic);
     cube->add<HullCollider>();
     MakeCubeCollider(*cube->component<HullCollider>().get(), width, height,
@@ -41,8 +45,10 @@ void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
 }
 
 void SandboxLayer::addModel(const std::string& path, const glm::vec3& pos) {
-    int id = m_scene->entities.create<ModelEntity>();
-    EntityBase* model = m_scene->entities.get(id);
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
+    int id = scene->entities.create<ModelEntity>();
+    EntityBase* model = scene->entities.get(id);
     dynamic_cast<ModelEntity*>(model)->loadFromFile(path);
     model->setPosition(pos);
     model->setName("model");
@@ -70,9 +76,11 @@ void SandboxLayer::loadShaders() {
 }
 
 void SandboxLayer::loadScene() {
-    uint32_t lightSource = m_scene->entities.create<Light>();
-    m_scene->entities.get(lightSource)->setName("Directional Light");
-    auto light = dynamic_cast<Light*>(m_scene->entities.get(lightSource));
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
+    uint32_t lightSource = scene->entities.create<Light>();
+    auto light = dynamic_cast<Light*>(scene->entities.get(lightSource));
+    light->setName("Directional Light");
     light->add<ShadowMap>(10.0f);
     light->setPosition(glm::vec3(0, 8, 8));
     light->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
@@ -112,30 +120,26 @@ SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
     m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
     m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
                                       glm::radians(1.5f)));
-    m_scene = createRef<SceneManager<EntityBase>>();
 }
 
 void SandboxLayer::onAttach() {
     loadShaders();
     loadScene();
 
-    m_scene->systems.add<BoundingBoxSystem>();
-    m_scene->systems.add<PhysicsWorld>();
     Application::instance().setMainCamera(m_camera);
-    Application::instance().setActiveScene(m_scene);
 }
 
-void SandboxLayer::onUpdate(const Time& deltaTime) {
-    m_scene->update(deltaTime);
-}
+void SandboxLayer::onUpdate(const Time&) {}
 
 void SandboxLayer::onRender() {
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
     Renderer::beginScene(Application::instance().getMainCamera(),
                          Application::instance().getFramebuffer());
     Renderer::clear();
-    auto entityIterEnd = m_scene->entities.end();
-    for (auto cur = m_scene->entities.begin(); cur != entityIterEnd; ++cur) {
-        m_scene->entities.get(*cur)->draw(m_shaders.get("Main"));
+    auto entityIterEnd = scene->entities.end();
+    for (auto cur = scene->entities.begin(); cur != entityIterEnd; ++cur) {
+        scene->entities.get(*cur)->draw(m_shaders.get("Main"));
     }
     Renderer::endScene();
 }
