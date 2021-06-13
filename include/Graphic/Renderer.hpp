@@ -7,6 +7,7 @@
 #include "Graphic/LightBase.hpp"
 #include "Graphic/FrameBuffer.hpp"
 #include "Graphic/Material.hpp"
+#include "Component/ShadowMap.hpp"
 
 namespace te {
 
@@ -19,9 +20,8 @@ class Renderer {
 
     static void endScene();
 
-    static void setShadowCaster(LightBase *light);
-
-    static void beginShadowCast(const Ref<FrameBuffer> &framebuffer);
+    static void beginShadowCast(ShadowMap *light,
+                                const Ref<FrameBuffer> &framebuffer);
 
     static void endShadowCast();
 

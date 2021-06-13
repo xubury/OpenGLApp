@@ -368,8 +368,8 @@ inline ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::getComponent(
 
 template <class ENTITY>
 template <typename COMPONENT>
-inline const ComponentHandle<COMPONENT, ENTITY> EntityManager<ENTITY>::getComponent(
-    uint32_t id) const {
+inline const ComponentHandle<COMPONENT, ENTITY>
+EntityManager<ENTITY>::getComponent(uint32_t id) const {
     if (hasComponent<COMPONENT>(id)) {
         return ComponentHandle<COMPONENT, ENTITY>(this, id);
     }
@@ -387,6 +387,8 @@ template <class ENTITY>
 template <typename COMPONENT>
 inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) {
     uint32_t family = COMPONENT::family();
+    TE_CORE_ASSERT(id < m_componentsEntities[family].get()->size(),
+                   "Component id invalid!");
     return &static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())
                 ->at(id);
 }

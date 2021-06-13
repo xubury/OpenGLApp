@@ -39,7 +39,8 @@ set(Graphic_Src
     ${Src_Root}/Material.cpp
     ${Src_Root}/Mesh.cpp
     ${Src_Root}/Model.cpp
-    ${Src_Root}/FrameBuffer.cpp)
+    ${Src_Root}/FrameBuffer.cpp
+    ${Src_Root}/LightBase.cpp)
 
 add_library(te-graphic
     ${Graphic_Src}

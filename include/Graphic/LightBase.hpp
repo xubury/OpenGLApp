@@ -2,25 +2,26 @@
 #define LIGHT_BASE_HPP
 
 #include "Core/Export.hpp"
+#include "Core/Transform.hpp"
 
 #include <glm/glm.hpp>
 
 namespace te {
 
-class TE_API LightBase {
+class TE_API LightBase : virtual public Transformable {
    public:
-    enum LightType { DIRECTIONAL, POINT };
-    LightBase() : castShadow(false) {}
+    enum Type { DIRECTIONAL_LIGHT, POINT_LIGHT };
+
+    LightBase(Type type);
+
     virtual ~LightBase() = default;
 
-    virtual glm::mat4 getLightSpaceMatrix() const = 0;
-    virtual glm::vec3 getDirection() const = 0;
-    virtual glm::vec3 getPosition() const = 0;
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
-    uint32_t shadowMap;
-    bool castShadow;
+
+   private:
+    Type m_type;
 };
 
 }  // namespace te

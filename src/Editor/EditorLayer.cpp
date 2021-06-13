@@ -5,7 +5,7 @@
 #include "Core/Math.hpp"
 #include "Graphic/Primitive.hpp"
 #include "Component/BoundingBox.hpp"
-#include "Component/Light.hpp"
+#include "Entity/Light.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Graphic/Renderer.hpp"
 #include <iostream>
@@ -40,7 +40,7 @@ static void renderTransformProperty(Transformable& trans) {
     }
 }
 
-static void renderLightProperty(Light& light) {
+static void renderLightProperty(LightBase& light) {
     ImGui::Separator();
     ImGui::Text("Light");
     ImGui::InputFloat3("Ambient", &light.ambient[0], "%.3f");
@@ -70,7 +70,7 @@ static void renderRigidbodyProperty(Rigidbody& body) {
 
 static bool canActive(ImGuiMouseButton button) {
     return ImGui::IsMouseClicked(button) && !ImGui::IsAnyItemHovered() &&
-           !ImGui::IsAnyItemActive();
+           !ImGui::IsAnyItemActive() && ImGui::IsWindowHovered();
 }
 
 EditorLayer::EditorLayer(int samples)
@@ -126,7 +126,6 @@ void EditorLayer::begin() {
     ImGui::NewFrame();
     Application::instance().setMainCamera(m_camera);
     Application::instance().setFramebuffer(m_multiSampleFramebuffer);
-    // Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
 }
 
 void EditorLayer::end() {
@@ -402,6 +401,12 @@ void EditorLayer::handleMouseRightButton() {
     m_mouseClickPos = mousePos;
 }
 
+void EditorLayer::onUpdate(const Time&) {
+    m_camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
+                               context.getCursorPos());
+    buildModelAxes(0.2);
+}
+
 void EditorLayer::onImGuiRender() {
     Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
     ImGui::Begin("Settings");
@@ -419,11 +424,12 @@ void EditorLayer::onImGuiRender() {
             auto entity = getActiveEntityPtr();
             ImGui::Text("Name: %s", entity->getName().c_str());
             renderTransformProperty(*entity);
-            if (entity->has<Light>()) {
-                renderLightProperty(*entity->component<Light>().get());
-            }
             if (entity->has<Rigidbody>()) {
                 renderRigidbodyProperty(*entity->component<Rigidbody>().get());
+            }
+            LightBase* light = dynamic_cast<LightBase*>(entity);
+            if (light) {
+                renderLightProperty(*light);
             }
             ImGui::Separator();
             ImGui::TreePop();
@@ -459,6 +465,10 @@ void EditorLayer::onImGuiRender() {
         // from the UV.
         ImGui::Image((void*)(intptr_t)m_frameBuffer->getColorAttachmentId(0),
                      wsize, ImVec2(0, 1), ImVec2(1, 0));
+        handleMouseLeftButton();
+
+        handleMouseRightButton();
+
         ImGui::EndChild();
     }
     ImGui::End();
@@ -485,15 +495,8 @@ void EditorLayer::onImGuiRender() {
     }
     ImGui::End();
 
-    m_camera->computeCameraRay(m_camRayOrigin, m_camRayDir,
-                               context.getCursorPos());
-    buildModelAxes(0.2);
-
     // clear depth buffer to make axes not hidden by object
     glClear(GL_DEPTH_BUFFER_BIT);
-    handleMouseLeftButton();
-
-    handleMouseRightButton();
 
     renderFps();
 

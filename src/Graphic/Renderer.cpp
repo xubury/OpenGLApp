@@ -43,12 +43,25 @@ void Renderer::endScene() {
     s_state = RenderState::RENDER_NONE;
 }
 
-void Renderer::setShadowCaster(LightBase *light) {
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->getLightSpaceMatrix()),
-                                  offsetof(ShadowData, lightSpaceMatrix),
-                                  sizeof(ShadowData::lightSpaceMatrix));
+void Renderer::beginShadowCast(ShadowMap *shadowMap,
+                               const Ref<FrameBuffer> &framebuffer) {
+    TE_CORE_ASSERT(
+        s_state == RenderState::RENDER_NONE,
+        "Render state conflict detected! Please check beginShadowCast() and "
+        "endShadowCast() call!");
+    s_state = RenderState::RENDER_SHADOW;
+    framebuffer->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_FRONT);
+    glViewport(0, 0, framebuffer->getSpecification().width,
+               framebuffer->getSpecification().height);
+    LightBase *light = dynamic_cast<LightBase *>(shadowMap->owner());
+    s_sceneData.lightUBO->setData(
+        glm::value_ptr(shadowMap->getLightSpaceMatrix()),
+        offsetof(ShadowData, lightSpaceMatrix),
+        sizeof(ShadowData::lightSpaceMatrix));
 
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->getDirection()),
+    s_sceneData.lightUBO->setData(glm::value_ptr(light->getFront()),
                                   offsetof(ShadowData, direction),
                                   sizeof(ShadowData::direction));
 
@@ -63,19 +76,6 @@ void Renderer::setShadowCaster(LightBase *light) {
     s_sceneData.lightUBO->setData(glm::value_ptr(light->diffuse),
                                   offsetof(ShadowData, diffuse),
                                   sizeof(ShadowData::diffuse));
-}
-
-void Renderer::beginShadowCast(const Ref<FrameBuffer> &framebuffer) {
-    TE_CORE_ASSERT(
-        s_state == RenderState::RENDER_NONE,
-        "Render state conflict detected! Please check beginShadowCast() and "
-        "endShadowCast() call!");
-    s_state = RenderState::RENDER_SHADOW;
-    framebuffer->bind();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_FRONT);
-    glViewport(0, 0, framebuffer->getSpecification().width,
-               framebuffer->getSpecification().height);
     s_sceneData.shadowMap = framebuffer->getDepthAttachmentId();
 }
 

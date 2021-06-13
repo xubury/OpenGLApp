@@ -6,7 +6,7 @@
 
 namespace te {
 
-class EntityBase : public Entity<EntityBase>, public Transformable {
+class EntityBase : public Entity<EntityBase>, virtual public Transformable {
    public:
     EntityBase(const EntityBase &) = delete;
 

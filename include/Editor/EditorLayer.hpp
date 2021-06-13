@@ -21,6 +21,8 @@ class EditorLayer : public Layer {
 
     void onDetech() override;
 
+    void onUpdate(const Time &deltaTime) override;
+
     void onImGuiRender() override;
 
     void onEventPoll(const Event &event) override;

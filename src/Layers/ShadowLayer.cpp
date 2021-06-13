@@ -1,7 +1,8 @@
 #include "Layers/ShadowLayer.hpp"
 #include "Apps/Application.hpp"
 #include "Graphic/Renderer.hpp"
-#include "Component/Light.hpp"
+#include "Entity/Light.hpp"
+#include "Component/ShadowMap.hpp"
 
 namespace te {
 
@@ -12,7 +13,8 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
     FrameBufferSpecification spec;
     spec.width = SHADOW_MAP_WIDTH;
     spec.height = SHADOW_MAP_HEIGHT;
-    spec.attachmentsSpecs = {{FramebufferTextureFormat::DEPTH32}};
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
+                             {FramebufferTextureFormat::DEPTH32}};
     m_framebuffer = createRef<FrameBuffer>(spec, false);
 
     const char *shadowVertex = R"(
@@ -31,38 +33,53 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
             DirLight uDirLight;
         };
         uniform mat4 uModel;
+        out float zValue;
         void main() {
             gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);
+            zValue = gl_Position.z / gl_Position.w;
         }
 
     )";
-    const char *shadowFragment =
-        "#version 330 core\n"
-        "void main() {\n"
-        "}";
+    const char *shadowFragment = R"(
+        #version 330 core
+        out vec4 fragColor;
+        in float zValue;
+        void main() {
+            fragColor = vec4(vec3(zValue), 1.0);
+        };
+    )";
     m_shader = createRef<Shader>();
     m_shader->compile(shadowVertex, shadowFragment);
 }
 
+void ShadowLayer::onUpdate(const Time &) {}
+
 void ShadowLayer::onRender() {
-    Renderer::beginShadowCast(m_framebuffer);
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
-    Light::Handle light;
-    auto view = scene->entities.getByComponents(light);
-    auto end = view.end();
-    for (auto cur = view.begin(); cur != end; ++cur) {
-        if (light->castShadow) {
-            // TODO: mutitple shadow caster is not supproted
-            Renderer::setShadowCaster(light.get());
-            break;
-        }
-    }
+    ShadowMap::Handle shadowMap;
+    scene->entities.getByComponents(shadowMap).begin();
+    if (!shadowMap.isValid()) return;
+
+    Ref<Camera> cam = Application::instance().getMainCamera();
+    shadowMap->computeCameraBound(cam);
+
+    Renderer::beginShadowCast(shadowMap.get(), m_framebuffer);
     std::size_t size = scene->entities.size();
     for (std::size_t i = 0; i < size; ++i) {
         scene->entities.get(i)->draw(m_shader);
     }
     Renderer::endShadowCast();
+}
+
+void ShadowLayer::onImGuiRender() {
+    ImGui::Begin("Shadow map");
+    {
+        ImVec2 wsize = ImGui::GetWindowSize();
+        ImGui::Image((void *)(intptr_t)m_framebuffer->getColorAttachmentId(0),
+                     wsize, ImVec2(0, 1), ImVec2(1, 0));
+    }
+    ImGui::End();
 }
 
 }  // namespace te

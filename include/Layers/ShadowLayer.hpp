@@ -10,7 +10,11 @@ class ShadowLayer : public Layer {
    public:
     ShadowLayer();
 
+    void onUpdate(const Time &deltaTime) override;
+
     void onRender() override;
+
+    void onImGuiRender() override;
 
    private:
     Ref<Shader> m_shader;

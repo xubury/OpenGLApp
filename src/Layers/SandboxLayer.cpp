@@ -1,7 +1,7 @@
 #include "Layers/SandboxLayer.hpp"
 #include "Apps/Application.hpp"
 #include "Component/BoundingBox.hpp"
-#include "Component/Light.hpp"
+#include "Entity/Light.hpp"
 #include "Entity/ModelEntity.hpp"
 #include "Entity/Cube.hpp"
 #include "Entity/Sphere.hpp"
@@ -70,18 +70,15 @@ void SandboxLayer::loadShaders() {
 }
 
 void SandboxLayer::loadScene() {
-    uint32_t lightSource = m_scene->entities.create<EntityBase>();
+    uint32_t lightSource = m_scene->entities.create<Light>();
     m_scene->entities.get(lightSource)->setName("Directional Light");
-    m_scene->entities.get(lightSource)->setPosition(glm::vec3(0, 8, 8));
-    m_scene->entities.get(lightSource)
-        ->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
-
-    m_scene->entities.get(lightSource)->add<Light>();
-    auto light = m_scene->entities.get(lightSource)->component<Light>();
+    auto light = dynamic_cast<Light*>(m_scene->entities.get(lightSource));
+    light->add<ShadowMap>(10.0f);
+    light->setPosition(glm::vec3(0, 8, 8));
+    light->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
     light->ambient = glm::vec3(0.5f);
     light->diffuse = glm::vec3(0.5f);
     light->specular = glm::vec3(0.5f);
-    light->castShadow = true;
 
     Ref<Material> textures = createRef<Material>();
     textures->loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
