@@ -37,6 +37,7 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
         void main() {
             gl_Position = uLightSpaceMatrix * uModel * vec4(aPos, 1.0);
             zValue = gl_Position.z / gl_Position.w;
+            zValue = smoothstep(0, 1.0, zValue);
         }
 
     )";

@@ -41,7 +41,7 @@ class Renderer {
     struct SceneData {
         Ref<UniformBuffer> cameraUBO;
         Ref<UniformBuffer> lightUBO;
-        uint32_t shadowMap;
+        uint32_t shadowMap = 0;
     };
 
     struct CameraData {

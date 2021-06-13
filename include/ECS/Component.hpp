@@ -80,12 +80,12 @@ class Component : public VComponent<ENTITY> {
 
 template <typename COMPONENT, typename ENTITY>
 inline bool ComponentHandle<COMPONENT, ENTITY>::isValid() const {
-    return m_manager != nullptr;
+    return m_manager != nullptr && m_entityID != INVALID_ENTITY_ID;
 }
 
 template <typename COMPONENT, typename ENTITY>
 ComponentHandle<COMPONENT, ENTITY>::ComponentHandle()
-    : m_manager(nullptr), m_entityID(-1) {}
+    : m_manager(nullptr), m_entityID(INVALID_ENTITY_ID) {}
 
 template <typename COMPONENT, typename ENTITY>
 ComponentHandle<COMPONENT, ENTITY>::ComponentHandle(

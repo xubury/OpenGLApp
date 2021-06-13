@@ -7,7 +7,8 @@
 
 namespace te {
 
-const int MAX_COMPONENTS = 32;
+const inline int MAX_COMPONENTS = 32;
+const inline uint32_t INVALID_ENTITY_ID = 0xffffffff; 
 
 }
 
