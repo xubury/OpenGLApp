@@ -81,7 +81,7 @@ void SandboxLayer::loadScene() {
     uint32_t lightSource = scene->entities.create<Light>();
     auto light = dynamic_cast<Light*>(scene->entities.get(lightSource));
     light->setName("Directional Light");
-    light->add<ShadowMap>(10.0f);
+    light->add<ShadowMap>(20.f);
     light->setPosition(glm::vec3(0, 8, 8));
     light->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
     light->ambient = glm::vec3(0.5f);

@@ -53,9 +53,7 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
     m_shader->compile(shadowVertex, shadowFragment);
 }
 
-void ShadowLayer::onUpdate(const Time &) {}
-
-void ShadowLayer::onRender() {
+void ShadowLayer::onUpdate(const Time &) {
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
     ShadowMap::Handle shadowMap;
@@ -63,7 +61,15 @@ void ShadowLayer::onRender() {
     if (!shadowMap.isValid()) return;
 
     Ref<Camera> cam = Application::instance().getMainCamera();
-    shadowMap->computeCameraBound(cam);
+    shadowMap->computeLightSpaceMatrix(cam);
+}
+
+void ShadowLayer::onRender() {
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
+    ShadowMap::Handle shadowMap;
+    scene->entities.getByComponents(shadowMap).begin();
+    if (!shadowMap.isValid()) return;
 
     Renderer::beginShadowCast(shadowMap.get(), m_framebuffer);
     std::size_t size = scene->entities.size();

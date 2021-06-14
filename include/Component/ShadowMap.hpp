@@ -10,14 +10,12 @@ class ShadowMap : public Component<ShadowMap, EntityBase> {
    public:
     ShadowMap(float dist);
 
-    // set shadow map perspective matrix cover the camera's frustum
-    void computeCameraBound(const Ref<Camera>& camera);
+    // compute lightSpaceMatrix from the camera's frustum
+    void computeLightSpaceMatrix(const Ref<Camera>& camera);
 
     glm::mat4 getLightSpaceMatrix() const;
 
    private:
-    void setFrustum(const glm::vec3& size);
-
     glm::mat4 m_lightSapceMatrix;
     float m_shadowDist;
 };
