@@ -23,7 +23,8 @@ set(App_Src
 
 set(Layers_Src
     src/Layers/SandboxLayer.cpp
-    src/Layers/ShadowLayer.cpp)
+    src/Layers/ShadowLayer.cpp
+    src/Layers/GBufferLayer.cpp)
 
 set(Component_Src
     src/Component/BoundingBox.cpp
