@@ -13,8 +13,12 @@ Application::Application(const Settings &settings)
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>(settings.samples);
-    toggleEditor(settings.editor);
     Renderer::init();
+    if (m_editorMode) {
+        pushOverlay(m_imGuiLayer);
+    } else {
+        popOverlay(m_imGuiLayer);
+    }
 
     // default camera
     m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
@@ -39,10 +43,11 @@ void Application::run(int minFps) {
     while (!m_window.shouldClose()) {
         Event event;
         while (m_window.pollEvent(event)) {
-            if (event.type == Event::KEY_PRESSED &&
-                event.key.code == Keyboard::ESCAPE) {
-                m_window.setShouldClose(true);
-                break;
+            if (event.type == Event::KEY_PRESSED) {
+                if (event.key.code == Keyboard::ESCAPE) {
+                    m_window.setShouldClose(true);
+                    break;
+                }
             }
             for (auto &layer : m_layers) {
                 if (layer->isBlockEvent()) continue;
@@ -88,13 +93,13 @@ void Application::render() {
     m_window.display();
 }
 
-void Application::toggleEditor(bool enable) {
-    if (enable) {
+void Application::toggleEditor() {
+    m_editorMode = !m_editorMode;
+    if (m_editorMode) {
         pushOverlay(m_imGuiLayer);
     } else {
         popOverlay(m_imGuiLayer);
     }
-    m_editorMode = enable;
 }
 
 }  // namespace te

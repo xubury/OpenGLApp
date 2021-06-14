@@ -56,7 +56,7 @@ class Application {
 
     Ref<SceneManager<EntityBase>> getActiveScene() { return m_scene; }
 
-    void toggleEditor(bool enable);
+    void toggleEditor();
 
    protected:
     Ref<SceneManager<EntityBase>> m_scene;

@@ -126,17 +126,17 @@ void Renderer::prepareTextures(const Ref<Shader> &shader,
         shader->setFloat("uMaterial.shininess", 64);
         for (const auto &texture : material->getList()) {
             std::string name;
-            if (texture->getType() == Texture::AMBIENT) {
+            if (texture->getType() == Texture::TEXTURE_AMBIENT) {
                 name = "uMaterial.ambient" + std::to_string(ambient++);
-            } else if (texture->getType() == Texture::DIFFUSE) {
+            } else if (texture->getType() == Texture::TEXTURE_DIFFUSE) {
                 name = "uMaterial.diffuse" + std::to_string(diffuse++);
-            } else if (texture->getType() == Texture::SPECULAR) {
+            } else if (texture->getType() == Texture::TEXTURE_SPECULAR) {
                 name = "uMaterial.specular" + std::to_string(specular++);
             } else {
                 TE_CORE_WARN("Invalid Texture");
             }
             glActiveTexture(GL_TEXTURE0 + textureIndex);
-            glBindTexture(GL_TEXTURE_2D, texture->id());
+            texture->bind();
             // set the GL_TEXTUREX correspondence
             shader->setInt(name, textureIndex);
             ++textureIndex;

@@ -48,6 +48,8 @@ void VertexArray::addVertexBuffer(const Ref<VertexBuffer> &buffer) {
     bind();
     buffer->bind();
     const auto &layout = buffer->getLayout();
+    TE_CORE_ASSERT(layout.begin() != layout.end(),
+                   "VertexBuffer layout is not set!");
     for (const auto &element : layout) {
         switch (element.getType()) {
             case ShaderDataType::Float:

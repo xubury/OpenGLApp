@@ -84,15 +84,15 @@ void Model::processTextures(Material &textures, aiMaterial *mat,
         switch (type) {
             case aiTextureType_AMBIENT:
                 textures.loadFromFile(m_directory + path.C_Str(),
-                                      Texture::AMBIENT);
+                                      Texture::TEXTURE_AMBIENT);
                 break;
             case aiTextureType_DIFFUSE:
                 textures.loadFromFile(m_directory + path.C_Str(),
-                                      Texture::DIFFUSE);
+                                      Texture::TEXTURE_DIFFUSE);
                 break;
             case aiTextureType_SPECULAR:
                 textures.loadFromFile(m_directory + path.C_Str(),
-                                      Texture::SPECULAR);
+                                      Texture::TEXTURE_SPECULAR);
                 break;
             default:
                 break;

@@ -12,10 +12,10 @@ namespace te {
 class TE_API Material {
    public:
     void loadFromFile(const std::string& path,
-                      Texture::TextureType textureType);
+                      Texture::Type textureType);
 
     void loadFromValue(const glm::vec3& value,
-                       Texture::TextureType textureType);
+                       Texture::Type textureType);
 
     std::size_t size() const;
 

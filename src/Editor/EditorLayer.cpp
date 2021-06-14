@@ -112,12 +112,14 @@ void EditorLayer::onAttach() {
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(RenderWindow::getCurrentContext(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
+    Application::instance().setFramebuffer(m_multiSampleFramebuffer);
 }
 
 void EditorLayer::onDetech() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+    Application::instance().setFramebuffer(nullptr);
 }
 
 void EditorLayer::begin() {
@@ -125,7 +127,6 @@ void EditorLayer::begin() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     Application::instance().setMainCamera(m_camera);
-    Application::instance().setFramebuffer(m_multiSampleFramebuffer);
 }
 
 void EditorLayer::end() {

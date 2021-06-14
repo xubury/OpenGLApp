@@ -89,9 +89,9 @@ void SandboxLayer::loadScene() {
     light->specular = glm::vec3(0.5f);
 
     Ref<Material> textures = createRef<Material>();
-    textures->loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
-    textures->loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
-    textures->loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+    textures->loadFromValue(glm::vec3(1.f), Texture::TEXTURE_AMBIENT);
+    textures->loadFromValue(glm::vec3(0.6f), Texture::TEXTURE_DIFFUSE);
+    textures->loadFromValue(glm::vec3(0.5f), Texture::TEXTURE_SPECULAR);
 
     glm::vec3 positions[] = {
         glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
@@ -109,9 +109,9 @@ void SandboxLayer::loadScene() {
 
     // ground
     Ref<Material> groundTextures = createRef<Material>();
-    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::AMBIENT);
-    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::DIFFUSE);
-    groundTextures->loadFromValue(glm::vec3(0.f), Texture::SPECULAR);
+    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::TEXTURE_AMBIENT);
+    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::TEXTURE_DIFFUSE);
+    groundTextures->loadFromValue(glm::vec3(0.f), Texture::TEXTURE_SPECULAR);
     addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
 }
 
@@ -149,10 +149,17 @@ void SandboxLayer::onEventPoll(const Event& event) {
         switch (event.key.code) {
             case Keyboard::T: {
                 Ref<Material> textures = createRef<Material>();
-                textures->loadFromValue(glm::vec3(1.f), Texture::AMBIENT);
-                textures->loadFromValue(glm::vec3(0.6f), Texture::DIFFUSE);
-                textures->loadFromValue(glm::vec3(0.5f), Texture::SPECULAR);
+                textures->loadFromValue(glm::vec3(1.f),
+                                        Texture::TEXTURE_AMBIENT);
+                textures->loadFromValue(glm::vec3(0.6f),
+                                        Texture::TEXTURE_DIFFUSE);
+                textures->loadFromValue(glm::vec3(0.5f),
+                                        Texture::TEXTURE_SPECULAR);
                 addCube(glm::vec3(5, 5, 0), 1, 1, 1, textures, true);
+            } break;
+            case Keyboard::Z: {
+                Application::instance().toggleEditor();
+                Application::instance().setMainCamera(m_camera);
             } break;
             default:
                 break;
