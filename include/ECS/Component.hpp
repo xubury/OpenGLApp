@@ -26,6 +26,10 @@ class ComponentHandle {
 
     const COMPONENT *operator->() const;
 
+    COMPONENT &operator*();
+
+    const COMPONENT &operator*() const;
+
    private:
     friend class EntityManager<ENTITY>;
 
@@ -114,6 +118,18 @@ template <typename COMPONENT, typename ENTITY>
 inline const COMPONENT *ComponentHandle<COMPONENT, ENTITY>::operator->() const {
     TE_CORE_ASSERT(isValid(), "manager not valid!");
     return m_manager->template getComponentPtr<COMPONENT>(m_entityID);
+}
+
+template <typename COMPONENT, typename ENTITY>
+inline COMPONENT &ComponentHandle<COMPONENT, ENTITY>::operator*() {
+    TE_CORE_ASSERT(isValid(), "manager not valid!");
+    return *m_manager->template getComponentPtr<COMPONENT>(m_entityID);
+}
+
+template <typename COMPONENT, typename ENTITY>
+inline const COMPONENT &ComponentHandle<COMPONENT, ENTITY>::operator*() const {
+    TE_CORE_ASSERT(isValid(), "manager not valid!");
+    return *m_manager->template getComponentPtr<COMPONENT>(m_entityID);
 }
 
 template <typename ENTITY>

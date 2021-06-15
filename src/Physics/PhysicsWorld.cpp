@@ -41,9 +41,8 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
         for (auto b = view.begin(); b != end; ++b) {
             if (a == b) continue;
             if (a->has<Collider>() && b->has<Collider>()) {
-                ContactManifold manifold =
-                    Collision::collide(a->component<Collider>().get(),
-                                       b->component<Collider>().get());
+                ContactManifold manifold = Collision::collide(
+                    *a->component<Collider>(), *b->component<Collider>());
                 if (manifold.hasCollision()) {
                     manifolds.emplace_back(manifold);
                 }

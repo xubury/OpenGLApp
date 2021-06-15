@@ -111,6 +111,9 @@ class EntityManager {
     template <typename COMPONENT>
     COMPONENT *getComponentPtr(uint32_t id);
 
+    template <typename COMPONENT>
+    const COMPONENT *getComponentPtr(uint32_t id) const;
+
     template <typename... COMPONENT>
     class View {
         class Iterator;
@@ -386,6 +389,16 @@ EntityManager<ENTITY>::getComponents(uint32_t id) {
 template <class ENTITY>
 template <typename COMPONENT>
 inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) {
+    uint32_t family = COMPONENT::family();
+    TE_CORE_ASSERT(id < m_componentsEntities[family].get()->size(),
+                   "Component id invalid!");
+    return &static_cast<Pool<COMPONENT> *>(m_componentsEntities[family].get())
+                ->at(id);
+}
+
+template <class ENTITY>
+template <typename COMPONENT>
+inline const COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) const {
     uint32_t family = COMPONENT::family();
     TE_CORE_ASSERT(id < m_componentsEntities[family].get()->size(),
                    "Component id invalid!");
