@@ -149,13 +149,18 @@ void SandboxLayer::onEventPoll(const Event& event) {
         switch (event.key.code) {
             case Keyboard::T: {
                 Ref<Material> textures = createRef<Material>();
-                textures->loadFromValue(glm::vec3(1.f),
+                std::srand(std::time(nullptr));
+                float r = (float)std::rand() / RAND_MAX;
+                float g = (float)std::rand() / RAND_MAX;
+                float b = (float)std::rand() / RAND_MAX;
+                textures->loadFromValue(glm::vec3(r, g, b),
                                         Texture::TEXTURE_AMBIENT);
                 textures->loadFromValue(glm::vec3(0.6f),
                                         Texture::TEXTURE_DIFFUSE);
                 textures->loadFromValue(glm::vec3(0.5f),
                                         Texture::TEXTURE_SPECULAR);
-                addCube(glm::vec3(5, 5, 0), 1, 1, 1, textures, true);
+                glm::vec3 impulse(std::rand() % 50 - 25);
+                addSphere(glm::vec3(5, 15, 0), 1, impulse, textures);
             } break;
             case Keyboard::Z: {
                 Application::instance().toggleEditor();

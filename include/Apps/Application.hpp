@@ -73,9 +73,9 @@ class Application {
     void render();
 
     RenderWindow m_window;
-    Ref<EditorLayer> m_imGuiLayer;
     Ref<Camera> m_mainCamera;
     Ref<FrameBuffer> m_framebuffer;
+    Ref<EditorLayer> m_imGuiLayer;
     LayerStack m_layers;
     bool m_editorMode;
 };
