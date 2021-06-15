@@ -13,13 +13,13 @@ Texture::Texture(const TextureParameter &params) : m_id(0) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
+                     params.borderColor);
 }
 
 Texture::~Texture() { glDeleteTextures(1, &m_id); }
 
-Texture::Type Texture::getType() const { return m_type; }
-
-bool Texture::loadFromFile(const std::string &path, Type textureType) {
+bool Texture::loadFromFile(const std::string &path) {
     stbi_set_flip_vertically_on_load(true);
     int texWidth;
     int texHeight;
@@ -38,17 +38,15 @@ bool Texture::loadFromFile(const std::string &path, Type textureType) {
         return false;
     }
     stbi_image_free(data);
-    m_type = textureType;
     unbind();
     return true;
 }
 
-void Texture::loadFromValue(const glm::vec3 &value, Type textureType) {
+void Texture::loadFromValue(const glm::vec3 &value) {
     bind();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, &value.x);
     glGenerateMipmap(GL_TEXTURE_2D);
-    m_type = textureType;
-    glBindTexture(GL_TEXTURE_2D, 0);
+    unbind();
 }
 
 void Texture::bind() const { glBindTexture(GL_TEXTURE_2D, m_id); }

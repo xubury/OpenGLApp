@@ -11,18 +11,24 @@ namespace te {
 
 class TE_API Material {
    public:
-    void loadFromFile(const std::string& path,
-                      Texture::Type textureType);
+    enum Type {
+        TEXTURE_NONE,
+        TEXTURE_AMBIENT,
+        TEXTURE_DIFFUSE,
+        TEXTURE_SPECULAR
+    };
 
-    void loadFromValue(const glm::vec3& value,
-                       Texture::Type textureType);
+   public:
+    void loadFromFile(const std::string& path, Type textureType);
+
+    void loadFromValue(const glm::vec3& value, Type textureType);
 
     std::size_t size() const;
 
-    const std::list<std::shared_ptr<Texture>>& getList() const;
+    const std::list<std::pair<Ref<Texture>, Type>>& getList() const;
 
    private:
-    std::list<Ref<Texture>> m_list;
+    std::list<std::pair<Ref<Texture>, Type>> m_list;
 };
 
 }  // namespace te

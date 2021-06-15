@@ -5,6 +5,7 @@
 #include "Core/Assert.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/LightBase.hpp"
+#include "Graphic/TextureParameter.hpp"
 #include <vector>
 
 namespace te {
@@ -28,10 +29,12 @@ enum class FramebufferTextureFormat {
 struct FramebufferTextureSpecification {
     FramebufferTextureSpecification()
         : textureFormat(FramebufferTextureFormat::NONE) {}
-    FramebufferTextureSpecification(FramebufferTextureFormat format)
-        : textureFormat(format) {}
+    FramebufferTextureSpecification(FramebufferTextureFormat format,
+                                    TextureParameter params = TextureParameter())
+        : textureFormat(format), textureParams(params) {}
 
     FramebufferTextureFormat textureFormat;
+    TextureParameter textureParams;
 };
 
 struct FramebufferAttachmentSpecification {

@@ -7,19 +7,20 @@ namespace te {
 
 static ResourceManager<std::string, Texture> s_loadedTexture;
 
-void Material::loadFromFile(const std::string &path,
-                            Texture::Type textureType) {
-    m_list.emplace_back(s_loadedTexture.getOrLoad(path, path, textureType));
+void Material::loadFromFile(const std::string &path, Type textureType) {
+    m_list.emplace_back(s_loadedTexture.getOrLoad(path, path), textureType);
 }
 
-void Material::loadFromValue(const glm::vec3 &value,
-                             Texture::Type textureType) {
-    m_list.emplace_back(createRef<Texture>());
-    m_list.back()->loadFromValue(value, textureType);
+void Material::loadFromValue(const glm::vec3 &value, Type textureType) {
+    m_list.emplace_back(createRef<Texture>(), textureType);
+    m_list.back().first->loadFromValue(value);
 }
 
 std::size_t Material::size() const { return m_list.size(); }
 
-const std::list<Ref<Texture>> &Material::getList() const { return m_list; }
+const std::list<std::pair<Ref<Texture>, Material::Type>> &Material::getList()
+    const {
+    return m_list;
+}
 
 }  // namespace te

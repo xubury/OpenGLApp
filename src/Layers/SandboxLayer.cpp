@@ -89,9 +89,9 @@ void SandboxLayer::loadScene() {
     light->specular = glm::vec3(0.5f);
 
     Ref<Material> textures = createRef<Material>();
-    textures->loadFromValue(glm::vec3(1.f), Texture::TEXTURE_AMBIENT);
-    textures->loadFromValue(glm::vec3(0.6f), Texture::TEXTURE_DIFFUSE);
-    textures->loadFromValue(glm::vec3(0.5f), Texture::TEXTURE_SPECULAR);
+    textures->loadFromValue(glm::vec3(1.f), Material::TEXTURE_AMBIENT);
+    textures->loadFromValue(glm::vec3(0.6f), Material::TEXTURE_DIFFUSE);
+    textures->loadFromValue(glm::vec3(0.5f), Material::TEXTURE_SPECULAR);
 
     glm::vec3 positions[] = {
         glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
@@ -109,9 +109,9 @@ void SandboxLayer::loadScene() {
 
     // ground
     Ref<Material> groundTextures = createRef<Material>();
-    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::TEXTURE_AMBIENT);
-    groundTextures->loadFromValue(glm::vec3(0.7f), Texture::TEXTURE_DIFFUSE);
-    groundTextures->loadFromValue(glm::vec3(0.f), Texture::TEXTURE_SPECULAR);
+    groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_AMBIENT);
+    groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_DIFFUSE);
+    groundTextures->loadFromValue(glm::vec3(0.f), Material::TEXTURE_SPECULAR);
     addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
 }
 
@@ -154,11 +154,11 @@ void SandboxLayer::onEventPoll(const Event& event) {
                 float g = (float)std::rand() / RAND_MAX;
                 float b = (float)std::rand() / RAND_MAX;
                 textures->loadFromValue(glm::vec3(r, g, b),
-                                        Texture::TEXTURE_AMBIENT);
+                                        Material::TEXTURE_AMBIENT);
                 textures->loadFromValue(glm::vec3(0.6f),
-                                        Texture::TEXTURE_DIFFUSE);
+                                        Material::TEXTURE_DIFFUSE);
                 textures->loadFromValue(glm::vec3(0.5f),
-                                        Texture::TEXTURE_SPECULAR);
+                                        Material::TEXTURE_SPECULAR);
                 glm::vec3 impulse(std::rand() % 50 - 25);
                 addSphere(glm::vec3(5, 15, 0), 1, impulse, textures);
             } break;

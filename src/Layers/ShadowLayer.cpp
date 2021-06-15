@@ -14,7 +14,9 @@ ShadowLayer::ShadowLayer() : Layer("Shadow layer") {
     spec.width = SHADOW_MAP_WIDTH;
     spec.height = SHADOW_MAP_HEIGHT;
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
-                             {FramebufferTextureFormat::DEPTH32}};
+                             {FramebufferTextureFormat::DEPTH32,
+                              TextureParameter(GL_CLAMP_TO_BORDER, GL_LINEAR,
+                                               1.0f, 1.0f, 1.0f, 1.0f)}};
     m_framebuffer = createRef<FrameBuffer>(spec, false);
 
     const char *shadowVertex = R"(

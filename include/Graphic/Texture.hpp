@@ -10,13 +10,6 @@ namespace te {
 
 class TE_API Texture {
    public:
-    enum Type {
-        TEXTURE_NONE,
-        TEXTURE_AMBIENT,
-        TEXTURE_DIFFUSE,
-        TEXTURE_SPECULAR
-    };
-
     Texture(const TextureParameter &params = TextureParameter());
 
     ~Texture();
@@ -25,21 +18,18 @@ class TE_API Texture {
 
     Texture &operator=(const Texture &) = delete;
 
-    bool loadFromFile(const std::string &path, Type textureType);
+    bool loadFromFile(const std::string &path);
 
-    void loadFromValue(const glm::vec3 &value, Type textureType);
-
-    Type getType() const;
+    void loadFromValue(const glm::vec3 &value);
 
     void bind() const;
 
     void unbind() const;
 
     uint32_t getId() const;
+
    private:
     uint32_t m_id;
-
-    Type m_type;
 };
 
 }  // namespace te

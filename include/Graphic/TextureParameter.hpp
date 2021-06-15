@@ -8,9 +8,11 @@ namespace te {
 struct TextureParameter {
     GLenum warp;
     GLenum filtering;
-    TextureParameter() : warp(GL_REPEAT), filtering(GL_NEAREST) {}
-    TextureParameter(GLenum warp, GLenum filtering)
-        : warp(warp), filtering(filtering) {}
+    float borderColor[4];
+    TextureParameter() : warp(GL_CLAMP_TO_EDGE), filtering(GL_LINEAR) {}
+    template <typename... T>
+    TextureParameter(GLenum warp, GLenum filtering, T... color)
+        : warp(warp), filtering(filtering), borderColor{color...} {}
 };
 
 }  // namespace te

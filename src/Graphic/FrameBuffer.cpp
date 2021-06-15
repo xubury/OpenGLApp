@@ -22,8 +22,8 @@ static void bindTexture(bool multisampled, uint32_t id) {
 }
 
 static void attachColorTexture(uint32_t id, int samples, GLenum internalFormat,
-                               GLenum format, uint32_t width, uint32_t height,
-                               int index) {
+                               GLenum format, const TextureParameter& params,
+                               uint32_t width, uint32_t height, int index) {
     bool multisampled = samples > 1;
     if (multisampled) {
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples,
@@ -32,11 +32,13 @@ static void attachColorTexture(uint32_t id, int samples, GLenum internalFormat,
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format,
                      GL_UNSIGNED_BYTE, nullptr);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, params.warp);
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
+                         params.borderColor);
     }
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index,
@@ -44,6 +46,7 @@ static void attachColorTexture(uint32_t id, int samples, GLenum internalFormat,
 }
 
 static void attachDepthTexture(uint32_t id, int samples, GLenum format,
+                               const TextureParameter& params,
                                GLenum attachmentType, uint32_t width,
                                uint32_t height, bool writeOnly) {
     bool multisampled = samples > 1;
@@ -61,11 +64,15 @@ static void attachDepthTexture(uint32_t id, int samples, GLenum format,
         } else {
             glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                            params.filtering);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                            params.filtering);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, params.warp);
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
+                             params.borderColor);
         }
     }
     if (writeOnly) {
@@ -130,29 +137,31 @@ void FrameBuffer::invalidate() {
                        m_colorAttachments.size());
         for (std::size_t i = 0; i < m_colorAttachments.size(); ++i) {
             bindTexture(multiSample, m_colorAttachments[i]);
+            const TextureParameter& params =
+                m_colorAttachmentSpecs[i].textureParams;
             switch (m_colorAttachmentSpecs[i].textureFormat) {
                 case FramebufferTextureFormat::RED_INTEGER:
-                    attachColorTexture(m_colorAttachments[i],
-                                       m_specification.samples, GL_R32I,
-                                       GL_RED_INTEGER, m_specification.width,
-                                       m_specification.height, i);
+                    attachColorTexture(
+                        m_colorAttachments[i], m_specification.samples, GL_R32I,
+                        GL_RED_INTEGER, params, m_specification.width,
+                        m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGB:
                     attachColorTexture(m_colorAttachments[i],
                                        m_specification.samples, GL_RGB, GL_RGB,
-                                       m_specification.width,
+                                       params, m_specification.width,
                                        m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGBA8:
                     attachColorTexture(m_colorAttachments[i],
                                        m_specification.samples, GL_RGBA8,
-                                       GL_RGBA, m_specification.width,
+                                       GL_RGBA, params, m_specification.width,
                                        m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGBA16F:
                     attachColorTexture(m_colorAttachments[i],
                                        m_specification.samples, GL_RGBA16F,
-                                       GL_RGBA, m_specification.width,
+                                       GL_RGBA, params, m_specification.width,
                                        m_specification.height, i);
                     break;
                 default:
@@ -172,16 +181,17 @@ void FrameBuffer::invalidate() {
         switch (m_depthAttachmentSpec.textureFormat) {
             case FramebufferTextureFormat::DEPTH32:
                 attachDepthTexture(m_depthAttachment, m_specification.samples,
-                                   GL_DEPTH_COMPONENT32, GL_DEPTH_ATTACHMENT,
-                                   m_specification.width,
+                                   GL_DEPTH_COMPONENT32,
+                                   m_depthAttachmentSpec.textureParams,
+                                   GL_DEPTH_ATTACHMENT, m_specification.width,
                                    m_specification.height, m_depthWriteOnly);
                 break;
             case FramebufferTextureFormat::DEPTH24STENCIL8:
-                attachDepthTexture(m_depthAttachment, m_specification.samples,
-                                   GL_DEPTH24_STENCIL8,
-                                   GL_DEPTH_STENCIL_ATTACHMENT,
-                                   m_specification.width,
-                                   m_specification.height, m_depthWriteOnly);
+                attachDepthTexture(
+                    m_depthAttachment, m_specification.samples,
+                    GL_DEPTH24_STENCIL8, m_depthAttachmentSpec.textureParams,
+                    GL_DEPTH_STENCIL_ATTACHMENT, m_specification.width,
+                    m_specification.height, m_depthWriteOnly);
                 break;
             default:
                 TE_CORE_ASSERT(false,
