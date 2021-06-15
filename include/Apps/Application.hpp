@@ -52,7 +52,7 @@ class Application {
         m_framebuffer = framebuffer;
     }
 
-    FrameBuffer *getFramebuffer() { return m_framebuffer.get(); }
+    const FrameBuffer *getFramebuffer() const { return m_framebuffer.get(); }
 
     Ref<SceneManager<EntityBase>> getActiveScene() { return m_scene; }
 
@@ -73,10 +73,10 @@ class Application {
     void render();
 
     RenderWindow m_window;
-    LayerStack m_layers;
     Ref<EditorLayer> m_imGuiLayer;
     Ref<Camera> m_mainCamera;
     Ref<FrameBuffer> m_framebuffer;
+    LayerStack m_layers;
     bool m_editorMode;
 };
 
