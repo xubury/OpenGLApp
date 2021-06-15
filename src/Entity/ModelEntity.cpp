@@ -18,7 +18,7 @@ void ModelEntity::loadFromFile(const std::string &path) {
     }
 }
 
-void ModelEntity::draw(const Ref<Shader> &shader) const {
+void ModelEntity::draw(const Shader &shader) const {
     m_model->draw(shader, getTransform());
 }
 

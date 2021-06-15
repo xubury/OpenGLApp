@@ -134,12 +134,12 @@ void SandboxLayer::onUpdate(const Time&) {}
 void SandboxLayer::onRender() {
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
-    Renderer::beginScene(Application::instance().getMainCamera(),
+    Renderer::beginScene(*Application::instance().getMainCamera(),
                          Application::instance().getFramebuffer());
     Renderer::clear();
     auto entityIterEnd = scene->entities.end();
     for (auto cur = scene->entities.begin(); cur != entityIterEnd; ++cur) {
-        scene->entities.get(*cur)->draw(m_shaders.get("Main"));
+        scene->entities.get(*cur)->draw(*m_shaders.get("Main"));
     }
     Renderer::endScene();
 }

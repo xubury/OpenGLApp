@@ -14,8 +14,8 @@ void Renderer::init() {
     s_sceneData.lightUBO = createRef<UniformBuffer>(sizeof(ShadowData));
 }
 
-void Renderer::beginScene(const Ref<Camera> &camera,
-                          const Ref<FrameBuffer> &framebuffer) {
+void Renderer::beginScene(const Camera &camera,
+                          const FrameBuffer *framebuffer) {
     TE_CORE_ASSERT(
         s_state == RenderState::RENDER_NONE,
         "Render state conflict detected! Please check beginScene() and "
@@ -26,14 +26,14 @@ void Renderer::beginScene(const Ref<Camera> &camera,
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-    glViewport(camera->getViewportX(), camera->getViewportY(),
-               camera->getViewportWidth(), camera->getViewportHeight());
+    glViewport(camera.getViewportX(), camera.getViewportY(),
+               camera.getViewportWidth(), camera.getViewportHeight());
 
     s_sceneData.cameraUBO->setData(
-        glm::value_ptr(camera->getProjection() * camera->getView()),
+        glm::value_ptr(camera.getProjection() * camera.getView()),
         offsetof(CameraData, projectionView),
         sizeof(CameraData::projectionView));
-    s_sceneData.cameraUBO->setData(glm::value_ptr(camera->getPosition()),
+    s_sceneData.cameraUBO->setData(glm::value_ptr(camera.getPosition()),
                                    offsetof(CameraData, viewPos),
                                    sizeof(CameraData::viewPos));
 }
@@ -84,25 +84,24 @@ void Renderer::endShadowCast() {
     s_state = RenderState::RENDER_NONE;
 }
 
-void Renderer::submit(const Ref<Shader> &shader,
-                      const Ref<VertexArray> &vertexArray, GLenum type,
-                      bool indexed, const glm::mat4 &transform,
-                      const Ref<Material> &material) {
-    shader->bind();
+void Renderer::submit(const Shader &shader, const VertexArray &vertexArray,
+                      GLenum type, bool indexed, const glm::mat4 &transform,
+                      const Material *material) {
+    shader.bind();
     prepareTextures(shader, material);
     if (s_state == RenderState::RENDER_SCENE) {
-        shader->setUniformBlock("Camera",
-                                s_sceneData.cameraUBO->getBindingPoint());
+        shader.setUniformBlock("Camera",
+                               s_sceneData.cameraUBO->getBindingPoint());
     }
-    shader->setUniformBlock("Light", s_sceneData.lightUBO->getBindingPoint());
-    shader->setMat4("uModel", transform);
-    vertexArray->bind();
+    shader.setUniformBlock("Light", s_sceneData.lightUBO->getBindingPoint());
+    shader.setMat4("uModel", transform);
+    vertexArray.bind();
     if (indexed) {
-        uint32_t count = vertexArray->getIndexBuffer()->getCount();
-        vertexArray->getIndexBuffer()->bind();
+        uint32_t count = vertexArray.getIndexBuffer()->getCount();
+        vertexArray.getIndexBuffer()->bind();
         glDrawElements(type, count, GL_UNSIGNED_INT, nullptr);
     } else {
-        for (const auto &buffer : vertexArray->getVertexBuffers()) {
+        for (const auto &buffer : vertexArray.getVertexBuffers()) {
             std::size_t cnt =
                 buffer->getSize() / buffer->getLayout().getStride();
             glDrawArrays(type, 0, cnt);
@@ -115,15 +114,14 @@ void Renderer::clear(float r, float g, float b, float a) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::prepareTextures(const Ref<Shader> &shader,
-                               const Ref<Material> &material) {
+void Renderer::prepareTextures(const Shader &shader, const Material *material) {
     std::size_t textureIndex = 0;
     uint32_t ambient = 0;
     uint32_t diffuse = 0;
     uint32_t specular = 0;
 
     if (s_state == RenderState::RENDER_SCENE && material != nullptr) {
-        shader->setFloat("uMaterial.shininess", 64);
+        shader.setFloat("uMaterial.shininess", 64);
         for (const auto &texture : material->getList()) {
             std::string name;
             if (texture->getType() == Texture::TEXTURE_AMBIENT) {
@@ -138,13 +136,13 @@ void Renderer::prepareTextures(const Ref<Shader> &shader,
             glActiveTexture(GL_TEXTURE0 + textureIndex);
             texture->bind();
             // set the GL_TEXTUREX correspondence
-            shader->setInt(name, textureIndex);
+            shader.setInt(name, textureIndex);
             ++textureIndex;
         }
     }
     glActiveTexture(GL_TEXTURE0 + textureIndex);
     glBindTexture(GL_TEXTURE_2D, s_sceneData.shadowMap);
-    shader->setInt("uShadowMap", textureIndex);
+    shader.setInt("uShadowMap", textureIndex);
 }
 
 }  // namespace te

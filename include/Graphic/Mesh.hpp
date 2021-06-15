@@ -21,8 +21,7 @@ class TE_API Mesh : public Drawable {
 
     std::size_t size() const;
 
-    void draw(const Ref<Shader> &shader,
-              const glm::mat4 &transform) const override;
+    void draw(const Shader &shader, const glm::mat4 &transform) const override;
 
    private:
     std::vector<Vertex> m_vertices;

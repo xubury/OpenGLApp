@@ -17,7 +17,7 @@ class TE_API Model : public Drawable {
 
     bool loadFromFile(const std::string &path);
 
-    void draw(const Ref<Shader> &shader,
+    void draw(const Shader &shader,
               const glm::mat4 &transform) const override;
 
     const std::vector<Mesh> &getMeshes() const;

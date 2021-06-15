@@ -5,7 +5,7 @@
 
 namespace te {
 
-void Model::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
+void Model::draw(const Shader &shader, const glm::mat4 &transform) const {
     for (const auto &mesh : m_meshes) {
         mesh.draw(shader, transform);
     }

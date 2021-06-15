@@ -20,7 +20,7 @@ class EntityBase : public Entity<EntityBase>, virtual public Transformable {
 
     void setName(const std::string &name);
 
-    virtual void draw(const Ref<Shader> &shader) const;
+    virtual void draw(const Shader &shader) const;
 
    private:
     std::string m_name;

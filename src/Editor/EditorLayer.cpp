@@ -409,7 +409,7 @@ void EditorLayer::onUpdate(const Time&) {
 }
 
 void EditorLayer::onImGuiRender() {
-    Renderer::beginScene(m_camera, m_multiSampleFramebuffer);
+    Renderer::beginScene(*m_camera, m_multiSampleFramebuffer.get());
     ImGui::Begin("Settings");
     {
         ImGui::SetWindowSize(ImVec2(300, 600));

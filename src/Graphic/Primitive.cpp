@@ -73,7 +73,7 @@ void Primitive::drawPath(const std::vector<glm::vec3> &pts,
     m_vertexBuffer->update(vertices.data(),
                            vertices.size() * sizeof(PrimitiveVertex));
     glLineWidth(thickness);
-    Renderer::submit(m_shader, m_vertexArray, GL_LINE_LOOP, false);
+    Renderer::submit(*m_shader, *m_vertexArray, GL_LINE_LOOP, false);
     glLineWidth(1.0f);
 }
 
@@ -101,7 +101,7 @@ void Primitive::drawCircle(const glm::vec3 &center, const glm::vec3 &normal,
     }
     m_vertexBuffer->update(vertices.data(),
                            vertices.size() * sizeof(PrimitiveVertex));
-    Renderer::submit(m_shader, m_vertexArray, GL_LINE_LOOP, false);
+    Renderer::submit(*m_shader, *m_vertexArray, GL_LINE_LOOP, false);
 }
 
 void Primitive::drawCircleFilled(const glm::vec3 &center,
@@ -130,7 +130,7 @@ void Primitive::drawCircleFilled(const glm::vec3 &center,
     }
     m_vertexBuffer->update(vertices.data(),
                            vertices.size() * sizeof(PrimitiveVertex));
-    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLE_FAN, false);
+    Renderer::submit(*m_shader, *m_vertexArray, GL_TRIANGLE_FAN, false);
 }
 
 void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
@@ -177,7 +177,7 @@ void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
     m_vertexBuffer->update(vertices.data(),
                            vertices.size() * sizeof(PrimitiveVertex));
     m_indexBuffer->update(indices.data(), indices.size());
-    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, true);
+    Renderer::submit(*m_shader, *m_vertexArray, GL_TRIANGLES, true);
 }
 
 void Primitive::drawQuad(const std::vector<glm::vec3> &corners,
@@ -198,7 +198,7 @@ void Primitive::drawQuadFilled(const std::vector<glm::vec3> &corners,
     m_vertexBuffer->update(vertices.data(),
                            vertices.size() * sizeof(PrimitiveVertex));
     m_indexBuffer->update(indices, 6);
-    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, true);
+    Renderer::submit(*m_shader, *m_vertexArray, GL_TRIANGLES, true);
 }
 
 void Primitive::drawCube(const glm::vec3 &min, const glm::vec3 &max,
@@ -256,7 +256,7 @@ void Primitive::drawCubeFilled(const glm::vec3 &min, const glm::vec3 &max,
 
     m_vertexBuffer->update(vertices, 8 * sizeof(PrimitiveVertex));
     m_indexBuffer->update(indices, 36);
-    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, true);
+    Renderer::submit(*m_shader, *m_vertexArray, GL_TRIANGLES, true);
 }
 
 }  // namespace te

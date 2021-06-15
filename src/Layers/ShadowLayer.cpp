@@ -74,7 +74,7 @@ void ShadowLayer::onRender() {
     Renderer::beginShadowCast(shadowMap.get(), m_framebuffer);
     std::size_t size = scene->entities.size();
     for (std::size_t i = 0; i < size; ++i) {
-        scene->entities.get(i)->draw(m_shader);
+        scene->entities.get(i)->draw(*m_shader);
     }
     Renderer::endShadowCast();
 }

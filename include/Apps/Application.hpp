@@ -52,7 +52,7 @@ class Application {
         m_framebuffer = framebuffer;
     }
 
-    Ref<FrameBuffer> getFramebuffer() { return m_framebuffer; }
+    FrameBuffer *getFramebuffer() { return m_framebuffer.get(); }
 
     Ref<SceneManager<EntityBase>> getActiveScene() { return m_scene; }
 

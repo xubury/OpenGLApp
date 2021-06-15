@@ -12,7 +12,7 @@ class Sphere : public EntityBase {
     Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
            Ref<Material> material);
 
-    void draw(const Ref<Shader> &shader) const override;
+    void draw(const Shader &shader) const override;
 
    private:
     Ref<VertexArray> m_sphere;

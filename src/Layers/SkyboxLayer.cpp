@@ -78,8 +78,8 @@ void SkyboxLayer::onRender() {
     Ref<Camera> cam = Application::instance().getMainCamera();
     glm::vec3 pos = cam->getPosition();
     cam->setPosition(glm::vec3(0));
-    Renderer::beginScene(cam, Application::instance().getFramebuffer());
-    Renderer::submit(m_shader, m_vertexArray, GL_TRIANGLES, false);
+    Renderer::beginScene(*cam, Application::instance().getFramebuffer());
+    Renderer::submit(*m_shader, *m_vertexArray, GL_TRIANGLES, false);
     Renderer::endScene();
     cam->setPosition(pos);
     glDepthFunc(GL_LEQUAL);

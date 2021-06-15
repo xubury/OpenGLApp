@@ -71,9 +71,9 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
         createRef<IndexBuffer>(indices.data(), indices.size()));
 }
 
-void Sphere::draw(const Ref<Shader> &shader) const {
-    Renderer::submit(shader, m_sphere, GL_TRIANGLES, true, getTransform(),
-                     m_material);
+void Sphere::draw(const Shader &shader) const {
+    Renderer::submit(shader, *m_sphere, GL_TRIANGLES, true, getTransform(),
+                     m_material.get());
 }
 
 }  // namespace te

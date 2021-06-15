@@ -22,9 +22,9 @@ Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
         createRef<IndexBuffer>(indices.data(), indices.size()));
 }
 
-void Mesh::draw(const Ref<Shader> &shader, const glm::mat4 &transform) const {
-    Renderer::submit(shader, m_vertexArray, m_type, !m_indices.empty(),
-                     transform, m_textures);
+void Mesh::draw(const Shader &shader, const glm::mat4 &transform) const {
+    Renderer::submit(shader, *m_vertexArray, m_type, !m_indices.empty(),
+                     transform, m_textures.get());
 }
 
 const Vertex *Mesh::getVertex() const { return m_vertices.data(); }

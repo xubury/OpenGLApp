@@ -8,7 +8,7 @@ namespace te {
 
 class TE_API Drawable {
    public:
-    virtual void draw(const Ref<Shader> &shader,
+    virtual void draw(const Shader &shader,
                       const glm::mat4 &transform) const = 0;
 };
 
