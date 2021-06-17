@@ -31,7 +31,8 @@ class SandboxLayer : public Layer {
                    const Ref<Material> &textures);
 
     void addCube(const glm::vec3 &pos, float width, float height, float length,
-                 const Ref<Material> &textures, bool kinematic);
+                 const glm::vec3 &impulse, const Ref<Material> &textures,
+                 bool kinematic);
 
     void addModel(const std::string &path, const glm::vec3 &pos);
 

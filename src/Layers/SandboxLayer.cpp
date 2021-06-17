@@ -30,8 +30,8 @@ void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
 }
 
 void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
-                           float length, const Ref<Material>& textures,
-                           bool kinematic) {
+                           float length, const glm::vec3& impulse,
+                           const Ref<Material>& textures, bool kinematic) {
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
     int id = scene->entities.create<Cube>(width, height, length, textures);
@@ -40,6 +40,7 @@ void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
     cube->add<HullCollider>();
     MakeCubeCollider(*cube->component<HullCollider>().get(), width, height,
                      length);
+    cube->component<Rigidbody>()->addImpulse(impulse);
     cube->setPosition(pos);
     cube->setName("Cube");
 }
@@ -102,8 +103,8 @@ void SandboxLayer::loadScene() {
         addSphere(positions[i], 1.0, impulse[i], textures);
     }
 
-    addCube(glm::vec3(2, 3, 3), 1, 1, 1, textures, true);
-    addCube(glm::vec3(2, 4, 0), 1, 1, 1, textures, true);
+    addCube(glm::vec3(2, 3, 3), 1, 1, 1, glm::vec3(0), textures, true);
+    addCube(glm::vec3(2, 4, 0), 1, 1, 1, glm::vec3(0), textures, true);
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
 
@@ -112,7 +113,7 @@ void SandboxLayer::loadScene() {
     groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_AMBIENT);
     groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_DIFFUSE);
     groundTextures->loadFromValue(glm::vec3(0.f), Material::TEXTURE_SPECULAR);
-    addCube(glm::vec3(0), 50, 1, 50, groundTextures, false);
+    addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
 }
 
 SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
@@ -161,6 +162,21 @@ void SandboxLayer::onEventPoll(const Event& event) {
                                         Material::TEXTURE_SPECULAR);
                 glm::vec3 impulse(std::rand() % 50 - 25);
                 addSphere(glm::vec3(5, 15, 0), 1, impulse, textures);
+            } break;
+            case Keyboard::R: {
+                Ref<Material> textures = createRef<Material>();
+                std::srand(std::time(nullptr));
+                float r = (float)std::rand() / RAND_MAX;
+                float g = (float)std::rand() / RAND_MAX;
+                float b = (float)std::rand() / RAND_MAX;
+                textures->loadFromValue(glm::vec3(r, g, b),
+                                        Material::TEXTURE_AMBIENT);
+                textures->loadFromValue(glm::vec3(0.6f),
+                                        Material::TEXTURE_DIFFUSE);
+                textures->loadFromValue(glm::vec3(0.5f),
+                                        Material::TEXTURE_SPECULAR);
+                glm::vec3 impulse(std::rand() % 50 - 25);
+                addCube(glm::vec3(5, 15, 0), 1, 1, 1, impulse, textures, true);
             } break;
             case Keyboard::Z: {
                 Application::instance().toggleEditor();
