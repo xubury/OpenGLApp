@@ -31,4 +31,6 @@ Time Clock::restart() {
     return ret;
 }
 
+Clock::ClockType::time_point Clock::now() { return ClockType::now(); }
+
 }  // namespace te

@@ -33,6 +33,8 @@ class Clock {
 
     Time restart();
 
+    static ClockType::time_point now();
+
    private:
     ClockType::time_point m_clock;
 };
