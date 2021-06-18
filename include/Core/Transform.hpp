@@ -39,6 +39,8 @@ class Transformable {
 
     glm::vec3 getFront() const;
 
+    glm::vec3 toLocalSpace(const glm::vec3 &world) const;
+
    protected:
     glm::mat4 m_transform;
 };

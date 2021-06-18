@@ -50,6 +50,7 @@ set(Physics_Src
     src/Physics/Collision.cpp
     src/Physics/ImpulseSolver.cpp
     src/Physics/Rigidbody.cpp
+    src/Physics/TerrainCollider.cpp
     src/Physics/SphereCollider.cpp
     src/Physics/HullCollider.cpp
     src/Physics/GJK.cpp

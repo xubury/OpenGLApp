@@ -78,5 +78,9 @@ glm::vec3 Transformable::getUp() const { return m_transform[1]; }
 
 glm::vec3 Transformable::getFront() const { return m_transform[2]; }
 
-
+glm::vec3 Transformable::toLocalSpace(const glm::vec3 &world) const {
+    glm::mat3 rotateInv = glm::transpose(m_transform);
+    return rotateInv * (world - getPosition());
 }
+
+}  // namespace te

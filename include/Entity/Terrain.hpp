@@ -3,6 +3,7 @@
 
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Material.hpp"
+#include "Graphic/Vertex.hpp"
 #include "ECS/ECS.hpp"
 
 namespace te {
@@ -17,6 +18,9 @@ class Terrain : public EntityBase {
    private:
     Ref<VertexArray> m_terrain;
     Ref<Material> m_material;
+    std::vector<glm::vec3> m_vertices;
+    std::vector<glm::vec3> m_normals;
+    int m_vertexCount;
 };
 
 }  // namespace te
