@@ -1,5 +1,6 @@
 #include "Graphic/Image.hpp"
 #include "stb_image.h"
+
 namespace te {
 
 Image::Image() : m_data(nullptr), m_width(0), m_height(0), m_nChannels(0) {}

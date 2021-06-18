@@ -1,7 +1,6 @@
 #include "Graphic/OpenGL.hpp"
 #include "Core/Log.hpp"
 #include "Graphic/Texture.hpp"
-#include "stb_image.h"
 #include <iostream>
 
 namespace te {
