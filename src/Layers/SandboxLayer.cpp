@@ -12,6 +12,7 @@
 #include "Graphic/Renderer.hpp"
 
 #include <iostream>
+#include <random>
 
 namespace te {
 
@@ -149,33 +150,39 @@ void SandboxLayer::onEventPoll(const Event& event) {
     if (event.type == Event::KEY_PRESSED) {
         switch (event.key.code) {
             case Keyboard::T: {
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::uniform_int_distribution dis(-10, 10);
+
                 Ref<Material> textures = createRef<Material>();
-                std::srand(std::time(nullptr));
-                float r = (float)std::rand() / RAND_MAX;
-                float g = (float)std::rand() / RAND_MAX;
-                float b = (float)std::rand() / RAND_MAX;
+                float r = (float)(dis(gen) + 10) / 20;
+                float g = (float)(dis(gen) + 10) / 20;
+                float b = (float)(dis(gen) + 10) / 20;
                 textures->loadFromValue(glm::vec3(r, g, b),
                                         Material::TEXTURE_AMBIENT);
                 textures->loadFromValue(glm::vec3(0.6f),
                                         Material::TEXTURE_DIFFUSE);
                 textures->loadFromValue(glm::vec3(0.5f),
                                         Material::TEXTURE_SPECULAR);
-                glm::vec3 impulse(std::rand() % 50 - 25);
+                glm::vec3 impulse(dis(gen), dis(gen), dis(gen));
                 addSphere(glm::vec3(5, 15, 0), 1, impulse, textures);
             } break;
             case Keyboard::R: {
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::uniform_int_distribution dis(-10, 10);
+
                 Ref<Material> textures = createRef<Material>();
-                std::srand(std::time(nullptr));
-                float r = (float)std::rand() / RAND_MAX;
-                float g = (float)std::rand() / RAND_MAX;
-                float b = (float)std::rand() / RAND_MAX;
+                float r = (float)(dis(gen) + 10) / 20;
+                float g = (float)(dis(gen) + 10) / 20;
+                float b = (float)(dis(gen) + 10) / 20;
                 textures->loadFromValue(glm::vec3(r, g, b),
                                         Material::TEXTURE_AMBIENT);
                 textures->loadFromValue(glm::vec3(0.6f),
                                         Material::TEXTURE_DIFFUSE);
                 textures->loadFromValue(glm::vec3(0.5f),
                                         Material::TEXTURE_SPECULAR);
-                glm::vec3 impulse(std::rand() % 50 - 25);
+                glm::vec3 impulse(dis(gen), dis(gen), dis(gen));
                 addCube(glm::vec3(5, 15, 0), 1, 1, 1, impulse, textures, true);
             } break;
             case Keyboard::Z: {
