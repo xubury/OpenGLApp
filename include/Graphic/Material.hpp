@@ -19,6 +19,8 @@ class TE_API Material {
     };
 
    public:
+    void emplace(Ref<Texture> texture, Type textureType);
+
     void loadFromFile(const std::string& path, Type textureType,
                       const TextureParameter& params = TextureParameter());
 

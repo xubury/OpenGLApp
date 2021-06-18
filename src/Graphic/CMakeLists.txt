@@ -16,6 +16,7 @@ set(Graphic_Include
     ${Include_Root}/Drawable.hpp
     ${Include_Root}/Camera.hpp
     ${Include_Root}/Shader.hpp
+    ${Include_Root}/Image.hpp
     ${Include_Root}/Texture.hpp
     ${Include_Root}/Cubemap.hpp
     ${Include_Root}/Vertex.hpp
@@ -34,6 +35,7 @@ set(Graphic_Src
     ${Src_Root}/VertexArray.cpp
     ${Src_Root}/Camera.cpp
     ${Src_Root}/Shader.cpp
+    ${Src_Root}/Image.cpp
     ${Src_Root}/Texture.cpp
     ${Src_Root}/Cubemap.cpp
     ${Src_Root}/Vertex.cpp

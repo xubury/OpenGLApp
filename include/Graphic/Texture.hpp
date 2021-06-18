@@ -3,6 +3,7 @@
 
 #include "Core/Export.hpp"
 #include "Graphic/TextureParameter.hpp"
+#include "Graphic/Image.hpp"
 #include <glm/glm.hpp>
 #include <string>
 
@@ -18,9 +19,11 @@ class TE_API Texture {
 
     Texture &operator=(const Texture &) = delete;
 
-    bool loadFromFile(const std::string &path, const TextureParameter &params);
+    bool loadFromFile(const std::string &path);
 
-    void loadFromValue(const glm::vec3 &value, const TextureParameter &params);
+    void setValue(const glm::vec3 &value);
+
+    void setParameters(const TextureParameter &params);
 
     void bind() const;
 

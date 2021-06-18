@@ -1,6 +1,5 @@
 #include "Graphic/Model.hpp"
 #include "Core/Log.hpp"
-#include "Core/ResourceManager.hpp"
 #include <iostream>
 
 namespace te {
@@ -79,20 +78,21 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 void Model::processTextures(Material &textures, aiMaterial *mat,
                             aiTextureType type) {
     for (std::size_t i = 0; i < mat->GetTextureCount(type); ++i) {
-        aiString path;
-        mat->GetTexture(type, i, &path);
+        aiString relativePath;
+        mat->GetTexture(type, i, &relativePath);
+        std::string path = m_directory + relativePath.C_Str();
         switch (type) {
             case aiTextureType_AMBIENT:
-                textures.loadFromFile(m_directory + path.C_Str(),
-                                      Material::TEXTURE_AMBIENT);
+                textures.emplace(m_loadedTexture.getOrLoad(path, path),
+                                 Material::TEXTURE_AMBIENT);
                 break;
             case aiTextureType_DIFFUSE:
-                textures.loadFromFile(m_directory + path.C_Str(),
-                                      Material::TEXTURE_DIFFUSE);
+                textures.emplace(m_loadedTexture.getOrLoad(path, path),
+                                 Material::TEXTURE_DIFFUSE);
                 break;
             case aiTextureType_SPECULAR:
-                textures.loadFromFile(m_directory + path.C_Str(),
-                                      Material::TEXTURE_SPECULAR);
+                textures.emplace(m_loadedTexture.getOrLoad(path, path),
+                                 Material::TEXTURE_SPECULAR);
                 break;
             default:
                 break;

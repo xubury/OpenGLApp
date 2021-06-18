@@ -13,38 +13,32 @@ Texture::Texture() : m_id(0) {
 
 Texture::~Texture() { glDeleteTextures(1, &m_id); }
 
-bool Texture::loadFromFile(const std::string &path,
-                           const TextureParameter &params) {
-    stbi_set_flip_vertically_on_load(true);
-    int texWidth;
-    int texHeight;
-    int nChannels;
-
-    uint8_t *data =
-        stbi_load(path.c_str(), &texWidth, &texHeight, &nChannels, 0);
-    GLenum type = nChannels == 3 ? GL_RGB : GL_RGBA;
-    if (data) {
+bool Texture::loadFromFile(const std::string &path) {
+    Image image;
+    image.setFlip(true);
+    image.loadFromFile(path);
+    if (image.valid()) {
+        GLenum type = image.nChannels() == 3 ? GL_RGB : GL_RGBA;
         bind();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
-                         params.borderColor);
-        glTexImage2D(GL_TEXTURE_2D, 0, type, texWidth, texHeight, 0, type,
-                     GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, type, image.width(), image.height(), 0,
+                     type, GL_UNSIGNED_BYTE, image.data());
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        TE_CORE_ERROR("Failed to load texture!");
+        TE_CORE_ERROR("Fail to load texture!");
         return false;
     }
-    stbi_image_free(data);
     unbind();
     return true;
 }
 
-void Texture::loadFromValue(const glm::vec3 &value,
-                            const TextureParameter &params) {
+void Texture::setValue(const glm::vec3 &value) {
+    bind();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, &value.x);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    unbind();
+}
+
+void Texture::setParameters(const TextureParameter &params) {
     bind();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
@@ -52,8 +46,6 @@ void Texture::loadFromValue(const glm::vec3 &value,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
                      params.borderColor);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, &value.x);
-    glGenerateMipmap(GL_TEXTURE_2D);
     unbind();
 }
 

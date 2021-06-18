@@ -5,9 +5,7 @@
 
 namespace te {
 
-SkyboxLayer::SkyboxLayer()
-    : Layer("Skybox layer"),
-      m_cubemap(TextureParameter(GL_CLAMP_TO_EDGE, GL_LINEAR)) {
+SkyboxLayer::SkyboxLayer() : Layer("Skybox layer") {
     const char *vertex = R"(
     #version 330 core
     layout (location = 0) in vec3 aPos;
@@ -66,6 +64,8 @@ SkyboxLayer::SkyboxLayer()
         "resources/skybox/right.jpg", "resources/skybox/left.jpg",
         "resources/skybox/top.jpg",   "resources/skybox/bottom.jpg",
         "resources/skybox/front.jpg", "resources/skybox/back.jpg"};
+    m_cubemap.setParameters(TextureParameter(GL_CLAMP_TO_EDGE, GL_LINEAR));
+    Image::setFlip(false);
     m_cubemap.loadFromFile(faces);
     m_shader->bind();
     m_shader->setInt("skybox", 0);

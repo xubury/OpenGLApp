@@ -5,6 +5,7 @@
 #include "Graphic/Drawable.hpp"
 #include "Graphic/Mesh.hpp"
 #include "Graphic/VertexArray.hpp"
+#include "Core/ResourceManager.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -17,8 +18,7 @@ class TE_API Model : public Drawable {
 
     bool loadFromFile(const std::string &path);
 
-    void draw(const Shader &shader,
-              const glm::mat4 &transform) const override;
+    void draw(const Shader &shader, const glm::mat4 &transform) const override;
 
     const std::vector<Mesh> &getMeshes() const;
 
@@ -35,6 +35,8 @@ class TE_API Model : public Drawable {
     std::vector<Mesh> m_meshes;
 
     std::string m_directory;
+
+    ResourceManager<std::string, Texture> m_loadedTexture;
 };
 
 }  // namespace te

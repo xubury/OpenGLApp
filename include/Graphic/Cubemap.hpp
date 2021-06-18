@@ -9,13 +9,15 @@ namespace te {
 
 class Cubemap {
    public:
-    Cubemap(const TextureParameter &params);
+    Cubemap();
 
     ~Cubemap();
 
     Cubemap(const Cubemap &) = delete;
 
     Cubemap &operator=(const Cubemap &) = delete;
+
+    void setParameters(const TextureParameter &params);
 
     bool loadFromFile(const std::vector<std::string> &path);
 
