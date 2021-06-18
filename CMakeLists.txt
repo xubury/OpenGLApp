@@ -36,7 +36,8 @@ set(Entity_Src
     src/Entity/ModelEntity.cpp
     src/Entity/Cube.cpp
     src/Entity/Light.cpp
-    src/Entity/Sphere.cpp)
+    src/Entity/Sphere.cpp
+    src/Entity/Terrain.cpp)
 
 set(Window_Src
     src/Window/RenderWindow.cpp

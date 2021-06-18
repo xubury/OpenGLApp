@@ -11,6 +11,7 @@
 #include "Physics/HullCollider.hpp"
 #include "Graphic/Renderer.hpp"
 #include "Core/Math.hpp"
+#include "Entity/Terrain.hpp"
 
 #include <iostream>
 
@@ -114,7 +115,10 @@ void SandboxLayer::loadScene() {
     groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_AMBIENT);
     groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_DIFFUSE);
     groundTextures->loadFromValue(glm::vec3(0.f), Material::TEXTURE_SPECULAR);
-    addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
+    // addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
+
+    Application::instance().getActiveScene()->entities.create<Terrain>(
+        800, 10, groundTextures);
 }
 
 SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
