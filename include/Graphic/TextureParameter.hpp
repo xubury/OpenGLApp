@@ -6,7 +6,9 @@
 namespace te {
 
 struct TextureParameter {
+    // GL_REPEAT GL_MIRRORED_REPEAT GL_CLAMP_TO_EDGE GL_CLAMP_TO_EDGE
     GLenum warp;
+    // GL_LINEAR GL_NEAREST
     GLenum filtering;
     float borderColor[4];
     TextureParameter() : warp(GL_CLAMP_TO_EDGE), filtering(GL_LINEAR) {}

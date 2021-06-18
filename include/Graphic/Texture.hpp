@@ -10,7 +10,7 @@ namespace te {
 
 class TE_API Texture {
    public:
-    Texture(const TextureParameter &params = TextureParameter());
+    Texture();
 
     ~Texture();
 
@@ -18,9 +18,9 @@ class TE_API Texture {
 
     Texture &operator=(const Texture &) = delete;
 
-    bool loadFromFile(const std::string &path);
+    bool loadFromFile(const std::string &path, const TextureParameter &params);
 
-    void loadFromValue(const glm::vec3 &value);
+    void loadFromValue(const glm::vec3 &value, const TextureParameter &params);
 
     void bind() const;
 

@@ -19,9 +19,11 @@ class TE_API Material {
     };
 
    public:
-    void loadFromFile(const std::string& path, Type textureType);
+    void loadFromFile(const std::string& path, Type textureType,
+                      const TextureParameter& params = TextureParameter());
 
-    void loadFromValue(const glm::vec3& value, Type textureType);
+    void loadFromValue(const glm::vec3& value, Type textureType,
+                       const TextureParameter& params = TextureParameter());
 
     std::size_t size() const;
 

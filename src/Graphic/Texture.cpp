@@ -6,20 +6,15 @@
 
 namespace te {
 
-Texture::Texture(const TextureParameter &params) : m_id(0) {
+Texture::Texture() : m_id(0) {
     glGenTextures(1, &m_id);
     bind();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
-                     params.borderColor);
 }
 
 Texture::~Texture() { glDeleteTextures(1, &m_id); }
 
-bool Texture::loadFromFile(const std::string &path) {
+bool Texture::loadFromFile(const std::string &path,
+                           const TextureParameter &params) {
     stbi_set_flip_vertically_on_load(true);
     int texWidth;
     int texHeight;
@@ -30,6 +25,12 @@ bool Texture::loadFromFile(const std::string &path) {
     GLenum type = nChannels == 3 ? GL_RGB : GL_RGBA;
     if (data) {
         bind();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
+                         params.borderColor);
         glTexImage2D(GL_TEXTURE_2D, 0, type, texWidth, texHeight, 0, type,
                      GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -42,8 +43,15 @@ bool Texture::loadFromFile(const std::string &path) {
     return true;
 }
 
-void Texture::loadFromValue(const glm::vec3 &value) {
+void Texture::loadFromValue(const glm::vec3 &value,
+                            const TextureParameter &params) {
     bind();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, params.warp);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, params.warp);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR,
+                     params.borderColor);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, &value.x);
     glGenerateMipmap(GL_TEXTURE_2D);
     unbind();
