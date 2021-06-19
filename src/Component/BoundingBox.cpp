@@ -6,7 +6,7 @@ namespace te {
 
 BoundingBox::BoundingBox()
     : m_min(std::numeric_limits<float>::max()),
-      m_max(std::numeric_limits<float>::min()) {}
+      m_max(std::numeric_limits<float>::lowest()) {}
 
 void BoundingBox::initialize(const Vertex *vertex, int cnt) {
     for (int i = 0; i < cnt; ++i) {
