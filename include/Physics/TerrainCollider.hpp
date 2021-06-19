@@ -7,9 +7,7 @@ namespace te {
 
 class TerrainCollider : public Collider {
    public:
-    TerrainCollider(const std::vector<glm::vec3> &vertices,
-                    const std::vector<glm::vec3> &normals, int vertexCount,
-                    int gridSize);
+    TerrainCollider();
 
     float height(const glm::vec3 &localPos) const;
 
@@ -21,12 +19,6 @@ class TerrainCollider : public Collider {
             "TerrainCollider is not supposed to call findFurthestPoint!");
         return glm::vec3(0);
     }
-
-   public:
-    std::vector<glm::vec3> m_vertices;
-    std::vector<glm::vec3> m_normals;
-    int m_vertexCount;
-    int m_gridSize;
 };
 
 }  // namespace te

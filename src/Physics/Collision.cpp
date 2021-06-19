@@ -49,17 +49,18 @@ ContactManifold Collision::collideTerrainSphere(Collider &objA,
     glm::vec3 sphereTerrainPos =
         terrain->owner()->toLocalSpace(sphere->getCenterInWorld());
     float height = terrain->height(sphereTerrainPos);
-    glm::mat3 rotateInv = glm::mat3(terrain->owner()->getTransform());
+    // TE_CORE_TRACE("height:{}", height);
     glm::vec3 normal = terrain->normal(sphereTerrainPos);
-    glm::vec3 localNormal = rotateInv * normal;
     float depth =
-        height + sphere->getRadius() - glm::dot(sphereTerrainPos, localNormal);
+        height + sphere->getRadius() - glm::dot(sphereTerrainPos, normal);
     if (depth >= 0) {
         manifold.objA = objA.owner()->component<CollisionObject>().get();
         manifold.objB = objB.owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
         manifold.points[0].position =
-            sphere->getCenterInWorld() - normal * (sphere->getRadius() + depth);
+            sphere->getCenterInWorld() -
+            glm::mat3(terrain->owner()->getTransform()) * normal *
+                (sphere->getRadius() + depth);
         manifold.points[0].depth = depth;
         if (swap)
             manifold.normal = -normal;

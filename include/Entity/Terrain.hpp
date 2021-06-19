@@ -15,11 +15,16 @@ class Terrain : public EntityBase {
 
     void draw(const Shader &shader) const override;
 
+    float height(const glm::vec3 &localPos) const;
+
+    glm::vec3 normal(const glm::vec3 &localPos) const;
+
    private:
     Ref<VertexArray> m_terrain;
     Ref<Material> m_material;
     std::vector<glm::vec3> m_vertices;
     std::vector<glm::vec3> m_normals;
+    int m_gridSize;
     int m_vertexCount;
 };
 

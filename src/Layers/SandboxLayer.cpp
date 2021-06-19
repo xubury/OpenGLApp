@@ -118,7 +118,7 @@ void SandboxLayer::loadScene() {
     // addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
 
     Application::instance().getActiveScene()->entities.create<Terrain>(
-        800, 10, groundTextures);
+        800, 100, groundTextures);
 }
 
 SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
