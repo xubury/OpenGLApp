@@ -123,14 +123,14 @@ static bool nextSimplex(Simplex& points, glm::vec3& direction) {
     return false;
 }
 
-glm::vec3 findSupport(const Collider& colliderA, const Collider& colliderB,
+glm::vec3 findSupport(const Collider* colliderA, const Collider* colliderB,
                       const glm::vec3& direction) {
-    return colliderA.findFurthestPoint(direction) -
-           colliderB.findFurthestPoint(-direction);
+    return colliderA->findFurthestPoint(direction) -
+           colliderB->findFurthestPoint(-direction);
 }
 
-std::pair<bool, Simplex> gjk(const Collider& colliderA,
-                             const Collider& colliderB,
+std::pair<bool, Simplex> gjk(const Collider* colliderA,
+                             const Collider* colliderB,
                              std::size_t maxIterartion) {
     // TODO: initial direction?
     glm::vec3 support = findSupport(colliderA, colliderB, glm::vec3(1.0));
@@ -196,8 +196,8 @@ static void addUniqueEdge(EdgeList& edges,
     }
 }
 
-ContactManifold epa(const Simplex& simplex, Collider& colliderA,
-                    Collider& colliderB, std::size_t maxIterartion) {
+ContactManifold epa(const Simplex& simplex, Collider* colliderA,
+                    Collider* colliderB, std::size_t maxIterartion) {
     std::vector<glm::vec3> polytope(simplex.begin(), simplex.end());
     std::vector<std::size_t> faces = {0, 1, 2, 0, 3, 1, 0, 2, 3, 1, 3, 2};
     auto [normals, minFace] = getFaceNormals(polytope, faces);
@@ -265,8 +265,8 @@ ContactManifold epa(const Simplex& simplex, Collider& colliderA,
         return {};
     }
     ContactManifold manifold;
-    manifold.objA = colliderA.owner()->component<CollisionObject>().get();
-    manifold.objB = colliderB.owner()->component<CollisionObject>().get();
+    manifold.objA = colliderA->owner()->component<CollisionObject>().get();
+    manifold.objB = colliderB->owner()->component<CollisionObject>().get();
     manifold.normal = minNormal;
     manifold.pointCount = 1;
     manifold.points[0].depth = minDist + 0.001;

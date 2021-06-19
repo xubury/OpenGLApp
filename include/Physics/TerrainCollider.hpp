@@ -13,6 +13,8 @@ class TerrainCollider : public Collider {
 
     glm::vec3 normal(const glm::vec3 &localPos) const;
 
+    bool outOfBound(const glm::vec3 &localPos) const;
+
     glm::vec3 findFurthestPoint(const glm::vec3 &) const override {
         TE_CORE_ASSERT(
             false,

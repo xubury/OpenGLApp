@@ -6,20 +6,22 @@
 
 namespace te {
 
-using CollisionTest = ContactManifold (*)(Collider &objA, Collider &objB);
+using CollisionTest = ContactManifold (*)(Collider *objA, Collider *objB);
 
 class Collision {
    public:
-    static ContactManifold collide(Collider &objA, Collider &objB);
+    static ContactManifold collide(Collider *objA, Collider *objB);
 
    private:
-    static ContactManifold collideTerrainSphere(Collider &objA, Collider &objB);
+    static ContactManifold collideTerrainSphere(Collider *objA, Collider *objB);
 
-    static ContactManifold collideSpheres(Collider &objA, Collider &objB);
+    static ContactManifold collideTerrainHull(Collider *objA, Collider *objB);
 
-    static ContactManifold collideSphereHull(Collider &objA, Collider &objB);
+    static ContactManifold collideSpheres(Collider *objA, Collider *objB);
 
-    static ContactManifold collideHulls(Collider &objA, Collider &objB);
+    static ContactManifold collideSphereHull(Collider *objA, Collider *objB);
+
+    static ContactManifold collideHulls(Collider *objA, Collider *objB);
 
     static const CollisionTest
         collisionTable[Collider::Type::COLLIDIER_TYPE_COUNT]

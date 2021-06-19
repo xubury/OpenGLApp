@@ -115,4 +115,10 @@ glm::vec3 Terrain::normal(const glm::vec3 &localPos) const {
     return f1 + f2 + f3 + f4;
 }
 
+bool Terrain::outOfBound(const glm::vec3 &localPos) const {
+    float x = (localPos.x / m_gridSize + 0.5f);
+    float z = (localPos.z / m_gridSize + 0.5f);
+    return x < 0 || z < 0 || x > 1 || z > 1;
+}
+
 };  // namespace te

@@ -19,6 +19,7 @@ class Terrain : public EntityBase {
 
     glm::vec3 normal(const glm::vec3 &localPos) const;
 
+    bool outOfBound(const glm::vec3 &localPos) const;
    private:
     Ref<VertexArray> m_terrain;
     Ref<Material> m_material;

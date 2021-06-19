@@ -13,4 +13,8 @@ glm::vec3 TerrainCollider::normal(const glm::vec3 &localPos) const {
     return dynamic_cast<const Terrain *>(owner())->normal(localPos);
 }
 
+bool TerrainCollider::outOfBound(const glm::vec3 &localPos) const {
+    return dynamic_cast<const Terrain *>(owner())->outOfBound(localPos);
+}
+
 }  // namespace te

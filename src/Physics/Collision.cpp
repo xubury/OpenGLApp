@@ -1,6 +1,7 @@
 #include "Physics/Collision.hpp"
 #include "Physics/GJK.hpp"
 #include "Physics/SphereCollider.hpp"
+#include "Physics/HullCollider.hpp"
 #include "Physics/TerrainCollider.hpp"
 
 namespace te {
@@ -8,8 +9,8 @@ namespace te {
 const CollisionTest
     Collision::collisionTable[Collider::Type::COLLIDIER_TYPE_COUNT]
                              [Collider::Type::COLLIDIER_TYPE_COUNT] = {
-                                 {nullptr, collideTerrainSphere, nullptr,
-                                  nullptr, nullptr},
+                                 {nullptr, collideTerrainSphere,
+                                  collideTerrainHull, nullptr, nullptr},
                                  {nullptr, collideSpheres, collideSphereHull,
                                   nullptr, nullptr},
                                  {nullptr, nullptr, collideHulls, nullptr,
@@ -17,11 +18,12 @@ const CollisionTest
                                  {nullptr, nullptr, nullptr, nullptr, nullptr},
                                  {nullptr, nullptr, nullptr, nullptr, nullptr}};
 
-ContactManifold Collision::collide(Collider &objA, Collider &objB) {
-    int row = objA.getType();
-    int col = objB.getType();
+ContactManifold Collision::collide(Collider *objA, Collider *objB) {
+    int row = objA->getType();
+    int col = objB->getType();
     if (row > col) {
         std::swap(row, col);
+        std::swap(objA, objB);
     }
     CollisionTest func = collisionTable[row][col];
     if (func != nullptr) {
@@ -31,57 +33,79 @@ ContactManifold Collision::collide(Collider &objA, Collider &objB) {
     }
 }
 
-ContactManifold Collision::collideTerrainSphere(Collider &objA,
-                                                Collider &objB) {
-    TerrainCollider *terrain;
-    SphereCollider *sphere;
-    bool swap = false;
-    if (objA.getType() == Collider::TEERAIN_COLLIDER) {
-        terrain = dynamic_cast<TerrainCollider *>(&objA);
-        sphere = dynamic_cast<SphereCollider *>(&objB);
-    } else {
-        terrain = dynamic_cast<TerrainCollider *>(&objB);
-        sphere = dynamic_cast<SphereCollider *>(&objA);
-        swap = true;
-    }
-
+ContactManifold Collision::collideTerrainSphere(Collider *objA,
+                                                Collider *objB) {
     ContactManifold manifold;
+    TerrainCollider *terrain = dynamic_cast<TerrainCollider *>(objA);
+    SphereCollider *sphere = dynamic_cast<SphereCollider *>(objB);
+
     glm::vec3 sphereTerrainPos =
         terrain->owner()->toLocalSpace(sphere->getCenterInWorld());
+    if (terrain->outOfBound(sphereTerrainPos)) {
+        return manifold;
+    }
+
     float height = terrain->height(sphereTerrainPos);
-    // TE_CORE_TRACE("height:{}", height);
     glm::vec3 normal = terrain->normal(sphereTerrainPos);
     float depth =
         height + sphere->getRadius() - glm::dot(sphereTerrainPos, normal);
     if (depth >= 0) {
-        manifold.objA = objA.owner()->component<CollisionObject>().get();
-        manifold.objB = objB.owner()->component<CollisionObject>().get();
+        manifold.objA = objA->owner()->component<CollisionObject>().get();
+        manifold.objB = objB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
+        glm::vec3 worldNormal = glm::mat3(glm::transpose(glm::inverse(
+                                    terrain->owner()->getTransform()))) *
+                                normal;
+        worldNormal = glm::normalize(worldNormal);
         manifold.points[0].position =
-            sphere->getCenterInWorld() -
-            glm::mat3(terrain->owner()->getTransform()) * normal *
-                (sphere->getRadius() + depth);
+            sphere->getCenterInWorld() - worldNormal * sphere->getRadius();
         manifold.points[0].depth = depth;
-        if (swap)
-            manifold.normal = -normal;
-        else
-            manifold.normal = normal;
+        manifold.normal = worldNormal;
     }
     return manifold;
 }
 
-ContactManifold Collision::collideSpheres(Collider &objA, Collider &objB) {
-    SphereCollider &sphereA = *dynamic_cast<SphereCollider *>(&objA);
-    SphereCollider &sphereB = *dynamic_cast<SphereCollider *>(&objB);
+ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
     ContactManifold manifold;
-    glm::vec3 aWorldPos = sphereA.getCenterInWorld();
-    glm::vec3 bWorldPos = sphereB.getCenterInWorld();
+    TerrainCollider *terrain = dynamic_cast<TerrainCollider *>(objA);
+    HullCollider *hull = dynamic_cast<HullCollider *>(objB);
+    glm::vec3 hullTerrainPos =
+        terrain->owner()->toLocalSpace(hull->owner()->getPosition());
+    if (terrain->outOfBound(hullTerrainPos)) {
+        return manifold;
+    }
+    glm::vec3 normal = terrain->normal(hullTerrainPos);
+    glm::vec3 worldNormal =
+        glm::mat3(
+            glm::transpose(glm::inverse(terrain->owner()->getTransform()))) *
+        normal;
+    worldNormal = glm::normalize(worldNormal);
+    glm::vec3 support = hull->findFurthestPoint(-worldNormal);
+    float height = terrain->height(hullTerrainPos);
+    float depth = height - glm::dot(support, worldNormal);
+    if (depth >= 0) {
+        manifold.objA = objA->owner()->component<CollisionObject>().get();
+        manifold.objB = objB->owner()->component<CollisionObject>().get();
+        manifold.pointCount = 1;
+        manifold.points[0].position = support;
+        manifold.points[0].depth = depth;
+        manifold.normal = worldNormal;
+    }
+    return manifold;
+}
+
+ContactManifold Collision::collideSpheres(Collider *objA, Collider *objB) {
+    SphereCollider *sphereA = dynamic_cast<SphereCollider *>(objA);
+    SphereCollider *sphereB = dynamic_cast<SphereCollider *>(objB);
+    ContactManifold manifold;
+    glm::vec3 aWorldPos = sphereA->getCenterInWorld();
+    glm::vec3 bWorldPos = sphereB->getCenterInWorld();
     float dist = glm::length(aWorldPos - bWorldPos);
 
-    float depth = sphereA.getRadius() + sphereB.getRadius() - dist;
+    float depth = sphereA->getRadius() + sphereB->getRadius() - dist;
     if (depth >= 0) {
-        manifold.objA = sphereA.owner()->component<CollisionObject>().get();
-        manifold.objB = sphereB.owner()->component<CollisionObject>().get();
+        manifold.objA = sphereA->owner()->component<CollisionObject>().get();
+        manifold.objB = sphereB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
         manifold.points[0].position = (aWorldPos + bWorldPos) / 2.f;
         manifold.points[0].depth = depth;
@@ -90,7 +114,7 @@ ContactManifold Collision::collideSpheres(Collider &objA, Collider &objB) {
     return manifold;
 }
 
-ContactManifold Collision::collideSphereHull(Collider &objA, Collider &objB) {
+ContactManifold Collision::collideSphereHull(Collider *objA, Collider *objB) {
     auto [collide, simlex] = gjk(objA, objB, 32);
     if (collide) {
         return epa(simlex, objA, objB, 32);
@@ -98,7 +122,7 @@ ContactManifold Collision::collideSphereHull(Collider &objA, Collider &objB) {
     return {};
 }
 
-ContactManifold Collision::collideHulls(Collider &objA, Collider &objB) {
+ContactManifold Collision::collideHulls(Collider *objA, Collider *objB) {
     auto [collide, simlex] = gjk(objA, objB, 32);
     if (collide) {
         return epa(simlex, objA, objB, 32);
