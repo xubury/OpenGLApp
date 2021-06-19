@@ -18,18 +18,30 @@ glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
     glm::vec3 maxPoint(0);
     float maxDistance = std::numeric_limits<float>::lowest();
 
+    // TODO: multiple furthest point?
+    int cnt = 0;
     for (const glm::vec3& vertex : m_vertices) {
         glm::vec4 v(vertex, 1);
 
         glm::vec3 p = glm::vec3(owner()->getTransform() * v);
 
         float distance = glm::dot(p, direction);
-        if (distance > maxDistance) {
-            maxDistance = distance;
-            maxPoint = p;
+        if (distance >= maxDistance) {
+            if (std::abs(distance - maxDistance) <
+                std::numeric_limits<float>::epsilon()) {
+                maxPoint = maxPoint + p;
+                ++cnt;
+            } else {
+                maxDistance = distance;
+                maxPoint = p;
+                cnt = 1;
+            }
         }
     }
 
+    if (cnt > 1) {
+        maxPoint /= cnt;
+    }
     return maxPoint;
 }
 

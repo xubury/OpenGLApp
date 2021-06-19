@@ -101,12 +101,12 @@ void SandboxLayer::loadScene() {
         glm::vec3(-4.0f, 8.0f, 0.0f), glm::vec3(2.0, 9.0f, -4.0f)};
     glm::vec3 impulse[] = {glm::vec3(0, 50, 0), glm::vec3(0, -50, 0),
                            glm::vec3(50, 0, 0), glm::vec3(0, 0, 50.f)};
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 1; ++i) {
         addSphere(positions[i], 1.0, impulse[i], textures);
     }
 
-    addCube(glm::vec3(2, 3, 3), 1, 1, 1, glm::vec3(0), textures, true);
-    addCube(glm::vec3(2, 4, 0), 1, 1, 1, glm::vec3(0), textures, true);
+    // addCube(glm::vec3(2, 3, 3), 1, 1, 1, glm::vec3(0), textures, true);
+    // addCube(glm::vec3(2, 4, 0), 1, 1, 1, glm::vec3(0), textures, true);
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
 
@@ -118,7 +118,7 @@ void SandboxLayer::loadScene() {
     // addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
 
     Application::instance().getActiveScene()->entities.create<Terrain>(
-        800, 100, groundTextures);
+        10, 20, groundTextures);
 }
 
 SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
