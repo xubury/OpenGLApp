@@ -97,9 +97,22 @@ float Terrain::height(const glm::vec3 &localPos) const {
 }
 
 glm::vec3 Terrain::normal(const glm::vec3 &localPos) const {
-    int gridX = (localPos.x / m_gridSize + 0.5) * (m_vertexCount - 1);
-    int gridZ = (localPos.z / m_gridSize + 0.5) * (m_vertexCount - 1);
-    return m_normals[gridZ * m_vertexCount + gridX];
+    // TODO: validate correctnes
+    float x = (localPos.x / m_gridSize + 0.5f) * (m_vertexCount - 1);
+    float z = (localPos.z / m_gridSize + 0.5f) * (m_vertexCount - 1);
+    int x1 = std::ceil(x);
+    int z1 = std::ceil(z);
+    int x0 = std::floor(x);
+    int z0 = std::floor(z);
+    glm::vec3 f00 = m_normals[z0 * m_vertexCount + x0];
+    glm::vec3 f10 = m_normals[z0 * m_vertexCount + x1];
+    glm::vec3 f01 = m_normals[z1 * m_vertexCount + x0];
+    glm::vec3 f11 = m_normals[z1 * m_vertexCount + x1];
+    glm::vec3 f1 = f00 * (x1 - x) * (z1 - z);
+    glm::vec3 f2 = f10 * (x - x0) * (z1 - z);
+    glm::vec3 f3 = f01 * (x1 - x) * (z - z0);
+    glm::vec3 f4 = f11 * (x - x0) * (z - z0);
+    return f1 + f2 + f3 + f4;
 }
 
 };  // namespace te
