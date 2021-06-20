@@ -27,8 +27,10 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
             m_normals[vertexPointer].x = 0.f;
             m_normals[vertexPointer].y = 1.0f;
             m_normals[vertexPointer].z = 0.f;
-            texCoords[vertexPointer].x = (float)j / (vertexCount - 1);
-            texCoords[vertexPointer].y = (float)i / (vertexCount - 1);
+            texCoords[vertexPointer].x =
+                (float)(j + halfSize) / (vertexCount - 1);
+            texCoords[vertexPointer].y =
+                (float)(i + halfSize) / (vertexCount - 1);
             vertexPointer++;
         }
     }

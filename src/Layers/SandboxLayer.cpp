@@ -112,9 +112,9 @@ void SandboxLayer::loadScene() {
 
     // ground
     Ref<Material> groundTextures = createRef<Material>();
-    groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_AMBIENT);
-    groundTextures->loadFromValue(glm::vec3(0.7f), Material::TEXTURE_DIFFUSE);
-    groundTextures->loadFromValue(glm::vec3(0.f), Material::TEXTURE_SPECULAR);
+    groundTextures->loadFromFile(
+        "resources/terrain/sand_01_diff_4k.jpg", Material::TEXTURE_DIFFUSE,
+        TextureParameter(GL_MIRRORED_REPEAT, GL_LINEAR));
     // addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
 
     Application::instance().getActiveScene()->entities.create<Terrain>(
