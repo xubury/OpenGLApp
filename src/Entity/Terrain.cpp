@@ -99,15 +99,13 @@ float Terrain::height(float localX, float localZ) const {
 }
 
 glm::vec3 Terrain::normal(float localX, float localZ) const {
-    // FIXME: not correct here
-    float offset = m_gridSize / 2.f;
+    float offset = 0.3f;
     float hL = height(localX - offset, localZ);
     float hR = height(localX + offset, localZ);
     float hD = height(localX, localZ - offset);
     float hU = height(localX, localZ + offset);
     glm::vec3 normal =
         glm::normalize(glm::vec3(hL - hR, 2.0f * offset, hD - hU));
-    normal = glm::vec3(0, 1, 0);
     return normal;
 }
 
@@ -121,16 +119,19 @@ bool Terrain::outOfBound(const glm::vec3 &localPos) const {
 }
 
 void Terrain::computeNormal() {
+    float offset = 0.3f;
     for (int i = 1; i < m_vertexCount - 1; ++i) {
+        float z = (i - (m_vertexCount - 1) / 2.f) * m_gridSize;
         for (int j = 1; j < m_vertexCount - 1; ++j) {
-            float hL = m_vertices[i * m_vertexCount + j - 1].y;
-            float hR = m_vertices[i * m_vertexCount + j + 1].y;
-            float hD = m_vertices[(i - 1) * m_vertexCount + j].y;
-            float hU = m_vertices[(i + 1) * m_vertexCount + j].y;
+            float x = (j - (m_vertexCount - 1) / 2.f) * m_gridSize;
+            float hL = height(x - offset, z);
+            float hR = height(x + offset, z);
+            float hD = height(x, z - offset);
+            float hU = height(x, z + offset);
             glm::vec3 &normal = m_normals[i * m_vertexCount + j];
             normal.x = hL - hR;
+            normal.y = 2.0 * offset;
             normal.z = hD - hU;
-            normal.y = 2.0 * m_gridSize;
             normal = normalize(normal);
         }
     }

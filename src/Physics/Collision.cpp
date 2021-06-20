@@ -3,6 +3,7 @@
 #include "Physics/SphereCollider.hpp"
 #include "Physics/HullCollider.hpp"
 #include "Physics/TerrainCollider.hpp"
+#include "Graphic/Primitive.hpp"
 
 namespace te {
 
@@ -47,8 +48,8 @@ ContactManifold Collision::collideTerrainSphere(Collider *objA,
 
     float height = terrain->height(sphereTerrainPos.x, sphereTerrainPos.z);
     glm::vec3 normal = terrain->normal(sphereTerrainPos.x, sphereTerrainPos.z);
-    float depth =
-        height + sphere->getRadius() - glm::dot(sphereTerrainPos, normal);
+    float depth = height + sphere->getRadius() -
+                  glm::dot(sphereTerrainPos, glm::vec3(0, 1, 0));
     if (depth >= 0) {
         manifold.objA = objA->owner()->component<CollisionObject>().get();
         manifold.objB = objB->owner()->component<CollisionObject>().get();
@@ -75,14 +76,12 @@ ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
         return manifold;
     }
     glm::vec3 normal = terrain->normal(hullTerrainPos.x, hullTerrainPos.z);
-    glm::vec3 worldNormal =
-        glm::mat3(
-            glm::transpose(glm::inverse(terrain->owner()->getTransform()))) *
-        normal;
+    glm::mat3 rotateInv = glm::inverse(terrain->owner()->getTransform());
+    glm::vec3 worldNormal = glm::transpose(rotateInv) * normal;
     worldNormal = glm::normalize(worldNormal);
     glm::vec3 support = hull->findFurthestPoint(-worldNormal);
     float height = terrain->height(hullTerrainPos.x, hullTerrainPos.z);
-    float depth = height - glm::dot(support, worldNormal);
+    float depth = height - glm::dot(rotateInv * support, glm::vec3(0, 1, 0));
     if (depth >= 0) {
         manifold.objA = objA->owner()->component<CollisionObject>().get();
         manifold.objB = objB->owner()->component<CollisionObject>().get();
