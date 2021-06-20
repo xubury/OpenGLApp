@@ -46,7 +46,7 @@ ContactManifold Collision::collideTerrainSphere(Collider *objA,
     }
 
     float height = terrain->height(sphereTerrainPos.x, sphereTerrainPos.z);
-    glm::vec3 normal = terrain->normal(sphereTerrainPos);
+    glm::vec3 normal = terrain->normal(sphereTerrainPos.x, sphereTerrainPos.z);
     float depth =
         height + sphere->getRadius() - glm::dot(sphereTerrainPos, normal);
     if (depth >= 0) {
@@ -74,7 +74,7 @@ ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
     if (terrain->outOfBound(hullTerrainPos)) {
         return manifold;
     }
-    glm::vec3 normal = terrain->normal(hullTerrainPos);
+    glm::vec3 normal = terrain->normal(hullTerrainPos.x, hullTerrainPos.z);
     glm::vec3 worldNormal =
         glm::mat3(
             glm::transpose(glm::inverse(terrain->owner()->getTransform()))) *

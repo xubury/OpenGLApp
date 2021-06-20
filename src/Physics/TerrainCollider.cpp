@@ -9,8 +9,8 @@ float TerrainCollider::height(float localX, float localZ) const {
     return dynamic_cast<const Terrain *>(owner())->height(localX, localZ);
 }
 
-glm::vec3 TerrainCollider::normal(const glm::vec3 &localPos) const {
-    return dynamic_cast<const Terrain *>(owner())->normal(localPos);
+glm::vec3 TerrainCollider::normal(float localX, float localZ) const {
+    return dynamic_cast<const Terrain *>(owner())->normal(localX, localZ);
 }
 
 bool TerrainCollider::outOfBound(const glm::vec3 &localPos) const {

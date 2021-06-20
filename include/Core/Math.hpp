@@ -47,7 +47,7 @@ inline bool sameDirection(const glm::vec3 &v1, const glm::vec3 &v2) {
     return glm::dot(v1, v2) > 0;
 }
 
-inline float barryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,
+inline float baryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,
                           glm::vec2 pos) {
     float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
     float l1 =

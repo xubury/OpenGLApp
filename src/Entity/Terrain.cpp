@@ -22,8 +22,11 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
         for (float j = -halfSize; j <= halfSize; ++j) {
             RandomGenerator random(vertexPointer);
             m_vertices[vertexPointer].x = j * gridSize;
-            m_vertices[vertexPointer].y = random.rnd(0.f, 4.f);
+            m_vertices[vertexPointer].y = random.rnd(0.1f, 4.f);
             m_vertices[vertexPointer].z = i * gridSize;
+            m_normals[vertexPointer].x = 0.f;
+            m_normals[vertexPointer].y = 1.0f;
+            m_normals[vertexPointer].z = 0.f;
             texCoords[vertexPointer].x = (float)j / (vertexCount - 1);
             texCoords[vertexPointer].y = (float)i / (vertexCount - 1);
             vertexPointer++;
@@ -69,10 +72,10 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
 }
 
 void Terrain::draw(const Shader &shader) const {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     Renderer::submit(shader, *m_terrain, GL_TRIANGLES, true, getTransform(),
                      m_material.get());
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 float Terrain::height(float localX, float localZ) const {
@@ -87,46 +90,25 @@ float Terrain::height(float localX, float localZ) const {
     float xCoord = x - x0;
     float zCoord = z - z0;
     if (xCoord <= 1 - zCoord) {
-        return barryCentric(glm::vec3(0, f00, 0), glm::vec3(1, f10, 0),
-                            glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
+        return baryCentric(glm::vec3(0, f00, 0), glm::vec3(1, f10, 0),
+                           glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
     } else {
-        return barryCentric(glm::vec3(1, f10, 0), glm::vec3(1, f11, 1),
-                            glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
+        return baryCentric(glm::vec3(1, f10, 0), glm::vec3(1, f11, 1),
+                           glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
     }
 }
 
-static glm::vec3 computeFaceNormal(const glm::vec3 &a, const glm::vec3 &b,
-                                   const glm::vec3 &c,
-                                   const glm::vec3 &vertexNormal) {
-    glm::vec3 p0 = c - b;
-    glm::vec3 p1 = c - a;
-    glm::vec3 faceNormal = glm::normalize(glm::cross(p0, p1));
-    float dot = glm::dot(faceNormal, vertexNormal);
-    return dot < 0.f ? -faceNormal : faceNormal;
-}
-
-glm::vec3 Terrain::normal(const glm::vec3 &localPos) const {
-    // TODO: validate correctnes
-    float x = localPos.x / m_gridSize + (m_vertexCount - 1) * 0.5;
-    float z = localPos.z / m_gridSize + (m_vertexCount - 1) * 0.5;
-    int x0 = std::floor(x);
-    int z0 = std::floor(z);
-    glm::vec3 f00 = m_normals[z0 * m_vertexCount + x0];
-    glm::vec3 f11 = m_normals[(z0 + 1) * m_vertexCount + (x0 + 1)];
-
-    glm::vec3 a = m_vertices[z0 * m_vertexCount + x0];
-    glm::vec3 b = m_vertices[z0 * m_vertexCount + (x0 + 1)];
-    glm::vec3 c = m_vertices[(z0 + 1) * m_vertexCount + (x0 + 1)];
-    glm::vec3 d = m_vertices[(z0 + 1) * m_vertexCount + x0];
-    glm::vec3 faceNormal;
-    float xCoord = x - x0;
-    float zCoord = z - z0;
-    if (xCoord + zCoord - 1 < 0) {
-        faceNormal = computeFaceNormal(b, d, a, f00);
-    } else {
-        faceNormal = computeFaceNormal(b, d, c, f11);
-    }
-    return glm::vec3(0, 1, 0);
+glm::vec3 Terrain::normal(float localX, float localZ) const {
+    // FIXME: not correct here
+    float offset = m_gridSize / 2.f;
+    float hL = height(localX - offset, localZ);
+    float hR = height(localX + offset, localZ);
+    float hD = height(localX, localZ - offset);
+    float hU = height(localX, localZ + offset);
+    glm::vec3 normal =
+        glm::normalize(glm::vec3(hL - hR, 2.0f * offset, hD - hU));
+    normal = glm::vec3(0, 1, 0);
+    return normal;
 }
 
 bool Terrain::outOfBound(const glm::vec3 &localPos) const {
