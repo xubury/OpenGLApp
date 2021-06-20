@@ -5,6 +5,8 @@ find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
+find_package(JPEG REQUIRED)
+find_package(PNG REQUIRED)
 
 set(Graphic_Include
     ${Include_Root}/OpenGL.hpp
@@ -46,9 +48,7 @@ set(Graphic_Src
     ${Src_Root}/FrameBuffer.cpp
     ${Src_Root}/LightBase.cpp)
 
-add_library(te-graphic
-    ${Graphic_Src}
-    ${PROJECT_SOURCE_DIR}/libs/stb_image.cpp)
+add_library(te-graphic ${Graphic_Src})
 
 set_property(TARGET te-graphic PROPERTY CXX_STANDARD 17)
 
@@ -61,14 +61,16 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 
-target_link_libraries(te-graphic 
+target_link_libraries(te-graphic
     PUBLIC
     te-core
     OpenGL::GL
     glbinding::glbinding
     glm
     PRIVATE
-    assimp::assimp)
+    assimp::assimp
+    JPEG::JPEG
+    PNG::PNG)
 if(UNIX)
     target_link_libraries(te-graphic PUBLIC X11 Xrandr Xi dl pthread)
 endif()

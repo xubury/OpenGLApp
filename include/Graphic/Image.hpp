@@ -1,10 +1,19 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
+#include "Graphic/OpenGL.hpp"
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace te {
+
+struct ImageHeader {
+    int width;
+    int height;
+    int channels;
+    uint8_t bitDepth;
+};
 
 class Image {
    public:
@@ -16,25 +25,35 @@ class Image {
 
     Image &operator=(const Image &) = delete;
 
-    static void setFlip(bool flip);
+    bool loadFromFile(const std::string &filename, bool flip = true);
 
-    bool loadFromFile(const std::string &path);
+    bool valid() const { return m_buffer.size(); }
 
-    bool valid() const { return m_data != nullptr; }
+    const uint8_t *data() const { return m_buffer.data(); }
 
-    const uint8_t *data() const { return m_data; }
+    uint8_t *data() { return m_buffer.data(); }
 
-    int width() const { return m_width; }
+    int width() const { return m_header.width; }
 
-    int height() const { return m_height; }
+    int height() const { return m_header.height; }
 
-    int nChannels() const { return m_nChannels; }
+    int channels() const { return m_header.channels; }
+
+    int bitDepth() const { return m_header.bitDepth; }
+
+    void allocate();
+
+    GLenum getGLFormat() const;
+
+    GLenum GetGLType() const;
 
    private:
-    uint8_t *m_data;
-    int m_width;
-    int m_height;
-    int m_nChannels;
+    bool loadJPEG(const std::string &filename, bool flip);
+
+    bool loadPNG(const std::string &filename, bool flip);
+
+    std::vector<uint8_t> m_buffer;
+    ImageHeader m_header;
 };
 
 }  // namespace te

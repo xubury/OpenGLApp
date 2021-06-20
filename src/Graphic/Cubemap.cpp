@@ -22,14 +22,16 @@ void Cubemap::setParameters(const TextureParameter &params) {
 bool Cubemap::loadFromFile(const std::vector<std::string> &path) {
     for (unsigned int i = 0; i < path.size(); i++) {
         Image image;
-        image.loadFromFile(path[i]);
+        image.loadFromFile(path[i], false);
         if (!image.valid()) {
             return false;
         }
+        GLenum format = image.getGLFormat();
+        GLenum type = image.GetGLType();
         bind();
-        GLenum type = image.nChannels() == 3 ? GL_RGB : GL_RGBA;
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, type, image.width(),
-                     image.height(), 0, type, GL_UNSIGNED_BYTE, image.data());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format,
+                     image.width(), image.height(), 0, format, type,
+                     image.data());
     }
     unbind();
     return true;

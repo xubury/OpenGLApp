@@ -14,13 +14,13 @@ Texture::~Texture() { glDeleteTextures(1, &m_id); }
 
 bool Texture::loadFromFile(const std::string &path) {
     Image image;
-    image.setFlip(true);
     image.loadFromFile(path);
     if (image.valid()) {
-        GLenum type = image.nChannels() == 3 ? GL_RGB : GL_RGBA;
+        GLenum format = image.getGLFormat();
+        GLenum type = image.GetGLType();
         bind();
-        glTexImage2D(GL_TEXTURE_2D, 0, type, image.width(), image.height(), 0,
-                     type, GL_UNSIGNED_BYTE, image.data());
+        glTexImage2D(GL_TEXTURE_2D, 0, format, image.width(), image.height(), 0,
+                     format, type, image.data());
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
         TE_CORE_ERROR("Fail to load texture!");

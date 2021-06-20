@@ -65,7 +65,6 @@ SkyboxLayer::SkyboxLayer() : Layer("Skybox layer") {
         "resources/skybox/top.jpg",   "resources/skybox/bottom.jpg",
         "resources/skybox/front.jpg", "resources/skybox/back.jpg"};
     m_cubemap.setParameters(TextureParameter(GL_CLAMP_TO_EDGE, GL_LINEAR));
-    Image::setFlip(false);
     m_cubemap.loadFromFile(faces);
     m_shader->bind();
     m_shader->setInt("skybox", 0);

@@ -91,22 +91,6 @@ void SandboxLayer::loadScene() {
     light->diffuse = glm::vec3(0.5f);
     light->specular = glm::vec3(0.5f);
 
-    Ref<Material> textures = createRef<Material>();
-    textures->loadFromValue(glm::vec3(1.f), Material::TEXTURE_AMBIENT);
-    textures->loadFromValue(glm::vec3(0.6f), Material::TEXTURE_DIFFUSE);
-    textures->loadFromValue(glm::vec3(0.5f), Material::TEXTURE_SPECULAR);
-
-    glm::vec3 positions[] = {
-        glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(2.0f, 11.0f, 0.f),
-        glm::vec3(-4.0f, 8.0f, 0.0f), glm::vec3(2.0, 9.0f, -4.0f)};
-    glm::vec3 impulse[] = {glm::vec3(0, 50, 0), glm::vec3(0, -50, 0),
-                           glm::vec3(50, 0, 0), glm::vec3(0, 0, 50.f)};
-    for (int i = 0; i < 1; ++i) {
-        addSphere(positions[i], 1.0, impulse[i], textures);
-    }
-
-    // addCube(glm::vec3(2, 3, 3), 1, 1, 1, glm::vec3(0), textures, true);
-    // addCube(glm::vec3(2, 4, 0), 1, 1, 1, glm::vec3(0), textures, true);
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
 
@@ -115,7 +99,9 @@ void SandboxLayer::loadScene() {
     groundTextures->loadFromFile(
         "resources/terrain/sand_01_diff_4k.jpg", Material::TEXTURE_DIFFUSE,
         TextureParameter(GL_MIRRORED_REPEAT, GL_LINEAR));
-    // addCube(glm::vec3(0), 50, 1, 50, glm::vec3(0), groundTextures, false);
+    groundTextures->loadFromFile(
+        "resources/terrain/sand_01_spec_4k.jpg", Material::TEXTURE_DIFFUSE,
+        TextureParameter(GL_MIRRORED_REPEAT, GL_LINEAR));
 
     Application::instance().getActiveScene()->entities.create<Terrain>(
         10, 20, groundTextures);
