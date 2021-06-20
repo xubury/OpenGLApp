@@ -293,7 +293,6 @@ void EditorLayer::computeTranslateType() {
                 m_movePlane = translatePlane;
                 m_intersectWorldPos = intersectWorldPos;
                 m_moveType = static_cast<MoveType>(ROTATE_X + i);
-                break;
             }
             glm::vec3 intersectScreenPos =
                 m_camera->computeWorldToSrceen(intersectWorldPos);
