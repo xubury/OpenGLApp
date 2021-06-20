@@ -15,7 +15,7 @@ class Terrain : public EntityBase {
 
     void draw(const Shader &shader) const override;
 
-    float height(const glm::vec3 &localPos) const;
+    float height(float localX, float localZ) const;
 
     glm::vec3 normal(const glm::vec3 &localPos) const;
 

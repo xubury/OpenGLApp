@@ -9,7 +9,7 @@ class TerrainCollider : public Collider {
    public:
     TerrainCollider();
 
-    float height(const glm::vec3 &localPos) const;
+    float height(float localX, float localZ) const;
 
     glm::vec3 normal(const glm::vec3 &localPos) const;
 

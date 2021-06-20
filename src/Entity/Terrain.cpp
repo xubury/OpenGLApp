@@ -69,15 +69,15 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
 }
 
 void Terrain::draw(const Shader &shader) const {
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     Renderer::submit(shader, *m_terrain, GL_TRIANGLES, true, getTransform(),
                      m_material.get());
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-float Terrain::height(const glm::vec3 &localPos) const {
-    float x = localPos.x / m_gridSize + (m_vertexCount - 1) * 0.5;
-    float z = localPos.z / m_gridSize + (m_vertexCount - 1) * 0.5;
+float Terrain::height(float localX, float localZ) const {
+    float x = localX / m_gridSize + (m_vertexCount - 1) * 0.5;
+    float z = localZ / m_gridSize + (m_vertexCount - 1) * 0.5;
     int x0 = std::floor(x);
     int z0 = std::floor(z);
     float f00 = m_vertices[z0 * m_vertexCount + x0].y;
@@ -121,10 +121,10 @@ glm::vec3 Terrain::normal(const glm::vec3 &localPos) const {
     glm::vec3 faceNormal;
     float xCoord = x - x0;
     float zCoord = z - z0;
-    if (xCoord <= 1 - zCoord) {
-        faceNormal = computeFaceNormal(a, b, d, f00);
+    if (xCoord + zCoord - 1 < 0) {
+        faceNormal = computeFaceNormal(b, d, a, f00);
     } else {
-        faceNormal = computeFaceNormal(b, c, d, f11);
+        faceNormal = computeFaceNormal(b, d, c, f11);
     }
     return glm::vec3(0, 1, 0);
 }
