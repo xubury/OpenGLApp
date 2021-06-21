@@ -25,7 +25,8 @@ set(Layers_Src
     src/Layers/SandboxLayer.cpp
     src/Layers/ShadowLayer.cpp
     src/Layers/GBufferLayer.cpp
-    src/Layers/SkyboxLayer.cpp)
+    src/Layers/SkyboxLayer.cpp
+    src/Layers/ControllerLayer.cpp)
 
 set(Component_Src
     src/Component/BoundingBox.cpp
@@ -37,7 +38,8 @@ set(Entity_Src
     src/Entity/Cube.cpp
     src/Entity/Light.cpp
     src/Entity/Sphere.cpp
-    src/Entity/Terrain.cpp)
+    src/Entity/Terrain.cpp
+    src/Entity/Player.cpp)
 
 set(Window_Src
     src/Window/RenderWindow.cpp

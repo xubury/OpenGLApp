@@ -12,6 +12,7 @@
 #include "Graphic/Renderer.hpp"
 #include "Core/Math.hpp"
 #include "Entity/Terrain.hpp"
+#include "Entity/Player.hpp"
 
 #include <iostream>
 
@@ -103,8 +104,10 @@ void SandboxLayer::loadScene() {
         "resources/terrain/sand_01_spec_4k.jpg", Material::TEXTURE_SPECULAR,
         TextureParameter(GL_MIRRORED_REPEAT, GL_LINEAR));
 
-    Application::instance().getActiveScene()->entities.create<Terrain>(
-        10, 20, groundTextures);
+    scene->entities.create<Terrain>(10, 20, groundTextures);
+
+    uint32_t playerId = scene->entities.create<Player>();
+    scene->entities.get(playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
 }
 
 SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {

@@ -2,12 +2,14 @@
 #include "Layers/SandboxLayer.hpp"
 #include "Layers/ShadowLayer.hpp"
 #include "Layers/SkyboxLayer.hpp"
+#include "Layers/ControllerLayer.hpp"
 #include "Physics/PhysicsWorld.hpp"
 #include "Component/BoundingBox.hpp"
 
 namespace te {
 
 SandboxApp::SandboxApp(Settings settings) : Application(settings) {
+    pushLayer(createRef<ControllerLayer>());
     pushLayer(createRef<ShadowLayer>());
     pushLayer(createRef<SandboxLayer>(settings.width, settings.height));
     pushLayer(createRef<SkyboxLayer>());
