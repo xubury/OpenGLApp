@@ -63,7 +63,7 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     m_material->loadFromValue(glm::vec3(0.6f), Material::TEXTURE_DIFFUSE);
     m_material->loadFromValue(glm::vec3(0.5f), Material::TEXTURE_SPECULAR);
 
-    add<Rigidbody>(10, true);
+    add<Rigidbody>(100, true);
     add<HullCollider>();
     MakeCubeCollider(*component<HullCollider>().get(), width, height, length);
 
@@ -104,18 +104,27 @@ void Player::move(Action movement) {
     left.y = 0.f;
     left = glm::normalize(-left);
 
-    float amplifier = 40.f * rigidbody->getMass();
+    float amplifier = 20.f;
     if (movement == Action::MOVE_JUMP) {
-        rigidbody->addForce(glm::vec3(0.f, 1.0f, 0.f) * amplifier,
-                            glm::vec3(0));
+        rigidbody->addForce(
+            glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * 12.0f,
+            glm::vec3(0));
     } else if (movement == Action::MOVE_FORWARD) {
-        rigidbody->addForce(front * amplifier, glm::vec3(0));
+        rigidbody->addImpulse(front * amplifier);
     } else if (movement == Action::MOVE_BACKWARD) {
-        rigidbody->addForce(-front * amplifier, glm::vec3(0));
+        rigidbody->addImpulse(-front * amplifier);
     } else if (movement == Action::MOVE_LEFT) {
-        rigidbody->addForce(left * amplifier, glm::vec3(0));
+        rigidbody->addImpulse(left * amplifier);
     } else if (movement == Action::MOVE_RIGHT) {
-        rigidbody->addForce(-left * amplifier, glm::vec3(0));
+        rigidbody->addImpulse(-left * amplifier);
+    }
+
+    float acos = std::acos(glm::dot(getFront(), front));
+    glm::vec3 c = glm::cross(getFront(), front);
+    if (c.y < 0) {
+        rotateLocal(-0.1f * acos, glm::vec3(0, 1.0, 0));
+    } else {
+        rotateLocal(0.1f * acos, glm::vec3(0, 1.0, 0));
     }
 }
 
