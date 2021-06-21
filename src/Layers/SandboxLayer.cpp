@@ -100,7 +100,7 @@ void SandboxLayer::loadScene() {
         "resources/terrain/sand_01_diff_4k.jpg", Material::TEXTURE_DIFFUSE,
         TextureParameter(GL_MIRRORED_REPEAT, GL_LINEAR));
     groundTextures->loadFromFile(
-        "resources/terrain/sand_01_spec_4k.jpg", Material::TEXTURE_DIFFUSE,
+        "resources/terrain/sand_01_spec_4k.jpg", Material::TEXTURE_SPECULAR,
         TextureParameter(GL_MIRRORED_REPEAT, GL_LINEAR));
 
     Application::instance().getActiveScene()->entities.create<Terrain>(

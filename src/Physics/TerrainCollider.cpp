@@ -3,7 +3,7 @@
 
 namespace te {
 
-TerrainCollider::TerrainCollider() : Collider(Collider::TEERAIN_COLLIDER) {}
+TerrainCollider::TerrainCollider() : Collider(Collider::TERRAIN_COLLIDER) {}
 
 float TerrainCollider::height(float localX, float localZ) const {
     return dynamic_cast<const Terrain *>(owner())->height(localX, localZ);

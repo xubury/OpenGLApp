@@ -114,17 +114,17 @@ ContactManifold Collision::collideSpheres(Collider *objA, Collider *objB) {
 }
 
 ContactManifold Collision::collideSphereHull(Collider *objA, Collider *objB) {
-    auto [collide, simlex] = gjk(objA, objB, 32);
+    auto [collide, simplex] = gjk(objA, objB, 32);
     if (collide) {
-        return epa(simlex, objA, objB, 32);
+        return epa(simplex, objA, objB, 32);
     }
     return {};
 }
 
 ContactManifold Collision::collideHulls(Collider *objA, Collider *objB) {
-    auto [collide, simlex] = gjk(objA, objB, 32);
+    auto [collide, simplex] = gjk(objA, objB, 32);
     if (collide) {
-        return epa(simlex, objA, objB, 32);
+        return epa(simplex, objA, objB, 32);
     }
     return {};
 }

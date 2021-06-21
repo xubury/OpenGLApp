@@ -10,7 +10,7 @@ namespace te {
 class Collider : public Component<Collider, EntityBase> {
    public:
     enum Type {
-        TEERAIN_COLLIDER,
+        TERRAIN_COLLIDER,
         SPHERE_COLLIDER,
         HULL_COLLIDER,
         CAPSULE_COLLIDER,

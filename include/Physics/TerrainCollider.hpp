@@ -1,5 +1,5 @@
-#ifndef TEERAIN_COLLIDER_HPP
-#define TEERAIN_COLLIDER_HPP
+#ifndef TERRAIN_COLLIDER_HPP
+#define TERRAIN_COLLIDER_HPP
 
 #include "Physics/Collider.hpp"
 
@@ -25,4 +25,4 @@ class TerrainCollider : public Collider {
 
 }  // namespace te
 
-#endif /* TEERAIN_COLLIDER_HPP */
+#endif /* TERRAIN_COLLIDER_HPP */
