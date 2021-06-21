@@ -115,7 +115,7 @@ void SandboxLayer::loadScene() {
         0, 0, m_viewWidth, m_viewHeight, player);
     m_camera = dynamic_cast<PlayerCamera*>(scene->entities.get(cameraId));
     player->setPlayerCamera(m_camera);
-    Application::instance().setMainCamera(m_camera);
+    Application::instance().setSceneCamera(m_camera);
 }
 
 SandboxLayer::SandboxLayer(int width, int height)
@@ -179,10 +179,6 @@ void SandboxLayer::onEventPoll(const Event& event) {
                 glm::vec3 impulse(random.rnd(-25, 25), random.rnd(-25, 25),
                                   random.rnd(-25, 25));
                 addCube(glm::vec3(5, 15, 0), 1, 1, 1, impulse, textures, true);
-            } break;
-            case Keyboard::Z: {
-                Application::instance().toggleEditor();
-                Application::instance().setMainCamera(m_camera);
             } break;
             default:
                 break;

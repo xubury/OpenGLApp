@@ -113,6 +113,7 @@ void EditorLayer::onAttach() {
     ImGui_ImplGlfw_InitForOpenGL(RenderWindow::getCurrentContext(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
     Application::instance().setFramebuffer(m_multiSampleFramebuffer);
+    Application::instance().setEditorCamera(m_camera.get());
 }
 
 void EditorLayer::onDetech() {
@@ -126,7 +127,6 @@ void EditorLayer::begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    Application::instance().setMainCamera(m_camera.get());
 }
 
 void EditorLayer::end() {
@@ -446,8 +446,8 @@ void EditorLayer::onImGuiRender() {
         // prepare the context for ImGui drawing and framebuffer drawing
         context.prepareContext();
         glm::vec3 pos = getActiveEntityPtr()->getPosition();
-        float rightLen = m_camera->getSegmentLengthClipSpace(
-            pos, pos + m_camera->getLeft());
+        float rightLen =
+            m_camera->getSegmentLengthClipSpace(pos, pos + m_camera->getLeft());
         m_screenFactor = 1.0f / rightLen;
 
         ImVec2 wsize = ImGui::GetWindowSize();

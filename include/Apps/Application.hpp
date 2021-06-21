@@ -44,9 +44,17 @@ class Application {
 
     RenderWindow &getWindow() { return m_window; }
 
-    void setMainCamera(Camera *camera) { m_mainCamera = camera; }
+    void setSceneCamera(Camera *camera) { m_sceneCamera = camera; }
 
-    Camera *getMainCamera() { return m_mainCamera; }
+    void setEditorCamera(Camera *camera) { m_editorCamera = camera; }
+
+    Camera *getMainCamera() {
+        if (m_editorMode) {
+            return m_editorCamera;
+        } else {
+            return m_sceneCamera;
+        }
+    }
 
     void setFramebuffer(Ref<FrameBuffer> framebuffer) {
         m_framebuffer = framebuffer;
@@ -57,6 +65,8 @@ class Application {
     Ref<SceneManager<EntityBase>> getActiveScene() { return m_scene; }
 
     void toggleEditor();
+
+    void invalidateEditor();
 
    protected:
     Ref<SceneManager<EntityBase>> m_scene;
@@ -73,7 +83,8 @@ class Application {
     void render();
 
     RenderWindow m_window;
-    Camera *m_mainCamera;
+    Camera *m_sceneCamera;
+    Camera *m_editorCamera;
     Ref<FrameBuffer> m_framebuffer;
     Ref<EditorLayer> m_imGuiLayer;
     LayerStack m_layers;

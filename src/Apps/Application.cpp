@@ -9,18 +9,12 @@ Application *Application::s_instance = nullptr;
 Application::Application(const Settings &settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples),
-      m_mainCamera(nullptr),
+      m_sceneCamera(nullptr),
       m_editorMode(settings.editor) {
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>(settings.samples);
     Renderer::init();
-    if (m_editorMode) {
-        pushOverlay(m_imGuiLayer);
-    } else {
-        popOverlay(m_imGuiLayer);
-    }
-
     m_scene = createRef<SceneManager<EntityBase>>();
 }
 
@@ -43,9 +37,15 @@ void Application::run(int minFps) {
         Event event;
         while (m_window.pollEvent(event)) {
             if (event.type == Event::KEY_PRESSED) {
-                if (event.key.code == Keyboard::ESCAPE) {
-                    m_window.setShouldClose(true);
-                    break;
+                switch (event.key.code) {
+                    case Keyboard::Z: {
+                        Application::instance().toggleEditor();
+                    } break;
+                    case Keyboard::ESCAPE: {
+                        m_window.setShouldClose(true);
+                    } break;
+                    default:
+                        break;
                 }
             }
             for (auto &layer : m_layers) {
@@ -94,10 +94,19 @@ void Application::render() {
 
 void Application::toggleEditor() {
     m_editorMode = !m_editorMode;
+    invalidateEditor();
+}
+
+void Application::invalidateEditor() {
     if (m_editorMode) {
         pushOverlay(m_imGuiLayer);
     } else {
         popOverlay(m_imGuiLayer);
+    }
+    for (auto &layer : m_layers) {
+        if (layer != m_imGuiLayer) {
+            layer->setBlockEvent(m_editorMode);
+        }
     }
 }
 
