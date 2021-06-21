@@ -362,12 +362,11 @@ void EditorLayer::handleMouseLeftButton() {
         } else {
             glm::vec2 offset = (mousePos - m_mouseClickPos) * 0.1f;
             glm::mat4 transform(1.0f);
-            const glm::vec3& cameraUp = m_camera->getUp();
             const glm::vec3& cameraRight = m_camera->getLeft();
             const glm::vec3& modelWorldPos = entity->getPosition();
             transform = glm::translate(transform, modelWorldPos);
-            transform =
-                glm::rotate(transform, glm::radians(-offset.x), cameraUp);
+            transform = glm::rotate(transform, glm::radians(-offset.x),
+                                    glm::vec3(0.f, 1.f, 0.f));
             transform =
                 glm::rotate(transform, glm::radians(-offset.y), cameraRight);
             transform = glm::translate(transform, -modelWorldPos);
