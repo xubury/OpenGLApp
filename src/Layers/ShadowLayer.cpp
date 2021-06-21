@@ -62,8 +62,8 @@ void ShadowLayer::onUpdate(const Time &) {
     scene->entities.getByComponents(shadowMap).begin();
     if (!shadowMap.isValid()) return;
 
-    Ref<Camera> cam = Application::instance().getMainCamera();
-    shadowMap->computeLightSpaceMatrix(cam);
+    Camera *cam = Application::instance().getMainCamera();
+    shadowMap->computeLightSpaceMatrix(*cam);
 }
 
 void ShadowLayer::onRender() {

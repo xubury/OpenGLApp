@@ -39,7 +39,8 @@ set(Entity_Src
     src/Entity/Light.cpp
     src/Entity/Sphere.cpp
     src/Entity/Terrain.cpp
-    src/Entity/Player.cpp)
+    src/Entity/Player.cpp
+    src/Entity/PlayerCamera.cpp)
 
 set(Window_Src
     src/Window/RenderWindow.cpp

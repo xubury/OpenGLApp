@@ -74,7 +74,7 @@ SkyboxLayer::SkyboxLayer() : Layer("Skybox layer") {
 
 void SkyboxLayer::onRender() {
     glDepthFunc(GL_LEQUAL);
-    Ref<Camera> cam = Application::instance().getMainCamera();
+    Camera *cam = Application::instance().getMainCamera();
     glm::vec3 pos = cam->getPosition();
     cam->setPosition(glm::vec3(0));
     Renderer::beginScene(*cam, Application::instance().getFramebuffer());

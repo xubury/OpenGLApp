@@ -11,7 +11,7 @@ class ShadowMap : public Component<ShadowMap, EntityBase> {
     ShadowMap(float dist);
 
     // compute lightSpaceMatrix from the camera's frustum
-    void computeLightSpaceMatrix(const Ref<Camera>& camera);
+    void computeLightSpaceMatrix(const Camera& camera);
 
     glm::mat4 getLightSpaceMatrix() const;
 

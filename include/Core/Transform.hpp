@@ -9,7 +9,7 @@ class Transformable {
    public:
     Transformable();
 
-    void transform(const glm::mat4 &transform);
+    void setTransform(const glm::mat4 &transform);
 
     void translateLocal(const glm::vec3 &t);
 
@@ -33,7 +33,7 @@ class Transformable {
 
     glm::vec3 getPosition() const;
 
-    glm::vec3 getRight() const;
+    glm::vec3 getLeft() const;
 
     glm::vec3 getUp() const;
 

@@ -9,6 +9,7 @@ Application *Application::s_instance = nullptr;
 Application::Application(const Settings &settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples),
+      m_mainCamera(nullptr),
       m_editorMode(settings.editor) {
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
@@ -20,8 +21,6 @@ Application::Application(const Settings &settings)
         popOverlay(m_imGuiLayer);
     }
 
-    // default camera
-    m_mainCamera = createRef<Camera>(0, 0, settings.width, settings.height);
     m_scene = createRef<SceneManager<EntityBase>>();
 }
 

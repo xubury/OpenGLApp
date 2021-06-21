@@ -12,9 +12,7 @@ Camera::Camera(int x, int y, int width, int height)
       m_viewportHeight(height),
       m_nearZ(0.1),
       m_farZ(100.f),
-      m_zoom(45.f) {
-    TE_CORE_ASSERT(width > 0 && height > 0, "Camera width or height <= 0.");
-}
+      m_zoom(45.f) {}
 
 glm::mat4 Camera::getView() const {
     const glm::vec3 &up = getUp();
@@ -63,7 +61,7 @@ void Camera::setNearFar(float near, float far) {
 }
 
 void Camera::computeCameraRay(glm::vec3 &rayOrigin, glm::vec3 &rayDir,
-                                  const glm::vec2 &screenPos) const {
+                              const glm::vec2 &screenPos) const {
     glm::vec2 mouseClipPos((screenPos.x - m_viewportX) / m_viewportWidth,
                            (screenPos.y + m_viewportY) / m_viewportHeight);
     mouseClipPos.x = mouseClipPos.x * 2.f - 1.f;
@@ -95,7 +93,7 @@ glm::vec3 Camera::computeWorldToSrceen(const glm::vec3 &worldPos) const {
 }
 
 float Camera::getSegmentLengthClipSpace(const glm::vec3 &start,
-                                            const glm::vec3 &end) const {
+                                        const glm::vec3 &end) const {
     glm::mat4 projectionView = getProjection() * getView();
     glm::vec4 segStart = projectionView * glm::vec4(start, 1.0f);
     if (std::fabs(segStart.w) > std::numeric_limits<float>::epsilon()) {

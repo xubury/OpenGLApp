@@ -7,19 +7,19 @@ namespace te {
 
 ShadowMap::ShadowMap(float dist) : m_shadowDist(dist) {}
 
-void ShadowMap::computeLightSpaceMatrix(const Ref<Camera> &camera) {
+void ShadowMap::computeLightSpaceMatrix(const Camera& camera) {
     const glm::mat3 &rotation = owner()->getTransform();
     const glm::mat3 &rotaionInv = glm::transpose(rotation);
-    const glm::mat3 &transform = rotaionInv * glm::mat3(camera->getTransform());
-    const float nearZ = camera->getNearZ();
-    const float farZ = camera->getFarZ();
-    const float fov = camera->getFOV() / 2.f;
-    const float aspect = camera->getAspect();
+    const glm::mat3 &transform = rotaionInv * glm::mat3(camera.getTransform());
+    const float nearZ = camera.getNearZ();
+    const float farZ = camera.getFarZ();
+    const float fov = camera.getFOV() / 2.f;
+    const float aspect = camera.getAspect();
     const float nearHeight = nearZ * std::tan(glm::radians(fov));
     const float nearWidth = nearHeight * aspect;
     const float farHeight = farZ * std::tan(glm::radians(fov));
     const float farWidth = farHeight * aspect;
-    const glm::vec3 &camPos = rotaionInv * camera->getPosition();
+    const glm::vec3 &camPos = rotaionInv * camera.getPosition();
     std::vector<glm::vec3> vertices(8);
     vertices[0] =
         transform * glm::vec4(-nearWidth, -nearHeight, -nearZ, 1) + camPos;

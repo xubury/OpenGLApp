@@ -7,7 +7,7 @@
 
 namespace te {
 
-class TE_API Camera : public Transformable {
+class TE_API Camera : virtual public Transformable {
    public:
     Camera(int x, int y, int width, int height);
 

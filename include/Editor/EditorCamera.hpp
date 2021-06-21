@@ -8,7 +8,6 @@
 namespace te {
 
 inline const float SPEED = 2.5f;
-inline const float MOUSE_SENSITIVITY = 0.1f;
 
 enum Movement { FORWARD, BACKWRAD, UPWARD, DOWNWARD, LEFT, RIGHT };
 

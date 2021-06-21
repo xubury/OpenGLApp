@@ -13,6 +13,7 @@
 #include "Core/Math.hpp"
 #include "Entity/Terrain.hpp"
 #include "Entity/Player.hpp"
+#include "Entity/PlayerCamera.hpp"
 
 #include <iostream>
 
@@ -106,25 +107,28 @@ void SandboxLayer::loadScene() {
 
     scene->entities.create<Terrain>(10, 20, groundTextures);
 
-    uint32_t playerId = scene->entities.create<Player>();
-    scene->entities.get(playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
+    m_playerId = scene->entities.create<Player>();
+    scene->entities.get(m_playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
+    Player* player = dynamic_cast<Player*>(scene->entities.get(m_playerId));
+
+    uint32_t cameraId = scene->entities.create<PlayerCamera>(
+        0, 0, m_viewWidth, m_viewHeight, player);
+    m_camera = dynamic_cast<PlayerCamera*>(scene->entities.get(cameraId));
+    player->setPlayerCamera(m_camera);
+    Application::instance().setMainCamera(m_camera);
 }
 
-SandboxLayer::SandboxLayer(int width, int height) : Layer("Sandbox") {
-    m_camera = createRef<Camera>(0, 0, width, height);
-    m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));
-    m_camera->setEulerAngle(glm::vec3(glm::radians(-25.f), glm::radians(-28.f),
-                                      glm::radians(1.5f)));
-}
+SandboxLayer::SandboxLayer(int width, int height)
+    : Layer("Sandbox"), m_viewWidth(width), m_viewHeight(height) {}
 
 void SandboxLayer::onAttach() {
     loadShaders();
     loadScene();
-
-    Application::instance().setMainCamera(m_camera);
 }
 
-void SandboxLayer::onUpdate(const Time&) {}
+void SandboxLayer::onUpdate(const Time& deltaTime) {
+    m_camera->update(deltaTime);
+}
 
 void SandboxLayer::onRender() {
     Ref<SceneManager<EntityBase>> scene =
@@ -186,7 +190,9 @@ void SandboxLayer::onEventPoll(const Event& event) {
     } else if (event.type == Event::RESIZED) {
         m_camera->setViewportSize(event.size.width, event.size.height);
     }
+    m_camera->processEvent(event);
 }
 
-void SandboxLayer::onEventProcess() {}
+void SandboxLayer::onEventProcess() { m_camera->processEvents(); }
+
 }  // namespace te

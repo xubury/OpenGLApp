@@ -5,8 +5,8 @@ namespace te {
 
 Transformable::Transformable() : m_transform(1.0) {}
 
-void Transformable::transform(const glm::mat4 &transform) {
-    m_transform = transform * m_transform;
+void Transformable::setTransform(const glm::mat4 &transform) {
+    m_transform = transform;
 }
 
 void Transformable::translateLocal(const glm::vec3 &t) {
@@ -72,7 +72,7 @@ void Transformable::setPosition(const glm::vec3 &position) {
 
 glm::vec3 Transformable::getPosition() const { return m_transform[3]; }
 
-glm::vec3 Transformable::getRight() const { return m_transform[0]; }
+glm::vec3 Transformable::getLeft() const { return m_transform[0]; }
 
 glm::vec3 Transformable::getUp() const { return m_transform[1]; }
 

@@ -126,7 +126,7 @@ void EditorLayer::begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    Application::instance().setMainCamera(m_camera);
+    Application::instance().setMainCamera(m_camera.get());
 }
 
 void EditorLayer::end() {
@@ -224,7 +224,7 @@ void EditorLayer::renderCameraAxes(float clipLen) {
     clipLen *= m_camera->getViewportHeight() / 2.f;
     glm::vec3 origin(glm::vec2(m_camera->getViewportSize()) - clipLen, 0);
     // draw x
-    glm::vec3 xAxis = m_camera->getRight();
+    glm::vec3 xAxis = m_camera->getLeft();
     xAxis.y = -xAxis.y;
     xAxis = origin + xAxis * clipLen;
     context.addLine(origin, xAxis, 0xFF0000FF, 2);
@@ -363,7 +363,7 @@ void EditorLayer::handleMouseLeftButton() {
             glm::vec2 offset = (mousePos - m_mouseClickPos) * 0.1f;
             glm::mat4 transform(1.0f);
             const glm::vec3& cameraUp = m_camera->getUp();
-            const glm::vec3& cameraRight = m_camera->getRight();
+            const glm::vec3& cameraRight = m_camera->getLeft();
             const glm::vec3& modelWorldPos = entity->getPosition();
             transform = glm::translate(transform, modelWorldPos);
             transform =
@@ -371,7 +371,7 @@ void EditorLayer::handleMouseLeftButton() {
             transform =
                 glm::rotate(transform, glm::radians(-offset.y), cameraRight);
             transform = glm::translate(transform, -modelWorldPos);
-            m_camera->transform(transform);
+            m_camera->setTransform(transform * m_camera->getTransform());
         }
 
         if (!ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -447,7 +447,7 @@ void EditorLayer::onImGuiRender() {
         context.prepareContext();
         glm::vec3 pos = getActiveEntityPtr()->getPosition();
         float rightLen = m_camera->getSegmentLengthClipSpace(
-            pos, pos + m_camera->getRight());
+            pos, pos + m_camera->getLeft());
         m_screenFactor = 1.0f / rightLen;
 
         ImVec2 wsize = ImGui::GetWindowSize();

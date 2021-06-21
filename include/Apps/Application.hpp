@@ -44,9 +44,9 @@ class Application {
 
     RenderWindow &getWindow() { return m_window; }
 
-    void setMainCamera(Ref<Camera> camera) { m_mainCamera = camera; }
+    void setMainCamera(Camera *camera) { m_mainCamera = camera; }
 
-    Ref<Camera> getMainCamera() { return m_mainCamera; }
+    Camera *getMainCamera() { return m_mainCamera; }
 
     void setFramebuffer(Ref<FrameBuffer> framebuffer) {
         m_framebuffer = framebuffer;
@@ -73,7 +73,7 @@ class Application {
     void render();
 
     RenderWindow m_window;
-    Ref<Camera> m_mainCamera;
+    Camera *m_mainCamera;
     Ref<FrameBuffer> m_framebuffer;
     Ref<EditorLayer> m_imGuiLayer;
     LayerStack m_layers;

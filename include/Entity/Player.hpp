@@ -5,6 +5,7 @@
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Material.hpp"
 #include "Window/ActionMap.hpp"
+#include "Entity/PlayerCamera.hpp"
 
 namespace te {
 
@@ -25,10 +26,15 @@ class Player : public EntityBase {
 
     void move(Action movement);
 
+    void setPlayerCamera(PlayerCamera *camera) { m_camera = camera; }
+
+    PlayerCamera *getPlayerCamera() { return m_camera; }
+
    private:
     Ref<VertexArray> m_vertexArray;
     Ref<Material> m_material;
     ActionMap<int> m_inputs;
+    PlayerCamera *m_camera;
 };
 
 }  // namespace te

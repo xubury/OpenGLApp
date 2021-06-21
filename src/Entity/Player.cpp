@@ -9,6 +9,7 @@ namespace te {
 
 Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     : EntityBase(manager, id) {
+    setName("Player");
     float width = 1;
     float height = 1;
     float length = 1;
@@ -95,18 +96,26 @@ void Player::draw(const Shader &shader) const {
 void Player::move(Action movement) {
     Rigidbody *rigidbody =
         dynamic_cast<Rigidbody *>(component<CollisionObject>().get());
-    float amplifier = 5.0f;
+
+    glm::vec3 front = m_camera->getFront();
+    front.y = 0.f;
+    front = glm::normalize(-front);
+    glm::vec3 left = m_camera->getLeft();
+    left.y = 0.f;
+    left = glm::normalize(-left);
+
+    float amplifier = 40.f * rigidbody->getMass();
     if (movement == Action::MOVE_JUMP) {
-        rigidbody->addForce(getUp() * rigidbody->getMass() * 50.f,
+        rigidbody->addForce(glm::vec3(0.f, 1.0f, 0.f) * amplifier,
                             glm::vec3(0));
     } else if (movement == Action::MOVE_FORWARD) {
-        rigidbody->addImpulse(getFront() * amplifier);
+        rigidbody->addForce(front * amplifier, glm::vec3(0));
     } else if (movement == Action::MOVE_BACKWARD) {
-        rigidbody->addImpulse(-getFront() * amplifier);
+        rigidbody->addForce(-front * amplifier, glm::vec3(0));
     } else if (movement == Action::MOVE_LEFT) {
-        rigidbody->addImpulse(-getRight() * amplifier);
+        rigidbody->addForce(left * amplifier, glm::vec3(0));
     } else if (movement == Action::MOVE_RIGHT) {
-        rigidbody->addImpulse(getRight() * amplifier);
+        rigidbody->addForce(-left * amplifier, glm::vec3(0));
     }
 }
 

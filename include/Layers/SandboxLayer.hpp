@@ -5,11 +5,11 @@
 
 #include "Window/RenderWindow.hpp"
 #include "Graphic/Shader.hpp"
-#include "Graphic/Camera.hpp"
 #include "ECS/ECS.hpp"
 #include "Core/Time.hpp"
 #include "Core/Layer.hpp"
 #include "Graphic/Material.hpp"
+#include "Entity/PlayerCamera.hpp"
 
 namespace te {
 
@@ -42,9 +42,11 @@ class SandboxLayer : public Layer {
     void loadScene();
 
    private:
+    uint32_t m_viewWidth;
+    uint32_t m_viewHeight;
     ShaderLibrary m_shaders;
-    // TODO: make a follow camera
-    Ref<Camera> m_camera;
+    PlayerCamera *m_camera;
+    uint32_t m_playerId;
 };
 
 }  // namespace te
