@@ -40,6 +40,7 @@ void Application::run(int minFps) {
                 switch (event.key.code) {
                     case Keyboard::Z: {
                         Application::instance().toggleEditor();
+                        m_window.captureMouse(!m_editorMode);
                     } break;
                     case Keyboard::ESCAPE: {
                         m_window.setShouldClose(true);

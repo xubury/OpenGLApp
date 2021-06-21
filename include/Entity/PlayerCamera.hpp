@@ -24,10 +24,15 @@ class PlayerCamera : public EntityBase,
 
     void update(const Time &deltaTime);
 
+    void rotate(float pitch, float yaw);
+
    private:
     bool m_isFirstMouse;
     glm::vec2 m_lastMousePos;
     Player *m_player;
+    float m_dist;
+    float m_yaw;
+    float m_pitch;
 };
 
 }  // namespace te

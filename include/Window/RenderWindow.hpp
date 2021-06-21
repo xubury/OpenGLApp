@@ -33,6 +33,7 @@ class RenderWindow {
 
     static ::GLFWwindow* getCurrentContext();
 
+    void captureMouse(bool capture);
    private:
     void pollEvents();
 

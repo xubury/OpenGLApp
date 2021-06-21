@@ -40,7 +40,6 @@ RenderWindow::RenderWindow(int width, int height, const std::string& title,
     glfwSetCursorPosCallback(win, mouseMovementCallback);
     glfwSetMouseButtonCallback(win, mouseButtonCallback);
     glfwSetScrollCallback(win, mouseWheelCallback);
-    // glfwSetInputMode(m_context, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     GLContext::init(glfwGetProcAddress);
 }
@@ -99,6 +98,15 @@ bool RenderWindow::popEvent(Event& event, bool block) {
 
 ::GLFWwindow* RenderWindow::getCurrentContext() {
     return glfwGetCurrentContext();
+}
+
+void RenderWindow::captureMouse(bool capture) {
+    if (capture) {
+        glfwSetInputMode(getCurrentContext(), GLFW_CURSOR,
+                         GLFW_CURSOR_DISABLED);
+    } else {
+        glfwSetInputMode(getCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 }
 
 void RenderWindow::framebufferSizeCB(GLFWwindow* window, int width,
