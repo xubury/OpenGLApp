@@ -150,12 +150,14 @@ void EditorLayer::buildModelAxes(float clipLen) {
     // axes screen coordinate and color
     for (int i = 0; i < 3; ++i) {
         m_modelAxes.axes[i] =
-            originWorld + glm::vec3(rMatrix[i]) * m_axisSizeFactor;
+            originWorld +
+            glm::normalize(glm::vec3(rMatrix[i])) * m_axisSizeFactor;
         for (int j = 0; j < 4; ++j) {
             glm::vec3 cornerWorldPos =
-                originWorld + (rMatrix[(i + 1) % 3] * quadUV[j * 2] +
-                               rMatrix[(i + 2) % 3] * quadUV[j * 2 + 1]) *
-                                  m_axisSizeFactor;
+                originWorld +
+                (glm::normalize(rMatrix[(i + 1) % 3]) * quadUV[j * 2] +
+                 glm::normalize(rMatrix[(i + 2) % 3]) * quadUV[j * 2 + 1]) *
+                    m_axisSizeFactor;
             m_modelQuads[i][j] = cornerWorldPos;
         }
     }
@@ -301,7 +303,7 @@ void EditorLayer::computeTranslateType() {
             for (int j = 1; j <= 2; ++j) {
                 int axisId = (i + j) % 3;
                 projectionUV[j - 1] = glm::dot(
-                    rotation[axisId],
+                    glm::normalize(rotation[axisId]),
                     (intersectWorldPos - modelWorldPos) / m_axisSizeFactor);
             }
             // check projection uv inside quad
@@ -331,7 +333,8 @@ void EditorLayer::handleMouseLeftButton() {
             glm::vec3 intersectWorldPos = m_camRayOrigin + len * m_camRayDir;
             glm::vec3 translation = intersectWorldPos - m_intersectWorldPos;
             if (m_moveType <= TRANSLATE_Z && m_moveType >= TRANSLATE_X) {
-                const glm::vec3& axis = trans[m_moveType - TRANSLATE_X];
+                const glm::vec3& axis =
+                    glm::normalize(trans[m_moveType - TRANSLATE_X]);
                 translation = glm::dot(axis, translation) * axis;
                 m_movePlane =
                     buildPlane(entity->getPosition(), m_camera->getFront());
