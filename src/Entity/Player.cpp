@@ -13,55 +13,10 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     float width = 1;
     float height = 1;
     float length = 1;
-    Vertex vertices[] = {
-        {{-width, -height, -length}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
-        {{width, -height, -length}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
-        {{width, height, -length}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
-        {{width, height, -length}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
-        {{-width, height, -length}, {0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
-        {{-width, -height, -length}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
-        {{-width, -height, length}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-        {{width, -height, length}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-        {{width, height, length}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-        {{width, height, length}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-        {{-width, height, length}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
-        {{-width, -height, length}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-        {{-width, height, length}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{-width, height, -length}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{-width, -height, -length}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{-width, -height, -length}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{-width, -height, length}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{-width, height, length}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
-        {{width, height, length}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-        {{width, height, -length}, {1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
-        {{width, -height, -length}, {0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
-        {{width, -height, -length}, {0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
-        {{width, -height, length}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-        {{width, height, length}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-        {{-width, -height, -length}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
-        {{width, -height, -length}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
-        {{width, -height, length}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
-        {{width, -height, length}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
-        {{-width, -height, length}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
-        {{-width, -height, -length}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
-        {{-width, height, -length}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
-        {{width, height, -length}, {1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
-        {{width, height, length}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        {{width, height, length}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        {{-width, height, length}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        {{-width, height, -length}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}}};
-
-    m_vertexArray = createRef<VertexArray>();
-    Ref<VertexBuffer> vertexBuffer =
-        createRef<VertexBuffer>(vertices, 36 * sizeof(Vertex));
-    vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
-                             {ShaderDataType::Float2, "aTexCoord"},
-                             {ShaderDataType::Float3, "aNormal"}});
-    m_vertexArray->addVertexBuffer(vertexBuffer);
-    m_material = createRef<Material>();
-    m_material->loadFromValue(glm::vec3(1.f), Material::TEXTURE_AMBIENT);
-    m_material->loadFromValue(glm::vec3(0.6f), Material::TEXTURE_DIFFUSE);
-    m_material->loadFromValue(glm::vec3(0.5f), Material::TEXTURE_SPECULAR);
+    m_model = createRef<Model>();
+    m_model->loadFromFile("resources/models/vampire/dancing_vampire.dae");
+    glm::mat3 scale = glm::scale(getTransform(), glm::vec3(0.01));
+    setTransform(scale);
 
     add<Rigidbody>(100, true);
     add<HullCollider>();
@@ -89,8 +44,7 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
 }
 
 void Player::draw(const Shader &shader) const {
-    Renderer::submit(shader, *m_vertexArray, GL_TRIANGLES, false,
-                     getTransform(), m_material.get());
+    m_model->draw(shader, getTransform());
 }
 
 void Player::move(Action movement) {

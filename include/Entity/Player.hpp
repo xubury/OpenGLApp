@@ -6,6 +6,7 @@
 #include "Graphic/Material.hpp"
 #include "Window/ActionMap.hpp"
 #include "Entity/PlayerCamera.hpp"
+#include "Graphic/Model.hpp"
 
 namespace te {
 
@@ -31,8 +32,7 @@ class Player : public EntityBase {
     PlayerCamera *getPlayerCamera() { return m_camera; }
 
    private:
-    Ref<VertexArray> m_vertexArray;
-    Ref<Material> m_material;
+    Ref<Model> m_model;
     ActionMap<int> m_inputs;
     PlayerCamera *m_camera;
 };
