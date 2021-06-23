@@ -1,5 +1,4 @@
 #include "Entity/Player.hpp"
-#include "Graphic/Vertex.hpp"
 #include "Graphic/Renderer.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Physics/HullCollider.hpp"
@@ -15,8 +14,10 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     float length = 1;
     m_model = createRef<Model>();
     m_model->loadFromFile("resources/models/vampire/dancing_vampire.dae");
-    glm::mat3 scale = glm::scale(getTransform(), glm::vec3(0.01));
-    setTransform(scale);
+
+    m_animation = createRef<Animation>(
+        "resources/models/vampire/dancing_vampire.dae", *m_model);
+    m_animator = createRef<Animator>(m_animation.get());
 
     add<Rigidbody>(100, true);
     add<HullCollider>();
@@ -43,7 +44,15 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
                      [this](const Event &) { move(Action::MOVE_RIGHT); });
 }
 
+void Player::update(const Time &deltaTime) { m_animator->update(deltaTime); }
+
 void Player::draw(const Shader &shader) const {
+    shader.bind();
+    auto &transforms = m_animator->getFinalBoneMatrices();
+    for (std::size_t i = 0; i < transforms.size(); ++i) {
+        shader.setMat4("uBoneTransform[" + std::to_string(i) + "]",
+                       transforms[i]);
+    }
     m_model->draw(shader, getTransform());
 }
 

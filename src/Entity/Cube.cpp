@@ -56,7 +56,9 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
         createRef<VertexBuffer>(vertices, 36 * sizeof(Vertex));
     vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
                              {ShaderDataType::Float2, "aTexCoord"},
-                             {ShaderDataType::Float3, "aNormal"}});
+                             {ShaderDataType::Float3, "aNormal"},
+                             {ShaderDataType::Int4,"aBoneIds"},
+                             {ShaderDataType::Float4, "aWeights"}});
     m_cube->addVertexBuffer(vertexBuffer);
 }
 

@@ -24,8 +24,6 @@ set(Graphic_Include
     ${Include_Root}/Vertex.hpp
     ${Include_Root}/Primitive.hpp
     ${Include_Root}/Material.hpp
-    ${Include_Root}/Mesh.hpp
-    ${Include_Root}/Model.hpp
     ${Include_Root}/FrameBuffer.hpp
     ${Include_Root}/LightBase.hpp)
 
@@ -43,8 +41,6 @@ set(Graphic_Src
     ${Src_Root}/Vertex.cpp
     ${Src_Root}/Primitive.cpp
     ${Src_Root}/Material.cpp
-    ${Src_Root}/Mesh.cpp
-    ${Src_Root}/Model.cpp
     ${Src_Root}/FrameBuffer.cpp
     ${Src_Root}/LightBase.cpp)
 
@@ -57,7 +53,7 @@ target_compile_options(te-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
 
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(te-core PUBLIC TE_SHARED)
+    target_compile_definitions(te-graphic PUBLIC TE_SHARED)
 endif()
 
 
@@ -68,7 +64,6 @@ target_link_libraries(te-graphic
     glbinding::glbinding
     glm
     PRIVATE
-    assimp::assimp
     JPEG::JPEG
     PNG::PNG)
 if(UNIX)

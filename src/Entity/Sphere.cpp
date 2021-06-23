@@ -65,7 +65,9 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
         vertices.data(), vertices.size() * sizeof(Vertex));
     vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
                              {ShaderDataType::Float2, "aTexCoord"},
-                             {ShaderDataType::Float3, "aNormal"}});
+                             {ShaderDataType::Float3, "aNormal"},
+                             {ShaderDataType::Int4,"aBoneIds"},
+                             {ShaderDataType::Float4, "aWeights"}});
     m_sphere->addVertexBuffer(vertexBuffer);
     m_sphere->setIndexBuffer(
         createRef<IndexBuffer>(indices.data(), indices.size()));

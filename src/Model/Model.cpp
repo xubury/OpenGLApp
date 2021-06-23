@@ -1,5 +1,6 @@
-#include "Graphic/Model.hpp"
+#include "Model/Model.hpp"
 #include "Core/Log.hpp"
+#include "Utils/AssimpHelper.hpp"
 #include <iostream>
 
 namespace te {
@@ -44,13 +45,9 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     Ref<Material> textures = createRef<Material>();
     for (std::size_t i = 0; i < mesh->mNumVertices; ++i) {
         Vertex vertex;
-        vertex.position.x = mesh->mVertices[i].x;
-        vertex.position.y = mesh->mVertices[i].y;
-        vertex.position.z = mesh->mVertices[i].z;
+        vertex.position = AssimpHelper::getGLMVec(mesh->mVertices[i]);
+        vertex.normal = AssimpHelper::getGLMVec(mesh->mNormals[i]);
 
-        vertex.normal.x = mesh->mNormals[i].x;
-        vertex.normal.y = mesh->mNormals[i].y;
-        vertex.normal.z = mesh->mNormals[i].z;
         if (mesh->mTextureCoords[0]) {
             vertex.texCoord.x = mesh->mTextureCoords[0][i].x;
             vertex.texCoord.y = mesh->mTextureCoords[0][i].y;
@@ -67,12 +64,41 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         }
     }
 
+    processBoneWeight(vertices, mesh);
+
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     processTextures(*textures, material, aiTextureType_AMBIENT);
     processTextures(*textures, material, aiTextureType_DIFFUSE);
     processTextures(*textures, material, aiTextureType_SPECULAR);
     m_meshes.emplace_back((GLenum)mesh->mPrimitiveTypes, vertices, indices,
                           textures);
+}
+
+void Model::processBoneWeight(std::vector<Vertex> &vertices, aiMesh *mesh) {
+    for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+        int boneId = -1;
+        std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+        if (m_boneInfoMap.count(boneName) == 0) {
+            BoneInfo boneInfo;
+            boneInfo.id = m_boneCounter;
+            boneInfo.offset = AssimpHelper::covertMatrixToGLM(
+                mesh->mBones[boneIndex]->mOffsetMatrix);
+            m_boneInfoMap[boneName] = boneInfo;
+            boneId = m_boneCounter;
+            ++m_boneCounter;
+        } else {
+            boneId = m_boneInfoMap[boneName].id;
+        }
+        TE_CORE_ASSERT(boneId != -1, "bone info error");
+        aiVertexWeight *weights = mesh->mBones[boneIndex]->mWeights;
+        uint32_t numWeight = mesh->mBones[boneIndex]->mNumWeights;
+        for (uint32_t weightIndex = 0; weightIndex < numWeight; ++weightIndex) {
+            uint32_t vertexId = weights[weightIndex].mVertexId;
+            float weight = weights[weightIndex].mWeight;
+            TE_CORE_ASSERT(vertexId < vertices.size(), "invalid vertex index");
+            vertices[vertexId].setVertexBoneData(boneId, weight);
+        }
+    }
 }
 
 void Model::processTextures(Material &textures, aiMaterial *mat,

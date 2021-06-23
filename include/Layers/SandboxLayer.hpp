@@ -46,7 +46,7 @@ class SandboxLayer : public Layer {
     uint32_t m_viewHeight;
     ShaderLibrary m_shaders;
     PlayerCamera *m_camera;
-    uint32_t m_playerId;
+    Player *m_player;
 };
 
 }  // namespace te

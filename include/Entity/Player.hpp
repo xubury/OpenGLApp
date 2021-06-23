@@ -6,7 +6,8 @@
 #include "Graphic/Material.hpp"
 #include "Window/ActionMap.hpp"
 #include "Entity/PlayerCamera.hpp"
-#include "Graphic/Model.hpp"
+#include "Model/Model.hpp"
+#include "Model/Animator.hpp"
 
 namespace te {
 
@@ -23,6 +24,8 @@ class Player : public EntityBase {
    public:
     Player(EntityManager<EntityBase> *manager, uint32_t id);
 
+    void update(const Time &deltaTime);
+
     void draw(const Shader &shader) const override;
 
     void move(Action movement);
@@ -35,6 +38,9 @@ class Player : public EntityBase {
     Ref<Model> m_model;
     ActionMap<int> m_inputs;
     PlayerCamera *m_camera;
+
+    Ref<Animator> m_animator;
+    Ref<Animation> m_animation;
 };
 
 }  // namespace te

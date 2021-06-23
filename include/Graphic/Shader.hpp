@@ -46,6 +46,7 @@ class TE_API Shader {
 
     void setUniformBlock(const std::string& name, uint32_t bindingPoint) const;
 
+    uint32_t id() const { return m_id; }
    private:
     static void checkCompileErrors(uint32_t shader, const std::string type);
 

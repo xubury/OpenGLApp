@@ -8,6 +8,7 @@ endif()
 
 add_subdirectory(src/Core)
 add_subdirectory(src/Graphic)
+add_subdirectory(src/Model)
 add_subdirectory(src/ECS)
 
 set(Editor_Src
@@ -72,11 +73,13 @@ add_executable(OpenGLApp
     ${Entity_Src}
     ${Window_Src}
     ${Physics_Src}
-    ${Editor_Src})
+    ${Editor_Src}
+    ${Model_Src})
 
 set_property(TARGET OpenGLApp PROPERTY CXX_STANDARD 17)
 target_compile_options(OpenGLApp PUBLIC -Wall -Wextra -Wundef -pedantic)
 target_link_libraries(OpenGLApp
+    te-model
     te-graphic
     glfw
     imgui::imgui)

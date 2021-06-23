@@ -62,7 +62,7 @@ void VertexArray::addVertexBuffer(const Ref<VertexBuffer> &buffer) {
                     shaderDataTypeToOpenGLBaseType(element.getType()),
                     element.isNormalized() ? GL_TRUE : GL_FALSE,
                     layout.getStride(), (const void *)element.getOffset());
-                m_vertexBufferId++;
+                ++m_vertexBufferId;
                 break;
             }
             case ShaderDataType::Int:
@@ -75,7 +75,7 @@ void VertexArray::addVertexBuffer(const Ref<VertexBuffer> &buffer) {
                     m_vertexBufferId, element.getComponentCount(),
                     shaderDataTypeToOpenGLBaseType(element.getType()),
                     layout.getStride(), (const void *)element.getOffset());
-                m_vertexBufferId++;
+                ++m_vertexBufferId;
                 break;
             }
             case ShaderDataType::Mat3:

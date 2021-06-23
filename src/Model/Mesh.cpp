@@ -1,4 +1,4 @@
-#include "Graphic/Mesh.hpp"
+#include "Model/Mesh.hpp"
 #include "Graphic/Renderer.hpp"
 #include "Graphic/Shader.hpp"
 #include "Graphic/OpenGL.hpp"
@@ -16,7 +16,9 @@ Mesh::Mesh(GLenum type, const std::vector<Vertex> &vertices,
         vertices.data(), vertices.size() * sizeof(Vertex));
     vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
                              {ShaderDataType::Float2, "aTexCoord"},
-                             {ShaderDataType::Float3, "aNormal"}});
+                             {ShaderDataType::Float3, "aNormal"},
+                             {ShaderDataType::Int4, "aBoneIds"},
+                             {ShaderDataType::Float4, "aWeights"}});
     m_vertexArray->addVertexBuffer(vertexBuffer);
     m_vertexArray->setIndexBuffer(
         createRef<IndexBuffer>(indices.data(), indices.size()));

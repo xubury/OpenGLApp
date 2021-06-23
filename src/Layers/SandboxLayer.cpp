@@ -78,6 +78,7 @@ void SandboxLayer::loadShaders() {
                                     glm::cos(glm::radians(12.5f)));
     m_shaders.get("Main")->setFloat("uPointLight.outerCutOff",
                                     glm::cos(glm::radians(15.5f)));
+    TE_TRACE("{}", m_shaders.get("Main")->id());
 }
 
 void SandboxLayer::loadScene() {
@@ -107,14 +108,14 @@ void SandboxLayer::loadScene() {
 
     scene->entities.create<Terrain>(10, 20, groundTextures);
 
-    m_playerId = scene->entities.create<Player>();
-    scene->entities.get(m_playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
-    Player* player = dynamic_cast<Player*>(scene->entities.get(m_playerId));
+    uint32_t playerId = scene->entities.create<Player>();
+    scene->entities.get(playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
+    m_player = dynamic_cast<Player*>(scene->entities.get(playerId));
 
     uint32_t cameraId = scene->entities.create<PlayerCamera>(
-        0, 0, m_viewWidth, m_viewHeight, player);
+        0, 0, m_viewWidth, m_viewHeight, m_player);
     m_camera = dynamic_cast<PlayerCamera*>(scene->entities.get(cameraId));
-    player->setPlayerCamera(m_camera);
+    m_player->setPlayerCamera(m_camera);
     Application::instance().setSceneCamera(m_camera);
 }
 
@@ -128,6 +129,7 @@ void SandboxLayer::onAttach() {
 
 void SandboxLayer::onUpdate(const Time& deltaTime) {
     m_camera->update(deltaTime);
+    m_player->update(deltaTime);
 }
 
 void SandboxLayer::onRender() {
