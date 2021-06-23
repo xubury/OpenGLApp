@@ -17,9 +17,9 @@ struct ImageHeader {
 
 class Image {
    public:
-    Image();
+    Image() = default;
 
-    ~Image();
+    ~Image() = default;
 
     Image(const Image &) = delete;
 

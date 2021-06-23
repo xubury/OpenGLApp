@@ -7,10 +7,6 @@
 
 namespace te {
 
-Image::Image() {}
-
-Image::~Image() {}
-
 bool Image::loadFromFile(const std::string &filename, bool flip) {
     std::string ext = filename.substr(filename.find_last_of('.') + 1);
     if (ext == "jpg" || ext == "jpeg") {
@@ -172,21 +168,19 @@ bool Image::loadPNG(const std::string &filename, bool flip) {
             png_set_gray_to_rgb(png);
 
         png_read_update_info(png, info);
-        if (m_header.bitDepth == 8) {
-            std::vector<png_bytep> row_pointers;
-            row_pointers.resize(m_header.height);
-            for (int i = 0; i < m_header.height; ++i)
-                if (flip) {
-                    row_pointers[i] =
-                        &m_buffer[(m_header.height - 1 - i) * m_header.width *
-                                  m_header.channels];
-                } else {
-                    row_pointers[i] =
-                        &m_buffer[i * m_header.width * m_header.channels *
-                                  m_header.bitDepth / 8];
-                }
-            png_read_image(png, row_pointers.data());
-        }
+        std::vector<png_bytep> row_pointers;
+        row_pointers.resize(m_header.height);
+        for (int i = 0; i < m_header.height; ++i)
+            if (flip) {
+                row_pointers[i] =
+                    &m_buffer[(m_header.height - 1 - i) * m_header.width *
+                              m_header.channels * m_header.bitDepth / 8];
+            } else {
+                row_pointers[i] =
+                    &m_buffer[i * m_header.width * m_header.channels *
+                              m_header.bitDepth / 8];
+            }
+        png_read_image(png, row_pointers.data());
 
         std::fclose(fp);
     } catch (const std::exception &e) {

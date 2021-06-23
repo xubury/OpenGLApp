@@ -15,8 +15,8 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     m_model = createRef<Model>();
     m_model->loadFromFile("resources/models/vampire/dancing_vampire.dae");
 
-    m_animation = createRef<Animation>(
-        "resources/models/vampire/dancing_vampire.dae", *m_model);
+    m_animation =
+        createRef<Animation>("resources/models/vampire/dancing_vampire.dae", *m_model);
     m_animator = createRef<Animator>(m_animation.get());
 
     add<Rigidbody>(100, true);
