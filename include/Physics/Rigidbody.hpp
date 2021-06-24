@@ -17,7 +17,11 @@ struct Rigidbody : public CollisionObject {
 
     float getMass() const;
 
+    void setMass(float mass);
+
     float getRestitution() const;
+
+    void setRestitution(float restitution);
 
     bool isKinematic() const;
 
@@ -29,11 +33,19 @@ struct Rigidbody : public CollisionObject {
 
     glm::vec3 getVelocity() const;
 
+    void setVelocity(const glm::vec3 &velocity);
+
     glm::vec3 getAngularVelocity() const;
+
+    void setAngularVelocity(const glm::vec3 &angularVelocity);
 
     float getStaticFriction() const;
 
+    void setStaticFriction(float friction);
+
     float getDynamicFriction() const;
+
+    void setDynamicFriction(float friction);
 
    private:
     glm::vec3 m_centerOfMass;

@@ -51,9 +51,11 @@ static void renderLightProperty(LightBase& light) {
 static void renderRigidbodyProperty(Rigidbody& body) {
     ImGui::Separator();
     ImGui::Text("Rigidbody");
+
     bool kinematic = body.isKinematic();
     ImGui::Checkbox("Kinematic", &kinematic);
     body.setKinematic(kinematic);
+    
     float mass = body.getMass();
     float restitution = body.getRestitution();
     float staticFriction = body.getStaticFriction();
@@ -62,10 +64,17 @@ static void renderRigidbodyProperty(Rigidbody& body) {
     ImGui::InputFloat("Restitution", &restitution);
     ImGui::InputFloat("Static friction", &staticFriction);
     ImGui::InputFloat("Dynamic friction", &dynamicFriction);
+    body.setMass(mass);
+    body.setRestitution(restitution);
+    body.setStaticFriction(staticFriction);
+    body.setDynamicFriction(dynamicFriction);
+
     glm::vec3 velocity = body.getVelocity();
     glm::vec3 angularVelocity = body.getAngularVelocity();
     ImGui::InputFloat3("Velocity", &velocity[0]);
     ImGui::InputFloat3("Angular velocity", &angularVelocity[0]);
+    body.setVelocity(velocity);
+    body.setAngularVelocity(angularVelocity);
 }
 
 static bool canActive(ImGuiMouseButton button) {

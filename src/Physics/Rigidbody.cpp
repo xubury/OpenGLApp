@@ -37,11 +37,25 @@ void Rigidbody::addImpulse(const glm::vec3 &impulse) {
 
 float Rigidbody::getMass() const { return m_mass; }
 
+void Rigidbody::setMass(float mass) { m_mass = mass; }
+
 float Rigidbody::getRestitution() const { return m_restitution; }
+
+void Rigidbody::setRestitution(float restitution) {
+    m_restitution = restitution;
+}
 
 float Rigidbody::getStaticFriction() const { return m_staticFriction; }
 
+void Rigidbody::setStaticFriction(float friction) {
+    m_staticFriction = friction;
+}
+
 float Rigidbody::getDynamicFriction() const { return m_dynamicFriction; }
+
+void Rigidbody::setDynamicFriction(float friction) {
+    m_dynamicFriction = friction;
+}
 
 bool Rigidbody::isKinematic() const { return m_isKinematic; }
 
@@ -55,6 +69,14 @@ glm::vec3 Rigidbody::getCenterOfMassInWorld() const {
 
 glm::vec3 Rigidbody::getVelocity() const { return m_velocity; }
 
+void Rigidbody::setVelocity(const glm::vec3 &velocity) {
+    m_velocity = velocity;
+}
+
 glm::vec3 Rigidbody::getAngularVelocity() const { return m_angularVelocity; }
+
+void Rigidbody::setAngularVelocity(const glm::vec3 &angularVelocity) {
+    m_angularVelocity = angularVelocity;
+}
 
 }  // namespace te
