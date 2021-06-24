@@ -25,7 +25,7 @@ class Image {
 
     Image &operator=(const Image &) = delete;
 
-    bool loadFromFile(const std::string &filename, bool flip = true);
+    bool loadFromFile(const std::string &filename, bool flip = false);
 
     bool valid() const { return m_buffer.size(); }
 

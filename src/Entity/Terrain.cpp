@@ -22,7 +22,7 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
         for (float j = -halfSize; j <= halfSize; ++j) {
             RandomGenerator random(vertexPointer);
             m_vertices[vertexPointer].x = j * gridSize;
-            m_vertices[vertexPointer].y = 0;
+            m_vertices[vertexPointer].y = random.rnd(0.f, 4.f);
             m_vertices[vertexPointer].z = i * gridSize;
             m_normals[vertexPointer].x = 0.f;
             m_normals[vertexPointer].y = 1.0f;

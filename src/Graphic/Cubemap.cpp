@@ -22,7 +22,7 @@ void Cubemap::setParameters(const TextureParameter &params) {
 bool Cubemap::loadFromFile(const std::vector<std::string> &path) {
     for (unsigned int i = 0; i < path.size(); i++) {
         Image image;
-        image.loadFromFile(path[i], false);
+        image.loadFromFile(path[i]);
         if (!image.valid()) {
             return false;
         }
