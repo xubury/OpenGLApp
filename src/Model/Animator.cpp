@@ -7,10 +7,10 @@ namespace te {
 Animator::Animator(Animation *animtion) : m_currentAnimation(animtion) {
     m_currentTime = 0.f;
 
-    m_finalBonesMatrices.resize(MAX_BONES);
+    m_boneTransform.resize(MAX_BONES);
 
     for (int i = 0; i < MAX_BONES; ++i) {
-        m_finalBonesMatrices[i] = glm::mat4(1.0f);
+        m_boneTransform[i] = glm::mat4(1.0f);
     }
 }
 
@@ -43,8 +43,8 @@ void Animator::calculateBoneTransform(const BoneNode &node,
     if (boneInfoMap.count(nodeName)) {
         uint32_t index = boneInfoMap.at(nodeName).id;
         glm::mat4 offset = boneInfoMap.at(nodeName).offset;
-        if (index < m_finalBonesMatrices.size()) {
-            m_finalBonesMatrices[index] = globalTransform * offset;
+        if (index < m_boneTransform.size()) {
+            m_boneTransform[index] = globalTransform * offset;
         }
     }
 

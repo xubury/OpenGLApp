@@ -18,11 +18,11 @@ class Animator {
                                 const glm::mat4 &parentTransform);
 
     const std::vector<glm::mat4> &getFinalBoneMatrices() const {
-        return m_finalBonesMatrices;
+        return m_boneTransform;
     }
 
    private:
-    std::vector<glm::mat4> m_finalBonesMatrices;
+    std::vector<glm::mat4> m_boneTransform;
     Animation *m_currentAnimation;
     float m_currentTime;
 };

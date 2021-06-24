@@ -69,10 +69,6 @@ class TE_API Bone {
     std::vector<KeyRotation> m_rotations;
     std::vector<KeyScale> m_scales;
 
-    uint32_t m_nPositions;
-    uint32_t m_nRotations;
-    uint32_t m_nScales;
-
     int m_id;
     std::string m_name;
     glm::mat4 m_localTransform;
