@@ -22,17 +22,26 @@ class HullCollider : public Collider {
 };
 
 inline void MakeCubeCollider(HullCollider& collider, float width, float height,
-                             float length) {
+                             float length,
+                             const glm::vec3& center = glm::vec3(0)) {
     collider.clear();
-    collider.addVertex(glm::vec3(-width, -height, -length));  // 0
-    collider.addVertex(glm::vec3(-width, height, -length));   // 1
-    collider.addVertex(glm::vec3(width, height, -length));    // 2
-    collider.addVertex(glm::vec3(width, -height, -length));   // 3
+    collider.addVertex(glm::vec3(-width / 2.f, -height / 2.f, -length / 2.f) +
+                       center);  // 0
+    collider.addVertex(glm::vec3(-width / 2.f, height / 2.f, -length / 2.f) +
+                       center);  // 1
+    collider.addVertex(glm::vec3(width / 2.f, height / 2.f, -length / 2.f) +
+                       center);  // 2
+    collider.addVertex(glm::vec3(width / 2.f, -height / 2.f, -length / 2.f) +
+                       center);  // 3
 
-    collider.addVertex(glm::vec3(-width, -height, length));  // 7
-    collider.addVertex(glm::vec3(width, -height, length));   // 6
-    collider.addVertex(glm::vec3(width, height, length));    // 5
-    collider.addVertex(glm::vec3(-width, height, length));   // 4
+    collider.addVertex(glm::vec3(-width / 2.f, -height / 2.f, length / 2.f) +
+                       center);  // 7
+    collider.addVertex(glm::vec3(width / 2.f, -height / 2.f, length / 2.f) +
+                       center);  // 6
+    collider.addVertex(glm::vec3(width / 2.f, height / 2.f, length / 2.f) +
+                       center);  // 5
+    collider.addVertex(glm::vec3(-width / 2.f, height / 2.f, length / 2.f) +
+                       center);  // 4
 }
 
 }  // namespace te

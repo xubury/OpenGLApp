@@ -15,13 +15,14 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     m_model = createRef<Model>();
     m_model->loadFromFile("resources/models/vampire/dancing_vampire.dae");
 
-    m_animation =
-        createRef<Animation>("resources/models/vampire/dancing_vampire.dae", *m_model);
+    m_animation = createRef<Animation>(
+        "resources/models/vampire/dancing_vampire.dae", *m_model);
     m_animator = createRef<Animator>(m_animation.get());
 
     add<Rigidbody>(100, true);
     add<HullCollider>();
-    MakeCubeCollider(*component<HullCollider>().get(), width, height, length);
+    MakeCubeCollider(*component<HullCollider>().get(), width, height, length,
+                     glm::vec3(0, 0.5f, 0));
 
     m_inputs.map(Action::MOVE_JUMP, Keyboard::SPACE);
     m_inputs.map(Action::MOVE_FORWARD, Keyboard::W);

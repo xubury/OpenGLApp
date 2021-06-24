@@ -21,7 +21,8 @@ bool Model::loadFromFile(const std::string &path) {
         import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
-        TE_CORE_ERROR("Assimp Error:{0}", import.GetErrorString());
+        std::string error = import.GetErrorString();
+        TE_CORE_ERROR("Assimp Error:{}", error);
         return false;
     }
     m_directory = path.substr(0, path.find_last_of('/') + 1);

@@ -54,11 +54,11 @@ GLenum Image::GetGLType() const {
 }
 
 static void jpgErrorHandler(j_common_ptr /*cinfo*/) {
-    throw std::runtime_error("Image::loadJPEG format not recognized");
+    throw std::runtime_error("format not recognized");
 }
 
 static void jpgMsgHandler(j_common_ptr /*cinfo*/, int msg_level) {
-    if (msg_level < 0) throw std::runtime_error("Image::loadJPEG data corrupt");
+    if (msg_level < 0) throw std::runtime_error("data corrupt");
 }
 
 bool Image::loadJPEG(const std::string &filename, bool flip) {
@@ -80,11 +80,11 @@ bool Image::loadJPEG(const std::string &filename, bool flip) {
 
         int ret = jpeg_read_header(&cinfo, static_cast<boolean>(false));
         if (ret != JPEG_HEADER_OK) {
-            throw std::runtime_error("Image::loadJPEG header not recognized");
+            throw std::runtime_error("header not recognized");
         }
         if (cinfo.out_color_space != JCS_GRAYSCALE &&
             cinfo.out_color_space != JCS_RGB) {
-            throw std::runtime_error("Image::loadJPEG Invalid color space");
+            throw std::runtime_error("Invalid color space");
         }
         /* Start decompression. */
         jpeg_start_decompress(&cinfo);
@@ -115,12 +115,20 @@ bool Image::loadJPEG(const std::string &filename, bool flip) {
         jpeg_destroy_decompress(&cinfo);
         std::fclose(fp);
     } catch (const std::exception &e) {
-        TE_CORE_ERROR("{}", e.what());
+        TE_CORE_ERROR("libjpeg error: {}", e.what());
         jpeg_destroy_decompress(&cinfo);
         std::fclose(fp);
         return false;
     }
     return true;
+}
+
+static void pngErrorHandler(png_structp, png_const_charp str) {
+    throw std::runtime_error(str);
+}
+
+static void pngWarningHandler(png_structp, png_const_charp str) {
+    TE_CORE_WARN("libpng warning: {}", str);
 }
 
 bool Image::loadPNG(const std::string &filename, bool flip) {
@@ -129,13 +137,15 @@ bool Image::loadPNG(const std::string &filename, bool flip) {
         TE_CORE_ERROR("Error opening file: {}", std::strerror(errno));
         return false;
     }
+    png_structp png = nullptr;
+    png_infop info = nullptr;
     try {
-        png_structp png =
-            png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-        if (!png) throw std::runtime_error("Image::loadPNG Out of memory");
+        png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr,
+                                     pngErrorHandler, pngWarningHandler);
+        if (!png) throw std::runtime_error("Out of memory");
 
-        png_infop info = png_create_info_struct(png);
-        if (!info) throw std::runtime_error("Image::loadPNG Out of memory");
+        info = png_create_info_struct(png);
+        if (!info) throw std::runtime_error("Out of memory");
 
         png_init_io(png, fp);
 
@@ -157,19 +167,8 @@ bool Image::loadPNG(const std::string &filename, bool flip) {
 
         if (png_get_valid(png, info, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png);
 
-        // These color_type don't have an alpha channel then fill it with 0xff.
-        if (color_type == PNG_COLOR_TYPE_RGB ||
-            color_type == PNG_COLOR_TYPE_GRAY ||
-            color_type == PNG_COLOR_TYPE_PALETTE)
-            png_set_filler(png, 0xFF, PNG_FILLER_AFTER);
-
-        if (color_type == PNG_COLOR_TYPE_GRAY ||
-            color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-            png_set_gray_to_rgb(png);
-
         png_read_update_info(png, info);
-        std::vector<png_bytep> row_pointers;
-        row_pointers.resize(m_header.height);
+        std::vector<png_bytep> row_pointers(m_header.height);
         for (int i = 0; i < m_header.height; ++i)
             if (flip) {
                 row_pointers[i] =
@@ -180,11 +179,13 @@ bool Image::loadPNG(const std::string &filename, bool flip) {
                     &m_buffer[i * m_header.width * m_header.channels *
                               m_header.bitDepth / 8];
             }
-        png_read_image(png, row_pointers.data());
+        png_read_image(png, &row_pointers[0]);
 
+        png_destroy_read_struct(&png, &info, nullptr);
         std::fclose(fp);
     } catch (const std::exception &e) {
-        TE_CORE_ERROR("{}", e.what());
+        TE_CORE_ERROR("libpng error: {}", e.what());
+        png_destroy_read_struct(&png, &info, nullptr);
         std::fclose(fp);
         return false;
     }
