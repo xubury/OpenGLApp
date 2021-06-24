@@ -78,7 +78,6 @@ void SandboxLayer::loadShaders() {
                                     glm::cos(glm::radians(12.5f)));
     m_shaders.get("Main")->setFloat("uPointLight.outerCutOff",
                                     glm::cos(glm::radians(15.5f)));
-    TE_TRACE("{}", m_shaders.get("Main")->id());
 }
 
 void SandboxLayer::loadScene() {
