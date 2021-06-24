@@ -50,19 +50,19 @@ void Shader::compile(const char* vertexCode, const char* fragmentCode,
     // compile shaders
     // vertex shader
     uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vertexCode, NULL);
+    glShaderSource(vertex, 1, &vertexCode, nullptr);
     glCompileShader(vertex);
     checkCompileErrors(vertex, "Vertex");
     // fragment Shader
     uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fragmentCode, NULL);
+    glShaderSource(fragment, 1, &fragmentCode, nullptr);
     glCompileShader(fragment);
     checkCompileErrors(fragment, "Fragment");
 
     uint32_t geometry = 0;
     if (geometryCode != nullptr) {
         geometry = glCreateShader(GL_GEOMETRY_SHADER);
-        glShaderSource(geometry, 1, &geometryCode, NULL);
+        glShaderSource(geometry, 1, &geometryCode, nullptr);
         glCompileShader(geometry);
         checkCompileErrors(geometry, "Geometry");
     }
@@ -91,14 +91,14 @@ void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
     if (type != "Program") {
         glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
         if (!success) {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog.data());
+            glGetShaderInfoLog(shader, 1024, nullptr, infoLog.data());
             TE_CORE_ERROR("{0} Shader compilation error:\n{1}\n", type,
                           infoLog);
         }
     } else {
         glGetProgramiv(shader, GL_LINK_STATUS, &success);
         if (!success) {
-            glGetProgramInfoLog(shader, 1024, NULL, infoLog.data());
+            glGetProgramInfoLog(shader, 1024, nullptr, infoLog.data());
             TE_CORE_ERROR("Shader Program linking error:\n{0}\n", infoLog);
         }
     }

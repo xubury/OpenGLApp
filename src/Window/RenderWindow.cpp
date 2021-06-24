@@ -26,13 +26,17 @@ RenderWindow::RenderWindow(int width, int height, const std::string& title,
     glfwWindowHint(GLFW_SAMPLES, samples);
 
     GLFWwindow* win =
-        glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (win == NULL) {
+        glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if (win == nullptr) {
         TE_CORE_ERROR("Failed to create GLFW window!");
         glfwTerminate();
         exit(-1);
     }
     glfwMakeContextCurrent(win);
+
+    // disable vsync
+    glfwSwapInterval(0);
+
     // setup callbacks
     glfwSetWindowUserPointer(win, this);
     glfwSetFramebufferSizeCallback(win, framebufferSizeCB);
