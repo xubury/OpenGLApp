@@ -70,7 +70,7 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
     m_terrain->setIndexBuffer(
         createRef<IndexBuffer>(indices.data(), indices.size()));
     add<Rigidbody>(10, false);
-    add<TerrainCollider>();
+    add<TerrainCollider>(m_vertices, m_gridSize, m_vertexCount);
 }
 
 void Terrain::draw(const Shader &shader) const {
@@ -98,26 +98,6 @@ float Terrain::height(float localX, float localZ) const {
         return baryCentric(glm::vec3(1, f10, 0), glm::vec3(1, f11, 1),
                            glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
     }
-}
-
-glm::vec3 Terrain::normal(float localX, float localZ) const {
-    float offset = 0.3f;
-    float hL = height(localX - offset, localZ);
-    float hR = height(localX + offset, localZ);
-    float hD = height(localX, localZ - offset);
-    float hU = height(localX, localZ + offset);
-    glm::vec3 normal =
-        glm::normalize(glm::vec3(hL - hR, 2.0f * offset, hD - hU));
-    return normal;
-}
-
-bool Terrain::outOfBound(const glm::vec3 &localPos) const {
-    float x = (localPos.x / m_gridSize + (m_vertexCount - 1) * 0.5f) /
-              (m_vertexCount - 1);
-    float z = (localPos.z / m_gridSize + (m_vertexCount - 1) * 0.5f) /
-              (m_vertexCount - 1);
-    return std::isnan(localPos.x) || std::isnan(localPos.y) ||
-           std::isnan(localPos.z) || x <= 0 || z <= 0 || x >= 1 || z >= 1;
 }
 
 void Terrain::computeNormal() {

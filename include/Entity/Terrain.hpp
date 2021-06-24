@@ -16,10 +16,6 @@ class Terrain : public EntityBase {
 
     float height(float localX, float localZ) const;
 
-    glm::vec3 normal(float localX, float localZ) const;
-
-    bool outOfBound(const glm::vec3 &localPos) const;
-
    private:
     void computeNormal();
 
