@@ -1,5 +1,5 @@
-#ifndef SAHDER_HPP
-#define SAHDER_HPP
+#ifndef SHADER_HPP
+#define SHADER_HPP
 
 #include "Core/Base.hpp"
 #include "Core/Export.hpp"
@@ -47,8 +47,9 @@ class TE_API Shader {
     void setUniformBlock(const std::string& name, uint32_t bindingPoint) const;
 
     uint32_t id() const { return m_id; }
+
    private:
-    static void checkCompileErrors(uint32_t shader, const std::string type);
+    static void checkCompileErrors(uint32_t shader, const std::string& type);
 
     uint32_t m_id;
 };

@@ -85,7 +85,7 @@ void Shader::bind() const { glUseProgram(m_id); }
 
 void Shader::unbind() const { glUseProgram(0); }
 
-void Shader::checkCompileErrors(uint32_t shader, const std::string type) {
+void Shader::checkCompileErrors(uint32_t shader, const std::string &type) {
     int success;
     std::string infoLog(1024, 0);
     if (type != "Program") {
