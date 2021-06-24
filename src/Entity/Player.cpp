@@ -15,8 +15,8 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     m_model = createRef<Model>();
     m_model->loadFromFile("resources/models/treeman/treeman.dae");
 
-    m_animation = createRef<Animation>(
-        "resources/models/treeman/treeman.dae", *m_model);
+    m_animation =
+        createRef<Animation>("resources/models/treeman/treeman.dae", *m_model);
     m_animator = createRef<Animator>(m_animation.get());
 
     add<Rigidbody>(100, true);
@@ -69,22 +69,28 @@ void Player::move(Action movement) {
     left = glm::normalize(-left);
 
     float amplifier = 20.f;
+    glm::vec3 moveDir;
     if (movement == Action::MOVE_JUMP) {
         rigidbody->addForce(
             glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * 12.0f,
             glm::vec3(0));
+        moveDir = front;
     } else if (movement == Action::MOVE_FORWARD) {
         rigidbody->addImpulse(front * amplifier);
+        moveDir = front;
     } else if (movement == Action::MOVE_BACKWARD) {
         rigidbody->addImpulse(-front * amplifier);
+        moveDir = -front;
     } else if (movement == Action::MOVE_LEFT) {
         rigidbody->addImpulse(left * amplifier);
+        moveDir = left;
     } else if (movement == Action::MOVE_RIGHT) {
         rigidbody->addImpulse(-left * amplifier);
+        moveDir = -left;
     }
 
-    float acos = std::acos(glm::dot(getFront(), front));
-    glm::vec3 c = glm::cross(getFront(), front);
+    float acos = std::acos(glm::dot(getFront(), moveDir));
+    glm::vec3 c = glm::cross(getFront(), moveDir);
     if (c.y < 0) {
         rotateLocal(-0.1f * acos, glm::vec3(0, 1.0, 0));
     } else {
