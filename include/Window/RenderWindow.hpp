@@ -34,6 +34,11 @@ class RenderWindow {
     static ::GLFWwindow* getCurrentContext();
 
     void captureMouse(bool capture);
+
+    uint32_t width() const;
+
+    uint32_t height() const;
+
    private:
     void pollEvents();
 
@@ -46,6 +51,8 @@ class RenderWindow {
     Time m_secondPerFrame;
     Clock m_clock;
     float m_frameRate;
+    uint32_t m_width;
+    uint32_t m_height;
 
    private:
     static void errorCallback(int error, const char* description);

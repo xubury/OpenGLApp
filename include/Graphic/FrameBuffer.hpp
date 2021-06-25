@@ -20,6 +20,7 @@ enum class FramebufferTextureFormat {
     RGBA16F,
 
     // Dpeth
+    DEPTH24,
     DEPTH32,
 
     // Depth/stencil

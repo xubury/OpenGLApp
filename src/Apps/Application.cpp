@@ -14,11 +14,16 @@ Application::Application(const Settings &settings)
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
     m_imGuiLayer = createRef<EditorLayer>(settings.samples);
-    Renderer::init();
     m_scene = createRef<SceneManager<EntityBase>>();
+
+    Renderer::init();
+    invalidateEditor();
 }
 
-void Application::pushLayer(Ref<Layer> layer) { m_layers.pushLayer(layer); }
+void Application::pushLayer(Ref<Layer> layer) {
+    m_layers.pushLayer(layer);
+    if (m_editorMode) layer->setBlockEvent(true);
+}
 
 void Application::pushOverlay(Ref<Layer> overlay) {
     m_layers.pushOverlay(overlay);

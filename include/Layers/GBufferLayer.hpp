@@ -4,6 +4,7 @@
 #include "Core/Layer.hpp"
 #include "Graphic/FrameBuffer.hpp"
 #include "Graphic/Shader.hpp"
+#include "Graphic/VertexArray.hpp"
 
 namespace te {
 
@@ -13,11 +14,17 @@ class GBufferLayer : public Layer {
 
     void onRender() override;
 
+    void onUpdate(const Time &deltaTime) override;
+
     void onImGuiRender() override;
 
+    void onEventPoll(const Event &event) override;
    private:
     Scope<FrameBuffer> m_gBuffer;
-    Scope<Shader> m_shader;
+    Scope<Shader> m_gBufferShader;
+    Scope<Shader> m_deferredShader;
+
+    Scope<VertexArray> m_quad;
 };
 
 }  // namespace te

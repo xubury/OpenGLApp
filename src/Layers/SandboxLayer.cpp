@@ -63,21 +63,6 @@ void SandboxLayer::loadShaders() {
     m_shaders.add("Main");
     m_shaders.get("Main")->loadFromFile("shader/vertex.glsl",
                                         "shader/fragment.glsl");
-    m_shaders.get("Main")->bind();
-    m_shaders.get("Main")->setVec3("uPointLight.position",
-                                   glm::vec3(0.f, 4.0f, 0.f));
-    m_shaders.get("Main")->setVec3("uPointLight.direction",
-                                   glm::vec3(0.0f, -1.0f, 0.0f));
-    m_shaders.get("Main")->setVec3("uPointLight.ambient", glm::vec3(0.5f));
-    m_shaders.get("Main")->setVec3("uPointLight.diffuse", glm::vec3(1.0f));
-    m_shaders.get("Main")->setVec3("uPointLight.specular", glm::vec3(1.0f));
-    m_shaders.get("Main")->setFloat("uPointLight.constant", 1.0f);
-    m_shaders.get("Main")->setFloat("uPointLight.linear", 0.09f);
-    m_shaders.get("Main")->setFloat("uPointLight.quadratic", 0.032f);
-    m_shaders.get("Main")->setFloat("uPointLight.cutOff",
-                                    glm::cos(glm::radians(12.5f)));
-    m_shaders.get("Main")->setFloat("uPointLight.outerCutOff",
-                                    glm::cos(glm::radians(67.5f)));
 }
 
 void SandboxLayer::loadScene() {
@@ -139,7 +124,6 @@ void SandboxLayer::onRender() {
         Application::instance().getActiveScene();
     Renderer::beginScene(*Application::instance().getMainCamera(),
                          Application::instance().getFramebuffer());
-    Renderer::clear();
     auto entityIterEnd = scene->entities.end();
     for (auto cur = scene->entities.begin(); cur != entityIterEnd; ++cur) {
         scene->entities.get(*cur)->draw(*m_shaders.get("Main"));

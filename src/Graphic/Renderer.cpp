@@ -38,10 +38,7 @@ void Renderer::beginScene(const Camera &camera,
                                    sizeof(CameraData::viewPos));
 }
 
-void Renderer::endScene() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    s_state = RenderState::RENDER_NONE;
-}
+void Renderer::endScene() { s_state = RenderState::RENDER_NONE; }
 
 void Renderer::beginShadowCast(ShadowMap *shadowMap,
                                const Ref<FrameBuffer> &framebuffer) {
@@ -51,7 +48,7 @@ void Renderer::beginShadowCast(ShadowMap *shadowMap,
         "endShadowCast() call!");
     s_state = RenderState::RENDER_SHADOW;
     framebuffer->bind();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    clear(0.f, 0.f, 0.f);
     glCullFace(GL_FRONT);
     glViewport(0, 0, framebuffer->getSpecification().width,
                framebuffer->getSpecification().height);
@@ -85,21 +82,20 @@ void Renderer::endShadowCast() {
 }
 
 void Renderer::beginGBuffer(const Camera &camera,
-                            const FrameBuffer *framebuffer,
-                            uint32_t texPosition, uint32_t texNormal,
-                            uint32_t texAlebdoSpec) {
+                            const FrameBuffer *framebuffer) {
     TE_CORE_ASSERT(
         s_state == RenderState::RENDER_NONE,
         "Render state conflict detected! Please check beginGBuffer() and "
         "endGBuffer() call!");
+    glDisable(GL_BLEND);
     s_state = RenderState::RENDER_GBUFFER;
     if (framebuffer != nullptr) {
         framebuffer->bind();
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-    glViewport(camera.getViewportX(), camera.getViewportY(),
-               camera.getViewportWidth(), camera.getViewportHeight());
+    glViewport(0, 0, framebuffer->getSpecification().width,
+               framebuffer->getSpecification().height);
 
     s_sceneData.cameraUBO->setData(
         glm::value_ptr(camera.getProjection() * camera.getView()),
@@ -108,12 +104,12 @@ void Renderer::beginGBuffer(const Camera &camera,
     s_sceneData.cameraUBO->setData(glm::value_ptr(camera.getPosition()),
                                    offsetof(CameraData, viewPos),
                                    sizeof(CameraData::viewPos));
-    s_sceneData.gBufferPosition = texPosition;
-    s_sceneData.gBufferNormal = texNormal;
-    s_sceneData.gBufferAlbedoSpec = texAlebdoSpec;
 }
 
-void Renderer::endGBuffer() { s_state = RenderState::RENDER_NONE; }
+void Renderer::endGBuffer() {
+    s_state = RenderState::RENDER_NONE;
+    glEnable(GL_BLEND);
+}
 
 void Renderer::submit(const Shader &shader, const VertexArray &vertexArray,
                       GLenum type, bool indexed, const glm::mat4 &transform,
@@ -175,16 +171,6 @@ void Renderer::prepareTextures(const Shader &shader, const Material *material) {
         glActiveTexture(GL_TEXTURE0 + textureIndex);
         glBindTexture(GL_TEXTURE_2D, s_sceneData.shadowMap);
         shader.setInt("uShadowMap", textureIndex++);
-
-        glActiveTexture(GL_TEXTURE0 + textureIndex);
-        glBindTexture(GL_TEXTURE_2D, s_sceneData.gBufferPosition);
-        shader.setInt("uGBufferPosition", textureIndex++);
-        glActiveTexture(GL_TEXTURE0 + textureIndex);
-        glBindTexture(GL_TEXTURE_2D, s_sceneData.gBufferNormal);
-        shader.setInt("uGBufferNormal", textureIndex++);
-        glActiveTexture(GL_TEXTURE0 + textureIndex);
-        glBindTexture(GL_TEXTURE_2D, s_sceneData.gBufferAlbedoSpec);
-        shader.setInt("uGBufferAlbedoSpec", textureIndex++);
     }
 }
 

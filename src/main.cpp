@@ -8,7 +8,7 @@ int main(int, char **) {
     settings.width = 1440;
     settings.height = 960;
     settings.title = "OpenGL";
-    settings.samples = 4;
+    settings.samples = 8;
     settings.editor = true;
     settings.frameRateLimit = 0;
 

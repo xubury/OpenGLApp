@@ -17,8 +17,6 @@ SandboxApp::SandboxApp(Settings settings) : Application(settings) {
     pushLayer(createRef<SkyboxLayer>());
     m_scene->systems.add<BoundingBoxSystem>();
     m_scene->systems.add<PhysicsWorld>();
-
-    invalidateEditor();
 }
 
 }  // namespace te

@@ -10,10 +10,11 @@
 namespace te {
 
 RenderWindow::RenderWindow(int width, int height, const std::string& title,
-                           int samples) {
+                           int samples)
+    : m_width(width), m_height(height) {
     TE_CORE_ASSERT(width > 0 && height > 0,
                    "RenderWindow width or height <= 0.");
-    TE_CORE_ASSERT(samples > 0, "RenderWindow samples <= 0.");
+    TE_CORE_ASSERT(samples >= 0, "RenderWindow samples < 0.");
     glfwSetErrorCallback(errorCallback);
     if (!glfwInit()) {
         TE_CORE_ERROR("Failed to initialize GLFW!");
@@ -83,7 +84,13 @@ void RenderWindow::pollEvents() { glfwPollEvents(); }
 
 bool RenderWindow::pollEvent(Event& event) { return popEvent(event, false); }
 
-void RenderWindow::pushEvent(const Event& event) { m_events.push(event); }
+void RenderWindow::pushEvent(const Event& event) {
+    if (event.type == Event::RESIZED) {
+        m_width = event.size.width;
+        m_height = event.size.height;
+    }
+    m_events.push(event);
+}
 
 bool RenderWindow::popEvent(Event& event, bool block) {
     if (m_events.empty()) {
@@ -112,6 +119,10 @@ void RenderWindow::captureMouse(bool capture) {
         glfwSetInputMode(getCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 }
+
+uint32_t RenderWindow::width() const { return m_width; }
+
+uint32_t RenderWindow::height() const { return m_height; }
 
 void RenderWindow::framebufferSizeCB(GLFWwindow* window, int width,
                                      int height) {

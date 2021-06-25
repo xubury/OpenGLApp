@@ -87,8 +87,8 @@ static void attachDepthTexture(uint32_t id, int samples, GLenum format,
 
 static bool isDepthFormat(FramebufferTextureFormat format) {
     switch (format) {
+        case FramebufferTextureFormat::DEPTH24:
         case FramebufferTextureFormat::DEPTH32:
-            return true;
         case FramebufferTextureFormat::DEPTH24STENCIL8:
             return true;
         default:
@@ -180,6 +180,13 @@ void FrameBuffer::invalidate() {
             bindTexture(multiSample, m_depthAttachment);
         }
         switch (m_depthAttachmentSpec.textureFormat) {
+            case FramebufferTextureFormat::DEPTH24:
+                attachDepthTexture(m_depthAttachment, m_specification.samples,
+                                   GL_DEPTH_COMPONENT24,
+                                   m_depthAttachmentSpec.textureParams,
+                                   GL_DEPTH_ATTACHMENT, m_specification.width,
+                                   m_specification.height, m_depthWriteOnly);
+                break;
             case FramebufferTextureFormat::DEPTH32:
                 attachDepthTexture(m_depthAttachment, m_specification.samples,
                                    GL_DEPTH_COMPONENT32,
