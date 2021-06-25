@@ -68,7 +68,7 @@ void SandboxLayer::loadShaders() {
                                    glm::vec3(0.f, 4.0f, 0.f));
     m_shaders.get("Main")->setVec3("uPointLight.direction",
                                    glm::vec3(0.0f, -1.0f, 0.0f));
-    m_shaders.get("Main")->setVec3("uPointLight.ambient", glm::vec3(1.0f));
+    m_shaders.get("Main")->setVec3("uPointLight.ambient", glm::vec3(0.5f));
     m_shaders.get("Main")->setVec3("uPointLight.diffuse", glm::vec3(1.0f));
     m_shaders.get("Main")->setVec3("uPointLight.specular", glm::vec3(1.0f));
     m_shaders.get("Main")->setFloat("uPointLight.constant", 1.0f);
@@ -89,7 +89,7 @@ void SandboxLayer::loadScene() {
     light->add<ShadowMap>(20.f);
     light->setPosition(glm::vec3(0, 8, 8));
     light->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
-    light->ambient = glm::vec3(1.0f);
+    light->ambient = glm::vec3(0.5f);
     light->diffuse = glm::vec3(1.0f);
     light->specular = glm::vec3(1.0f);
 
@@ -157,6 +157,8 @@ void SandboxLayer::onEventPoll(const Event& event) {
                 float r = random.rnd(0.5, 1.0);
                 float g = random.rnd(0.5, 1.0);
                 float b = random.rnd(0.5, 1.0);
+                textures->loadFromValue(0.5f * glm::vec3(r, g, b),
+                                        Material::TEXTURE_AMBIENT);
                 textures->loadFromValue(glm::vec3(r, g, b),
                                         Material::TEXTURE_DIFFUSE);
                 textures->loadFromValue(glm::vec3(0.5f),
@@ -172,6 +174,8 @@ void SandboxLayer::onEventPoll(const Event& event) {
                 float r = random.rnd(0.5, 1.0);
                 float g = random.rnd(0.5, 1.0);
                 float b = random.rnd(0.5, 1.0);
+                textures->loadFromValue(0.5f * glm::vec3(r, g, b),
+                                        Material::TEXTURE_AMBIENT);
                 textures->loadFromValue(glm::vec3(r, g, b),
                                         Material::TEXTURE_DIFFUSE);
                 textures->loadFromValue(glm::vec3(0.5f),
