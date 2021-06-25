@@ -25,6 +25,13 @@ class Renderer {
 
     static void endShadowCast();
 
+    static void beginGBuffer(const Camera &camera,
+                             const FrameBuffer *framebuffer,
+                             uint32_t texPosition, uint32_t texNormal,
+                             uint32_t texAlebdoSpec);
+
+    static void endGBuffer();
+
     static void submit(const Shader &shader, const VertexArray &vertexArray,
                        GLenum type, bool indexed,
                        const glm::mat4 &transform = glm::mat4(1.0),
@@ -34,12 +41,20 @@ class Renderer {
 
    private:
     static void prepareTextures(const Shader &shader, const Material *material);
-    enum class RenderState { RENDER_NONE, RENDER_SCENE, RENDER_SHADOW };
+    enum class RenderState {
+        RENDER_NONE,
+        RENDER_SCENE,
+        RENDER_SHADOW,
+        RENDER_GBUFFER
+    };
 
     struct SceneData {
         Ref<UniformBuffer> cameraUBO;
         Ref<UniformBuffer> lightUBO;
         uint32_t shadowMap = 0;
+        uint32_t gBufferPosition;
+        uint32_t gBufferNormal;
+        uint32_t gBufferAlbedoSpec;
     };
 
     struct CameraData {

@@ -12,7 +12,7 @@ void ShadowMap::computeLightSpaceMatrix(const Camera& camera) {
     const glm::mat3 &rotaionInv = glm::transpose(rotation);
     const glm::mat3 &transform = rotaionInv * glm::mat3(camera.getTransform());
     const float nearZ = camera.getNearZ();
-    const float farZ = camera.getFarZ();
+    const float farZ = camera.getFarZ() / 2.f;
     const float fov = camera.getFOV() / 2.f;
     const float aspect = camera.getAspect();
     const float nearHeight = nearZ * std::tan(glm::radians(fov));

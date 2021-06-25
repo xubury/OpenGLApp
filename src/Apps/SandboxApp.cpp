@@ -3,6 +3,7 @@
 #include "Layers/ShadowLayer.hpp"
 #include "Layers/SkyboxLayer.hpp"
 #include "Layers/ControllerLayer.hpp"
+#include "Layers/GBufferLayer.hpp"
 #include "Physics/PhysicsWorld.hpp"
 #include "Component/BoundingBox.hpp"
 
@@ -11,6 +12,7 @@ namespace te {
 SandboxApp::SandboxApp(Settings settings) : Application(settings) {
     pushLayer(createRef<ControllerLayer>());
     pushLayer(createRef<ShadowLayer>());
+    pushLayer(createRef<GBufferLayer>(settings.width, settings.height));
     pushLayer(createRef<SandboxLayer>(settings.width, settings.height));
     pushLayer(createRef<SkyboxLayer>());
     m_scene->systems.add<BoundingBoxSystem>();

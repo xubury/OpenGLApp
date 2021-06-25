@@ -22,15 +22,16 @@ static void bindTexture(bool multisampled, uint32_t id) {
 }
 
 static void attachColorTexture(uint32_t id, int samples, GLenum internalFormat,
-                               GLenum format, const TextureParameter& params,
-                               uint32_t width, uint32_t height, int index) {
+                               GLenum format, GLenum type,
+                               const TextureParameter& params, uint32_t width,
+                               uint32_t height, int index) {
     bool multisampled = samples > 1;
     if (multisampled) {
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples,
                                 internalFormat, width, height, GL_TRUE);
     } else {
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format,
-                     GL_UNSIGNED_BYTE, nullptr);
+                     type, nullptr);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filtering);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filtering);
@@ -143,26 +144,26 @@ void FrameBuffer::invalidate() {
                 case FramebufferTextureFormat::RED_INTEGER:
                     attachColorTexture(
                         m_colorAttachments[i], m_specification.samples, GL_R32I,
-                        GL_RED_INTEGER, params, m_specification.width,
-                        m_specification.height, i);
+                        GL_RED_INTEGER, GL_UNSIGNED_BYTE, params,
+                        m_specification.width, m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGB:
-                    attachColorTexture(m_colorAttachments[i],
-                                       m_specification.samples, GL_RGB, GL_RGB,
-                                       params, m_specification.width,
-                                       m_specification.height, i);
+                    attachColorTexture(
+                        m_colorAttachments[i], m_specification.samples, GL_RGB,
+                        GL_RGB, GL_UNSIGNED_BYTE, params, m_specification.width,
+                        m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGBA8:
-                    attachColorTexture(m_colorAttachments[i],
-                                       m_specification.samples, GL_RGBA8,
-                                       GL_RGBA, params, m_specification.width,
-                                       m_specification.height, i);
+                    attachColorTexture(
+                        m_colorAttachments[i], m_specification.samples,
+                        GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, params,
+                        m_specification.width, m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGBA16F:
-                    attachColorTexture(m_colorAttachments[i],
-                                       m_specification.samples, GL_RGBA16F,
-                                       GL_RGBA, params, m_specification.width,
-                                       m_specification.height, i);
+                    attachColorTexture(
+                        m_colorAttachments[i], m_specification.samples,
+                        GL_RGBA16F, GL_RGBA, GL_FLOAT, params,
+                        m_specification.width, m_specification.height, i);
                     break;
                 default:
                     TE_CORE_ASSERT(false,

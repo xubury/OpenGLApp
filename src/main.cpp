@@ -10,7 +10,7 @@ int main(int, char **) {
     settings.title = "OpenGL";
     settings.samples = 4;
     settings.editor = true;
-    settings.frameRateLimit = 120;
+    settings.frameRateLimit = 0;
 
     te::SandboxApp app(settings);
     app.run(30);

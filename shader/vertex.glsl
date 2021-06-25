@@ -37,29 +37,30 @@ layout (std140) uniform Light
 
 
 void main() {
-    vec4 totalPosition = vec4(0.f);
+    vec3 totalPosition = vec3(0.f);
     bool hasBoneAnim = false;
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++) {
         if(aBoneIds[i] == -1)
             continue;
         if(aBoneIds[i] >= MAX_BONES) {
-            totalPosition = vec4(aPos,1.0f);
+            totalPosition = aPos;
             break;
         }
         vec4 localPosition = uBoneTransform[aBoneIds[i]] * vec4(aPos, 1.0f);
-        totalPosition += localPosition * aWeights[i];
+        totalPosition += localPosition.xyz * aWeights[i];
         vec3 localNormal = mat3(uBoneTransform[aBoneIds[i]]) * aNormal;
         hasBoneAnim = true;
     }
 
     if (hasBoneAnim) {
-        gl_Position = uProjectionView * uModel * totalPosition;
+        fragPos = (uModel * vec4(totalPosition, 1.0f)).xyz;
     } else {
-        gl_Position = uProjectionView * uModel * vec4(aPos, 1.0f);
+        fragPos = (uModel * vec4(aPos, 1.0f)).xyz;
     }
 
-    fragPos = vec3(uModel * totalPosition);
     texCoord = aTexCoord;
     normal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
-    fragPosLightSpace = uLightSpaceMatrix * vec4(fragPos, 1.0);
+    fragPosLightSpace = uLightSpaceMatrix * vec4(fragPos, 1.0f);
+
+    gl_Position = uProjectionView * vec4(fragPos, 1.0f);
 }
