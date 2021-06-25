@@ -18,7 +18,6 @@ struct Material {
 
     sampler2D specular0;
     sampler2D specular1;
-    float shininess;
 };
 
 
@@ -65,10 +64,10 @@ float shadowCalculation(vec4 fragPosLightSpace)
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
-    projCoords = projCoords * 0.5 + 0.5;
+    projCoords = projCoords * 0.5f + 0.5f;
 
 
-    if (projCoords.z > 1.0)
+    if (projCoords.z > 1.0f)
         return 0.0;
 
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
@@ -76,16 +75,16 @@ float shadowCalculation(vec4 fragPosLightSpace)
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     // check whether current frag pos is in shadow
-    float bias = 0.005;
-    float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
+    float bias = 0.005f;
+    float shadow = 0.0f;
+    vec2 texelSize = 1.0f / textureSize(uShadowMap, 0);
     for(int x = -1; x <= 1; ++x) {
         for(int y = -1; y <= 1; ++y) {
             float pcfDepth = texture(uShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+            shadow += currentDepth - bias > pcfDepth ? 1.0f : 0.0f;
         }
     }
-    shadow /= 9.0;
+    shadow /= 9.0f;
 
     return shadow;
 }
@@ -97,18 +96,18 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec3 viewDir) 
     vec3 ambient = light.ambient * texture(uMaterial.ambient0, texCoord).rgb;
 
     // diffuse
-    float diff = max(dot(normal, -lightDir), 0.0);
+    float diff = max(dot(-lightDir, normal), 0.0f);
     vec3 diffuse = light.diffuse * diff
                    * texture(uMaterial.diffuse0, texCoord).rgb;
 
     // specular
     // blinn-phong
     vec3 halfwayDir = normalize(viewDir - lightDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), uMaterial.shininess);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0f), 64.0f);
     vec3 specular = light.specular * spec
                     * texture(uMaterial.specular0, texCoord).rgb;
     float shadow = shadowCalculation(fragPosLightSpace);
-    return ambient + (1.0 - shadow) * (diffuse + specular);
+    return ambient + (1.0f - shadow) * (diffuse + specular);
 }
 
 vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewDir) {
@@ -118,14 +117,14 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
     vec3 ambient = light.ambient * texture(uMaterial.ambient0, texCoord).rgb;
 
     // diffuse
-    float diff = max(dot(normal, -lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff
+    float diff = max(dot(-lightDir, normal), 0.0f);
+    vec3 diffuse = light.diffuse
                    * texture(uMaterial.diffuse0, texCoord).rgb;
 
     // specular
     // blinn-phong
     vec3 halfwayDir = normalize(viewDir - lightDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), uMaterial.shininess);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0f);
     vec3 specular = light.specular * spec
                     * texture(uMaterial.specular0, texCoord).rgb;
 
@@ -139,7 +138,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewD
     //spotlight
     float theta = dot(lightDir, normalize(light.direction));
     float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
     diffuse *= intensity;
     specular *= intensity;
 

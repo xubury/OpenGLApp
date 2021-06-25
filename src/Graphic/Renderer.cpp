@@ -152,7 +152,6 @@ void Renderer::prepareTextures(const Shader &shader, const Material *material) {
     uint32_t specular = 0;
 
     if (s_state != RenderState::RENDER_SHADOW && material != nullptr) {
-        shader.setFloat("uMaterial.shininess", 64);
         for (const auto &[texture, type] : material->getList()) {
             std::string name;
             if (type == Material::TEXTURE_AMBIENT) {
