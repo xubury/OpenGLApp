@@ -41,6 +41,11 @@ class Player : public EntityBase {
 
     Ref<Animator> m_animator;
     Ref<Animation> m_animation;
+
+    Time m_timePerMove;
+    Clock m_moveClock;
+
+    glm::vec3 m_moveDir;
 };
 
 }  // namespace te

@@ -7,7 +7,7 @@
 namespace te {
 
 Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
-    : EntityBase(manager, id) {
+    : EntityBase(manager, id), m_moveDir(getFront()) {
     setName("Player");
     float width = 1;
     float height = 1;
@@ -19,7 +19,7 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
         createRef<Animation>("resources/models/treeman/treeman.dae", *m_model);
     m_animator = createRef<Animator>(m_animation.get());
 
-    add<Rigidbody>(100, true);
+    add<Rigidbody>(10, true);
     add<HullCollider>();
     MakeCubeCollider(*component<HullCollider>().get(), width, height, length,
                      glm::vec3(0, 0.5f, 0));
@@ -43,9 +43,20 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
                      [this](const Event &) { move(Action::MOVE_LEFT); });
     controller->bind(Action::MOVE_RIGHT,
                      [this](const Event &) { move(Action::MOVE_RIGHT); });
+
+    m_timePerMove = seconds(0.1f);
 }
 
-void Player::update(const Time &deltaTime) { m_animator->update(deltaTime); }
+void Player::update(const Time &deltaTime) {
+    float acos = std::acos(glm::dot(getFront(), m_moveDir));
+    glm::vec3 c = glm::cross(getFront(), m_moveDir);
+    if (c.y < 0) {
+        rotateLocal(-acos * deltaTime.count() * 2, glm::vec3(0, 1.0, 0));
+    } else {
+        rotateLocal(acos * deltaTime.count() * 2, glm::vec3(0, 1.0, 0));
+    }
+    m_animator->update(deltaTime);
+}
 
 void Player::draw(const Shader &shader) const {
     shader.bind();
@@ -58,6 +69,10 @@ void Player::draw(const Shader &shader) const {
 }
 
 void Player::move(Action movement) {
+    if (m_moveClock.getElapsedTime() < m_timePerMove) {
+        return;
+    }
+    m_moveClock.restart();
     Rigidbody *rigidbody =
         dynamic_cast<Rigidbody *>(component<CollisionObject>().get());
 
@@ -69,32 +84,22 @@ void Player::move(Action movement) {
     left = glm::normalize(-left);
 
     float amplifier = 20.f;
-    glm::vec3 moveDir;
     if (movement == Action::MOVE_JUMP) {
         rigidbody->addForce(
-            glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * 12.0f,
+            glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * amplifier * 10.f,
             glm::vec3(0));
-        moveDir = front;
     } else if (movement == Action::MOVE_FORWARD) {
         rigidbody->addImpulse(front * amplifier);
-        moveDir = front;
+        m_moveDir = front;
     } else if (movement == Action::MOVE_BACKWARD) {
         rigidbody->addImpulse(-front * amplifier);
-        moveDir = -front;
+        m_moveDir = -front;
     } else if (movement == Action::MOVE_LEFT) {
         rigidbody->addImpulse(left * amplifier);
-        moveDir = left;
+        m_moveDir = left;
     } else if (movement == Action::MOVE_RIGHT) {
         rigidbody->addImpulse(-left * amplifier);
-        moveDir = -left;
-    }
-
-    float acos = std::acos(glm::dot(getFront(), moveDir));
-    glm::vec3 c = glm::cross(getFront(), moveDir);
-    if (c.y < 0) {
-        rotateLocal(-0.1f * acos, glm::vec3(0, 1.0, 0));
-    } else {
-        rotateLocal(0.1f * acos, glm::vec3(0, 1.0, 0));
+        m_moveDir = -left;
     }
 }
 
