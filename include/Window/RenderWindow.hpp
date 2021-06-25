@@ -43,7 +43,7 @@ class RenderWindow {
 
     std::queue<Event> m_events;
 
-    Time m_framerateLimit;
+    Time m_secondPerFrame;
     Clock m_clock;
     float m_frameRate;
 

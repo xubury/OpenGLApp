@@ -52,11 +52,11 @@ RenderWindow::~RenderWindow() { close(); }
 
 void RenderWindow::display() {
     glfwSwapBuffers(glfwGetCurrentContext());
-    if (m_framerateLimit != Time::Zero) {
-        std::this_thread::sleep_for(m_framerateLimit -
+    if (m_secondPerFrame != Time::Zero) {
+        std::this_thread::sleep_for(m_secondPerFrame -
                                     m_clock.getElapsedTime());
     }
-    m_frameRate = 1.f / m_clock.getElapsedTime().as<Seconds>().count();
+    m_frameRate = 1.f / m_clock.getElapsedTime().count();
     m_clock.restart();
 }
 
@@ -74,9 +74,9 @@ void RenderWindow::close() { glfwTerminate(); }
 
 void RenderWindow::setFramerateLimit(uint32_t fps) {
     if (fps != 0)
-        m_framerateLimit = seconds(1.0 / fps);
+        m_secondPerFrame = seconds(1.0f / fps);
     else
-        m_framerateLimit = Time::Zero;
+        m_secondPerFrame = Time::Zero;
 }
 
 void RenderWindow::pollEvents() { glfwPollEvents(); }
