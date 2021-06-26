@@ -5,7 +5,7 @@
 #include "Core/Math.hpp"
 #include "Graphic/Primitive.hpp"
 #include "Component/BoundingBox.hpp"
-#include "Entity/Light.hpp"
+#include "Component/Light.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Graphic/Renderer.hpp"
 #include <iostream>
@@ -48,6 +48,19 @@ static void renderLightProperty(LightBase& light) {
     ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
 }
 
+static void renderPointLightProperty(PointLight& light) {
+    ImGui::Separator();
+    ImGui::Text("Point Light");
+    ImGui::InputFloat3("Ambient", &light.ambient[0], "%.3f");
+    ImGui::InputFloat3("Diffuse", &light.diffuse[0], "%.3f");
+    ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
+    ImGui::SliderFloat("Constant", &light.constant, 0.f, 1.0f);
+    ImGui::SliderFloat("Linear", &light.linear, 0.f, 1.0f);
+    ImGui::SliderFloat("Quadratic", &light.quadratic, 0.0002f, 1.8f);
+    ImGui::SliderFloat("cutOff", &light.cutOff, 0.7f, 1.0f);
+    ImGui::SliderFloat("outerCutOff", &light.outerCutOff, 0.7f, 1.0f);
+}
+
 static void renderRigidbodyProperty(Rigidbody& body) {
     ImGui::Separator();
     ImGui::Text("Rigidbody");
@@ -55,7 +68,7 @@ static void renderRigidbodyProperty(Rigidbody& body) {
     bool kinematic = body.isKinematic();
     ImGui::Checkbox("Kinematic", &kinematic);
     body.setKinematic(kinematic);
-    
+
     float mass = body.getMass();
     float restitution = body.getRestitution();
     float staticFriction = body.getStaticFriction();
@@ -436,11 +449,13 @@ void EditorLayer::onImGuiRender() {
             ImGui::Text("Name: %s", entity->getName().c_str());
             renderTransformProperty(*entity);
             if (entity->has<Rigidbody>()) {
-                renderRigidbodyProperty(*entity->component<Rigidbody>().get());
+                renderRigidbodyProperty(*entity->component<Rigidbody>());
             }
-            LightBase* light = dynamic_cast<LightBase*>(entity);
-            if (light) {
-                renderLightProperty(*light);
+            if (entity->has<DirectionalLight>()) {
+                renderLightProperty(*entity->component<DirectionalLight>());
+            }
+            if (entity->has<PointLight>()) {
+                renderPointLightProperty(*entity->component<PointLight>());
             }
             ImGui::Separator();
             ImGui::TreePop();

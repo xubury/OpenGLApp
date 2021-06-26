@@ -31,13 +31,13 @@ set(Layers_Src
 
 set(Component_Src
     src/Component/BoundingBox.cpp
-    src/Component/ShadowMap.cpp)
+    src/Component/ShadowMap.cpp
+    src/Component/Light.cpp)
 
 set(Entity_Src
     src/Entity/EntityBase.cpp
     src/Entity/ModelEntity.cpp
     src/Entity/Cube.cpp
-    src/Entity/Light.cpp
     src/Entity/Sphere.cpp
     src/Entity/Terrain.cpp
     src/Entity/Player.cpp

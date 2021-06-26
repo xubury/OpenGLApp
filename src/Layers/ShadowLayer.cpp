@@ -1,7 +1,6 @@
 #include "Layers/ShadowLayer.hpp"
 #include "Apps/Application.hpp"
 #include "Graphic/Renderer.hpp"
-#include "Entity/Light.hpp"
 #include "Component/ShadowMap.hpp"
 
 namespace te {

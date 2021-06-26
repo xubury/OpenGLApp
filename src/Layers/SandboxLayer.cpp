@@ -1,7 +1,7 @@
 #include "Layers/SandboxLayer.hpp"
 #include "Apps/Application.hpp"
 #include "Component/BoundingBox.hpp"
-#include "Entity/Light.hpp"
+#include "Component/Light.hpp"
 #include "Entity/ModelEntity.hpp"
 #include "Entity/Cube.hpp"
 #include "Entity/Sphere.hpp"
@@ -76,18 +76,6 @@ void SandboxLayer::loadShaders() {
     fileToString("shader/light.glsl", deferredFragment);
     m_shader = createScope<Shader>();
     m_shader->compile(deferredVertex, deferredFragment.c_str());
-    m_shader->bind();
-    m_shader->setVec3("uPointLight.position", glm::vec3(0.f, 4.0f, 0.f));
-    m_shader->setVec3("uPointLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
-    m_shader->setVec3("uPointLight.ambient", glm::vec3(1.0f));
-    m_shader->setVec3("uPointLight.diffuse", glm::vec3(1.0f));
-    m_shader->setVec3("uPointLight.specular", glm::vec3(1.0f));
-    m_shader->setFloat("uPointLight.constant", 1.0f);
-    m_shader->setFloat("uPointLight.linear", 0.09f);
-    m_shader->setFloat("uPointLight.quadratic", 0.032f);
-    m_shader->setFloat("uPointLight.cutOff", glm::cos(glm::radians(12.5f)));
-    m_shader->setFloat("uPointLight.outerCutOff",
-                       glm::cos(glm::radians(67.5f)));
 
     float quadVertices[] = {
         -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
@@ -104,15 +92,29 @@ void SandboxLayer::loadShaders() {
 void SandboxLayer::loadScene() {
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
-    uint32_t lightSource = scene->entities.create<Light>();
-    auto light = dynamic_cast<Light*>(scene->entities.get(lightSource));
+    uint32_t lightSource = scene->entities.create<EntityBase>();
+    auto light = scene->entities.get(lightSource);
     light->setName("Directional Light");
     light->add<ShadowMap>(20.f);
     light->setPosition(glm::vec3(0, 8, 8));
     light->setEulerAngle(glm::vec3(glm::radians(45.f), glm::radians(180.f), 0));
-    light->ambient = glm::vec3(0.5f);
-    light->diffuse = glm::vec3(1.0f);
-    light->specular = glm::vec3(1.0f);
+
+    light->add<DirectionalLight>();
+    light->component<DirectionalLight>()->ambient = glm::vec3(0.5f);
+    light->component<DirectionalLight>()->diffuse = glm::vec3(1.0f);
+    light->component<DirectionalLight>()->specular = glm::vec3(1.0f);
+
+    uint32_t pointLightId = scene->entities.create<EntityBase>();
+    auto pointLight = scene->entities.get(pointLightId);
+    pointLight->setName("Point Light");
+    pointLight->setPosition(glm::vec3(0, 8, 8));
+    pointLight->setEulerAngle(
+        glm::vec3(glm::radians(90.f), glm::radians(180.f), 0));
+
+    pointLight->add<PointLight>();
+    pointLight->component<PointLight>()->ambient = glm::vec3(0.5f);
+    pointLight->component<PointLight>()->diffuse = glm::vec3(1.0f);
+    pointLight->component<PointLight>()->specular = glm::vec3(1.0f);
 
     // addModel("resources/models/backpack/backpack.obj",
     //          glm::vec3(0.f, 6.f, 6.f));
@@ -156,6 +158,28 @@ void SandboxLayer::onUpdate(const Time& deltaTime) {
 }
 
 void SandboxLayer::onRender() {
+    Ref<SceneManager<EntityBase>> scene =
+        Application::instance().getActiveScene();
+    PointLight::Handle pointLight;
+    auto view = scene->entities.getByComponents(pointLight);
+    auto end = view.end();
+    uint32_t index = 0;
+    m_shader->bind();
+    for (auto cur = view.begin(); cur != end; ++cur) {
+        std::string prefix = "uPointLights[" + std::to_string(index) + "].";
+        m_shader->setVec3(prefix + "position", cur->getPosition());
+        m_shader->setVec3(prefix + "direction", cur->getFront());
+        m_shader->setVec3(prefix + "ambient", pointLight->ambient);
+        m_shader->setVec3(prefix + "diffuse", pointLight->diffuse);
+        m_shader->setVec3(prefix + "specular", pointLight->specular);
+        m_shader->setFloat(prefix + "constant", pointLight->constant);
+        m_shader->setFloat(prefix + "linear", pointLight->linear);
+        m_shader->setFloat(prefix + "quadratic", pointLight->quadratic);
+        m_shader->setFloat(prefix + "cutOff", pointLight->cutOff);
+        m_shader->setFloat(prefix + "outerCutOff", pointLight->outerCutOff);
+        ++index;
+    }
+    m_shader->setInt("uLightCount", index);
     glDepthMask(GL_FALSE);
     Renderer::beginScene(*Application::instance().getMainCamera(),
                          Application::instance().getFramebuffer());

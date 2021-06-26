@@ -2,6 +2,7 @@
 #include "Apps/Application.hpp"
 #include "Graphic/OpenGL.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include "Component/Light.hpp"
 
 namespace te {
 
@@ -52,7 +53,7 @@ void Renderer::beginShadowCast(ShadowMap *shadowMap,
     glCullFace(GL_FRONT);
     glViewport(0, 0, framebuffer->getSpecification().width,
                framebuffer->getSpecification().height);
-    LightBase *light = dynamic_cast<LightBase *>(shadowMap->owner());
+    auto light = shadowMap->owner();
     s_sceneData.lightUBO->setData(
         glm::value_ptr(shadowMap->getLightSpaceMatrix()),
         offsetof(ShadowData, lightSpaceMatrix),
@@ -62,17 +63,17 @@ void Renderer::beginShadowCast(ShadowMap *shadowMap,
                                   offsetof(ShadowData, direction),
                                   sizeof(ShadowData::direction));
 
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->ambient),
-                                  offsetof(ShadowData, ambient),
-                                  sizeof(ShadowData::ambient));
+    s_sceneData.lightUBO->setData(
+        glm::value_ptr(light->component<DirectionalLight>()->ambient),
+        offsetof(ShadowData, ambient), sizeof(ShadowData::ambient));
 
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->specular),
-                                  offsetof(ShadowData, specular),
-                                  sizeof(ShadowData::specular));
+    s_sceneData.lightUBO->setData(
+        glm::value_ptr(light->component<DirectionalLight>()->specular),
+        offsetof(ShadowData, specular), sizeof(ShadowData::specular));
 
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->diffuse),
-                                  offsetof(ShadowData, diffuse),
-                                  sizeof(ShadowData::diffuse));
+    s_sceneData.lightUBO->setData(
+        glm::value_ptr(light->component<DirectionalLight>()->diffuse),
+        offsetof(ShadowData, diffuse), sizeof(ShadowData::diffuse));
     s_sceneData.shadowMap = framebuffer->getDepthAttachmentId();
 }
 

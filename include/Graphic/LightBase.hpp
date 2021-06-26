@@ -8,7 +8,7 @@
 
 namespace te {
 
-class TE_API LightBase : virtual public Transformable {
+class TE_API LightBase {
    public:
     enum Type { DIRECTIONAL_LIGHT, POINT_LIGHT };
 

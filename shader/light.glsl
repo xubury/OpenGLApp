@@ -39,7 +39,9 @@ struct PointLight {
     float quadratic;
 };
 
-uniform PointLight uPointLight;
+const int MAX_LIGHT = 32;
+uniform PointLight uPointLights[MAX_LIGHT];
+uniform int uLightCount;
 
 uniform sampler2D uGBufferPosition;
 uniform sampler2D uGBufferNormal;
@@ -145,7 +147,10 @@ void main() {
     vec3 lighting = vec3(0.f);
     lighting = calculateDirLight(uDirLight, fragPos, normal,
                                   viewDir, ambient, diffuse, specular);
-    lighting += calculatePointLight(uPointLight, fragPos, normal,
-                                   viewDir, ambient, diffuse, specular);
+
+    for (int i = 0; i < uLightCount; ++i) {
+        lighting += calculatePointLight(uPointLights[i], fragPos, normal,
+                                        viewDir, ambient, diffuse, specular);
+    }
     fragColor = vec4(lighting, 1.0f);
 }
