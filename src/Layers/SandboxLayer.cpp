@@ -14,6 +14,7 @@
 #include "Entity/Terrain.hpp"
 #include "Entity/Player.hpp"
 #include "Entity/PlayerCamera.hpp"
+#include "Utils/File.hpp"
 
 #include <iostream>
 
@@ -60,9 +61,44 @@ void SandboxLayer::addModel(const std::string& path, const glm::vec3& pos) {
 }
 
 void SandboxLayer::loadShaders() {
-    m_shaders.add("Main");
-    m_shaders.get("Main")->loadFromFile("shader/vertex.glsl",
-                                        "shader/fragment.glsl");
+    const char* deferredVertex = R"(
+    #version 330 core
+    layout (location = 0) in vec3 aPos;
+    layout (location = 1) in vec2 aTexCoord;
+    
+    out vec2 texCoord;
+    
+    void main() {
+        texCoord = aTexCoord;
+        gl_Position = vec4(aPos, 1.0);
+    })";
+    std::string deferredFragment;
+    fileToString("shader/light.glsl", deferredFragment);
+    m_shader = createScope<Shader>();
+    m_shader->compile(deferredVertex, deferredFragment.c_str());
+    m_shader->bind();
+    m_shader->setVec3("uPointLight.position", glm::vec3(0.f, 4.0f, 0.f));
+    m_shader->setVec3("uPointLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
+    m_shader->setVec3("uPointLight.ambient", glm::vec3(1.0f));
+    m_shader->setVec3("uPointLight.diffuse", glm::vec3(1.0f));
+    m_shader->setVec3("uPointLight.specular", glm::vec3(1.0f));
+    m_shader->setFloat("uPointLight.constant", 1.0f);
+    m_shader->setFloat("uPointLight.linear", 0.09f);
+    m_shader->setFloat("uPointLight.quadratic", 0.032f);
+    m_shader->setFloat("uPointLight.cutOff", glm::cos(glm::radians(12.5f)));
+    m_shader->setFloat("uPointLight.outerCutOff",
+                       glm::cos(glm::radians(67.5f)));
+
+    float quadVertices[] = {
+        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f,  -1.0f, 0.0f, 1.0f, 0.0f,
+    };
+    Ref<VertexBuffer> buffer =
+        createRef<VertexBuffer>(quadVertices, sizeof(quadVertices));
+    buffer->setLayout({{ShaderDataType::Float3, "aPos"},
+                       {ShaderDataType::Float2, "aTexCoord"}});
+    m_quad = createScope<VertexArray>();
+    m_quad->addVertexBuffer(buffer);
 }
 
 void SandboxLayer::loadScene() {
@@ -120,15 +156,13 @@ void SandboxLayer::onUpdate(const Time& deltaTime) {
 }
 
 void SandboxLayer::onRender() {
-    Ref<SceneManager<EntityBase>> scene =
-        Application::instance().getActiveScene();
+    glDepthMask(GL_FALSE);
     Renderer::beginScene(*Application::instance().getMainCamera(),
                          Application::instance().getFramebuffer());
-    auto entityIterEnd = scene->entities.end();
-    for (auto cur = scene->entities.begin(); cur != entityIterEnd; ++cur) {
-        scene->entities.get(*cur)->draw(*m_shaders.get("Main"));
-    }
+    Renderer::clear();
+    Renderer::submit(*m_shader, *m_quad, GL_TRIANGLE_STRIP, false);
     Renderer::endScene();
+    glDepthMask(GL_TRUE);
 }
 
 void SandboxLayer::onEventPoll(const Event& event) {

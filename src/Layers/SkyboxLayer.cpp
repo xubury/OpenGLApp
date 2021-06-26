@@ -81,6 +81,6 @@ void SkyboxLayer::onRender() {
     Renderer::submit(*m_shader, *m_vertexArray, GL_TRIANGLES, false);
     Renderer::endScene();
     cam->setPosition(pos);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
 }
 }  // namespace te

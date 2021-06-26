@@ -95,11 +95,11 @@ EditorLayer::EditorLayer(int samples)
     FrameBufferSpecification spec;
     spec.width = m_width;
     spec.height = m_height;
-    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB}};
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB8}};
     m_frameBuffer = createRef<FrameBuffer>(spec);
 
     spec.samples = samples;
-    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB},
+    spec.attachmentsSpecs = {{FramebufferTextureFormat::RGB8},
                              {FramebufferTextureFormat::DEPTH24STENCIL8}};
     m_multiSampleFramebuffer = createRef<FrameBuffer>(spec, true);
     m_camera->setPosition(glm::vec3(-8.f, 15.f, 21.f));

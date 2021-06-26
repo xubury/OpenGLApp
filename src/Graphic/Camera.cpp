@@ -10,7 +10,7 @@ Camera::Camera(int x, int y, int width, int height)
       m_viewportY(y),
       m_viewportWidth(width),
       m_viewportHeight(height),
-      m_nearZ(0.1),
+      m_nearZ(0.1f),
       m_farZ(100.f),
       m_zoom(45.f) {}
 

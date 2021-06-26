@@ -147,11 +147,17 @@ void FrameBuffer::invalidate() {
                         GL_RED_INTEGER, GL_UNSIGNED_BYTE, params,
                         m_specification.width, m_specification.height, i);
                     break;
-                case FramebufferTextureFormat::RGB:
+                case FramebufferTextureFormat::RGB8:
                     attachColorTexture(
-                        m_colorAttachments[i], m_specification.samples, GL_RGB,
+                        m_colorAttachments[i], m_specification.samples, GL_RGB8,
                         GL_RGB, GL_UNSIGNED_BYTE, params, m_specification.width,
                         m_specification.height, i);
+                    break;
+                case FramebufferTextureFormat::RGB16F:
+                    attachColorTexture(
+                        m_colorAttachments[i], m_specification.samples,
+                        GL_RGB16F, GL_RGB, GL_FLOAT, params,
+                        m_specification.width, m_specification.height, i);
                     break;
                 case FramebufferTextureFormat::RGBA8:
                     attachColorTexture(
@@ -250,5 +256,16 @@ FrameBufferSpecification FrameBuffer::getSpecification() const {
 }
 
 uint32_t FrameBuffer::getId() const { return m_bufferId; }
+
+void FrameBuffer::copy(const FrameBuffer& dst, GLenum attachment,
+                       ClearBufferMask mask, GLenum filtering) const {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, getId());
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dst.getId());
+    glReadBuffer(attachment);
+    glDrawBuffer(attachment);
+    glBlitFramebuffer(0, 0, getSpecification().width, getSpecification().height,
+                      0, 0, dst.getSpecification().width,
+                      dst.getSpecification().height, mask, filtering);
+}
 
 }  // namespace te

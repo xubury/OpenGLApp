@@ -82,7 +82,9 @@ void Renderer::endShadowCast() {
 }
 
 void Renderer::beginGBuffer(const Camera &camera,
-                            const FrameBuffer *framebuffer) {
+                            const FrameBuffer *framebuffer, uint32_t gPosition,
+                            uint32_t gNormal, uint32_t gAlbedoSpec,
+                            uint32_t gAmbient) {
     TE_CORE_ASSERT(
         s_state == RenderState::RENDER_NONE,
         "Render state conflict detected! Please check beginGBuffer() and "
@@ -104,6 +106,10 @@ void Renderer::beginGBuffer(const Camera &camera,
     s_sceneData.cameraUBO->setData(glm::value_ptr(camera.getPosition()),
                                    offsetof(CameraData, viewPos),
                                    sizeof(CameraData::viewPos));
+    s_sceneData.gPosition = gPosition;
+    s_sceneData.gNormal = gNormal;
+    s_sceneData.gAlbedoSpec = gAlbedoSpec;
+    s_sceneData.gAmbient = gAmbient;
 }
 
 void Renderer::endGBuffer() {
@@ -171,6 +177,19 @@ void Renderer::prepareTextures(const Shader &shader, const Material *material) {
         glActiveTexture(GL_TEXTURE0 + textureIndex);
         glBindTexture(GL_TEXTURE_2D, s_sceneData.shadowMap);
         shader.setInt("uShadowMap", textureIndex++);
+
+        glActiveTexture(GL_TEXTURE0 + textureIndex);
+        glBindTexture(GL_TEXTURE_2D, s_sceneData.gPosition);
+        shader.setInt("uGBufferPosition", textureIndex++);
+        glActiveTexture(GL_TEXTURE0 + textureIndex);
+        glBindTexture(GL_TEXTURE_2D, s_sceneData.gNormal);
+        shader.setInt("uGBufferNormal", textureIndex++);
+        glActiveTexture(GL_TEXTURE0 + textureIndex);
+        glBindTexture(GL_TEXTURE_2D, s_sceneData.gAlbedoSpec);
+        shader.setInt("uGBufferAlbedoSpec", textureIndex++);
+        glActiveTexture(GL_TEXTURE0 + textureIndex);
+        glBindTexture(GL_TEXTURE_2D, s_sceneData.gAmbient);
+        shader.setInt("uGBufferAmbient", textureIndex++);
     }
 }
 

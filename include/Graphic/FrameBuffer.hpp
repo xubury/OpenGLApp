@@ -15,7 +15,8 @@ enum class FramebufferTextureFormat {
 
     // Color
     RED_INTEGER,
-    RGB,
+    RGB8,
+    RGB16F,
     RGBA8,
     RGBA16F,
 
@@ -30,8 +31,9 @@ enum class FramebufferTextureFormat {
 struct FramebufferTextureSpecification {
     FramebufferTextureSpecification()
         : textureFormat(FramebufferTextureFormat::NONE) {}
-    FramebufferTextureSpecification(FramebufferTextureFormat format,
-                                    TextureParameter params = TextureParameter())
+    FramebufferTextureSpecification(
+        FramebufferTextureFormat format,
+        TextureParameter params = TextureParameter())
         : textureFormat(format), textureParams(params) {}
 
     FramebufferTextureFormat textureFormat;
@@ -84,6 +86,9 @@ class TE_API FrameBuffer {
     uint32_t getId() const;
 
     void destroy();
+
+    void copy(const FrameBuffer &dst, GLenum attachment, ClearBufferMask mask,
+              GLenum filtering) const;
 
    private:
     FrameBufferSpecification m_specification;

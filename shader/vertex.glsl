@@ -8,7 +8,6 @@ layout (location = 4) in vec4 aWeights;
 out vec3 fragPos;
 out vec2 texCoord;
 out vec3 normal;
-out vec4 fragPosLightSpace;
 
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
@@ -21,20 +20,6 @@ layout (std140) uniform Camera
 };
 
 uniform mat4 uModel;
-
-struct DirLight {
-    vec3 direction;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-};
-
-layout (std140) uniform Light
-{
-    mat4 uLightSpaceMatrix;
-    DirLight uDirLight;
-};
-
 
 void main() {
     vec3 totalPosition = vec3(0.f);
@@ -60,7 +45,6 @@ void main() {
 
     texCoord = aTexCoord;
     normal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
-    fragPosLightSpace = uLightSpaceMatrix * vec4(fragPos, 1.0f);
 
     gl_Position = uProjectionView * vec4(fragPos, 1.0f);
 }

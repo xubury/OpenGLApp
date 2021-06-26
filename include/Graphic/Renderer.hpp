@@ -26,7 +26,9 @@ class Renderer {
     static void endShadowCast();
 
     static void beginGBuffer(const Camera &camera,
-                             const FrameBuffer *framebuffer);
+                             const FrameBuffer *framebuffer, uint32_t gPosition,
+                             uint32_t gNormal, uint32_t gAlbedoSpec,
+                             uint32_t gAmbient);
 
     static void endGBuffer();
 
@@ -50,6 +52,10 @@ class Renderer {
         Ref<UniformBuffer> cameraUBO;
         Ref<UniformBuffer> lightUBO;
         uint32_t shadowMap = 0;
+        uint32_t gPosition = 0;
+        uint32_t gNormal = 0;
+        uint32_t gAlbedoSpec = 0;
+        uint32_t gAmbient = 0;
     };
 
     struct CameraData {

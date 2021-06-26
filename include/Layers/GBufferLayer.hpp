@@ -20,11 +20,9 @@ class GBufferLayer : public Layer {
 
     void onEventPoll(const Event &event) override;
    private:
+    Scope<FrameBuffer> m_multiSampledGBuffer;
     Scope<FrameBuffer> m_gBuffer;
     Scope<Shader> m_gBufferShader;
-    Scope<Shader> m_deferredShader;
-
-    Scope<VertexArray> m_quad;
 };
 
 }  // namespace te
