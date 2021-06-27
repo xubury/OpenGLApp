@@ -4,6 +4,7 @@
 
 namespace te {
 
+#ifdef DEBUG_BUILD
 static void OpenGLMessageCallback(GLenum, GLenum, unsigned, GLenum severity,
                                   int, const char* message, const void*) {
     switch (severity) {
@@ -23,6 +24,7 @@ static void OpenGLMessageCallback(GLenum, GLenum, unsigned, GLenum severity,
             TE_CORE_ASSERT(false, "Unknown severity level!");
     }
 }
+#endif
 
 void GLContext::init(glbinding::GetProcAddress procAddr) {
     glbinding::initialize(procAddr);
