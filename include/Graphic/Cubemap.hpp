@@ -4,10 +4,11 @@
 #include <vector>
 #include <string>
 #include "Graphic/TextureParameter.hpp"
+#include "Core/Export.hpp"
 
 namespace te {
 
-class Cubemap {
+class TE_API Cubemap {
    public:
     Cubemap();
 

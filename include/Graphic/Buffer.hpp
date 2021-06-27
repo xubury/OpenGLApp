@@ -3,13 +3,14 @@
 
 #include <string>
 #include <stdint.h>
+#include "Core/Export.hpp"
 #include "Core/Assert.hpp"
 #include "Graphic/Layout.hpp"
 #include "Graphic/OpenGL.hpp"
 
 namespace te {
 
-class VertexBuffer {
+class TE_API VertexBuffer {
    public:
     VertexBuffer(const void *vertices, std::size_t size);
 
@@ -37,7 +38,7 @@ class VertexBuffer {
     std::size_t m_size;
 };
 
-class IndexBuffer {
+class TE_API IndexBuffer {
    public:
     IndexBuffer(const uint32_t *indices, std::size_t count);
 
@@ -60,7 +61,7 @@ class IndexBuffer {
     std::size_t m_count;
 };
 
-class UniformBuffer {
+class TE_API UniformBuffer {
    public:
     UniformBuffer(std::size_t size);
 

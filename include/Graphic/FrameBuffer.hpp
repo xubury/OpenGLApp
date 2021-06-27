@@ -28,7 +28,7 @@ enum class FramebufferTextureFormat {
     DEPTH24STENCIL8
 };
 
-struct FramebufferTextureSpecification {
+struct TE_API FramebufferTextureSpecification {
     FramebufferTextureSpecification()
         : textureFormat(FramebufferTextureFormat::NONE) {}
     FramebufferTextureSpecification(
@@ -40,7 +40,7 @@ struct FramebufferTextureSpecification {
     TextureParameter textureParams;
 };
 
-struct FramebufferAttachmentSpecification {
+struct TE_API FramebufferAttachmentSpecification {
     std::vector<FramebufferTextureSpecification> specifications;
 
     FramebufferAttachmentSpecification() = default;
@@ -49,7 +49,7 @@ struct FramebufferAttachmentSpecification {
         : specifications(specs) {}
 };
 
-struct FrameBufferSpecification {
+struct TE_API FrameBufferSpecification {
     uint32_t width;
     uint32_t height;
     uint32_t samples;

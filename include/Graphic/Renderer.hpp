@@ -10,7 +10,7 @@
 
 namespace te {
 
-class Renderer {
+class TE_API Renderer {
    public:
     static void init();
 

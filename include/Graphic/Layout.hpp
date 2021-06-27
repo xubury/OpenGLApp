@@ -22,7 +22,7 @@ enum class ShaderDataType {
     Bool
 };
 
-class BufferElement {
+class TE_API BufferElement {
    public:
     BufferElement() = default;
 
@@ -49,7 +49,7 @@ class BufferElement {
     bool m_normalized;
 };
 
-class BufferLayout {
+class TE_API BufferLayout {
    public:
     BufferLayout() = default;
 

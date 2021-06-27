@@ -1,11 +1,12 @@
 #ifndef TEXTURE_PARAMETER_HPP
 #define TEXTURE_PARAMETER_HPP
 
+#include "Core/Export.hpp"
 #include "Graphic/OpenGL.hpp"
 
 namespace te {
 
-struct TextureParameter {
+struct TE_API TextureParameter {
     // GL_REPEAT GL_MIRRORED_REPEAT GL_CLAMP_TO_EDGE GL_CLAMP_TO_EDGE
     GLenum warp;
     // GL_LINEAR GL_NEAREST

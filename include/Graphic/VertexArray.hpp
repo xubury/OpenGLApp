@@ -6,7 +6,7 @@
 
 namespace te {
 
-class VertexArray {
+class TE_API VertexArray {
    public:
     VertexArray();
 

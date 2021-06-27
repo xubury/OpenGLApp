@@ -1,6 +1,7 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
+#include "Core/Export.hpp"
 #include "Graphic/OpenGL.hpp"
 #include <stdint.h>
 #include <string>
@@ -8,14 +9,14 @@
 
 namespace te {
 
-struct ImageHeader {
+struct TE_API ImageHeader {
     int width;
     int height;
     int channels;
     uint8_t bitDepth;
 };
 
-class Image {
+class TE_API Image {
    public:
     Image() = default;
 
