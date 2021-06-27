@@ -43,17 +43,17 @@ static void renderTransformProperty(Transformable& trans) {
 static void renderLightProperty(LightBase& light) {
     ImGui::Separator();
     ImGui::Text("Light");
-    ImGui::SliderFloat3("Ambient", &light.ambient[0], 0.0f, 1.0f);
-    ImGui::SliderFloat3("Diffuse", &light.diffuse[0], 0.0f, 1.0f);
-    ImGui::SliderFloat3("Specular", &light.specular[0], 0.0f, 1.0f);
+    ImGui::ColorEdit3("Ambient", &light.ambient[0]);
+    ImGui::ColorEdit3("Diffuse", &light.diffuse[0]);
+    ImGui::ColorEdit3("Specular", &light.specular[0]);
 }
 
 static void renderPointLightProperty(PointLight& light) {
     ImGui::Separator();
     ImGui::Text("Point Light");
-    ImGui::SliderFloat3("Ambient", &light.ambient[0], 0.0f, 1.0f);
-    ImGui::SliderFloat3("Diffuse", &light.diffuse[0], 0.0f, 1.0f);
-    ImGui::SliderFloat3("Specular", &light.specular[0], 0.0f, 1.0f);
+    ImGui::ColorEdit3("Ambient", &light.ambient[0]);
+    ImGui::ColorEdit3("Diffuse", &light.diffuse[0]);
+    ImGui::ColorEdit3("Specular", &light.specular[0]);
     ImGui::SliderFloat("Constant", &light.constant, 0.f, 1.0f);
     ImGui::SliderFloat("Linear", &light.linear, 0.f, 1.0f);
     ImGui::SliderFloat("Quadratic", &light.quadratic, 0.0002f, 1.8f);
