@@ -19,6 +19,7 @@ class GBufferLayer : public Layer {
     void onImGuiRender() override;
 
     void onEventPoll(const Event &event) override;
+
    private:
     Scope<FrameBuffer> m_multiSampledGBuffer;
     Scope<FrameBuffer> m_gBuffer;

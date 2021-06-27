@@ -32,6 +32,10 @@ class TE_API Primitive {
     void drawSphere(const glm::vec3 &center, const glm::vec4 &color,
                     float radius, int sectorCount = 10, int stackCount = 10);
 
+    void drawSphereFilled(const glm::vec3 &center, const glm::vec4 &color,
+                          float radius, int sectorCount = 10,
+                          int stackCount = 10);
+
     void drawQuad(const std::vector<glm::vec3> &corners, const glm::vec4 &color,
                   float thickness);
 

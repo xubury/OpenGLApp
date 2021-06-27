@@ -135,6 +135,14 @@ void Primitive::drawCircleFilled(const glm::vec3 &center,
 
 void Primitive::drawSphere(const glm::vec3 &center, const glm::vec4 &color,
                            float radius, int sectorCount, int stackCount) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    drawSphereFilled(center, color, radius, sectorCount, stackCount);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Primitive::drawSphereFilled(const glm::vec3 &center,
+                                 const glm::vec4 &color, float radius,
+                                 int sectorCount, int stackCount) {
     std::vector<PrimitiveVertex> vertices;
     float x, y, z;
     float xy;

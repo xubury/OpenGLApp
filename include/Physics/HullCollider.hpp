@@ -17,6 +17,8 @@ class HullCollider : public Collider {
 
     glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
 
+    const std::vector<glm::vec3>& getVertices() const { return m_vertices; }
+
    private:
     std::vector<glm::vec3> m_vertices;
 };

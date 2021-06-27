@@ -7,6 +7,9 @@
 #include "Component/BoundingBox.hpp"
 #include "Component/Light.hpp"
 #include "Physics/Rigidbody.hpp"
+#include "Physics/Collider.hpp"
+#include "Physics/SphereCollider.hpp"
+#include "Physics/HullCollider.hpp"
 #include "Graphic/Renderer.hpp"
 #include <iostream>
 
@@ -200,6 +203,25 @@ void EditorLayer::renderBoundingBox() {
     }
 }
 
+void EditorLayer::renderCollider() {
+    if (getActiveEntityPtr()->has<Collider>()) {
+        const auto obj = getActiveEntityPtr()->component<Collider>();
+        switch (obj->getType()) {
+            case Collider::SPHERE_COLLIDER: {
+                const SphereCollider* sphere =
+                    dynamic_cast<const SphereCollider*>(obj.get());
+                Primitive::instance().drawSphere(sphere->getCenterInWorld(),
+                                                 glm::vec4(0, 1, 0, 0.5),
+                                                 sphere->getRadius(), 20, 20);
+            } break;
+            case Collider::HULL_COLLIDER: {
+            } break;
+            default:
+                break;
+        }
+    }
+}
+
 void EditorLayer::renderModelAxes() {
     for (int i = 0; i < 3; ++i) {
         const auto& axis = m_modelAxes.axes[i];
@@ -236,11 +258,11 @@ void EditorLayer::renderModelAxes() {
     }
     float worldRadius = m_axisSizeFactor * axisOriginRadius;
     if (m_moveType == TRANSLATE_XYZ) {
-        Primitive::instance().drawSphere(m_modelAxes.origin, selectionColor,
-                                         worldRadius);
+        Primitive::instance().drawSphereFilled(m_modelAxes.origin,
+                                               selectionColor, worldRadius);
     } else {
-        Primitive::instance().drawSphere(m_modelAxes.origin, glm::vec4(1.0f),
-                                         worldRadius);
+        Primitive::instance().drawSphereFilled(m_modelAxes.origin,
+                                               glm::vec4(1.0f), worldRadius);
     }
 }
 
@@ -526,11 +548,13 @@ void EditorLayer::onImGuiRender() {
 
     renderFps();
 
-    renderBoundingBox();
-
     renderModelAxes();
 
     renderCameraAxes(0.2);
+
+    renderBoundingBox();
+
+    renderCollider();
 
     Renderer::endScene();
 }

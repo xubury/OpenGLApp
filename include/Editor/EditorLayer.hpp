@@ -50,6 +50,8 @@ class EditorLayer : public Layer {
 
     void renderBoundingBox();
 
+    void renderCollider();
+
     void renderModelAxes();
 
     void renderCameraAxes(float clipLen);
