@@ -24,7 +24,7 @@ class Player : public EntityBase {
    public:
     Player(EntityManager<EntityBase> *manager, uint32_t id);
 
-    void update(const Time &deltaTime);
+    void update(const Time &deltaTime) override;
 
     void draw(const Shader &shader) const override;
 

@@ -22,7 +22,7 @@ class PlayerCamera : public EntityBase,
     PlayerCamera(EntityManager<EntityBase> *manager, uint32_t id, int x, int y,
                  int width, int height, Player *player);
 
-    void update(const Time &deltaTime);
+    void update(const Time &deltaTime) override;
 
     void rotate(float pitch, float yaw);
 

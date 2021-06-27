@@ -54,6 +54,8 @@ class Entity {
     template <typename... COMPONENT>
     std::tuple<ComponentHandle<COMPONENT, ENTITY>...> components();
 
+    virtual void update(const Time &deltaTime);
+
    private:
     uint32_t m_id;
     EntityManager<ENTITY> *m_manager;
@@ -119,7 +121,8 @@ inline ComponentHandle<COMPONENT, ENTITY> Entity<ENTITY>::component() {
 
 template <typename ENTITY>
 template <typename COMPONENT>
-inline const ComponentHandle<COMPONENT, ENTITY> Entity<ENTITY>::component() const {
+inline const ComponentHandle<COMPONENT, ENTITY> Entity<ENTITY>::component()
+    const {
     return m_manager->template getComponent<COMPONENT>(m_id);
 }
 
@@ -129,6 +132,9 @@ inline std::tuple<ComponentHandle<COMPONENT, ENTITY>...>
 Entity<ENTITY>::components() {
     return m_manager->template getComponents<COMPONENT...>(m_id);
 }
+
+template <typename ENTITY>
+void Entity<ENTITY>::update(const Time &) {}
 
 }  // namespace te
 

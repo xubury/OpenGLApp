@@ -25,7 +25,7 @@ SceneManager<ENTITY>::SceneManager() : systems(entities) {}
 template <typename ENTITY>
 void SceneManager<ENTITY>::update(const Time &deltaTime) {
     systems.updateAll(deltaTime);
-    entities.update();
+    entities.update(deltaTime);
 }
 
 }  // namespace te

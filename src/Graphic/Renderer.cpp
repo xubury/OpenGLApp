@@ -1,5 +1,4 @@
 #include "Graphic/Renderer.hpp"
-#include "Apps/Application.hpp"
 #include "Graphic/OpenGL.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include "Component/Light.hpp"

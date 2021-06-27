@@ -152,10 +152,7 @@ void SandboxLayer::onAttach() {
     loadScene();
 }
 
-void SandboxLayer::onUpdate(const Time& deltaTime) {
-    m_camera->update(deltaTime);
-    m_player->update(deltaTime);
-}
+void SandboxLayer::onUpdate(const Time&) {}
 
 void SandboxLayer::onRender() {
     Ref<SceneManager<EntityBase>> scene =

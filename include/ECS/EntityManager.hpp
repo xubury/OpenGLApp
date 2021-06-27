@@ -47,7 +47,7 @@ class EntityManager {
 
     void remove(std::size_t id);
 
-    void update();
+    void update(const Time &deltaTime);
 
     void reset();
 
@@ -239,7 +239,7 @@ inline void EntityManager<ENTITY>::remove(std::size_t id) {
 }
 
 template <class ENTITY>
-inline void EntityManager<ENTITY>::update() {
+inline void EntityManager<ENTITY>::update(const Time &deltaTime) {
     if (!m_entitiesToDestroy.empty()) {
         Container::iterator iter = m_entitiesToDestroy.begin();
         Container::iterator end = m_entitiesToDestroy.end();
@@ -252,6 +252,9 @@ inline void EntityManager<ENTITY>::update() {
             }
         }
         m_entitiesToDestroy.clear();
+    }
+    for (auto &entity : m_entitiesAllocated) {
+        entity->update(deltaTime);
     }
 }
 
@@ -398,7 +401,8 @@ inline COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) {
 
 template <class ENTITY>
 template <typename COMPONENT>
-inline const COMPONENT *EntityManager<ENTITY>::getComponentPtr(uint32_t id) const {
+inline const COMPONENT *EntityManager<ENTITY>::getComponentPtr(
+    uint32_t id) const {
     uint32_t family = COMPONENT::family();
     TE_CORE_ASSERT(id < m_componentsEntities[family].get()->size(),
                    "Component id invalid!");
