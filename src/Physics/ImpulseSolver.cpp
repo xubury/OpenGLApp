@@ -56,14 +56,13 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
                 mu = glm::length(glm::vec2(dynamicFrictionA, dynamicFrictionB));
                 friction = -j * tangent * mu;
             }
+            glm::vec3 impulse = j * manifold.normal + friction;
             if (bodyB && bodyB->isKinematic()) {
-                bodyB->addForce((j * manifold.normal + friction) * massB /
-                                    deltaTime.count() / 2.f,
+                bodyB->addForce(impulse * massB / deltaTime.count() / 2.f,
                                 manifold.points[i].position);
             }
             if (bodyA && bodyA->isKinematic()) {
-                bodyA->addForce(-(j * manifold.normal + friction) * massA /
-                                    deltaTime.count() / 2.f,
+                bodyA->addForce(-impulse * massA / deltaTime.count() / 2.f,
                                 manifold.points[i].position);
             }
         }
