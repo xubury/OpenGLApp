@@ -2,6 +2,7 @@
 #include "Apps/Application.hpp"
 #include "Component/BoundingBox.hpp"
 #include "Component/Light.hpp"
+#include "Component/ShadowMap.hpp"
 #include "Entity/ModelEntity.hpp"
 #include "Entity/Cube.hpp"
 #include "Entity/Sphere.hpp"

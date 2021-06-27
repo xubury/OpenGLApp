@@ -1,7 +1,6 @@
 #include "Graphic/Renderer.hpp"
 #include "Graphic/OpenGL.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#include "Component/Light.hpp"
 
 namespace te {
 
@@ -40,7 +39,9 @@ void Renderer::beginScene(const Camera &camera,
 
 void Renderer::endScene() { s_state = RenderState::RENDER_NONE; }
 
-void Renderer::beginShadowCast(ShadowMap *shadowMap,
+void Renderer::beginShadowCast(const glm::mat4 &lightSpaceMatrix,
+                               const glm::vec3 &lightDir,
+                               const LightBase &light,
                                const Ref<FrameBuffer> &framebuffer) {
     TE_CORE_ASSERT(
         s_state == RenderState::RENDER_NONE,
@@ -52,27 +53,25 @@ void Renderer::beginShadowCast(ShadowMap *shadowMap,
     glCullFace(GL_FRONT);
     glViewport(0, 0, framebuffer->getSpecification().width,
                framebuffer->getSpecification().height);
-    auto light = shadowMap->owner();
-    s_sceneData.lightUBO->setData(
-        glm::value_ptr(shadowMap->getLightSpaceMatrix()),
-        offsetof(ShadowData, lightSpaceMatrix),
-        sizeof(ShadowData::lightSpaceMatrix));
+    s_sceneData.lightUBO->setData(glm::value_ptr(lightSpaceMatrix),
+                                  offsetof(ShadowData, lightSpaceMatrix),
+                                  sizeof(ShadowData::lightSpaceMatrix));
 
-    s_sceneData.lightUBO->setData(glm::value_ptr(light->getFront()),
+    s_sceneData.lightUBO->setData(glm::value_ptr(lightDir),
                                   offsetof(ShadowData, direction),
                                   sizeof(ShadowData::direction));
 
-    s_sceneData.lightUBO->setData(
-        glm::value_ptr(light->component<DirectionalLight>()->ambient),
-        offsetof(ShadowData, ambient), sizeof(ShadowData::ambient));
+    s_sceneData.lightUBO->setData(glm::value_ptr(light.ambient),
+                                  offsetof(ShadowData, ambient),
+                                  sizeof(ShadowData::ambient));
 
-    s_sceneData.lightUBO->setData(
-        glm::value_ptr(light->component<DirectionalLight>()->specular),
-        offsetof(ShadowData, specular), sizeof(ShadowData::specular));
+    s_sceneData.lightUBO->setData(glm::value_ptr(light.specular),
+                                  offsetof(ShadowData, specular),
+                                  sizeof(ShadowData::specular));
 
-    s_sceneData.lightUBO->setData(
-        glm::value_ptr(light->component<DirectionalLight>()->diffuse),
-        offsetof(ShadowData, diffuse), sizeof(ShadowData::diffuse));
+    s_sceneData.lightUBO->setData(glm::value_ptr(light.diffuse),
+                                  offsetof(ShadowData, diffuse),
+                                  sizeof(ShadowData::diffuse));
     s_sceneData.shadowMap = framebuffer->getDepthAttachmentId();
 }
 

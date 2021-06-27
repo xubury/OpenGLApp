@@ -2,6 +2,7 @@
 #include "Apps/Application.hpp"
 #include "Graphic/Renderer.hpp"
 #include "Component/ShadowMap.hpp"
+#include "Component/Light.hpp"
 
 namespace te {
 
@@ -93,10 +94,12 @@ void ShadowLayer::onRender() {
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
     ShadowMap::Handle shadowMap;
-    scene->entities.getByComponents(shadowMap).begin();
+    auto owner = scene->entities.getByComponents(shadowMap).begin();
     if (!shadowMap.isValid()) return;
 
-    Renderer::beginShadowCast(shadowMap.get(), m_framebuffer);
+    Renderer::beginShadowCast(
+        shadowMap.get()->getLightSpaceMatrix(), owner->getFront(),
+        *owner->component<DirectionalLight>(), m_framebuffer);
     std::size_t size = scene->entities.size();
     for (std::size_t i = 0; i < size; ++i) {
         scene->entities.get(i)->draw(*m_shader);
