@@ -43,17 +43,17 @@ static void renderTransformProperty(Transformable& trans) {
 static void renderLightProperty(LightBase& light) {
     ImGui::Separator();
     ImGui::Text("Light");
-    ImGui::InputFloat3("Ambient", &light.ambient[0], "%.3f");
-    ImGui::InputFloat3("Diffuse", &light.diffuse[0], "%.3f");
-    ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
+    ImGui::SliderFloat3("Ambient", &light.ambient[0], 0.0f, 1.0f);
+    ImGui::SliderFloat3("Diffuse", &light.diffuse[0], 0.0f, 1.0f);
+    ImGui::SliderFloat3("Specular", &light.specular[0], 0.0f, 1.0f);
 }
 
 static void renderPointLightProperty(PointLight& light) {
     ImGui::Separator();
     ImGui::Text("Point Light");
-    ImGui::InputFloat3("Ambient", &light.ambient[0], "%.3f");
-    ImGui::InputFloat3("Diffuse", &light.diffuse[0], "%.3f");
-    ImGui::InputFloat3("Specular", &light.specular[0], "%.3f");
+    ImGui::SliderFloat3("Ambient", &light.ambient[0], 0.0f, 1.0f);
+    ImGui::SliderFloat3("Diffuse", &light.diffuse[0], 0.0f, 1.0f);
+    ImGui::SliderFloat3("Specular", &light.specular[0], 0.0f, 1.0f);
     ImGui::SliderFloat("Constant", &light.constant, 0.f, 1.0f);
     ImGui::SliderFloat("Linear", &light.linear, 0.f, 1.0f);
     ImGui::SliderFloat("Quadratic", &light.quadratic, 0.0002f, 1.8f);
@@ -74,7 +74,7 @@ static void renderRigidbodyProperty(Rigidbody& body) {
     float staticFriction = body.getStaticFriction();
     float dynamicFriction = body.getDynamicFriction();
     ImGui::InputFloat("Mass", &mass);
-    ImGui::InputFloat("Restitution", &restitution);
+    ImGui::SliderFloat("Restitution", &restitution, 0.0f, 1.0f);
     ImGui::InputFloat("Static friction", &staticFriction);
     ImGui::InputFloat("Dynamic friction", &dynamicFriction);
     body.setMass(mass);

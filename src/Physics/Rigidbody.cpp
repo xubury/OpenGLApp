@@ -10,8 +10,8 @@ Rigidbody::Rigidbody(float mass, bool isKinematic)
       m_angularVelocity(0.f),
       m_mass(mass),
       m_restitution(0.5f),
-      m_staticFriction(0.5f),
-      m_dynamicFriction(0.5f),
+      m_staticFriction(0.2f),
+      m_dynamicFriction(0.2f),
       m_isKinematic(isKinematic) {
     TE_ASSERT(mass > 0, "Rigidbody mass can't be less than zero!")
 }
