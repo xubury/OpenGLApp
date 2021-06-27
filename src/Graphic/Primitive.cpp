@@ -28,7 +28,6 @@ Primitive::Primitive() {
     void main() {
         gl_Position = uProjectionView * vec4(aPos, 1.0f);
         color = aColor;
-        ;
     }
     )";
     const char *primitiveFragment = R"(
@@ -50,6 +49,9 @@ Primitive::Primitive() {
 
     m_indexBuffer = createRef<IndexBuffer>(nullptr, 0);
     m_vertexArray->setIndexBuffer(m_indexBuffer);
+
+    m_shader->setUniformBlock(
+        "Camera", Renderer::s_sceneData.cameraUBO->getBindingPoint());
 }
 
 Primitive &Primitive::instance() {

@@ -41,6 +41,8 @@ class TE_API Renderer {
                       float a = 1.f);
 
    private:
+    friend class Primitive;
+
     static void prepareTextures(const Shader &shader, const Material *material);
     enum class RenderState {
         RENDER_NONE,
