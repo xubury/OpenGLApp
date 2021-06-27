@@ -61,7 +61,7 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
                                 manifold.points[i].position);
             }
             if (bodyA && bodyA->isKinematic()) {
-                bodyA->addForce((-j * manifold.normal + friction) * massA /
+                bodyA->addForce(-(j * manifold.normal + friction) * massA /
                                     deltaTime.count(),
                                 manifold.points[i].position);
             }

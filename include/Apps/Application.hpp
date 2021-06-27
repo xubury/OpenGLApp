@@ -24,8 +24,6 @@ class Application {
    public:
     static Application &instance() { return *s_instance; }
 
-    Application(const Settings &settings);
-
     ~Application() = default;
 
     Application(const Application &) = delete;
@@ -70,6 +68,8 @@ class Application {
 
    protected:
     Ref<SceneManager<EntityBase>> m_scene;
+
+    Application(const Settings &settings);
 
    private:
     static Application *s_instance;

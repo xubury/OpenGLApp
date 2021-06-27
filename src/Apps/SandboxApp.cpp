@@ -12,7 +12,8 @@ namespace te {
 SandboxApp::SandboxApp(Settings settings) : Application(settings) {
     pushLayer(createRef<ControllerLayer>());
     pushLayer(createRef<ShadowLayer>());
-    pushLayer(createRef<GBufferLayer>(settings.width, settings.height));
+    pushLayer(createRef<GBufferLayer>(settings.width, settings.height,
+                                      settings.samples));
     pushLayer(createRef<SandboxLayer>(settings.width, settings.height));
     pushLayer(createRef<SkyboxLayer>());
     m_scene->systems.add<BoundingBoxSystem>();

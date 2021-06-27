@@ -5,11 +5,12 @@
 
 namespace te {
 
-GBufferLayer::GBufferLayer(int width, int height) : Layer("GBuffer Layer") {
+GBufferLayer::GBufferLayer(int width, int height, int samples)
+    : Layer("GBuffer Layer") {
     FrameBufferSpecification spec;
     spec.width = width;
     spec.height = height;
-    spec.samples = 8;
+    spec.samples = samples;
     spec.attachmentsSpecs = {{FramebufferTextureFormat::RGBA16F},
                              {FramebufferTextureFormat::RGBA16F},
                              {FramebufferTextureFormat::RGBA16F},

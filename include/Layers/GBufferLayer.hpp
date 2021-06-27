@@ -10,7 +10,7 @@ namespace te {
 
 class GBufferLayer : public Layer {
    public:
-    GBufferLayer(int width, int height);
+    GBufferLayer(int width, int height, int samples);
 
     void onRender() override;
 

@@ -20,6 +20,7 @@ void PhysicsWorld::removeSolver(Ref<Solver> solver) {
     auto iter = std::find(m_solvers.begin(), m_solvers.end(), solver);
     if (iter == m_solvers.end()) {
         TE_CORE_WARN("Trying to remove a non-exixtent solver!");
+        return;
     }
     m_solvers.erase(iter);
 }
