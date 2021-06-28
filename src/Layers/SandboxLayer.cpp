@@ -14,7 +14,6 @@
 #include "Core/Math.hpp"
 #include "Entity/Terrain.hpp"
 #include "Entity/Player.hpp"
-#include "Entity/PlayerCamera.hpp"
 #include "Utils/File.hpp"
 
 #include <iostream>
@@ -136,13 +135,6 @@ void SandboxLayer::loadScene() {
 
     uint32_t playerId = scene->entities.create<Player>();
     scene->entities.get(playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
-    m_player = dynamic_cast<Player*>(scene->entities.get(playerId));
-
-    uint32_t cameraId = scene->entities.create<PlayerCamera>(
-        0, 0, m_viewWidth, m_viewHeight, m_player);
-    m_camera = dynamic_cast<PlayerCamera*>(scene->entities.get(cameraId));
-    m_player->setPlayerCamera(m_camera);
-    Application::instance().setSceneCamera(m_camera);
 }
 
 SandboxLayer::SandboxLayer(int width, int height)
@@ -227,12 +219,9 @@ void SandboxLayer::onEventPoll(const Event& event) {
             default:
                 break;
         }
-    } else if (event.type == Event::RESIZED) {
-        m_camera->setViewportSize(event.size.width, event.size.height);
     }
-    m_camera->processEvent(event);
 }
 
-void SandboxLayer::onEventProcess() { m_camera->processEvents(); }
+void SandboxLayer::onEventProcess() {}
 
 }  // namespace te

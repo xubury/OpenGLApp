@@ -29,11 +29,11 @@ class ActionTarget {
 
     void processEvents() const;
 
-    void bind(const T &key, const FuncType &callback);
-
     void bind(const Action &acton, const FuncType &callback);
 
     void bind(Action &&action, const FuncType &callback);
+
+    void bind(const T &key, const FuncType &callback);
 
     void unbind(const T &key);
 
@@ -47,8 +47,7 @@ class ActionTarget {
 };
 
 template <typename T>
-ActionTarget<T>::ActionTarget(const ActionMap<T> &map)
-    : m_actionMap(map) {}
+ActionTarget<T>::ActionTarget(const ActionMap<T> &map) : m_actionMap(map) {}
 
 template <typename T>
 bool ActionTarget<T>::processEvent(const Event &event) const {
@@ -122,7 +121,6 @@ void ActionTarget<T>::unbind(const T &key) {
         m_eventPoll.remove_if(removeFunc);
     }
 }
-
 
 }  // namespace te
 

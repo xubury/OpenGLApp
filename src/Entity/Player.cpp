@@ -3,11 +3,15 @@
 #include "Physics/Rigidbody.hpp"
 #include "Physics/HullCollider.hpp"
 #include "Component/Controller.hpp"
+#include "Component/PlayerCameraComp.hpp"
+#include "Apps/Application.hpp"
 
 namespace te {
 
+inline const float MOUSE_SENSITIVITY = 0.1f;
+
 Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
-    : EntityBase(manager, id), m_moveDir(getFront()) {
+    : EntityBase(manager, id), m_moveDir(getFront()), m_isFirstMouse(true) {
     setName("Player");
     float width = 1;
     float height = 1;
@@ -24,30 +28,58 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     MakeCubeCollider(*component<HullCollider>().get(), width, height, length,
                      glm::vec3(0, 0.5f, 0));
 
-    m_inputs.map(Action::MOVE_JUMP, Keyboard::SPACE);
-    m_inputs.map(Action::MOVE_FORWARD, Keyboard::W);
-    m_inputs.map(Action::MOVE_BACKWARD, Keyboard::S);
-    m_inputs.map(Action::MOVE_LEFT, Keyboard::A);
-    m_inputs.map(Action::MOVE_RIGHT, Keyboard::D);
+    add<PlayerCameraComp>(0, 0, Application::instance().getWindow().width(),
+                          Application::instance().getWindow().height());
+
+    m_inputs.map(PlayerAction::MOVE_JUMP, Keyboard::SPACE);
+    m_inputs.map(PlayerAction::MOVE_FORWARD, Keyboard::W);
+    m_inputs.map(PlayerAction::MOVE_BACKWARD, Keyboard::S);
+    m_inputs.map(PlayerAction::MOVE_LEFT, Keyboard::A);
+    m_inputs.map(PlayerAction::MOVE_RIGHT, Keyboard::D);
 
     add<Controller>(m_inputs);
     Controller::Handle controller = component<Controller>();
 
-    controller->bind(Action::MOVE_JUMP,
-                     [this](const Event &) { move(Action::MOVE_JUMP); });
-    controller->bind(Action::MOVE_FORWARD,
-                     [this](const Event &) { move(Action::MOVE_FORWARD); });
-    controller->bind(Action::MOVE_BACKWARD,
-                     [this](const Event &) { move(Action::MOVE_BACKWARD); });
-    controller->bind(Action::MOVE_LEFT,
-                     [this](const Event &) { move(Action::MOVE_LEFT); });
-    controller->bind(Action::MOVE_RIGHT,
-                     [this](const Event &) { move(Action::MOVE_RIGHT); });
+    controller->bind(PlayerAction::MOVE_JUMP,
+                     [this](const Event &) { move(PlayerAction::MOVE_JUMP); });
+    controller->bind(PlayerAction::MOVE_FORWARD, [this](const Event &) {
+        move(PlayerAction::MOVE_FORWARD);
+    });
+    controller->bind(PlayerAction::MOVE_BACKWARD, [this](const Event &) {
+        move(PlayerAction::MOVE_BACKWARD);
+    });
+    controller->bind(PlayerAction::MOVE_LEFT,
+                     [this](const Event &) { move(PlayerAction::MOVE_LEFT); });
+    controller->bind(PlayerAction::MOVE_RIGHT,
+                     [this](const Event &) { move(PlayerAction::MOVE_RIGHT); });
+    controller->bind(
+        Action(Event::EventType::MOUSE_MOVED), [this](const Event &event) {
+            glm::vec2 currentMousePos =
+                glm::vec2(event.mouseMove.x, event.mouseMove.y);
+            if (m_isFirstMouse) {
+                m_isFirstMouse = false;
+            } else {
+                glm::vec2 offset = currentMousePos - m_lastMousePos;
+                component<PlayerCameraComp>()->rotate(
+                    -offset.y * MOUSE_SENSITIVITY,
+                    -offset.x * MOUSE_SENSITIVITY);
+            }
+            m_lastMousePos = currentMousePos;
+        });
+
+    controller->bind(Action(Event::EventType::RESIZED),
+                     [this](const Event &event) {
+                         component<CameraComp>()->setViewportSize(
+                             event.size.width, event.size.height);
+                     });
 
     m_timePerMove = seconds(0.1f);
 }
 
 void Player::update(const Time &deltaTime) {
+    auto cam = component<PlayerCameraComp>();
+    cam->setPosition(getPosition() + cam->getFront() * cam->getDistance());
+
     float acos = std::acos(glm::dot(getFront(), m_moveDir));
     glm::vec3 c = glm::cross(getFront(), m_moveDir);
     if (c.y < 0) {
@@ -68,7 +100,7 @@ void Player::draw(const Shader &shader) const {
     m_model->draw(shader, getTransform());
 }
 
-void Player::move(Action movement) {
+void Player::move(PlayerAction movement) {
     if (m_moveClock.getElapsedTime() < m_timePerMove) {
         return;
     }
@@ -76,28 +108,28 @@ void Player::move(Action movement) {
     Rigidbody *rigidbody =
         dynamic_cast<Rigidbody *>(component<CollisionObject>().get());
 
-    glm::vec3 front = m_camera->getFront();
+    glm::vec3 front = component<CameraComp>()->getFront();
     front.y = 0.f;
     front = glm::normalize(-front);
-    glm::vec3 left = m_camera->getLeft();
+    glm::vec3 left = component<CameraComp>()->getLeft();
     left.y = 0.f;
     left = glm::normalize(-left);
 
     float amplifier = 20.f;
-    if (movement == Action::MOVE_JUMP) {
+    if (movement == PlayerAction::MOVE_JUMP) {
         rigidbody->addForce(
             glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * amplifier * 10.f,
             glm::vec3(0));
-    } else if (movement == Action::MOVE_FORWARD) {
+    } else if (movement == PlayerAction::MOVE_FORWARD) {
         rigidbody->addImpulse(front * amplifier);
         m_moveDir = front;
-    } else if (movement == Action::MOVE_BACKWARD) {
+    } else if (movement == PlayerAction::MOVE_BACKWARD) {
         rigidbody->addImpulse(-front * amplifier);
         m_moveDir = -front;
-    } else if (movement == Action::MOVE_LEFT) {
+    } else if (movement == PlayerAction::MOVE_LEFT) {
         rigidbody->addImpulse(left * amplifier);
         m_moveDir = left;
-    } else if (movement == Action::MOVE_RIGHT) {
+    } else if (movement == PlayerAction::MOVE_RIGHT) {
         rigidbody->addImpulse(-left * amplifier);
         m_moveDir = -left;
     }

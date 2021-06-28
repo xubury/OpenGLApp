@@ -32,7 +32,9 @@ set(Layers_Src
 set(Component_Src
     src/Component/BoundingBox.cpp
     src/Component/ShadowMap.cpp
-    src/Component/Light.cpp)
+    src/Component/Light.cpp
+    src/Component/PlayerCameraComp.cpp
+    src/Component/CameraComp.cpp)
 
 set(Entity_Src
     src/Entity/EntityBase.cpp
@@ -40,8 +42,7 @@ set(Entity_Src
     src/Entity/Cube.cpp
     src/Entity/Sphere.cpp
     src/Entity/Terrain.cpp
-    src/Entity/Player.cpp
-    src/Entity/PlayerCamera.cpp)
+    src/Entity/Player.cpp)
 
 set(Window_Src
     src/Window/RenderWindow.cpp

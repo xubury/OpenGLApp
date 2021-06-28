@@ -6,6 +6,7 @@
 #include "Graphic/Primitive.hpp"
 #include "Component/BoundingBox.hpp"
 #include "Component/Light.hpp"
+#include "Component/CameraComp.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Physics/Collider.hpp"
 #include "Physics/SphereCollider.hpp"
@@ -30,67 +31,88 @@ static const glm::vec4 selectionColor(1.f, 0.5f, 0.f, 0.7f);
 static const float axisTransparency = 0.8f;
 
 static void renderTransformProperty(Transformable& trans) {
-    ImGui::Separator();
-    ImGui::Text("Transform");
-    glm::vec3 eulerAngle = glm::degrees(trans.getEulerAngle());
-    if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f")) {
-        trans.setEulerAngle(glm::radians(eulerAngle));
-    }
+    if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+        glm::vec3 eulerAngle = glm::degrees(trans.getEulerAngle());
+        if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f")) {
+            trans.setEulerAngle(glm::radians(eulerAngle));
+        }
 
-    glm::vec3 pos = trans.getPosition();
-    if (ImGui::InputFloat3("Position", &pos[0], "%.3f")) {
-        trans.setPosition(pos);
+        glm::vec3 pos = trans.getPosition();
+        if (ImGui::InputFloat3("Position", &pos[0], "%.3f")) {
+            trans.setPosition(pos);
+        }
+        ImGui::TreePop();
     }
 }
 
 static void renderLightProperty(LightBase& light) {
-    ImGui::Separator();
-    ImGui::Text("Light");
-    ImGui::ColorEdit3("Ambient", &light.ambient[0]);
-    ImGui::ColorEdit3("Diffuse", &light.diffuse[0]);
-    ImGui::ColorEdit3("Specular", &light.specular[0]);
+    if (ImGui::TreeNodeEx("Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::ColorEdit3("Ambient", &light.ambient[0]);
+        ImGui::ColorEdit3("Diffuse", &light.diffuse[0]);
+        ImGui::ColorEdit3("Specular", &light.specular[0]);
+        ImGui::TreePop();
+    }
 }
 
 static void renderPointLightProperty(PointLight& light) {
-    ImGui::Separator();
-    ImGui::Text("Point Light");
-    ImGui::ColorEdit3("Ambient", &light.ambient[0]);
-    ImGui::ColorEdit3("Diffuse", &light.diffuse[0]);
-    ImGui::ColorEdit3("Specular", &light.specular[0]);
-    ImGui::SliderFloat("Constant", &light.constant, 0.f, 1.0f);
-    ImGui::SliderFloat("Linear", &light.linear, 0.f, 1.0f);
-    ImGui::SliderFloat("Quadratic", &light.quadratic, 0.0002f, 1.8f);
-    ImGui::SliderFloat("cutOff", &light.cutOff, 0.7f, 1.0f);
-    ImGui::SliderFloat("outerCutOff", &light.outerCutOff, 0.7f, 1.0f);
+    if (ImGui::TreeNodeEx("Point Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::ColorEdit3("Ambient", &light.ambient[0]);
+        ImGui::ColorEdit3("Diffuse", &light.diffuse[0]);
+        ImGui::ColorEdit3("Specular", &light.specular[0]);
+        ImGui::SliderFloat("Constant", &light.constant, 0.f, 1.0f);
+        ImGui::SliderFloat("Linear", &light.linear, 0.f, 1.0f);
+        ImGui::SliderFloat("Quadratic", &light.quadratic, 0.0002f, 1.8f);
+        ImGui::SliderFloat("cutOff", &light.cutOff, 0.7f, 1.0f);
+        ImGui::SliderFloat("outerCutOff", &light.outerCutOff, 0.7f, 1.0f);
+        ImGui::TreePop();
+    }
+}
+
+static void renderCameraProperty(CameraComp& cam) {
+    if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
+        bool primary = cam.isPrimary();
+        ImGui::Checkbox("Primary", &primary);
+        cam.setPrimary(primary);
+        glm::vec3 eulerAngle = glm::degrees(cam.getEulerAngle());
+        if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f")) {
+            cam.setEulerAngle(glm::radians(eulerAngle));
+        }
+
+        glm::vec3 pos = cam.getPosition();
+        if (ImGui::InputFloat3("Position", &pos[0], "%.3f")) {
+            cam.setPosition(pos);
+        }
+        ImGui::TreePop();
+    }
 }
 
 static void renderRigidbodyProperty(Rigidbody& body) {
-    ImGui::Separator();
-    ImGui::Text("Rigidbody");
+    if (ImGui::TreeNodeEx("Rigidbody", ImGuiTreeNodeFlags_DefaultOpen)) {
+        bool kinematic = body.isKinematic();
+        ImGui::Checkbox("Kinematic", &kinematic);
+        body.setKinematic(kinematic);
 
-    bool kinematic = body.isKinematic();
-    ImGui::Checkbox("Kinematic", &kinematic);
-    body.setKinematic(kinematic);
+        float mass = body.getMass();
+        float restitution = body.getRestitution();
+        float staticFriction = body.getStaticFriction();
+        float dynamicFriction = body.getDynamicFriction();
+        ImGui::InputFloat("Mass", &mass);
+        ImGui::SliderFloat("Restitution", &restitution, 0.0f, 1.0f);
+        ImGui::InputFloat("Static friction", &staticFriction);
+        ImGui::InputFloat("Dynamic friction", &dynamicFriction);
+        body.setMass(mass);
+        body.setRestitution(restitution);
+        body.setStaticFriction(staticFriction);
+        body.setDynamicFriction(dynamicFriction);
 
-    float mass = body.getMass();
-    float restitution = body.getRestitution();
-    float staticFriction = body.getStaticFriction();
-    float dynamicFriction = body.getDynamicFriction();
-    ImGui::InputFloat("Mass", &mass);
-    ImGui::SliderFloat("Restitution", &restitution, 0.0f, 1.0f);
-    ImGui::InputFloat("Static friction", &staticFriction);
-    ImGui::InputFloat("Dynamic friction", &dynamicFriction);
-    body.setMass(mass);
-    body.setRestitution(restitution);
-    body.setStaticFriction(staticFriction);
-    body.setDynamicFriction(dynamicFriction);
-
-    glm::vec3 velocity = body.getVelocity();
-    glm::vec3 angularVelocity = body.getAngularVelocity();
-    ImGui::InputFloat3("Velocity", &velocity[0]);
-    ImGui::InputFloat3("Angular velocity", &angularVelocity[0]);
-    body.setVelocity(velocity);
-    body.setAngularVelocity(angularVelocity);
+        glm::vec3 velocity = body.getVelocity();
+        glm::vec3 angularVelocity = body.getAngularVelocity();
+        ImGui::InputFloat3("Velocity", &velocity[0]);
+        ImGui::InputFloat3("Angular velocity", &angularVelocity[0]);
+        body.setVelocity(velocity);
+        body.setAngularVelocity(angularVelocity);
+        ImGui::TreePop();
+    }
 }
 
 static bool canActive(ImGuiMouseButton button) {
@@ -459,8 +481,9 @@ void EditorLayer::onImGuiRender() {
     {
         ImGui::SetWindowSize(ImVec2(300, 600));
         ImGui::SetWindowPos(ImVec2(0, 0));
-        if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::TextColored(ImVec4(1, 1, 1, 1), "Camera Settings");
+        if (ImGui::TreeNodeEx("Editor Camera",
+                              ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::TextColored(ImVec4(1, 1, 1, 1), "Editor Camera Settings");
             renderTransformProperty(*m_camera);
             ImGui::Separator();
             ImGui::TreePop();
@@ -478,6 +501,9 @@ void EditorLayer::onImGuiRender() {
             }
             if (entity->has<PointLight>()) {
                 renderPointLightProperty(*entity->component<PointLight>());
+            }
+            if (entity->has<CameraComp>()) {
+                renderCameraProperty(*entity->component<CameraComp>());
             }
             ImGui::Separator();
             ImGui::TreePop();

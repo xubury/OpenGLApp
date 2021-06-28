@@ -1,6 +1,7 @@
 #include "Apps/Application.hpp"
 #include "Graphic/Renderer.hpp"
 #include "Graphic/GLContext.hpp"
+#include "Component/CameraComp.hpp"
 
 namespace te {
 
@@ -9,7 +10,6 @@ Application *Application::s_instance = nullptr;
 Application::Application(const Settings &settings)
     : m_window(settings.width, settings.height, settings.title,
                settings.samples),
-      m_sceneCamera(nullptr),
       m_editorMode(settings.editor) {
     s_instance = this;
     m_window.setFramerateLimit(settings.frameRateLimit);
@@ -96,6 +96,23 @@ void Application::render() {
         m_imGuiLayer->end();
     }
     m_window.display();
+}
+
+Camera *Application::getMainCamera() {
+    if (m_editorMode) {
+        return m_editorCamera;
+    } else {
+        CameraComp::Handle cam;
+        auto view = m_scene->entities.getByComponents(cam);
+        auto end = view.end();
+        for (auto cur = view.begin(); cur != end; ++cur) {
+            if (cam->isPrimary()) {
+                return cam.get();
+            }
+        }
+    }
+    TE_WARN("No primary camera");
+    return m_editorCamera;
 }
 
 void Application::toggleEditor() {

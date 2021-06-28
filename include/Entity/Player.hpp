@@ -5,7 +5,6 @@
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Material.hpp"
 #include "Window/ActionMap.hpp"
-#include "Entity/PlayerCamera.hpp"
 #include "Model/Model.hpp"
 #include "Model/Animator.hpp"
 
@@ -13,12 +12,13 @@ namespace te {
 
 class Player : public EntityBase {
    public:
-    enum Action {
+    enum PlayerAction {
         MOVE_JUMP,
         MOVE_FORWARD,
         MOVE_BACKWARD,
         MOVE_LEFT,
-        MOVE_RIGHT
+        MOVE_RIGHT,
+        MOUSE_MOVE
     };
 
    public:
@@ -28,17 +28,11 @@ class Player : public EntityBase {
 
     void draw(const Shader &shader) const override;
 
-    void move(Action movement);
-
-    void setPlayerCamera(PlayerCamera *camera) { m_camera = camera; }
-
-    PlayerCamera *getPlayerCamera() { return m_camera; }
+    void move(PlayerAction movement);
 
    private:
     Ref<Model> m_model;
     ActionMap<int> m_inputs;
-    PlayerCamera *m_camera;
-
     Ref<Animator> m_animator;
     Ref<Animation> m_animation;
 
@@ -46,6 +40,9 @@ class Player : public EntityBase {
     Clock m_moveClock;
 
     glm::vec3 m_moveDir;
+
+    bool m_isFirstMouse;
+    glm::vec2 m_lastMousePos;
 };
 
 }  // namespace te

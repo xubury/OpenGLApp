@@ -9,7 +9,6 @@
 #include "Core/Time.hpp"
 #include "Core/Layer.hpp"
 #include "Graphic/Material.hpp"
-#include "Entity/PlayerCamera.hpp"
 #include "Graphic/VertexArray.hpp"
 
 namespace te {
@@ -47,8 +46,6 @@ class SandboxLayer : public Layer {
     uint32_t m_viewHeight;
     Scope<Shader> m_shader;
     Scope<VertexArray> m_quad;
-    PlayerCamera *m_camera;
-    Player *m_player;
 };
 
 }  // namespace te

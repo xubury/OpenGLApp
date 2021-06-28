@@ -42,17 +42,9 @@ class Application {
 
     RenderWindow &getWindow() { return m_window; }
 
-    void setSceneCamera(Camera *camera) { m_sceneCamera = camera; }
-
     void setEditorCamera(Camera *camera) { m_editorCamera = camera; }
 
-    Camera *getMainCamera() {
-        if (m_editorMode) {
-            return m_editorCamera;
-        } else {
-            return m_sceneCamera;
-        }
-    }
+    Camera *getMainCamera();
 
     void setFramebuffer(Ref<FrameBuffer> framebuffer) {
         m_framebuffer = framebuffer;
@@ -83,7 +75,6 @@ class Application {
     void render();
 
     RenderWindow m_window;
-    Camera *m_sceneCamera;
     Camera *m_editorCamera;
     Ref<FrameBuffer> m_framebuffer;
     Ref<EditorLayer> m_imGuiLayer;
