@@ -25,12 +25,20 @@ float TerrainCollider::height(float localX, float localZ) const {
     float f11 = m_vertices[(z0 + 1) * m_vertexCount + (x0 + 1)].y;
     float xCoord = x - x0;
     float zCoord = z - z0;
+
+    float u, v, w;
     if (xCoord <= 1 - zCoord) {
-        return baryCentric(glm::vec3(0, f00, 0), glm::vec3(1, f10, 0),
-                           glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
+        glm::vec2 a(0, 0);
+        glm::vec2 b(1, 0);
+        glm::vec2 c(0, 1);
+        baryCentric(a, b, c, glm::vec2(xCoord, zCoord), u, v, w);
+        return f00 * u + f10 * v + f01 * w;
     } else {
-        return baryCentric(glm::vec3(1, f10, 0), glm::vec3(1, f11, 1),
-                           glm::vec3(0, f01, 1), glm::vec2(xCoord, zCoord));
+        glm::vec2 a(1, 0);
+        glm::vec2 b(1, 1);
+        glm::vec2 c(0, 1);
+        baryCentric(a, b, c, glm::vec2(xCoord, zCoord), u, v, w);
+        return f10 * u + f11 * v + f01 * w;
     }
 }
 

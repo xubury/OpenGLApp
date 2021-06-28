@@ -9,7 +9,7 @@
 namespace te {
 
 template <glm::length_t L, typename T, glm::qualifier Q>
-inline glm::vec<L, T, Q> findClosestPoint(const glm::vec<L, T, Q> point,
+inline glm::vec<L, T, Q> findClosestPoint(const glm::vec<L, T, Q> &point,
                                           const glm::vec<L, T, Q> &start,
                                           const glm::vec<L, T, Q> &end) {
     glm::vec<L, T, Q> c = point - start;
@@ -47,15 +47,23 @@ inline bool sameDirection(const glm::vec3 &v1, const glm::vec3 &v2) {
     return glm::dot(v1, v2) > 0;
 }
 
-inline float baryCentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3,
-                          glm::vec2 pos) {
-    float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
-    float l1 =
-        ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
-    float l2 =
-        ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
-    float l3 = 1.0f - l1 - l2;
-    return l1 * p1.y + l2 * p2.y + l3 * p3.y;
+template <glm::length_t L, typename T, glm::qualifier Q>
+inline void baryCentric(const glm::vec<L, T, Q> &a, const glm::vec<L, T, Q> &b,
+                        const glm::vec<L, T, Q> &c,
+                        const glm::vec<L, T, Q> &pos, float &u, float &v,
+                        float &w) {
+    glm::vec<L, T, Q> v0 = b - a;
+    glm::vec<L, T, Q> v1 = c - a;
+    glm::vec<L, T, Q> v2 = pos - a;
+    float d00 = glm::dot(v0, v0);
+    float d01 = glm::dot(v0, v1);
+    float d11 = glm::dot(v1, v1);
+    float d20 = glm::dot(v2, v0);
+    float d21 = glm::dot(v2, v1);
+    float invDenom = 1.f / (d00 * d11 - d01 * d01);
+    v = (d11 * d20 - d01 * d21) * invDenom;
+    w = (d00 * d21 - d01 * d20) * invDenom;
+    u = 1.0f - v - w;
 }
 
 class RandomGenerator {

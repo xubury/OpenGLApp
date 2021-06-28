@@ -269,7 +269,7 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     manifold.objB = colliderB->owner()->component<CollisionObject>().get();
     manifold.normal = minNormal;
     manifold.pointCount = 1;
-    manifold.points[0].depth = minDist + 0.001;
+    manifold.points[0].depth = minDist;
     return manifold;
 }
 
