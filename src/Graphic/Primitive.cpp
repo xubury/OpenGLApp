@@ -19,27 +19,89 @@ Primitive::Primitive() {
         
     layout (location = 0) in vec3 aPos;
     layout (location = 1) in vec4 aColor;
-    layout (std140) uniform Camera
-    {
+
+    layout (std140) uniform Camera {
         mat4 uProjectionView;
         vec3 uViewPos;
     };
-    out vec4 color;
+
+    out VS_OUT {
+        vec4 color;
+    } vs_out;
+
     void main() {
         gl_Position = uProjectionView * vec4(aPos, 1.0f);
-        color = aColor;
-    }
-    )";
+        vs_out.color = aColor;
+    })";
     const char *primitiveFragment = R"(
-        #version 330 core
-        out vec4 fragColor;
-        in vec4 color;
-        void main() {
-            fragColor = color;
+    #version 330 core
+    out vec4 fragColor;
+
+    in VS_OUT {
+        vec4 color;
+    } fs_in;
+
+    in vec4 color;
+    void main() {
+        fragColor = fs_in.color;
+    })";
+
+    const char *lineGeometry = R"(
+    #version 330 core
+
+    layout (lines) in;
+    layout (triangle_strip, max_vertices = 4) out;
+
+    in VS_OUT {
+        vec4 color;
+    } gs_in[];
+
+    out VS_OUT {
+        vec4 color;
+    } gs_out;
+
+    uniform float uThickness;
+
+    uniform vec2 uViewportInvSize;
+    void main() {
+        gs_out.color = gs_in[0].color;
+
+        float r = uThickness;
+
+        vec4 p1 = gl_in[0].gl_Position;
+        vec4 p2 = gl_in[1].gl_Position;
+
+        vec2 dir = normalize(p2.xy - p1.xy);
+        vec2 normal = vec2(dir.y, -dir.x);
+
+        vec4 offset1, offset2;
+        offset1 = vec4(normal * uViewportInvSize * (r * p1.w), 0, 0);
+        offset2 = vec4(normal * uViewportInvSize * (r * p2.w), 0, 0); 
+
+        vec4 coords[4];
+        coords[0] = p1 + offset1;
+        coords[1] = p1 - offset1;
+        coords[2] = p2 + offset2;
+        coords[3] = p2 - offset2;
+
+        for (int i = 0; i < 4; ++i) {
+            gl_Position = coords[i];
+            EmitVertex();
         }
-    )";
-    m_shader = createRef<Shader>();
+        EndPrimitive();
+    })";
+    m_shader = createScope<Shader>();
     m_shader->compile(primitiveVertex, primitiveFragment);
+    m_shader->bind();
+    m_shader->setUniformBlock(
+        "Camera", Renderer::s_sceneData.cameraUBO->getBindingPoint());
+
+    m_lineShader = createScope<Shader>();
+    m_lineShader->compile(primitiveVertex, primitiveFragment, lineGeometry);
+    m_lineShader->bind();
+    m_lineShader->setUniformBlock(
+        "Camera", Renderer::s_sceneData.cameraUBO->getBindingPoint());
+
     m_vertexArray = createRef<VertexArray>();
 
     m_vertexBuffer = createRef<VertexBuffer>(nullptr, 0);
@@ -49,9 +111,6 @@ Primitive::Primitive() {
 
     m_indexBuffer = createRef<IndexBuffer>(nullptr, 0);
     m_vertexArray->setIndexBuffer(m_indexBuffer);
-
-    m_shader->setUniformBlock(
-        "Camera", Renderer::s_sceneData.cameraUBO->getBindingPoint());
 }
 
 Primitive &Primitive::instance() {
@@ -72,11 +131,13 @@ void Primitive::drawPath(const std::vector<glm::vec3> &pts,
         vertices[i].position = pts[i];
         vertices[i].color = color;
     }
+    m_lineShader->bind();
+    m_lineShader->setFloat("uThickness", thickness);
+    m_lineShader->setVec2("uViewportInvSize",
+                          1.f / Renderer::s_sceneData.viewportSize);
     m_vertexBuffer->update(vertices.data(),
                            vertices.size() * sizeof(PrimitiveVertex));
-    glLineWidth(thickness);
-    Renderer::submit(*m_shader, *m_vertexArray, GL_LINE_LOOP, false);
-    glLineWidth(1.0f);
+    Renderer::submit(*m_lineShader, *m_vertexArray, GL_LINE_STRIP, false);
 }
 
 void Primitive::drawCircle(const glm::vec3 &center, const glm::vec3 &normal,

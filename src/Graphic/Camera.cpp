@@ -39,7 +39,7 @@ uint32_t Camera::getViewportWidth() const { return m_viewportWidth; }
 uint32_t Camera::getViewportHeight() const { return m_viewportHeight; }
 
 glm::u32vec2 Camera::getViewportSize() const {
-    return glm::vec2(m_viewportWidth, m_viewportHeight);
+    return glm::u32vec2(m_viewportWidth, m_viewportHeight);
 }
 
 float Camera::getNearZ() const { return m_nearZ; }

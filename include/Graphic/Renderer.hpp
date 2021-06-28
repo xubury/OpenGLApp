@@ -54,6 +54,7 @@ class TE_API Renderer {
     struct SceneData {
         Ref<UniformBuffer> cameraUBO;
         Ref<UniformBuffer> lightUBO;
+        glm::vec2 viewportSize;
         uint32_t shadowMap = 0;
         uint32_t gPosition = 0;
         uint32_t gNormal = 0;

@@ -28,6 +28,8 @@ void Renderer::beginScene(const Camera &camera,
     glViewport(camera.getViewportX(), camera.getViewportY(),
                camera.getViewportWidth(), camera.getViewportHeight());
 
+    s_sceneData.viewportSize = camera.getViewportSize();
+
     s_sceneData.cameraUBO->setData(
         glm::value_ptr(camera.getProjection() * camera.getView()),
         offsetof(CameraData, projectionView),
@@ -105,6 +107,7 @@ void Renderer::beginGBuffer(const Camera &camera,
     s_sceneData.cameraUBO->setData(glm::value_ptr(camera.getPosition()),
                                    offsetof(CameraData, viewPos),
                                    sizeof(CameraData::viewPos));
+    s_sceneData.viewportSize = camera.getViewportSize();
     s_sceneData.gPosition = gPosition;
     s_sceneData.gNormal = gNormal;
     s_sceneData.gAlbedoSpec = gAlbedoSpec;

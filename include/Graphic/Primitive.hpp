@@ -52,7 +52,8 @@ class TE_API Primitive {
     Primitive();
 
    private:
-    Ref<Shader> m_shader;
+    Scope<Shader> m_shader;
+    Scope<Shader> m_lineShader;
     Ref<VertexArray> m_vertexArray;
     Ref<VertexBuffer> m_vertexBuffer;
     Ref<IndexBuffer> m_indexBuffer;
