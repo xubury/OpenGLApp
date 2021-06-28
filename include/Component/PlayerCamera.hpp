@@ -13,6 +13,8 @@ class PlayerCameraComp : public CameraComp {
 
     float getDistance() const { return m_dist; }
 
+    void setDistance(float distance) { m_dist = distance; }
+
    private:
     float m_dist;
     float m_yaw;

@@ -7,6 +7,7 @@
 #include "Component/BoundingBox.hpp"
 #include "Component/Light.hpp"
 #include "Component/CameraComp.hpp"
+#include "Component/PlayerCamera.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Physics/Collider.hpp"
 #include "Physics/SphereCollider.hpp"
@@ -81,6 +82,13 @@ static void renderCameraProperty(CameraComp& cam) {
         glm::vec3 pos = cam.getPosition();
         if (ImGui::InputFloat3("Position", &pos[0], "%.3f")) {
             cam.setPosition(pos);
+        }
+
+        PlayerCameraComp* playerCam = dynamic_cast<PlayerCameraComp*>(&cam);
+        if (playerCam) {
+            float dist = playerCam->getDistance();
+            ImGui::InputFloat("Distance", &dist);
+            playerCam->setDistance(dist);
         }
         ImGui::TreePop();
     }
