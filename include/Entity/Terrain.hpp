@@ -12,7 +12,7 @@ class Terrain : public EntityBase {
     Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
             int vertexCount, Ref<Material> material);
 
-    void draw(const Shader &shader) const override;
+    void draw(const Shader &shader, const glm::mat4 &transform) const override;
 
     float height(float localX, float localZ) const;
 

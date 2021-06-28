@@ -73,9 +73,9 @@ Terrain::Terrain(EntityManager<EntityBase> *manager, uint32_t id, int gridSize,
     add<TerrainCollider>(m_vertices, m_gridSize, m_vertexCount);
 }
 
-void Terrain::draw(const Shader &shader) const {
+void Terrain::draw(const Shader &shader, const glm::mat4 &transform) const {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    Renderer::submit(shader, *m_terrain, GL_TRIANGLES, true, getTransform(),
+    Renderer::submit(shader, *m_terrain, GL_TRIANGLES, true, getTransform() * transform,
                      m_material.get());
     // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

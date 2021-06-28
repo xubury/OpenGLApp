@@ -12,7 +12,7 @@ class ModelEntity : public EntityBase {
 
     void loadFromFile(const std::string &path);
 
-    void draw(const Shader &shader) const override;
+    void draw(const Shader &shader, const glm::mat4 &transform) const override;
 
    private:
     Ref<Model> m_model;

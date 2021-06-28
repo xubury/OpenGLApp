@@ -18,8 +18,8 @@ void ModelEntity::loadFromFile(const std::string &path) {
     }
 }
 
-void ModelEntity::draw(const Shader &shader) const {
-    m_model->draw(shader, getTransform());
+void ModelEntity::draw(const Shader &shader, const glm::mat4 &transform) const {
+    m_model->draw(shader, getTransform() * transform);
 }
 
 }  // namespace te

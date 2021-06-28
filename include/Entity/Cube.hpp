@@ -12,7 +12,7 @@ class Cube : public EntityBase {
     Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
          float height, float length, Ref<Material> material);
 
-    void draw(const Shader &shader) const override;
+    void draw(const Shader &shader, const glm::mat4 &transform) const override;
 
    private:
     Ref<VertexArray> m_cube;

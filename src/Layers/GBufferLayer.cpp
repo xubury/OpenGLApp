@@ -97,7 +97,7 @@ void GBufferLayer::onRender() {
         Application::instance().getActiveScene();
     std::size_t size = scene->entities.size();
     for (std::size_t i = 0; i < size; ++i) {
-        scene->entities.get(i)->draw(*m_gBufferShader);
+        scene->entities.get(i)->draw(*m_gBufferShader, glm::mat4(1.0f));
     }
     Renderer::endGBuffer();
     copyMultiSampleGbuffer(*m_multiSampledGBuffer, *m_gBuffer);

@@ -66,16 +66,16 @@ Sphere::Sphere(EntityManager<EntityBase> *manager, uint32_t id, float radius,
     vertexBuffer->setLayout({{ShaderDataType::Float3, "aPos"},
                              {ShaderDataType::Float2, "aTexCoord"},
                              {ShaderDataType::Float3, "aNormal"},
-                             {ShaderDataType::Int4,"aBoneIds"},
+                             {ShaderDataType::Int4, "aBoneIds"},
                              {ShaderDataType::Float4, "aWeights"}});
     m_sphere->addVertexBuffer(vertexBuffer);
     m_sphere->setIndexBuffer(
         createRef<IndexBuffer>(indices.data(), indices.size()));
 }
 
-void Sphere::draw(const Shader &shader) const {
-    Renderer::submit(shader, *m_sphere, GL_TRIANGLES, true, getTransform(),
-                     m_material.get());
+void Sphere::draw(const Shader &shader, const glm::mat4 &transform) const {
+    Renderer::submit(shader, *m_sphere, GL_TRIANGLES, true,
+                     getTransform() * transform, m_material.get());
 }
 
 }  // namespace te

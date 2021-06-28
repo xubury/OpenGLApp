@@ -2,6 +2,7 @@
 #include "Graphic/Renderer.hpp"
 #include "Graphic/GLContext.hpp"
 #include "Component/CameraComp.hpp"
+#include "Component/EventComp.hpp"
 
 namespace te {
 
@@ -58,10 +59,31 @@ void Application::run(int minFps) {
                 if (layer->isBlockEvent()) continue;
                 layer->onEventPoll(event);
             }
+
+            if (!m_editorMode) {
+                EventComp::Handle evtComp;
+                Ref<SceneManager<EntityBase>> scene =
+                    Application::instance().getActiveScene();
+                auto view = scene->entities.getByComponents(evtComp);
+                auto end = view.end();
+                for (auto cur = view.begin(); cur != end; ++cur) {
+                    evtComp->processEvent(event);
+                }
+            }
         }
         for (auto &layer : m_layers) {
             if (layer->isBlockEvent()) continue;
             layer->onEventProcess();
+        }
+        if (!m_editorMode) {
+            EventComp::Handle evtComp;
+            Ref<SceneManager<EntityBase>> scene =
+                Application::instance().getActiveScene();
+            auto view = scene->entities.getByComponents(evtComp);
+            auto end = view.end();
+            for (auto cur = view.begin(); cur != end; ++cur) {
+                evtComp->processEvents();
+            }
         }
         timeSinceLastUpdate = clock.restart();
         while (timeSinceLastUpdate > timePerFrame) {

@@ -65,9 +65,9 @@ Cube::Cube(EntityManager<EntityBase> *manager, uint32_t id, float width,
     m_cube->addVertexBuffer(vertexBuffer);
 }
 
-void Cube::draw(const Shader &shader) const {
-    Renderer::submit(shader, *m_cube, GL_TRIANGLES, false, getTransform(),
-                     m_material.get());
+void Cube::draw(const Shader &shader, const glm::mat4 &transform) const {
+    Renderer::submit(shader, *m_cube, GL_TRIANGLES, false,
+                     getTransform() * transform, m_material.get());
 }
 
 }  // namespace te

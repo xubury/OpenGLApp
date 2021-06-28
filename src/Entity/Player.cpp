@@ -2,7 +2,7 @@
 #include "Graphic/Renderer.hpp"
 #include "Physics/Rigidbody.hpp"
 #include "Physics/HullCollider.hpp"
-#include "Component/Controller.hpp"
+#include "Component/EventComp.hpp"
 #include "Component/PlayerCameraComp.hpp"
 #include "Apps/Application.hpp"
 
@@ -37,41 +37,39 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     m_inputs.map(PlayerAction::MOVE_LEFT, Keyboard::A);
     m_inputs.map(PlayerAction::MOVE_RIGHT, Keyboard::D);
 
-    add<Controller>(m_inputs);
-    Controller::Handle controller = component<Controller>();
+    add<EventComp>(m_inputs);
+    EventComp::Handle evtComp = component<EventComp>();
 
-    controller->bind(PlayerAction::MOVE_JUMP,
-                     [this](const Event &) { move(PlayerAction::MOVE_JUMP); });
-    controller->bind(PlayerAction::MOVE_FORWARD, [this](const Event &) {
-        move(PlayerAction::MOVE_FORWARD);
-    });
-    controller->bind(PlayerAction::MOVE_BACKWARD, [this](const Event &) {
-        move(PlayerAction::MOVE_BACKWARD);
-    });
-    controller->bind(PlayerAction::MOVE_LEFT,
-                     [this](const Event &) { move(PlayerAction::MOVE_LEFT); });
-    controller->bind(PlayerAction::MOVE_RIGHT,
-                     [this](const Event &) { move(PlayerAction::MOVE_RIGHT); });
-    controller->bind(
-        Action(Event::EventType::MOUSE_MOVED), [this](const Event &event) {
-            glm::vec2 currentMousePos =
-                glm::vec2(event.mouseMove.x, event.mouseMove.y);
-            if (m_isFirstMouse) {
-                m_isFirstMouse = false;
-            } else {
-                glm::vec2 offset = currentMousePos - m_lastMousePos;
-                component<PlayerCameraComp>()->rotate(
-                    -offset.y * MOUSE_SENSITIVITY,
-                    -offset.x * MOUSE_SENSITIVITY);
-            }
-            m_lastMousePos = currentMousePos;
-        });
+    evtComp->bind(PlayerAction::MOVE_JUMP,
+                  [this](const Event &) { move(PlayerAction::MOVE_JUMP); });
+    evtComp->bind(PlayerAction::MOVE_FORWARD,
+                  [this](const Event &) { move(PlayerAction::MOVE_FORWARD); });
+    evtComp->bind(PlayerAction::MOVE_BACKWARD,
+                  [this](const Event &) { move(PlayerAction::MOVE_BACKWARD); });
+    evtComp->bind(PlayerAction::MOVE_LEFT,
+                  [this](const Event &) { move(PlayerAction::MOVE_LEFT); });
+    evtComp->bind(PlayerAction::MOVE_RIGHT,
+                  [this](const Event &) { move(PlayerAction::MOVE_RIGHT); });
+    evtComp->bind(Action(Event::EventType::MOUSE_MOVED),
+                  [this](const Event &event) {
+                      glm::vec2 currentMousePos =
+                          glm::vec2(event.mouseMove.x, event.mouseMove.y);
+                      if (m_isFirstMouse) {
+                          m_isFirstMouse = false;
+                      } else {
+                          glm::vec2 offset = currentMousePos - m_lastMousePos;
+                          component<PlayerCameraComp>()->rotate(
+                              -offset.y * MOUSE_SENSITIVITY,
+                              -offset.x * MOUSE_SENSITIVITY);
+                      }
+                      m_lastMousePos = currentMousePos;
+                  });
 
-    controller->bind(Action(Event::EventType::RESIZED),
-                     [this](const Event &event) {
-                         component<CameraComp>()->setViewportSize(
-                             event.size.width, event.size.height);
-                     });
+    evtComp->bind(Action(Event::EventType::RESIZED),
+                  [this](const Event &event) {
+                      component<CameraComp>()->setViewportSize(
+                          event.size.width, event.size.height);
+                  });
 
     m_timePerMove = seconds(0.1f);
 }
@@ -90,14 +88,14 @@ void Player::update(const Time &deltaTime) {
     m_animator->update(deltaTime);
 }
 
-void Player::draw(const Shader &shader) const {
+void Player::draw(const Shader &shader, const glm::mat4 &transform) const {
     shader.bind();
     auto &transforms = m_animator->getFinalBoneMatrices();
     for (std::size_t i = 0; i < transforms.size(); ++i) {
         shader.setMat4("uBoneTransform[" + std::to_string(i) + "]",
                        transforms[i]);
     }
-    m_model->draw(shader, getTransform());
+    m_model->draw(shader, getTransform() * transform);
 }
 
 void Player::move(PlayerAction movement) {

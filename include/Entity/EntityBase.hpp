@@ -6,7 +6,9 @@
 
 namespace te {
 
-class EntityBase : public Entity<EntityBase>, virtual public Transformable {
+class EntityBase : public Entity<EntityBase>,
+                   virtual public Transformable,
+                   public Drawable {
    public:
     EntityBase(const EntityBase &) = delete;
 
@@ -20,7 +22,7 @@ class EntityBase : public Entity<EntityBase>, virtual public Transformable {
 
     void setName(const std::string &name);
 
-    virtual void draw(const Shader &shader) const;
+    void draw(const Shader &shader, const glm::mat4 &transform) const;
 
    private:
     std::string m_name;

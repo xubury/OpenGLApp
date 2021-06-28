@@ -26,7 +26,7 @@ class Player : public EntityBase {
 
     void update(const Time &deltaTime) override;
 
-    void draw(const Shader &shader) const override;
+    void draw(const Shader &shader, const glm::mat4 &transform) const override;
 
     void move(PlayerAction movement);
 
