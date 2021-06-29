@@ -81,8 +81,8 @@ ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
     glm::vec3 worldNormal = glm::transpose(rotateInv) * normal;
     worldNormal = glm::normalize(worldNormal);
     glm::vec3 support = hull->findFurthestPoint(-worldNormal);
-    support = terrain->owner()->toLocalSpace(support);
-    float depth = height - glm::dot(support, glm::vec3(0.f, 1.f, 0.f));
+    float depth = height - glm::dot(terrain->owner()->toLocalSpace(support),
+                                    glm::vec3(0.f, 1.f, 0.f));
     if (depth >= 0) {
         manifold.objA = objA->owner()->component<CollisionObject>().get();
         manifold.objB = objB->owner()->component<CollisionObject>().get();
@@ -125,7 +125,8 @@ ContactManifold Collision::collideSphereHull(Collider *objA, Collider *objB) {
 ContactManifold Collision::collideHulls(Collider *objA, Collider *objB) {
     auto [collide, simplex] = gjk(objA, objB, 32);
     if (collide) {
-        return epa(simplex, objA, objB, 32);
+        ContactManifold manifold = epa(simplex, objA, objB, 32);
+        return manifold;
     }
     return {};
 }

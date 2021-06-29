@@ -35,8 +35,7 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
         if (collisonObj->isDynamic()) {
             Rigidbody *body = dynamic_cast<Rigidbody *>(collisonObj.get());
             if (body->isKinematic()) {
-                body->addForce(m_gravity * body->getMass(),
-                               body->getCenterOfMass());
+                body->addForce(m_gravity * body->getMass(), glm::vec3(0));
             }
         }
         for (auto b = view.begin(); b != end; ++b) {

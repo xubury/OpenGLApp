@@ -9,24 +9,32 @@
 
 namespace te {
 
+struct Support {
+    glm::vec3 position;
+    glm::vec3 direction;
+    Support() = default;
+    Support(const glm::vec3& position, const glm::vec3& direction)
+        : position(position), direction(direction) {}
+};
+
 class Simplex {
    public:
     Simplex();
 
-    Simplex& operator=(std::initializer_list<glm::vec3> list);
+    Simplex& operator=(std::initializer_list<Support> list);
 
-    void pushFront(const glm::vec3& element);
+    void pushFront(const Support& point);
 
-    glm::vec3& operator[](uint32_t i);
+    Support& operator[](uint32_t i);
 
     uint32_t size() const;
 
-    std::array<glm::vec3, 4>::const_iterator begin() const;
+    std::array<Support, 4>::const_iterator begin() const;
 
-    std::array<glm::vec3, 4>::const_iterator end() const;
+    std::array<Support, 4>::const_iterator end() const;
 
    private:
-    std::array<glm::vec3, 4> m_points;
+    std::array<Support, 4> m_points;
 
     uint32_t m_size;
 };
