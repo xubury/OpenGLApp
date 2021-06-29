@@ -7,6 +7,8 @@ namespace te {
 
 struct ContactPoint {
     glm::vec3 position;
+    glm::vec3 positionA;
+    glm::vec3 positionB;
     float depth;
     ContactPoint() : position(0), depth(0) {}
 };

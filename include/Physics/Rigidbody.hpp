@@ -13,6 +13,8 @@ struct Rigidbody : public CollisionObject {
 
     void addForce(const glm::vec3 &force, const glm::vec3 &pos);
 
+    void addTorque(const glm::vec3 &torque);
+
     void addImpulse(const glm::vec3 &impulse);
 
     float getMass() const;
@@ -29,7 +31,9 @@ struct Rigidbody : public CollisionObject {
 
     glm::vec3 getCenterOfMass() const;
 
-    glm::vec3 getCenterOfMassInWorld() const;
+    void setCenterOfMass(const glm::vec3 &center);
+
+    glm::vec3 getCenterOfMassWorld() const;
 
     glm::vec3 getVelocity() const;
 
@@ -48,14 +52,17 @@ struct Rigidbody : public CollisionObject {
     void setDynamicFriction(float friction);
 
    private:
-    glm::vec3 m_centerOfMass;
+    glm::vec3 m_localCenterOfMass;
 
     glm::vec3 m_force;
-
     glm::vec3 m_velocity;
+
+    glm::vec3 m_torque;
     glm::vec3 m_angularVelocity;
 
-    float m_mass;
+    float m_invMass;
+
+    glm::mat3 m_localInertia;
 
     float m_restitution;
 

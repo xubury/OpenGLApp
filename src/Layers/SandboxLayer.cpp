@@ -214,7 +214,7 @@ void SandboxLayer::onEventPoll(const Event& event) {
                                         Material::TEXTURE_SPECULAR);
                 glm::vec3 impulse(random.rnd(-25, 25), random.rnd(-25, 25),
                                   random.rnd(-25, 25));
-                addCube(glm::vec3(5, 15, 0), 1, 1, 1, impulse, textures, true);
+                addCube(glm::vec3(5, 15, 0), 1, 1, 1, impulse, textures, false);
             } break;
             default:
                 break;

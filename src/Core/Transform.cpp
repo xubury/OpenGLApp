@@ -1,86 +1,95 @@
 #include "Core/Transform.hpp"
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace te {
 
-Transformable::Transformable() : m_transform(1.0) {}
+Transformable::Transformable()
+    : m_position(0.f), m_rotation(1.f, 0.f, 0.f, 0.f), m_scale(1.0f) {}
 
 void Transformable::setTransform(const glm::mat4 &transform) {
-    m_transform = transform;
+    glm::vec3 skew;
+    glm::vec4 perspective;
+    glm::decompose(transform, m_scale, m_rotation, m_position, skew,
+                   perspective);
 }
+
+void Transformable::setRotation(const glm::quat &rotation) {
+    m_rotation = rotation;
+}
+
+glm::quat Transformable::getRotation() const { return m_rotation; }
 
 void Transformable::translateLocal(const glm::vec3 &t) {
-    m_transform = glm::translate(m_transform, t);
+    m_position += m_rotation * t;
 }
 
-void Transformable::translateWorld(const glm::vec3 &t) {
-    m_transform = glm::translate(glm::mat4(1.0), t) * m_transform;
-}
+void Transformable::translateWorld(const glm::vec3 &t) { m_position += t; }
 
 void Transformable::rotateLocal(float radians, const glm::vec3 &axis) {
-    m_transform = glm::rotate(m_transform, radians, axis);
+    m_rotation = m_rotation * glm::angleAxis(radians, axis);
 }
 
 void Transformable::rotateWorld(float radians, const glm::vec3 &axis) {
-    m_transform = glm::rotate(glm::mat4(1.0), radians, axis) * m_transform;
+    m_rotation = glm::angleAxis(radians, axis) * m_rotation;
+}
+
+void Transformable::rotateLocal(const glm::quat &rotation) {
+    m_rotation = m_rotation * rotation;
+}
+
+void Transformable::rotateWorld(const glm::quat &rotation) {
+    m_rotation = rotation * m_rotation;
 }
 
 glm::vec3 Transformable::getEulerAngle() const {
-    glm::vec3 eulerAngle;
-    if (m_transform[2][1] < 1.f) {
-        if (m_transform[2][1] > -1.f) {
-            eulerAngle.x = asin(-m_transform[2][1]);
-            eulerAngle.y = atan2(m_transform[2][0], m_transform[2][2]);
-            eulerAngle.z = atan2(m_transform[0][1], m_transform[1][1]);
-        } else {
-            eulerAngle.x = M_PI / 2;
-            eulerAngle.y = -atan2(-m_transform[1][0], m_transform[0][0]);
-            eulerAngle.z = 0;
-        }
-    } else {
-        eulerAngle.x = -M_PI / 2;
-        eulerAngle.y = atan2(-m_transform[1][0], m_transform[0][0]);
-        eulerAngle.z = 0;
-    }
-    return eulerAngle;
+    return glm::eulerAngles(m_rotation);
 }
 
 void Transformable::setEulerAngle(glm::vec3 eulerAngle) {
-    glm::vec4 &right = m_transform[0];
-    glm::vec4 &up = m_transform[1];
-    glm::vec4 &front = m_transform[2];
-    right.x = cos(eulerAngle.y) * cos(eulerAngle.z) +
-              sin(eulerAngle.x) * sin(eulerAngle.y) * sin(eulerAngle.z);
-    right.y = cos(eulerAngle.x) * sin(eulerAngle.z);
-    right.z = -cos(eulerAngle.z) * sin(eulerAngle.y) +
-              cos(eulerAngle.y) * sin(eulerAngle.x) * sin(eulerAngle.z);
-
-    front.x = cos(eulerAngle.x) * sin(eulerAngle.y);
-    front.y = -sin(eulerAngle.x);
-    front.z = cos(eulerAngle.x) * cos(eulerAngle.y);
-
-    right = glm::normalize(right);
-    front = glm::normalize(front);
-    up = glm::vec4(glm::cross(glm::vec3(front), glm::vec3(right)), 0);
+    m_rotation = glm::quat(eulerAngle);
 }
 
-const glm::mat4 &Transformable::getTransform() const { return m_transform; }
+glm::mat4 Transformable::getTransform() const {
+    float angle = glm::angle(m_rotation);
+    glm::vec3 axis = glm::axis(m_rotation);
+
+    glm::mat4 mat(1);
+
+    mat = glm::translate(mat, m_position);
+    mat = glm::rotate(mat, angle, axis);
+    mat = glm::scale(mat, m_scale);
+
+    return mat;
+}
 
 void Transformable::setPosition(const glm::vec3 &position) {
-    m_transform[3] = glm::vec4(position, 1.0);
+    m_position = position;
 }
 
-glm::vec3 Transformable::getPosition() const { return m_transform[3]; }
+glm::vec3 Transformable::getPosition() const { return m_position; }
 
-glm::vec3 Transformable::getLeft() const { return m_transform[0]; }
+glm::vec3 Transformable::getLeft() const {
+    return m_rotation * glm::vec3(1.f, 0.f, 0.f);
+}
 
-glm::vec3 Transformable::getUp() const { return m_transform[1]; }
+glm::vec3 Transformable::getUp() const {
+    return m_rotation * glm::vec3(0.f, 1.f, 0.f);
+}
 
-glm::vec3 Transformable::getFront() const { return m_transform[2]; }
+glm::vec3 Transformable::getFront() const {
+    return m_rotation * glm::vec3(0.f, 0.f, 1.f);
+}
 
 glm::vec3 Transformable::toLocalSpace(const glm::vec3 &world) const {
-    glm::mat3 rotateInv = glm::transpose(m_transform);
-    return rotateInv * (world - getPosition());
+    glm::mat3 rotation = glm::toMat3(m_rotation);
+    return glm::transpose(rotation) * (world - getPosition());
+}
+
+glm::vec3 Transformable::toWorldSpace(const glm::vec3 &local) const {
+    glm::mat3 rotation = glm::toMat3(m_rotation);
+    return rotation * local + m_position;
 }
 
 }  // namespace te

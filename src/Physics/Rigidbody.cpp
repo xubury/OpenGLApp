@@ -1,43 +1,58 @@
 #include "Physics/Rigidbody.hpp"
+#include <glm/gtx/quaternion.hpp>
 
 namespace te {
 
 Rigidbody::Rigidbody(float mass, bool isKinematic)
     : CollisionObject(true),
-      m_centerOfMass(0.f),
+      m_localCenterOfMass(0.f),
       m_force(0.f),
       m_velocity(0.f),
+      m_torque(0.f),
       m_angularVelocity(0.f),
-      m_mass(mass),
+      m_invMass(1.f / mass),
+      m_localInertia(10.f),
       m_restitution(0.5f),
       m_staticFriction(0.2f),
       m_dynamicFriction(0.2f),
       m_isKinematic(isKinematic) {
+    m_localInertia = glm::inverse(m_localInertia);
     TE_ASSERT(mass > 0, "Rigidbody mass can't be less than zero!")
 }
 
 void Rigidbody::step(const Time &deltaTime) {
     if (isKinematic()) {
         float dt = deltaTime.count();
-        m_velocity += m_force / m_mass * dt;
-        // TE_TRACE("speed:{0} {1} {2}", m_velocity.x, m_velocity.y,
-        // m_velocity.z);
+        m_velocity += m_force * m_invMass * dt;
+        glm::mat3 rotation = glm::toMat3(owner()->getRotation());
+        m_angularVelocity += rotation * m_localInertia *
+                             glm::transpose(rotation) * m_torque * dt;
+
         owner()->translateWorld(m_velocity * dt);
+        glm::quat rot = glm::angleAxis(glm::length(m_angularVelocity) * dt,
+                                       glm::length(m_angularVelocity) == 0
+                                           ? glm::vec3(0, 0, 1)
+                                           : glm::normalize(m_angularVelocity));
+        owner()->rotateWorld(rot);
         m_force = glm::vec3(0);
+        m_torque = glm::vec3(0);
     }
 }
 
-void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &) {
+void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &pos) {
     m_force += force;
+    addTorque(glm::cross(pos - getCenterOfMass(), force));
 }
+
+void Rigidbody::addTorque(const glm::vec3 &torque) { m_torque += torque; }
 
 void Rigidbody::addImpulse(const glm::vec3 &impulse) {
-    m_velocity += impulse / m_mass;
+    m_velocity += impulse * m_invMass;
 }
 
-float Rigidbody::getMass() const { return m_mass; }
+float Rigidbody::getMass() const { return 1.f / m_invMass; }
 
-void Rigidbody::setMass(float mass) { m_mass = mass; }
+void Rigidbody::setMass(float mass) { m_invMass = 1.f / mass; }
 
 float Rigidbody::getRestitution() const { return m_restitution; }
 
@@ -61,10 +76,14 @@ bool Rigidbody::isKinematic() const { return m_isKinematic; }
 
 void Rigidbody::setKinematic(bool kinematic) { m_isKinematic = kinematic; }
 
-glm::vec3 Rigidbody::getCenterOfMass() const { return m_centerOfMass; }
+glm::vec3 Rigidbody::getCenterOfMass() const { return m_localCenterOfMass; }
 
-glm::vec3 Rigidbody::getCenterOfMassInWorld() const {
-    return owner()->getTransform() * glm::vec4(m_centerOfMass, 1.0f);
+void Rigidbody::setCenterOfMass(const glm::vec3 &center) {
+    m_localCenterOfMass = center;
+}
+
+glm::vec3 Rigidbody::getCenterOfMassWorld() const {
+    return owner()->toWorldSpace(m_localCenterOfMass);
 }
 
 glm::vec3 Rigidbody::getVelocity() const { return m_velocity; }

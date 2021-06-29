@@ -590,6 +590,12 @@ void EditorLayer::onImGuiRender() {
 
     renderCollider();
 
+    if (getActiveEntityPtr()->has<Collider>()) {
+        Primitive::instance().drawSphereFilled(
+            getActiveEntityPtr()->component<Collider>()->debugPoint,
+            glm::vec4(1, 0, 0, 1), getClipSizeInWorld(0.01f));
+    }
+
     Renderer::endScene();
 }
 

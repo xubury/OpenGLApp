@@ -25,6 +25,7 @@ class Collider : public Component<Collider, EntityBase> {
 
     virtual Type getType() const { return m_type; };
 
+    glm::vec3 debugPoint;
    private:
     Type m_type;
 };

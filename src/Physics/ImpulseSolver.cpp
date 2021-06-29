@@ -21,12 +21,10 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
             bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
 
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
-            const glm::vec3 rA = manifold.points[i].position -
-                                 manifold.objA->owner()->getPosition() -
-                                 bodyA->getCenterOfMass();
-            const glm::vec3 rB = manifold.points[i].position -
-                                 manifold.objB->owner()->getPosition() -
-                                 bodyB->getCenterOfMass();
+            const glm::vec3 rA =
+                manifold.points[i].positionA - bodyA->getCenterOfMass();
+            const glm::vec3 rB =
+                manifold.points[i].positionB - bodyB->getCenterOfMass();
             glm::vec3 velRelative =
                 velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA);
             float speed = glm::dot(velRelative, manifold.normal);
@@ -59,11 +57,11 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
             glm::vec3 impulse = j * manifold.normal + friction;
             if (bodyB && bodyB->isKinematic()) {
                 bodyB->addForce(impulse * massB / deltaTime.count() / 2.f,
-                                manifold.points[i].position);
+                                manifold.points[i].positionB);
             }
             if (bodyA && bodyA->isKinematic()) {
                 bodyA->addForce(-impulse * massA / deltaTime.count() / 2.f,
-                                manifold.points[i].position);
+                                manifold.points[i].positionA);
             }
         }
     }

@@ -281,8 +281,7 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     glm::vec3 supportA = colliderA->findFurthestPoint(aDir);
     glm::vec3 supportB = colliderA->findFurthestPoint(bDir);
     glm::vec3 supportC = colliderA->findFurthestPoint(cDir);
-    glm::vec3 contactPoint =
-        glm::vec4(supportA * u + supportB * v + supportC * w, 1.0f);
+    glm::vec3 contactPoint(supportA * u + supportB * v + supportC * w);
 
     ContactManifold manifold;
     manifold.objA = colliderA->owner()->component<CollisionObject>().get();
@@ -291,6 +290,10 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     manifold.pointCount = 1;
     manifold.points[0].depth = minDist + 0.001f;
     manifold.points[0].position = contactPoint;
+    manifold.points[0].positionA = colliderA->owner()->toLocalSpace(contactPoint);
+    manifold.points[0].positionB = colliderB->owner()->toLocalSpace(contactPoint);
+    colliderA->debugPoint = contactPoint;
+    colliderB->debugPoint = contactPoint;
     return manifold;
 }
 

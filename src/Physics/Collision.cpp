@@ -58,7 +58,13 @@ ContactManifold Collision::collideTerrainSphere(Collider *objA,
         worldNormal = glm::normalize(worldNormal);
         manifold.points[0].position =
             sphere->getCenterInWorld() - worldNormal * sphere->getRadius();
+        manifold.points[0].positionA =
+            objA->owner()->toLocalSpace(manifold.points[0].position);
+        manifold.points[0].positionB =
+            objB->owner()->toLocalSpace(manifold.points[0].position);
         manifold.points[0].depth = depth;
+        objA->debugPoint = manifold.points[0].position;
+        objB->debugPoint = manifold.points[0].position;
         manifold.normal = worldNormal;
     }
     return manifold;
@@ -88,7 +94,11 @@ ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
         manifold.objB = objB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
         manifold.points[0].position = support;
+        manifold.points[0].positionA = objA->owner()->toLocalSpace(support);
+        manifold.points[0].positionB = objB->owner()->toLocalSpace(support);
         manifold.points[0].depth = depth;
+        objA->debugPoint = manifold.points[0].position;
+        objB->debugPoint = manifold.points[0].position;
         manifold.normal = worldNormal;
     }
     return manifold;
@@ -108,7 +118,13 @@ ContactManifold Collision::collideSpheres(Collider *objA, Collider *objB) {
         manifold.objB = sphereB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
         manifold.points[0].position = (aWorldPos + bWorldPos) / 2.f;
+        manifold.points[0].positionA =
+            objA->owner()->toLocalSpace(manifold.points[0].position);
+        manifold.points[0].positionB =
+            objB->owner()->toLocalSpace(manifold.points[0].position);
         manifold.points[0].depth = depth;
+        objA->debugPoint = manifold.points[0].position;
+        objB->debugPoint = manifold.points[0].position;
         manifold.normal = (bWorldPos - aWorldPos) / dist;
     }
     return manifold;

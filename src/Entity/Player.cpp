@@ -24,6 +24,7 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     m_animator = createRef<Animator>(m_animation.get());
 
     add<Rigidbody>(10, true);
+    component<Rigidbody>()->setCenterOfMass(glm::vec3(0.f, height / 2.f, 0.f));
     add<HullCollider>();
     MakeCubeCollider(*component<HullCollider>().get(), width, height, length,
                      glm::vec3(0, 0.5f, 0));
@@ -117,7 +118,7 @@ void Player::move(PlayerAction movement) {
     if (movement == PlayerAction::MOVE_JUMP) {
         rigidbody->addForce(
             glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * amplifier * 10.f,
-            glm::vec3(0));
+            rigidbody->getCenterOfMass());
     } else if (movement == PlayerAction::MOVE_FORWARD) {
         rigidbody->addImpulse(front * amplifier);
         m_moveDir = front;

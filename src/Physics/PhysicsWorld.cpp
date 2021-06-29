@@ -7,7 +7,7 @@
 
 namespace te {
 
-PhysicsWorld::PhysicsWorld() : m_gravity(0, -9.8, 0) {
+PhysicsWorld::PhysicsWorld() : m_gravity(0.f, -9.8f, 0.f) {
     addSolver(createRef<ImpulseSolver>());
     addSolver(createRef<PositionSolver>());
 }
@@ -35,7 +35,8 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
         if (collisonObj->isDynamic()) {
             Rigidbody *body = dynamic_cast<Rigidbody *>(collisonObj.get());
             if (body->isKinematic()) {
-                body->addForce(m_gravity * body->getMass(), glm::vec3(0));
+                body->addForce(m_gravity * body->getMass(),
+                               body->getCenterOfMass());
             }
         }
         for (auto b = view.begin(); b != end; ++b) {

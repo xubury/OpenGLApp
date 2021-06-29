@@ -2,6 +2,7 @@
 #define TRANSFORM_HPP
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace te {
 
@@ -11,6 +12,10 @@ class Transformable {
 
     void setTransform(const glm::mat4 &transform);
 
+    void setRotation(const glm::quat &rotation);
+
+    glm::quat getRotation() const;
+
     void translateLocal(const glm::vec3 &t);
 
     void translateWorld(const glm::vec3 &t);
@@ -19,15 +24,15 @@ class Transformable {
 
     void rotateWorld(float radians, const glm::vec3 &axis);
 
-    // Factor as RyRxRz,
-    // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
+    void rotateLocal(const glm::quat &rotation);
+
+    void rotateWorld(const glm::quat &rotation);
+
     void setEulerAngle(glm::vec3 eulerAngle);
 
-    // Factor as RyRxRz,
-    // details in https://www.geometrictools.com/Documentation/EulerAngles.pdf
     glm::vec3 getEulerAngle() const;
 
-    const glm::mat4 &getTransform() const;
+    glm::mat4 getTransform() const;
 
     void setPosition(const glm::vec3 &position);
 
@@ -41,8 +46,11 @@ class Transformable {
 
     glm::vec3 toLocalSpace(const glm::vec3 &world) const;
 
+    glm::vec3 toWorldSpace(const glm::vec3 &local) const;
    protected:
-    glm::mat4 m_transform;
+    glm::vec3 m_position;
+    glm::quat m_rotation;
+    glm::vec3 m_scale;
 };
 
 }  // namespace te
