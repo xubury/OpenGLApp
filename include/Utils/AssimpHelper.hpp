@@ -1,7 +1,7 @@
 #ifndef ASSIMP_HELPER_HPP
 #define ASSIMP_HELPER_HPP
 
-#include <assimp/Quaternion.h>
+#include <assimp/quaternion.h>
 #include <assimp/vector3.h>
 #include <assimp/matrix4x4.h>
 #include <glm/glm.hpp>

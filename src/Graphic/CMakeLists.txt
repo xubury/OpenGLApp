@@ -1,10 +1,10 @@
 set(Include_Root ${PROJECT_SOURCE_DIR}/include/Graphic)
 set(Src_Root ${PROJECT_SOURCE_DIR}/src/Graphic)
 
+set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
 find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
-find_package(assimp REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 

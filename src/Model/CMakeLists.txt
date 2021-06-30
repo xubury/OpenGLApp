@@ -5,11 +5,11 @@ find_package(glm REQUIRED)
 find_package(assimp REQUIRED)
 
 set(Model_Include
-    ${Src_Root}/Model.cpp
-    ${Src_Root}/Bone.cpp
-    ${Src_Root}/Animation.cpp
-    ${Src_Root}/Animator.cpp
-    ${Src_Root}/Mesh.cpp)
+    ${Include_Root}/Model.hpp
+    ${Include_Root}/Bone.hpp
+    ${Include_Root}/Animation.hpp
+    ${Include_Root}/Animator.hpp
+    ${Include_Root}/Mesh.hpp)
 
 set(Model_Src
     ${Src_Root}/Model.cpp
@@ -35,13 +35,9 @@ target_link_libraries(te-model
     te-core
     te-graphic
     glm
-    PRIVATE
     assimp::assimp)
 
-target_include_directories(te-model PUBLIC
-    ${GLM_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/include)
-
+target_include_directories(te-model PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 install(TARGETS te-model LIBRARY DESTINATION lib)
 

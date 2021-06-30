@@ -573,8 +573,8 @@ void EditorLayer::onImGuiRender() {
             Application::instance().getActiveScene();
         std::size_t size = scene->entities.size();
         char entityLabel[128];
-        for (std::size_t i = 0; i < size; ++i) {
-            sprintf(entityLabel, "ID:%lld Name:%s", i,
+        for (uint32_t i = 0; i < size; ++i) {
+            sprintf(entityLabel, "ID:%d Name:%s", i,
                     scene->entities.get(i)->getName().c_str());
             if (ImGui::Selectable(entityLabel, i == m_activeEntityId)) {
                 m_activeEntityId = i;
