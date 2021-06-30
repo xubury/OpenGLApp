@@ -18,6 +18,10 @@ void Simplex::pushFront(const Support& point) {
     m_points = {point, m_points[0], m_points[1], m_points[2]};
     m_size = std::min(m_size + 1u, 4u);
 }
+void Simplex::pushFront(const Support&& point) {
+    m_points = {point, m_points[0], m_points[1], m_points[2]};
+    m_size = std::min(m_size + 1u, 4u);
+}
 
 Support& Simplex::operator[](uint32_t i) { return m_points[i]; }
 
@@ -134,7 +138,8 @@ std::pair<bool, Simplex> gjk(const Collider* colliderA,
                              const Collider* colliderB,
                              std::size_t maxIterartion) {
     // TODO: initial direction?
-    glm::vec3 initDir(1.0, 0, 0);
+    glm::vec3 initDir =
+        colliderB->owner()->getPosition() - colliderA->owner()->getPosition();
     glm::vec3 support = findSupport(colliderA, colliderB, initDir);
     Simplex points;
     points.pushFront(Support(support, initDir));

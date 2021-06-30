@@ -25,6 +25,8 @@ class Simplex {
 
     void pushFront(const Support& point);
 
+    void pushFront(const Support&& point);
+
     Support& operator[](uint32_t i);
 
     uint32_t size() const;

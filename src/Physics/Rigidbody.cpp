@@ -11,7 +11,7 @@ Rigidbody::Rigidbody(float mass, bool isKinematic)
       m_torque(0.f),
       m_angularVelocity(0.f),
       m_invMass(1.f / mass),
-      m_localInvInertia(10.f),
+      m_localInvInertia(20.f),
       m_restitution(0.5f),
       m_staticFriction(0.5f),
       m_dynamicFriction(0.5f),
@@ -29,11 +29,12 @@ void Rigidbody::step(const Time &deltaTime) {
                              glm::transpose(rotation) * m_torque * dt;
 
         owner()->translateWorld(m_velocity * dt);
-        glm::quat rot = glm::angleAxis(glm::length(m_angularVelocity) * dt,
-                                       glm::length(m_angularVelocity) == 0
-                                           ? glm::vec3(0, 0, 1)
-                                           : glm::normalize(m_angularVelocity));
-        owner()->rotateWorld(rot);
+        if (glm::length(m_angularVelocity) >
+            std::numeric_limits<float>::epsilon()) {
+            glm::quat rot = glm::angleAxis(glm::length(m_angularVelocity) * dt,
+                                           glm::normalize(m_angularVelocity));
+            owner()->rotateWorld(rot);
+        }
         m_force = glm::vec3(0);
         m_torque = glm::vec3(0);
     }

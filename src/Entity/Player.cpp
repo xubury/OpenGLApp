@@ -27,7 +27,7 @@ Player::Player(EntityManager<EntityBase> *manager, uint32_t id)
     component<Rigidbody>()->setCenterOfMass(glm::vec3(0.f, height / 2.f, 0.f));
     add<HullCollider>();
     MakeCubeCollider(*component<HullCollider>().get(), width, height, length,
-                     glm::vec3(0, 0.5f, 0));
+                     glm::vec3(0, height / 2.f, 0));
 
     add<PlayerCameraComp>(0, 0, Application::instance().getWindow().width(),
                           Application::instance().getWindow().height());
