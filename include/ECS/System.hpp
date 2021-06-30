@@ -43,7 +43,7 @@ class System : public VSystem<ENTITY> {
 
 #define ES_INIT_VSYSTEM(ENTITY) \
     template <>                 \
-    uint32_t VSystem<ENTITY>::s_familyCounter = 0;
+    uint32_t te::VSystem<ENTITY>::s_familyCounter = 0;
 
 template <typename ENTITY>
 class SystemManager {

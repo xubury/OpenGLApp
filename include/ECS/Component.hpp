@@ -66,7 +66,7 @@ class VComponent {
 
 #define ES_INIT_VCOMPONENT(ENTITY) \
     template <>                    \
-    uint32_t VComponent<ENTITY>::s_familyCounter = 0;
+    uint32_t te::VComponent<ENTITY>::s_familyCounter = 0;
 
 template <typename COMPONENT, typename ENTITY>
 class Component : public VComponent<ENTITY> {
