@@ -43,6 +43,7 @@ set(Graphic_Src
     ${Src_Root}/Primitive.cpp
     ${Src_Root}/Material.cpp
     ${Src_Root}/FrameBuffer.cpp
+    ${Src_Root}/Drawable.cpp
     ${Src_Root}/LightBase.cpp)
 
 add_library(te-graphic ${Graphic_Src})
