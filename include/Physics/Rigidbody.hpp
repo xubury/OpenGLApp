@@ -62,7 +62,7 @@ struct Rigidbody : public CollisionObject {
 
     float m_invMass;
 
-    glm::mat3 m_localInertia;
+    glm::mat3 m_localInvInertia;
 
     float m_restitution;
 

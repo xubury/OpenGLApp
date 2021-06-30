@@ -36,18 +36,18 @@ ContactManifold Collision::collide(Collider *objA, Collider *objB) {
 
 ContactManifold Collision::collideTerrainSphere(Collider *objA,
                                                 Collider *objB) {
-    ContactManifold manifold;
     TerrainCollider *terrain = dynamic_cast<TerrainCollider *>(objA);
     SphereCollider *sphere = dynamic_cast<SphereCollider *>(objB);
 
     glm::vec3 sphereTerrainPos =
         terrain->owner()->toLocalSpace(sphere->getCenterInWorld());
     if (terrain->outOfBound(sphereTerrainPos.x, sphereTerrainPos.z)) {
-        return manifold;
+        return {};
     }
     float height = terrain->height(sphereTerrainPos.x, sphereTerrainPos.z);
     glm::vec3 normal = terrain->normal(sphereTerrainPos.x, sphereTerrainPos.z);
     float depth = height + sphere->getRadius() - sphereTerrainPos.y;
+    ContactManifold manifold;
     if (depth >= 0) {
         manifold.objA = objA->owner()->component<CollisionObject>().get();
         manifold.objB = objB->owner()->component<CollisionObject>().get();
@@ -59,7 +59,7 @@ ContactManifold Collision::collideTerrainSphere(Collider *objA,
         manifold.points[0].position =
             sphere->getCenterInWorld() - worldNormal * sphere->getRadius();
         manifold.points[0].positionA =
-            objA->owner()->toLocalSpace(manifold.points[0].position);
+            glm::vec3(sphereTerrainPos.x, height, sphereTerrainPos.z);
         manifold.points[0].positionB =
             objB->owner()->toLocalSpace(manifold.points[0].position);
         manifold.points[0].depth = depth;
@@ -71,30 +71,33 @@ ContactManifold Collision::collideTerrainSphere(Collider *objA,
 }
 
 ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
-    ContactManifold manifold;
     TerrainCollider *terrain = dynamic_cast<TerrainCollider *>(objA);
     HullCollider *hull = dynamic_cast<HullCollider *>(objB);
     glm::vec3 hullTerrainPos =
         terrain->owner()->toLocalSpace(hull->owner()->getPosition());
 
     if (terrain->outOfBound(hullTerrainPos.x, hullTerrainPos.z)) {
-        return manifold;
+        return {};
     }
 
     float height = terrain->height(hullTerrainPos.x, hullTerrainPos.z);
     glm::vec3 normal = terrain->normal(hullTerrainPos.x, hullTerrainPos.z);
-    glm::mat3 rotateInv = glm::inverse(terrain->owner()->getTransform());
-    glm::vec3 worldNormal = glm::transpose(rotateInv) * normal;
+    glm::vec3 worldNormal =
+        glm::mat3(
+            glm::transpose(glm::inverse(terrain->owner()->getTransform()))) *
+        normal;
     worldNormal = glm::normalize(worldNormal);
     glm::vec3 support = hull->findFurthestPoint(-worldNormal);
     float depth = height - glm::dot(terrain->owner()->toLocalSpace(support),
                                     glm::vec3(0.f, 1.f, 0.f));
+    ContactManifold manifold;
     if (depth >= 0) {
         manifold.objA = objA->owner()->component<CollisionObject>().get();
         manifold.objB = objB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
         manifold.points[0].position = support;
-        manifold.points[0].positionA = objA->owner()->toLocalSpace(support);
+        manifold.points[0].positionA =
+            glm::vec3(hullTerrainPos.x, height, hullTerrainPos.z);
         manifold.points[0].positionB = objB->owner()->toLocalSpace(support);
         manifold.points[0].depth = depth;
         objA->debugPoint = manifold.points[0].position;
@@ -107,12 +110,12 @@ ContactManifold Collision::collideTerrainHull(Collider *objA, Collider *objB) {
 ContactManifold Collision::collideSpheres(Collider *objA, Collider *objB) {
     SphereCollider *sphereA = dynamic_cast<SphereCollider *>(objA);
     SphereCollider *sphereB = dynamic_cast<SphereCollider *>(objB);
-    ContactManifold manifold;
     glm::vec3 aWorldPos = sphereA->getCenterInWorld();
     glm::vec3 bWorldPos = sphereB->getCenterInWorld();
     float dist = glm::length(aWorldPos - bWorldPos);
 
     float depth = sphereA->getRadius() + sphereB->getRadius() - dist;
+    ContactManifold manifold;
     if (depth >= 0) {
         manifold.objA = sphereA->owner()->component<CollisionObject>().get();
         manifold.objB = sphereB->owner()->component<CollisionObject>().get();

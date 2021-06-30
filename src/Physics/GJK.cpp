@@ -272,12 +272,8 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     glm::vec3 aDir = polytope[faces[minFace * 3]].direction;
     glm::vec3 bDir = polytope[faces[minFace * 3 + 1]].direction;
     glm::vec3 cDir = polytope[faces[minFace * 3 + 2]].direction;
-    glm::vec4 plane = buildPlane(a, minNormal);
-    float len = intersectRayPlane(glm::vec3(0), minNormal, plane);
-    TE_CORE_ASSERT(len > 0);
-    glm::vec3 cloestPoint = minNormal * len;
     float u, v, w;
-    baryCentric(a, b, c, cloestPoint, u, v, w);
+    baryCentric(a, b, c, glm::vec3(0), u, v, w);
     glm::vec3 supportA = colliderA->findFurthestPoint(aDir);
     glm::vec3 supportB = colliderA->findFurthestPoint(bDir);
     glm::vec3 supportC = colliderA->findFurthestPoint(cDir);
@@ -290,8 +286,10 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     manifold.pointCount = 1;
     manifold.points[0].depth = minDist + 0.001f;
     manifold.points[0].position = contactPoint;
-    manifold.points[0].positionA = colliderA->owner()->toLocalSpace(contactPoint);
-    manifold.points[0].positionB = colliderB->owner()->toLocalSpace(contactPoint);
+    manifold.points[0].positionA =
+        colliderA->owner()->toLocalSpace(contactPoint);
+    manifold.points[0].positionB =
+        colliderB->owner()->toLocalSpace(contactPoint);
     colliderA->debugPoint = contactPoint;
     colliderB->debugPoint = contactPoint;
     return manifold;

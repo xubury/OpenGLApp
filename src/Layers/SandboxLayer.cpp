@@ -47,6 +47,10 @@ void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
                      length);
     cube->component<Rigidbody>()->addImpulse(impulse);
     cube->setPosition(pos);
+    RandomGenerator random;
+    glm::vec3 eulerAngle(random.rnd(0.f, M_PI), random.rnd(0.f, M_PI),
+                         random.rnd(0.f, M_PI));
+    cube->setEulerAngle(eulerAngle);
     cube->setName("Cube");
 }
 
@@ -214,7 +218,7 @@ void SandboxLayer::onEventPoll(const Event& event) {
                                         Material::TEXTURE_SPECULAR);
                 glm::vec3 impulse(random.rnd(-25, 25), random.rnd(-25, 25),
                                   random.rnd(-25, 25));
-                addCube(glm::vec3(5, 15, 0), 1, 1, 1, impulse, textures, false);
+                addCube(glm::vec3(5, 5, 0), 1, 1, 1, impulse, textures, true);
             } break;
             default:
                 break;

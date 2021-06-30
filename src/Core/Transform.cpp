@@ -88,8 +88,7 @@ glm::vec3 Transformable::toLocalSpace(const glm::vec3 &world) const {
 }
 
 glm::vec3 Transformable::toWorldSpace(const glm::vec3 &local) const {
-    glm::mat3 rotation = glm::toMat3(m_rotation);
-    return rotation * local + m_position;
+    return m_rotation * local + m_position;
 }
 
 }  // namespace te

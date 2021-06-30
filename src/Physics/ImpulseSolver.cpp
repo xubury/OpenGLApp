@@ -22,9 +22,9 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
 
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
             const glm::vec3 rA =
-                manifold.points[i].positionA - bodyA->getCenterOfMass();
+                manifold.points[i].position - bodyA->getCenterOfMassWorld();
             const glm::vec3 rB =
-                manifold.points[i].positionB - bodyB->getCenterOfMass();
+                manifold.points[i].position - bodyB->getCenterOfMassWorld();
             glm::vec3 velRelative =
                 velB + glm::cross(wB, rB) - velA - glm::cross(wA, rA);
             float speed = glm::dot(velRelative, manifold.normal);

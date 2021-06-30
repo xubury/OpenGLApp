@@ -11,12 +11,12 @@ Rigidbody::Rigidbody(float mass, bool isKinematic)
       m_torque(0.f),
       m_angularVelocity(0.f),
       m_invMass(1.f / mass),
-      m_localInertia(10.f),
+      m_localInvInertia(10.f),
       m_restitution(0.5f),
-      m_staticFriction(0.2f),
-      m_dynamicFriction(0.2f),
+      m_staticFriction(0.5f),
+      m_dynamicFriction(0.5f),
       m_isKinematic(isKinematic) {
-    m_localInertia = glm::inverse(m_localInertia);
+    m_localInvInertia = glm::inverse(m_localInvInertia);
     TE_ASSERT(mass > 0, "Rigidbody mass can't be less than zero!")
 }
 
@@ -25,7 +25,7 @@ void Rigidbody::step(const Time &deltaTime) {
         float dt = deltaTime.count();
         m_velocity += m_force * m_invMass * dt;
         glm::mat3 rotation = glm::toMat3(owner()->getRotation());
-        m_angularVelocity += rotation * m_localInertia *
+        m_angularVelocity += rotation * m_localInvInertia *
                              glm::transpose(rotation) * m_torque * dt;
 
         owner()->translateWorld(m_velocity * dt);
@@ -41,7 +41,8 @@ void Rigidbody::step(const Time &deltaTime) {
 
 void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &pos) {
     m_force += force;
-    addTorque(glm::cross(pos - getCenterOfMass(), force));
+    addTorque(
+        glm::cross(owner()->getRotation() * (pos - getCenterOfMass()), force));
 }
 
 void Rigidbody::addTorque(const glm::vec3 &torque) { m_torque += torque; }

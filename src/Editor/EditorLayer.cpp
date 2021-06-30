@@ -72,8 +72,9 @@ static void renderPointLightProperty(PointLight& light) {
 static void renderCameraProperty(CameraComp& cam) {
     if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
         bool primary = cam.isPrimary();
-        ImGui::Checkbox("Primary", &primary);
-        cam.setPrimary(primary);
+        if (ImGui::Checkbox("Primary", &primary)) {
+            cam.setPrimary(primary);
+        }
         glm::vec3 eulerAngle = glm::degrees(cam.getEulerAngle());
         if (ImGui::InputFloat3("Rotation", &eulerAngle[0], "%.3f")) {
             cam.setEulerAngle(glm::radians(eulerAngle));
@@ -87,8 +88,9 @@ static void renderCameraProperty(CameraComp& cam) {
         PlayerCameraComp* playerCam = dynamic_cast<PlayerCameraComp*>(&cam);
         if (playerCam) {
             float dist = playerCam->getDistance();
-            ImGui::InputFloat("Distance", &dist);
-            playerCam->setDistance(dist);
+            if (ImGui::InputFloat("Distance", &dist)) {
+                playerCam->setDistance(dist);
+            }
         }
         ImGui::TreePop();
     }
@@ -104,21 +106,29 @@ static void renderRigidbodyProperty(Rigidbody& body) {
         float restitution = body.getRestitution();
         float staticFriction = body.getStaticFriction();
         float dynamicFriction = body.getDynamicFriction();
-        ImGui::InputFloat("Mass", &mass);
-        ImGui::SliderFloat("Restitution", &restitution, 0.0f, 1.0f);
-        ImGui::InputFloat("Static friction", &staticFriction);
-        ImGui::InputFloat("Dynamic friction", &dynamicFriction);
-        body.setMass(mass);
-        body.setRestitution(restitution);
-        body.setStaticFriction(staticFriction);
-        body.setDynamicFriction(dynamicFriction);
+        if (ImGui::InputFloat("Mass", &mass)) {
+            body.setMass(mass);
+        }
+        if (ImGui::SliderFloat("Restitution", &restitution, 0.0f, 1.0f)) {
+            body.setRestitution(restitution);
+        }
+        if (ImGui::InputFloat("Static friction", &staticFriction)) {
+            body.setStaticFriction(staticFriction);
+        }
+        if (ImGui::InputFloat("Dynamic friction", &dynamicFriction)) {
+            body.setDynamicFriction(dynamicFriction);
+        }
 
         glm::vec3 velocity = body.getVelocity();
         glm::vec3 angularVelocity = body.getAngularVelocity();
-        ImGui::InputFloat3("Velocity", &velocity[0]);
-        ImGui::InputFloat3("Angular velocity", &angularVelocity[0]);
-        body.setVelocity(velocity);
+        if (ImGui::InputFloat3("Velocity", &velocity[0])) {
+            body.setVelocity(velocity);
+        }
+        if (ImGui::InputFloat3("Angular velocity", &angularVelocity[0])) {
+        }
         body.setAngularVelocity(angularVelocity);
+
+        ;
         ImGui::TreePop();
     }
 }
