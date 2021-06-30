@@ -4,10 +4,11 @@
 #include <vector>
 #include "Core/Base.hpp"
 #include "Core/Layer.hpp"
+#include "Core/Export.hpp"
 
 namespace te {
 
-class LayerStack {
+class TE_API LayerStack {
    public:
     LayerStack(); 
 

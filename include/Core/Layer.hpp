@@ -7,7 +7,7 @@
 
 namespace te {
 
-class Layer {
+class TE_API Layer {
    public:
     Layer(const std::string &name) : m_name(name), m_blockEvent(false) {}
 

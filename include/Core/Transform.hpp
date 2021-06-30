@@ -1,12 +1,13 @@
 #ifndef TRANSFORM_HPP
 #define TRANSFORM_HPP
 
+#include "Core/Export.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace te {
 
-class Transformable {
+class TE_API Transformable {
    public:
     Transformable();
 

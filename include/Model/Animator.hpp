@@ -6,7 +6,7 @@
 
 namespace te {
 
-class Animator {
+class TE_API Animator {
    public:
     Animator(Animation *animation);
 

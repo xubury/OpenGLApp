@@ -5,20 +5,21 @@
 #include <string>
 #include <vector>
 
+#include "Core/Export.hpp"
 #include "Model/Bone.hpp"
 
 namespace te {
 
 class Model;
 
-struct BoneNode {
+struct TE_API BoneNode {
     glm::mat4 transform;
     std::string name;
     int childrenCount = 0;
     std::vector<BoneNode> children;
 };
 
-class Animation {
+class TE_API Animation {
    public:
     Animation(const std::string &animationPath, Model &model);
 

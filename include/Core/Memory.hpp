@@ -2,12 +2,13 @@
 #define MEMORY_HPP
 
 #include "Core/Base.hpp"
+#include "Core/Export.hpp"
 
 #include <vector>
 
 namespace te {
 
-class VPool {
+class TE_API VPool {
    public:
     VPool(const VPool&) = delete;
     VPool& operator=(const VPool&) = delete;
@@ -56,7 +57,7 @@ class VPool {
 };
 
 template <typename T>
-class Pool : public VPool {
+class TE_API Pool : public VPool {
    public:
     Pool(const Pool&) = delete;
     Pool& operator=(const Pool&) = delete;

@@ -27,12 +27,13 @@ target_compile_options(te-model PRIVATE -Wall -Wextra -Wundef -pedantic)
 target_compile_definitions(te-model PRIVATE TE_EXPORT)
 
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(te-model PUBLIC TE_SHARED)
+    target_compile_definitions(te-model PRIVATE TE_SHARED)
 endif()
 
 target_link_libraries(te-model
     PUBLIC
     te-core
+    te-graphic
     glm
     PRIVATE
     assimp::assimp)

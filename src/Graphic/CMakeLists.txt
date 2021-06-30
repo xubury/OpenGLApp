@@ -53,7 +53,7 @@ target_compile_options(te-graphic PRIVATE -Wall -Wextra -Wundef -pedantic)
 target_compile_definitions(te-graphic PRIVATE TE_EXPORT)
 
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(te-graphic PUBLIC TE_SHARED)
+    target_compile_definitions(te-graphic PRIVATE TE_SHARED)
 endif()
 
 

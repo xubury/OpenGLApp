@@ -2,6 +2,7 @@
 #define RESOURCE_MANAGER
 
 #include "Core/Base.hpp"
+#include "Core/Export.hpp"
 #include <stdexcept>
 #include <unordered_map>
 #include <memory>
@@ -9,7 +10,7 @@
 namespace te {
 
 template <typename IDENTIFIER, typename RESOURCE>
-class ResourceManager {
+class TE_API ResourceManager {
    public:
     ResourceManager(const ResourceManager &) = delete;
     ResourceManager &operator=(const ResourceManager &) = delete;

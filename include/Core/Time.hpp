@@ -2,6 +2,7 @@
 #define TIME_HPP
 
 #include <chrono>
+#include "Core/Export.hpp"
 
 namespace te {
 
@@ -9,7 +10,7 @@ using MicroSeconds = std::chrono::duration<float, std::micro>;
 using MilliSeconds = std::chrono::duration<float, std::milli>;
 using Seconds = std::chrono::duration<float>;
 
-class Time : public Seconds {
+class TE_API Time : public Seconds {
    public:
     Time();
 
@@ -23,7 +24,7 @@ class Time : public Seconds {
     static const Time Zero;
 };
 
-class Clock {
+class TE_API Clock {
    public:
     Clock();
 
@@ -39,11 +40,11 @@ class Clock {
     ClockType::time_point m_clock;
 };
 
-Time seconds(float amount);
+Time TE_API seconds(float amount);
 
-Time milliseconds(int32_t amount);
+Time TE_API milliseconds(int32_t amount);
 
-Time microseconds(int64_t amount);
+Time TE_API microseconds(int64_t amount);
 
 }  // namespace te
 

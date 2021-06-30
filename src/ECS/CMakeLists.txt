@@ -17,5 +17,5 @@ install(FILES ${ECS_Include} DESTINATION include/ECS)
 set_property(TARGET te-ecs PROPERTY CXX_STANDARD 17)
 
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(te-ecs PUBLIC TE_SHARED)
+    target_compile_definitions(te-ecs INTERFACE TE_SHARED)
 endif()
