@@ -2,6 +2,7 @@
 #define LIGHT_HPP
 
 #include "Graphic/LightBase.hpp"
+#include "Entity/EntityBase.hpp"
 #include "ECS/ECS.hpp"
 
 namespace te {

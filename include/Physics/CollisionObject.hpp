@@ -1,7 +1,7 @@
 #ifndef COLLISION_OBJECT_HPP
 #define COLLISION_OBJECT_HPP
 
-#include <ECS/ECS.hpp>
+#include "Entity/EntityBase.hpp"
 
 namespace te {
 

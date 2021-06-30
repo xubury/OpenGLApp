@@ -2,6 +2,7 @@
 #define EDITOR_LAYER_HPP
 
 #include "ECS/ECS.hpp"
+#include "Entity/EntityBase.hpp"
 #include "Editor/EditorContext.hpp"
 #include "Editor/EditorCamera.hpp"
 #include "Core/Layer.hpp"

@@ -2,6 +2,7 @@
 #define SHADOW_MAP_HPP
 
 #include "ECS/ECS.hpp"
+#include "Entity/EntityBase.hpp"
 #include <glm/glm.hpp>
 #include "Graphic/Camera.hpp"
 

@@ -1,8 +1,7 @@
 #ifndef COLLIDER_HPP
 #define COLLIDER_HPP
 
-#include "ECS/ECS.hpp"
-
+#include "Entity/EntityBase.hpp"
 #include <glm/glm.hpp>
 
 namespace te {

@@ -7,6 +7,4 @@
 #include "ECS/System.hpp"
 #include "ECS/SceneManager.hpp"
 
-#include "Entity/EntityBase.hpp"
-
 #endif

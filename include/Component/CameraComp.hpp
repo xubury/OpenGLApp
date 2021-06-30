@@ -3,6 +3,7 @@
 
 #include "ECS/ECS.hpp"
 #include "Graphic/Camera.hpp"
+#include "Entity/EntityBase.hpp"
 
 namespace te {
 

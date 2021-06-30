@@ -3,7 +3,7 @@
 
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Material.hpp"
-#include "ECS/ECS.hpp"
+#include "Entity/EntityBase.hpp"
 
 namespace te {
 

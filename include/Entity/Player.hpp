@@ -1,7 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "ECS/ECS.hpp"
+#include "Entity/EntityBase.hpp"
 #include "Graphic/VertexArray.hpp"
 #include "Graphic/Material.hpp"
 #include "Window/ActionMap.hpp"
