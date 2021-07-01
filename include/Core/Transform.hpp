@@ -45,9 +45,16 @@ class TE_API Transformable {
 
     glm::vec3 getFront() const;
 
+    glm::vec3 getScale() const;
+
     glm::vec3 toLocalSpace(const glm::vec3 &world) const;
 
     glm::vec3 toWorldSpace(const glm::vec3 &local) const;
+
+    glm::vec3 toLocalVector(const glm::vec3 &worldVec) const;
+
+    glm::vec3 toWorldVector(const glm::vec3 &localVec) const;
+
    protected:
     glm::vec3 m_position;
     glm::quat m_rotation;

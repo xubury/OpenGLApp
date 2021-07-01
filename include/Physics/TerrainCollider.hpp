@@ -16,7 +16,8 @@ class TerrainCollider : public Collider {
 
     bool outOfBound(float localX, float localZ) const;
 
-    glm::vec3 findFurthestPoint(const glm::vec3 &) const override {
+    glm::vec3 findFurthestPoint(const glm::vec3 &,
+                                const Transformable &) const override {
         TE_CORE_ASSERT(
             false,
             "TerrainCollider is not supposed to call findFurthestPoint!");

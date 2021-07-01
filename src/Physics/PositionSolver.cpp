@@ -10,8 +10,8 @@ void PositionSolver::solve(const std::vector<ContactManifold> &manifolds,
         Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA);
         Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB);
 
-        const float massA = bodyA ? bodyA->getMass() : 1.0f;
-        const float massB = bodyB ? bodyB->getMass() : 1.0f;
+        const float invMassA = bodyA ? bodyA->getInvMass() : 1.0f;
+        const float invMassB = bodyB ? bodyB->getInvMass() : 1.0f;
 
         for (uint32_t i = 0; i < manifold.pointCount; ++i) {
             const float percent = 0.8f;
@@ -19,16 +19,12 @@ void PositionSolver::solve(const std::vector<ContactManifold> &manifolds,
             glm::vec3 correction =
                 manifold.normal * percent *
                 std::max(manifold.points[i].depth - slop, 0.0f) /
-                (massA + massB);
-            if (bodyB) {
-                if (bodyB->isKinematic()) {
-                    bodyB->owner()->translateWorld(correction * massB / 2.f);
-                }
+                (invMassA + invMassB);
+            if (bodyB && bodyB->isKinematic()) {
+                bodyB->owner()->translateWorld(correction * invMassB);
             }
-            if (bodyA) {
-                if (bodyA->isKinematic()) {
-                    bodyA->owner()->translateWorld(-correction * massA / 2.f);
-                }
+            if (bodyA && bodyA->isKinematic()) {
+                bodyA->owner()->translateWorld(-correction * invMassA);
             }
         }
     }

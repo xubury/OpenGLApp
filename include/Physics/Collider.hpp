@@ -20,11 +20,14 @@ class Collider : public Component<Collider, EntityBase> {
     Collider(Type type) : m_type(type) {}
 
     // find the furthest point in direction using dot product
-    virtual glm::vec3 findFurthestPoint(const glm::vec3 &direction) const = 0;
+    virtual glm::vec3 findFurthestPoint(
+        const glm::vec3 &direction, const Transformable &transform) const = 0;
 
     virtual Type getType() const { return m_type; };
 
     glm::vec3 debugPoint;
+    glm::vec3 debugNormal;
+
    private:
     Type m_type;
 };

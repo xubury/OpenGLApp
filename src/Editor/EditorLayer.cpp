@@ -250,9 +250,9 @@ void EditorLayer::renderCollider() {
             case Collider::SPHERE_COLLIDER: {
                 const SphereCollider* sphere =
                     dynamic_cast<const SphereCollider*>(obj.get());
-                Primitive::instance().drawSphere(sphere->getCenterInWorld(),
-                                                 glm::vec4(0, 1, 0, 0.5),
-                                                 sphere->getRadius(), 20, 20);
+                Primitive::instance().drawSphere(
+                    getActiveEntityPtr()->toWorldSpace(sphere->getCenter()),
+                    glm::vec4(0, 1, 0, 0.5), sphere->getRadius(), 20, 20);
             } break;
             case Collider::HULL_COLLIDER: {
             } break;
@@ -601,9 +601,14 @@ void EditorLayer::onImGuiRender() {
     renderCollider();
 
     if (getActiveEntityPtr()->has<Collider>()) {
-        Primitive::instance().drawSphereFilled(
-            getActiveEntityPtr()->component<Collider>()->debugPoint,
-            glm::vec4(1, 0, 0, 1), getClipSizeInWorld(0.01f));
+        glm::vec3 worldPos = getActiveEntityPtr()->toWorldSpace(
+            getActiveEntityPtr()->component<Collider>()->debugPoint);
+        Primitive::instance().drawSphereFilled(worldPos, glm::vec4(1, 0, 0, 1),
+                                               getClipSizeInWorld(0.01f));
+        Primitive::instance().drawLine(
+            worldPos,
+            worldPos + getActiveEntityPtr()->component<Collider>()->debugNormal,
+            glm::vec4(0, 1, 1, 1), 2);
     }
 
     Renderer::endScene();

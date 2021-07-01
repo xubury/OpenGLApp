@@ -39,12 +39,16 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
                                body->getCenterOfMass());
             }
         }
+        Transformable *transformA =
+            dynamic_cast<Transformable *>(manager.get(a->id()));
         for (auto b = view.begin(); b != end; ++b) {
             if (a == b) continue;
             if (a->has<Collider>() && b->has<Collider>()) {
-                ContactManifold manifold =
-                    Collision::collide(a->component<Collider>().get(),
-                                       b->component<Collider>().get());
+                Transformable *transformB =
+                    dynamic_cast<Transformable *>(manager.get(b->id()));
+                ContactManifold manifold = Collision::collide(
+                    a->component<Collider>().get(), transformA,
+                    b->component<Collider>().get(), transformB);
                 if (manifold.hasCollision()) {
                     manifolds.emplace_back(manifold);
                 }

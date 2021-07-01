@@ -19,6 +19,8 @@ struct Rigidbody : public CollisionObject {
 
     float getMass() const;
 
+    float getInvMass() const;
+
     void setMass(float mass);
 
     float getRestitution() const;
@@ -60,6 +62,7 @@ struct Rigidbody : public CollisionObject {
     glm::vec3 m_torque;
     glm::vec3 m_angularVelocity;
 
+    float m_mass;
     float m_invMass;
 
     glm::mat3 m_localInvInertia;

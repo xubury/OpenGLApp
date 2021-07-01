@@ -6,22 +6,41 @@
 
 namespace te {
 
-using CollisionTest = ContactManifold (*)(Collider *objA, Collider *objB);
+using CollisionTest = ContactManifold (*)(Collider *objA,
+                                          Transformable *transformA,
+                                          Collider *objB,
+                                          Transformable *transformB);
 
 class Collision {
    public:
-    static ContactManifold collide(Collider *objA, Collider *objB);
+    static ContactManifold collide(Collider *objA, Transformable *transformA,
+                                   Collider *objB, Transformable *transformB);
 
    private:
-    static ContactManifold collideTerrainSphere(Collider *objA, Collider *objB);
+    static ContactManifold collideTerrainSphere(Collider *objA,
+                                                Transformable *transformA,
+                                                Collider *objB,
+                                                Transformable *transformB);
 
-    static ContactManifold collideTerrainHull(Collider *objA, Collider *objB);
+    static ContactManifold collideTerrainHull(Collider *objA,
+                                              Transformable *transformA,
+                                              Collider *objB,
+                                              Transformable *transformB);
 
-    static ContactManifold collideSpheres(Collider *objA, Collider *objB);
+    static ContactManifold collideSpheres(Collider *objA,
+                                          Transformable *transformA,
+                                          Collider *objB,
+                                          Transformable *transformB);
 
-    static ContactManifold collideSphereHull(Collider *objA, Collider *objB);
+    static ContactManifold collideSphereHull(Collider *objA,
+                                             Transformable *transformA,
+                                             Collider *objB,
+                                             Transformable *transformB);
 
-    static ContactManifold collideHulls(Collider *objA, Collider *objB);
+    static ContactManifold collideHulls(Collider *objA,
+                                        Transformable *transformA,
+                                        Collider *objB,
+                                        Transformable *transformB);
 
     static const CollisionTest
         collisionTable[Collider::Type::COLLIDIER_TYPE_COUNT]

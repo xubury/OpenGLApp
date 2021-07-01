@@ -7,13 +7,12 @@ namespace te {
 
 class SphereCollider : public Collider {
    public:
-    SphereCollider(const glm::vec3& center, float radius);
+    SphereCollider(const glm::vec3 &center, float radius);
 
-    glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
+    glm::vec3 findFurthestPoint(const glm::vec3 &direction,
+                                const Transformable &transform) const override;
 
     glm::vec3 getCenter() const;
-
-    glm::vec3 getCenterInWorld() const;
 
     float getRadius() const;
 

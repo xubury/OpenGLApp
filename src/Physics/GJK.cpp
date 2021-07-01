@@ -94,9 +94,9 @@ static bool tetrahedron(Simplex& points, glm::vec3& direction) {
     const glm::vec3 ad = d.position - a.position;
     const glm::vec3 ao = -a.position;
 
-    const glm::vec3 abc = cross(ab, ac);
-    const glm::vec3 acd = cross(ac, ad);
-    const glm::vec3 adb = cross(ad, ab);
+    const glm::vec3 abc = glm::cross(ab, ac);
+    const glm::vec3 acd = glm::cross(ac, ad);
+    const glm::vec3 adb = glm::cross(ad, ab);
 
     if (sameDirection(abc, ao)) {
         points = {a, b, c};
@@ -128,25 +128,31 @@ static bool nextSimplex(Simplex& points, glm::vec3& direction) {
     return false;
 }
 
-glm::vec3 findSupport(const Collider* colliderA, const Collider* colliderB,
+glm::vec3 findSupport(const Collider* colliderA,
+                      const Transformable* transformA,
+                      const Collider* colliderB,
+                      const Transformable* transformB,
                       const glm::vec3& direction) {
-    return colliderA->findFurthestPoint(direction) -
-           colliderB->findFurthestPoint(-direction);
+    return colliderA->findFurthestPoint(direction, *transformA) -
+           colliderB->findFurthestPoint(-direction, *transformB);
 }
 
 std::pair<bool, Simplex> gjk(const Collider* colliderA,
+                             const Transformable* transformA,
                              const Collider* colliderB,
+                             const Transformable* transformB,
                              std::size_t maxIterartion) {
     // TODO: initial direction?
-    glm::vec3 initDir =
-        colliderB->owner()->getPosition() - colliderA->owner()->getPosition();
-    glm::vec3 support = findSupport(colliderA, colliderB, initDir);
+    glm::vec3 initDir(1.0f, 0.f, 0.f);
+    glm::vec3 support =
+        findSupport(colliderA, transformA, colliderB, transformB, initDir);
     Simplex points;
     points.pushFront(Support(support, initDir));
     glm::vec3 direction = -support;
     std::size_t iteration = 0;
     while (iteration++ < maxIterartion) {
-        support = findSupport(colliderA, colliderB, direction);
+        support = findSupport(colliderA, transformA, colliderB, transformB,
+                              direction);
         if (!sameDirection(support, direction)) {
             break;
         }
@@ -163,7 +169,7 @@ static std::pair<std::vector<glm::vec4>, std::size_t> getFaceNormals(
     const std::vector<std::size_t>& faces) {
     std::vector<glm::vec4> normals;
     std::size_t minTriangle = 0;
-    float minDistance = FLT_MAX;
+    float minDistance = std::numeric_limits<float>::max();
 
     for (size_t i = 0; i < faces.size(); i += 3) {
         glm::vec3 a = polytope[faces[i]].position;
@@ -204,7 +210,9 @@ static void addUniqueEdge(EdgeList& edges,
 }
 
 ContactManifold epa(const Simplex& simplex, Collider* colliderA,
-                    Collider* colliderB, std::size_t maxIterartion) {
+                    const Transformable* transformA, Collider* colliderB,
+                    const Transformable* transformB,
+                    std::size_t maxIterartion) {
     std::vector<Support> polytope(simplex.begin(), simplex.end());
     std::vector<std::size_t> faces = {0, 1, 2, 0, 3, 1, 0, 2, 3, 1, 3, 2};
     auto [normals, minFace] = getFaceNormals(polytope, faces);
@@ -218,13 +226,14 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
         if (iteration++ >= maxIterartion) {
             break;
         }
-        glm::vec3 support = findSupport(colliderA, colliderB, minNormal);
+        glm::vec3 support = findSupport(colliderA, transformA, colliderB,
+                                        transformB, minNormal);
         float sDistance = glm::dot(minNormal, support);
         if (std::abs(sDistance - minDist) > 0.001f) {
             minDist = std::numeric_limits<float>::max();
             EdgeList uniqueEdges;
             for (std::size_t i = 0; i < normals.size(); ++i) {
-                if (sameDirection(normals[i], support)) {
+                if (sameDirection(glm::vec3(normals[i]), support)) {
                     std::size_t f = i * 3;
                     addUniqueEdge(uniqueEdges, faces, f, f + 1);
                     addUniqueEdge(uniqueEdges, faces, f + 1, f + 2);
@@ -278,11 +287,15 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     glm::vec3 bDir = polytope[faces[minFace * 3 + 1]].direction;
     glm::vec3 cDir = polytope[faces[minFace * 3 + 2]].direction;
     float u, v, w;
+    glm::vec3 supportA, supportB, supportC;
     baryCentric(a, b, c, glm::vec3(0), u, v, w);
-    glm::vec3 supportA = colliderA->findFurthestPoint(aDir);
-    glm::vec3 supportB = colliderA->findFurthestPoint(bDir);
-    glm::vec3 supportC = colliderA->findFurthestPoint(cDir);
+
+    supportA = colliderA->findFurthestPoint(aDir, *transformA);
+    supportB = colliderA->findFurthestPoint(bDir, *transformA);
+    supportC = colliderA->findFurthestPoint(cDir, *transformA);
     glm::vec3 contactPoint(supportA * u + supportB * v + supportC * w);
+    glm::vec3 contactPointA = transformA->toLocalSpace(contactPoint);
+    glm::vec3 contactPointB = transformB->toLocalSpace(contactPoint);
 
     ContactManifold manifold;
     manifold.objA = colliderA->owner()->component<CollisionObject>().get();
@@ -291,12 +304,12 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     manifold.pointCount = 1;
     manifold.points[0].depth = minDist + 0.001f;
     manifold.points[0].position = contactPoint;
-    manifold.points[0].positionA =
-        colliderA->owner()->toLocalSpace(contactPoint);
-    manifold.points[0].positionB =
-        colliderB->owner()->toLocalSpace(contactPoint);
-    colliderA->debugPoint = contactPoint;
-    colliderB->debugPoint = contactPoint;
+    manifold.points[0].positionA = contactPointA;
+    manifold.points[0].positionB = contactPointB;
+    colliderA->debugPoint = manifold.points[0].positionA;
+    colliderB->debugPoint = manifold.points[0].positionB;
+    colliderA->debugNormal = -minNormal;
+    colliderB->debugNormal = minNormal;
     return manifold;
 }
 

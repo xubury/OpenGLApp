@@ -10,6 +10,7 @@ Rigidbody::Rigidbody(float mass, bool isKinematic)
       m_velocity(0.f),
       m_torque(0.f),
       m_angularVelocity(0.f),
+      m_mass(mass),
       m_invMass(1.f / mass),
       m_localInvInertia(20.f),
       m_restitution(0.5f),
@@ -29,8 +30,7 @@ void Rigidbody::step(const Time &deltaTime) {
                              glm::transpose(rotation) * m_torque * dt;
 
         owner()->translateWorld(m_velocity * dt);
-        if (glm::length(m_angularVelocity) >
-            std::numeric_limits<float>::epsilon()) {
+        if (glm::length(m_angularVelocity) > 0) {
             glm::quat rot = glm::angleAxis(glm::length(m_angularVelocity) * dt,
                                            glm::normalize(m_angularVelocity));
             owner()->rotateWorld(rot);
@@ -43,7 +43,7 @@ void Rigidbody::step(const Time &deltaTime) {
 void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &pos) {
     m_force += force;
     addTorque(
-        glm::cross(owner()->getRotation() * (pos - getCenterOfMass()), force));
+        glm::cross(owner()->toWorldVector(pos - getCenterOfMass()), force));
 }
 
 void Rigidbody::addTorque(const glm::vec3 &torque) { m_torque += torque; }
@@ -52,9 +52,14 @@ void Rigidbody::addImpulse(const glm::vec3 &impulse) {
     m_velocity += impulse * m_invMass;
 }
 
-float Rigidbody::getMass() const { return 1.f / m_invMass; }
+float Rigidbody::getMass() const { return m_mass; }
 
-void Rigidbody::setMass(float mass) { m_invMass = 1.f / mass; }
+float Rigidbody::getInvMass() const { return m_invMass; }
+
+void Rigidbody::setMass(float mass) {
+    m_mass = mass;
+    m_invMass = 1.f / mass;
+}
 
 float Rigidbody::getRestitution() const { return m_restitution; }
 

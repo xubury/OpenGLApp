@@ -28,14 +28,15 @@ void SandboxLayer::addSphere(const glm::vec3& pos, float radius,
     int id = scene->entities.create<Sphere>(radius, textures);
     EntityBase* sphere = scene->entities.get(id);
     sphere->add<Rigidbody>(10, true);
-    sphere->add<SphereCollider>(glm::vec3(0), 1.0f);
+    sphere->add<SphereCollider>(glm::vec3(0), radius);
     sphere->component<Rigidbody>()->addImpulse(impulse);
     sphere->setPosition(pos);
     sphere->setName("Sphere");
 }
 
-void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
-                           float length, const glm::vec3& impulse,
+void SandboxLayer::addCube(const glm::vec3& pos, const glm::vec3& euler,
+                           float width, float height, float length,
+                           const glm::vec3& impulse,
                            const Ref<Material>& textures, bool kinematic) {
     Ref<SceneManager<EntityBase>> scene =
         Application::instance().getActiveScene();
@@ -47,10 +48,7 @@ void SandboxLayer::addCube(const glm::vec3& pos, float width, float height,
                      length);
     cube->component<Rigidbody>()->addImpulse(impulse);
     cube->setPosition(pos);
-    RandomGenerator random;
-    glm::vec3 eulerAngle(random.rnd(0.f, M_PI), random.rnd(0.f, M_PI),
-                         random.rnd(0.f, M_PI));
-    cube->setEulerAngle(eulerAngle);
+    cube->setEulerAngle(euler);
     cube->setName("Cube");
 }
 
@@ -137,6 +135,9 @@ void SandboxLayer::loadScene() {
 
     scene->entities.create<Terrain>(10, 20, groundTextures);
 
+    addCube(glm::vec3(0, 2, 0), glm::vec3(0), 20, 1, 20, glm::vec3(0),
+            groundTextures, false);
+
     uint32_t playerId = scene->entities.create<Player>();
     scene->entities.get(playerId)->setPosition(glm::vec3(0.f, 5.f, 0.f));
 }
@@ -201,7 +202,7 @@ void SandboxLayer::onEventPoll(const Event& event) {
                                         Material::TEXTURE_SPECULAR);
                 glm::vec3 impulse(random.rnd(-25, 25), random.rnd(-25, 25),
                                   random.rnd(-25, 25));
-                addSphere(glm::vec3(5, 15, 0), 1, impulse, textures);
+                addSphere(glm::vec3(5, 15, 0), 0.5f, impulse, textures);
             } break;
             case Keyboard::R: {
                 RandomGenerator random;
@@ -218,7 +219,10 @@ void SandboxLayer::onEventPoll(const Event& event) {
                                         Material::TEXTURE_SPECULAR);
                 glm::vec3 impulse(random.rnd(-25, 25), random.rnd(-25, 25),
                                   random.rnd(-25, 25));
-                addCube(glm::vec3(5, 5, 0), 1, 1, 1, impulse, textures, true);
+                addCube(glm::vec3(5, 5, 0),
+                        glm::vec3(random.rnd(0.f, M_PI), random.rnd(0.f, M_PI),
+                                  random.rnd(0.f, M_PI)),
+                        1, 1, 1, impulse, textures, true);
             } break;
             default:
                 break;

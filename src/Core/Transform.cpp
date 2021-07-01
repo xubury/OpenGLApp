@@ -82,6 +82,8 @@ glm::vec3 Transformable::getFront() const {
     return m_rotation * glm::vec3(0.f, 0.f, 1.f);
 }
 
+glm::vec3 Transformable::getScale() const { return m_scale; }
+
 glm::vec3 Transformable::toLocalSpace(const glm::vec3 &world) const {
     glm::mat3 rotation = glm::toMat3(m_rotation);
     return glm::transpose(rotation) * (world - getPosition());
@@ -89,6 +91,15 @@ glm::vec3 Transformable::toLocalSpace(const glm::vec3 &world) const {
 
 glm::vec3 Transformable::toWorldSpace(const glm::vec3 &local) const {
     return m_rotation * local + m_position;
+}
+
+glm::vec3 Transformable::toLocalVector(const glm::vec3 &worldVec) const {
+    glm::mat3 rotation = glm::toMat3(m_rotation);
+    return glm::transpose(rotation) * worldVec;
+}
+
+glm::vec3 Transformable::toWorldVector(const glm::vec3 &localVec) const {
+    return m_rotation * localVec;
 }
 
 }  // namespace te

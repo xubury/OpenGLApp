@@ -14,7 +14,8 @@ void HullCollider::addVertex(const glm::vec3& vertice) {
 }
 void HullCollider::clear() { m_vertices.clear(); }
 
-glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
+glm::vec3 HullCollider::findFurthestPoint(
+    const glm::vec3& direction, const Transformable& transform) const {
     glm::vec3 maxPoint(0);
     float maxDistance = std::numeric_limits<float>::lowest();
 
@@ -23,7 +24,7 @@ glm::vec3 HullCollider::findFurthestPoint(const glm::vec3& direction) const {
     for (const glm::vec3& vertex : m_vertices) {
         glm::vec4 v(vertex, 1);
 
-        glm::vec3 p = glm::vec3(owner()->getTransform() * v);
+        glm::vec3 p = glm::vec3(transform.getTransform() * v);
 
         float distance = glm::dot(p, direction);
         if (distance >= maxDistance) {
