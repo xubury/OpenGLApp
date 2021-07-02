@@ -17,7 +17,7 @@ void PositionSolver::solve(const std::vector<ContactManifold> &manifolds,
             const float percent = 0.8f;
             const float slop = 0.01f;
             glm::vec3 correction =
-                manifold.normal * percent *
+                manifold.points[i].normal * percent *
                 std::max(manifold.points[i].depth - slop, 0.0f) /
                 (invMassA + invMassB);
             if (bodyB && bodyB->isKinematic()) {

@@ -9,8 +9,9 @@ struct ContactPoint {
     glm::vec3 position;
     glm::vec3 positionA;
     glm::vec3 positionB;
+    glm::vec3 normal;
     float depth;
-    ContactPoint() : position(0), depth(0) {}
+    ContactPoint() : position(0.f), normal(0.f), depth(0.f) {}
 };
 
 struct ContactManifold {
@@ -18,10 +19,8 @@ struct ContactManifold {
     CollisionObject *objB;
     uint8_t pointCount;
     ContactPoint points[4];
-    glm::vec3 normal;
 
-    ContactManifold()
-        : objA(nullptr), objB(nullptr), pointCount(0), points(), normal(0) {}
+    ContactManifold() : objA(nullptr), objB(nullptr), pointCount(0) {}
 
     bool hasCollision() const { return pointCount > 0; }
 };
