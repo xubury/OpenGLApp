@@ -302,7 +302,7 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     manifold.objB = colliderB->owner()->component<CollisionObject>().get();
     manifold.normal = minNormal;
     manifold.pointCount = 1;
-    manifold.points[0].depth = minDist;
+    manifold.points[0].depth = minDist + 0.001f;
     manifold.points[0].position = contactPoint;
     manifold.points[0].positionA = contactPointA;
     manifold.points[0].positionB = contactPointB;
