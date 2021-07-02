@@ -12,12 +12,12 @@ Rigidbody::Rigidbody(float mass, bool isKinematic)
       m_angularVelocity(0.f),
       m_mass(mass),
       m_invMass(1.f / mass),
-      m_localInvInertia(20.f),
+      m_localInertia(20.f),
+      m_localInvInertia(1 / 20.f),
       m_restitution(0.5f),
       m_staticFriction(0.5f),
       m_dynamicFriction(0.5f),
       m_isKinematic(isKinematic) {
-    m_localInvInertia = glm::inverse(m_localInvInertia);
     TE_ASSERT(mass > 0, "Rigidbody mass can't be less than zero!")
 }
 
@@ -52,6 +52,10 @@ void Rigidbody::addImpulse(const glm::vec3 &impulse) {
     m_velocity += impulse * m_invMass;
 }
 
+void Rigidbody::addAngularImpulse(const glm::vec3 &impulse) {
+    m_angularVelocity += getGlobalInvInertia() * impulse;
+}
+
 float Rigidbody::getMass() const { return m_mass; }
 
 float Rigidbody::getInvMass() const { return m_invMass; }
@@ -59,6 +63,15 @@ float Rigidbody::getInvMass() const { return m_invMass; }
 void Rigidbody::setMass(float mass) {
     m_mass = mass;
     m_invMass = 1.f / mass;
+}
+
+glm::mat3 Rigidbody::getLocalInertia() const { return m_localInertia; }
+
+glm::mat3 Rigidbody::getLocalInvInertia() const { return m_localInvInertia; }
+
+glm::mat3 Rigidbody::getGlobalInvInertia() const {
+    glm::mat3 rotation = glm::toMat3(owner()->getRotation());
+    return rotation * m_localInvInertia * glm::transpose(rotation);
 }
 
 float Rigidbody::getRestitution() const { return m_restitution; }

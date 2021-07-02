@@ -17,11 +17,19 @@ struct Rigidbody : public CollisionObject {
 
     void addImpulse(const glm::vec3 &impulse);
 
+    void addAngularImpulse(const glm::vec3 &impulse);
+
     float getMass() const;
 
     float getInvMass() const;
 
     void setMass(float mass);
+
+    glm::mat3 getLocalInertia() const;
+
+    glm::mat3 getLocalInvInertia() const;
+
+    glm::mat3 getGlobalInvInertia() const;
 
     float getRestitution() const;
 
@@ -65,6 +73,7 @@ struct Rigidbody : public CollisionObject {
     float m_mass;
     float m_invMass;
 
+    glm::mat3 m_localInertia;
     glm::mat3 m_localInvInertia;
 
     float m_restitution;

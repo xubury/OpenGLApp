@@ -9,63 +9,46 @@ void ImpulseSolver::solve(const std::vector<ContactManifold> &manifolds,
         Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA);
         Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB);
 
-        const glm::vec3 &velA = bodyA ? bodyA->getVelocity() : glm::vec3(0);
-        const glm::vec3 &velB = bodyB ? bodyB->getVelocity() : glm::vec3(0);
-
-        const float massA = bodyA ? bodyA->getMass() : 1.0f;
-        const float massB = bodyB ? bodyB->getMass() : 1.0f;
-
+        const glm::vec3 &vA = bodyA ? bodyA->getVelocity() : glm::vec3(0);
+        const glm::vec3 &vB = bodyB ? bodyB->getVelocity() : glm::vec3(0);
+        const float invMassA = bodyA ? bodyA->getInvMass() : 1.0f;
+        const float invMassB = bodyB ? bodyB->getInvMass() : 1.0f;
         const glm::vec3 &wA =
             bodyA ? bodyA->getAngularVelocity() : glm::vec3(0);
         const glm::vec3 &wB =
             bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
+
+        glm::mat3 mInvA(invMassA);
+        glm::mat3 iInvA =
+            bodyA ? bodyA->getGlobalInvInertia() : glm::mat3(1.0f);
+        glm::mat3 mInvB(invMassB);
+        glm::mat3 iInvB =
+            bodyB ? bodyB->getGlobalInvInertia() : glm::mat3(1.0f);
 
         for (uint8_t i = 0; i < manifold.pointCount; ++i) {
             const glm::vec3 rA = manifold.objA->owner()->toWorldVector(
                 manifold.points[i].positionA - bodyA->getCenterOfMass());
             const glm::vec3 rB = manifold.objB->owner()->toWorldVector(
                 manifold.points[i].positionB - bodyB->getCenterOfMass());
+            glm::vec3 jVA = -manifold.points[i].normal;
+            glm::vec3 jWA = glm::cross(-rA, manifold.points[i].normal);
+            glm::vec3 jVB = manifold.points[i].normal;
+            glm::vec3 jWB = glm::cross(rB, manifold.points[i].normal);
+            const glm::vec3 b(0);
 
-            const glm::vec3 vA = velA + glm::cross(wA, rA);
-            const glm::vec3 vB = velB + glm::cross(wB, rB);
-            const float speedA = glm::dot(-vA, manifold.points[i].normal);
-            const float speedB = glm::dot(vB, manifold.points[i].normal);
-
-            if (speedA + speedB > 0) continue;
-
-            float e = (bodyA ? bodyA->getRestitution() : 1.0f) *
-                      (bodyB ? bodyB->getRestitution() : 1.0f);
-            float j = -(1.0f + e) * (speedA * massA + speedB * massB);
-
-            // friction
-            glm::vec3 friction(0.f);
-            glm::vec3 tangent = vB - vA - (speedA + speedB) * manifold.points[i].normal;
-            if (glm::length(tangent) > 0.0001f) {  // safe normalize
-                tangent = glm::normalize(tangent);
-            }
-            float fA = glm::dot(vA, tangent);
-            float fB = glm::dot(vB, tangent);
-            float staticFrictionA = bodyA ? bodyA->getStaticFriction() : 0.0f;
-            float staticFrictionB = bodyB ? bodyB->getStaticFriction() : 0.0f;
-            float dynamicFrictionA = bodyA ? bodyA->getDynamicFriction() : 0.0f;
-            float dynamicFrictionB = bodyB ? bodyB->getDynamicFriction() : 0.0f;
-            float mu = glm::length(glm::vec2(staticFrictionA, staticFrictionB));
-
-            float f = fA * massA + fB * massB;
-            if (std::abs(f) < j * mu) {
-                friction = -f * tangent;
-            } else {
-                mu = glm::length(glm::vec2(dynamicFrictionA, dynamicFrictionB));
-                friction = -j * tangent * mu;
-            }
-            glm::vec3 impulse = j * manifold.points[i].normal + friction;
+            const glm::vec3 jv_b =
+                -(jVA * vA + jWA * wA + jVB * vB + jWB * wB + b);
+            float jmj = glm::dot(jVA * mInvA, jVA) +
+                        glm::dot(jWA * iInvA, jWA) +
+                        glm::dot(jVB * mInvB, jVB) + glm::dot(jWB * iInvB, jWB);
+            glm::vec3 lambda = jv_b / jmj;
             if (bodyB && bodyB->isKinematic()) {
-                bodyB->addForce(impulse / deltaTime.count() / 2.f,
-                                manifold.points[i].positionB);
+                bodyB->addImpulse(jVB * lambda);
+                bodyB->addAngularImpulse(jWB * lambda);
             }
             if (bodyA && bodyA->isKinematic()) {
-                bodyA->addForce(-impulse / deltaTime.count() / 2.f,
-                                manifold.points[i].positionA);
+                bodyA->addImpulse(jVA * lambda);
+                bodyA->addAngularImpulse(jWA * lambda);
             }
         }
     }
