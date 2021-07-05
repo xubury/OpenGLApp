@@ -293,19 +293,20 @@ ContactManifold epa(const Simplex& simplex, Collider* colliderA,
     supportA = colliderA->findFurthestPoint(aDir, *transformA);
     supportB = colliderA->findFurthestPoint(bDir, *transformA);
     supportC = colliderA->findFurthestPoint(cDir, *transformA);
-    glm::vec3 contactPoint(supportA * u + supportB * v + supportC * w);
-    glm::vec3 contactPointA = transformA->toLocalSpace(contactPoint);
-    glm::vec3 contactPointB = transformB->toLocalSpace(contactPoint);
+    glm::vec3 contactPointA(supportA * u + supportB * v + supportC * w);
+    supportA = colliderB->findFurthestPoint(-aDir, *transformB);
+    supportB = colliderB->findFurthestPoint(-bDir, *transformB);
+    supportC = colliderB->findFurthestPoint(-cDir, *transformB);
+    glm::vec3 contactPointB(supportA * u + supportB * v + supportC * w);
 
     ContactManifold manifold;
     manifold.objA = colliderA->owner()->component<CollisionObject>().get();
     manifold.objB = colliderB->owner()->component<CollisionObject>().get();
     manifold.pointCount = 1;
-    manifold.points[0].depth = minDist + 0.001f;
-    manifold.points[0].position = contactPoint;
     manifold.points[0].positionA = contactPointA;
     manifold.points[0].positionB = contactPointB;
     manifold.points[0].normal = minNormal;
+
     colliderA->debugPoint = manifold.points[0].positionA;
     colliderB->debugPoint = manifold.points[0].positionB;
     colliderA->debugNormal = -minNormal;

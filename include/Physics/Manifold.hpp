@@ -6,12 +6,17 @@
 namespace te {
 
 struct ContactPoint {
-    glm::vec3 position;
     glm::vec3 positionA;
     glm::vec3 positionB;
     glm::vec3 normal;
-    float depth;
-    ContactPoint() : position(0.f), normal(0.f), depth(0.f) {}
+    float normalImpusleSum;
+    float tangentImpusleSum1;
+    float tangentImpusleSum2;
+    ContactPoint()
+        : normal(0.f),
+          normalImpusleSum(0.f),
+          tangentImpusleSum1(0.f),
+          tangentImpusleSum2(0.f) {}
 };
 
 struct ContactManifold {

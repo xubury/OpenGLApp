@@ -52,16 +52,10 @@ void Transformable::setEulerAngle(glm::vec3 eulerAngle) {
 }
 
 glm::mat4 Transformable::getTransform() const {
-    float angle = glm::angle(m_rotation);
-    glm::vec3 axis = glm::axis(m_rotation);
+    glm::mat4 rotation = glm::toMat4(m_rotation);
 
-    glm::mat4 mat(1);
-
-    mat = glm::translate(mat, m_position);
-    mat = glm::rotate(mat, angle, axis);
-    mat = glm::scale(mat, m_scale);
-
-    return mat;
+    return glm::translate(glm::mat4(1.0f), m_position) * rotation *
+           glm::scale(glm::mat4(1.0f), m_scale);
 }
 
 void Transformable::setPosition(const glm::vec3 &position) {

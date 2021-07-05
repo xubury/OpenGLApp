@@ -9,7 +9,7 @@ namespace te {
 
 PhysicsWorld::PhysicsWorld() : m_gravity(0.f, -9.8f, 0.f) {
     addSolver(createRef<ImpulseSolver>());
-    addSolver(createRef<PositionSolver>());
+    // addSolver(createRef<PositionSolver>());
 }
 
 void PhysicsWorld::addSolver(Ref<Solver> solver) {
@@ -36,7 +36,7 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
             Rigidbody *body = dynamic_cast<Rigidbody *>(collisonObj.get());
             if (body->isKinematic()) {
                 body->addForce(m_gravity * body->getMass(),
-                               body->getCenterOfMass());
+                               body->getCenterOfMassWorld());
             }
         }
         Transformable *transformA =
@@ -63,7 +63,7 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
     }
 }
 
-void PhysicsWorld::solveManifolds(const std::vector<ContactManifold> &manifolds,
+void PhysicsWorld::solveManifolds(std::vector<ContactManifold> &manifolds,
                                   const Time &deltaTime) {
     for (const auto &solver : m_solvers) {
         solver->solve(manifolds, deltaTime);

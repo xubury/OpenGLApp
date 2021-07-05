@@ -19,7 +19,7 @@ class PhysicsWorld : public System<CollisionObject, EntityBase> {
                 const Time &deltaTime) override;
 
    private:
-    void solveManifolds(const std::vector<ContactManifold> &manifolds,
+    void solveManifolds(std::vector<ContactManifold> &manifolds,
                         const Time &deltaTime);
     std::vector<Ref<Solver>> m_solvers;
     glm::vec3 m_gravity;

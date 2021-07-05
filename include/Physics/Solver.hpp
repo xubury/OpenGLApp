@@ -7,7 +7,7 @@ namespace te {
 
 class Solver {
    public:
-    virtual void solve(const std::vector<ContactManifold> &manifolds,
+    virtual void solve(std::vector<ContactManifold> &manifolds,
                        const Time &deltaTime) = 0;
 };
 

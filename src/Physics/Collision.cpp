@@ -58,16 +58,14 @@ ContactManifold Collision::collideTerrainSphere(Collider *objA,
         manifold.pointCount = 1;
         glm::vec3 worldNormal = terrain->owner()->toWorldVector(normal);
         worldNormal = glm::normalize(worldNormal);
-        manifold.points[0].position =
-            sphereWorldPos - worldNormal * sphere->getRadius();
-        manifold.points[0].positionA =
-            glm::vec3(sphereTerrainPos.x, height, sphereTerrainPos.z);
+        manifold.points[0].positionA = objA->owner()->toWorldSpace(
+            glm::vec3(sphereTerrainPos.x, height, sphereTerrainPos.z));
         manifold.points[0].positionB =
-            transformB->toLocalSpace(manifold.points[0].position);
-        manifold.points[0].depth = depth;
+            sphereWorldPos - worldNormal * sphere->getRadius();
+        manifold.points[0].normal = worldNormal;
+
         objA->debugPoint = manifold.points[0].positionA;
         objB->debugPoint = manifold.points[0].positionB;
-        manifold.points[0].normal = worldNormal;
         objA->debugNormal = -worldNormal;
         objB->debugNormal = worldNormal;
     }
@@ -99,12 +97,11 @@ ContactManifold Collision::collideTerrainHull(Collider *objA,
         manifold.objA = objA->owner()->component<CollisionObject>().get();
         manifold.objB = objB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
-        manifold.points[0].position = support;
-        manifold.points[0].positionA =
-            glm::vec3(hullTerrainPos.x, height, hullTerrainPos.z);
-        manifold.points[0].positionB = transformB->toLocalSpace(support);
-        manifold.points[0].depth = depth;
+        manifold.points[0].positionA = objA->owner()->toWorldSpace(
+            glm::vec3(hullTerrainPos.x, height, hullTerrainPos.z));
+        manifold.points[0].positionB = support;
         manifold.points[0].normal = worldNormal;
+
         objA->debugPoint = manifold.points[0].positionA;
         objB->debugPoint = manifold.points[0].positionB;
         objA->debugNormal = -worldNormal;
@@ -129,13 +126,12 @@ ContactManifold Collision::collideSpheres(Collider *objA,
         manifold.objA = sphereA->owner()->component<CollisionObject>().get();
         manifold.objB = sphereB->owner()->component<CollisionObject>().get();
         manifold.pointCount = 1;
-        manifold.points[0].position = (aWorldPos + bWorldPos) / 2.f;
-        manifold.points[0].positionA =
-            transformA->toLocalSpace(manifold.points[0].position);
-        manifold.points[0].positionB =
-            transformB->toLocalSpace(manifold.points[0].position);
-        manifold.points[0].depth = depth;
         manifold.points[0].normal = (bWorldPos - aWorldPos) / dist;
+        manifold.points[0].positionA =
+            aWorldPos + manifold.points[0].normal * sphereA->getRadius();
+        manifold.points[0].positionB =
+            bWorldPos - manifold.points[0].normal * sphereB->getRadius();
+
         objA->debugPoint = manifold.points[0].positionA;
         objB->debugPoint = manifold.points[0].positionB;
         objA->debugNormal = -manifold.points[0].normal;

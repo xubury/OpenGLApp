@@ -4,7 +4,7 @@
 
 namespace te {
 
-void PositionSolver::solve(const std::vector<ContactManifold> &manifolds,
+void PositionSolver::solve(std::vector<ContactManifold> &manifolds,
                            const Time &) {
     for (const ContactManifold &manifold : manifolds) {
         Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA);
@@ -16,10 +16,12 @@ void PositionSolver::solve(const std::vector<ContactManifold> &manifolds,
         for (uint32_t i = 0; i < manifold.pointCount; ++i) {
             const float percent = 0.8f;
             const float slop = 0.01f;
-            glm::vec3 correction =
-                manifold.points[i].normal * percent *
-                std::max(manifold.points[i].depth - slop, 0.0f) /
-                (invMassA + invMassB);
+            float depth = glm::dot(
+                manifold.points[i].positionB - manifold.points[i].positionA,
+                -manifold.points[i].normal);
+            glm::vec3 correction = manifold.points[i].normal * percent *
+                                   std::max(depth - slop, 0.0f) /
+                                   (invMassA + invMassB);
             if (bodyB && bodyB->isKinematic()) {
                 bodyB->owner()->translateWorld(correction * invMassB);
             }

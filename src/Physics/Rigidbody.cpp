@@ -25,9 +25,7 @@ void Rigidbody::step(const Time &deltaTime) {
     if (isKinematic()) {
         float dt = deltaTime.count();
         m_velocity += m_force * m_invMass * dt;
-        glm::mat3 rotation = glm::toMat3(owner()->getRotation());
-        m_angularVelocity += rotation * m_localInvInertia *
-                             glm::transpose(rotation) * m_torque * dt;
+        m_angularVelocity += getGlobalInvInertia() * m_torque * dt;
 
         owner()->translateWorld(m_velocity * dt);
         if (glm::length(m_angularVelocity) > 0) {
@@ -42,8 +40,7 @@ void Rigidbody::step(const Time &deltaTime) {
 
 void Rigidbody::addForce(const glm::vec3 &force, const glm::vec3 &pos) {
     m_force += force;
-    addTorque(
-        glm::cross(owner()->toWorldVector(pos - getCenterOfMass()), force));
+    addTorque(glm::cross(pos - getCenterOfMassWorld(), force));
 }
 
 void Rigidbody::addTorque(const glm::vec3 &torque) { m_torque += torque; }

@@ -601,8 +601,8 @@ void EditorLayer::onImGuiRender() {
     renderCollider();
 
     if (getActiveEntityPtr()->has<Collider>()) {
-        glm::vec3 worldPos = getActiveEntityPtr()->toWorldSpace(
-            getActiveEntityPtr()->component<Collider>()->debugPoint);
+        glm::vec3 worldPos =
+            getActiveEntityPtr()->component<Collider>()->debugPoint;
         Primitive::instance().drawSphereFilled(worldPos, glm::vec4(1, 0, 0, 1),
                                                getClipSizeInWorld(0.01f));
         Primitive::instance().drawLine(

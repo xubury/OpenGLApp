@@ -7,7 +7,7 @@ namespace te {
 
 class PositionSolver : public Solver {
    public:
-    void solve(const std::vector<ContactManifold> &manifolds,
+    void solve(std::vector<ContactManifold> &manifolds,
                const Time &deltaTime) override;
 };
 
