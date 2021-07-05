@@ -114,7 +114,7 @@ void ImpulseSolver::solve(std::vector<ContactManifold> &manifolds,
                         glm::dot(normal * (invMassA + invMassB + invInertiaA +
                                            invInertiaB),
                                  normal);
-                    float lambda = -(vN + bias) / normalMass / 2.f;
+                    float lambda = -(vN + bias) / normalMass;
                     float lastImpulse = manifold.points[i].normalImpusleSum;
                     manifold.points[i].normalImpusleSum = std::max(
                         0.f, manifold.points[i].normalImpusleSum + lambda);
