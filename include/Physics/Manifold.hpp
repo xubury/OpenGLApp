@@ -9,14 +9,19 @@ struct ContactPoint {
     glm::vec3 positionA;
     glm::vec3 positionB;
     glm::vec3 normal;
+    glm::vec3 tangent1;
+    glm::vec3 tangent2;
     float normalImpusleSum;
     float tangentImpusleSum1;
     float tangentImpusleSum2;
+
+    float depth;
     ContactPoint()
         : normal(0.f),
           normalImpusleSum(0.f),
           tangentImpusleSum1(0.f),
-          tangentImpusleSum2(0.f) {}
+          tangentImpusleSum2(0.f),
+          depth(0.f) {}
 };
 
 struct ContactManifold {
