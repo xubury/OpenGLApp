@@ -19,6 +19,7 @@ void PositionSolver::solve(std::vector<ContactManifold> &manifolds,
             float depth = glm::dot(
                 manifold.points[i].positionB - manifold.points[i].positionA,
                 -manifold.points[i].normal);
+            if (depth < 0) continue;
             glm::vec3 correction = manifold.points[i].normal * percent *
                                    std::max(depth - slop, 0.0f) /
                                    (invMassA + invMassB);

@@ -79,13 +79,13 @@ void Player::update(const Time &deltaTime) {
     auto cam = component<PlayerCameraComp>();
     cam->setPosition(getPosition() + cam->getFront() * cam->getDistance());
 
-    float acos = std::acos(glm::dot(getFront(), m_moveDir));
-    glm::vec3 c = glm::cross(getFront(), m_moveDir);
-    if (c.y < 0) {
-        rotateLocal(-acos * deltaTime.count() * 2, glm::vec3(0, 1.0, 0));
-    } else {
-        rotateLocal(acos * deltaTime.count() * 2, glm::vec3(0, 1.0, 0));
-    }
+    // float acos = std::acos(glm::dot(getFront(), m_moveDir));
+    // glm::vec3 c = glm::cross(getFront(), m_moveDir);
+    // if (c.y < 0) {
+    //     rotateLocal(-acos * deltaTime.count() * 2, glm::vec3(0, 1.0, 0));
+    // } else {
+    //     rotateLocal(acos * deltaTime.count() * 2, glm::vec3(0, 1.0, 0));
+    // }
     m_animator->update(deltaTime);
 }
 
@@ -118,7 +118,7 @@ void Player::move(PlayerAction movement) {
     if (movement == PlayerAction::MOVE_JUMP) {
         rigidbody->addForce(
             glm::vec3(0.f, 1.0f, 0.f) * rigidbody->getMass() * amplifier * 10.f,
-            rigidbody->getCenterOfMass());
+            toWorldSpace(rigidbody->getCenterOfMass()));
     } else if (movement == PlayerAction::MOVE_FORWARD) {
         rigidbody->addImpulse(front * amplifier);
         m_moveDir = front;

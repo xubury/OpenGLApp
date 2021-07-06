@@ -16,12 +16,14 @@ struct ContactPoint {
     float tangentImpusleSum2;
 
     float depth;
+
+    float bias;
     ContactPoint()
-        : normal(0.f),
-          normalImpusleSum(0.f),
+        : normalImpusleSum(0.f),
           tangentImpusleSum1(0.f),
           tangentImpusleSum2(0.f),
-          depth(0.f) {}
+          depth(0.f),
+          bias(0.f) {}
 };
 
 struct ContactManifold {

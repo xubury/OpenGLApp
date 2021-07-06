@@ -9,7 +9,7 @@ namespace te {
 
 PhysicsWorld::PhysicsWorld() : m_gravity(0.f, -9.8f, 0.f) {
     addSolver(createRef<ImpulseSolver>());
-    // addSolver(createRef<PositionSolver>());
+    addSolver(createRef<PositionSolver>());
 }
 
 void PhysicsWorld::addSolver(Ref<Solver> solver) {
@@ -41,7 +41,7 @@ void PhysicsWorld::update(EntityManager<EntityBase> &manager,
         }
         Transformable *transformA =
             dynamic_cast<Transformable *>(manager.get(a->id()));
-        for (auto b = a; b != end; ++b) {
+        for (auto b = view.begin(); b != end; ++b) {
             if (a == b) continue;
             if (a->has<Collider>() && b->has<Collider>()) {
                 Transformable *transformB =

@@ -12,7 +12,9 @@ class ImpulseSolver : public Solver {
 
    private:
     void initConstraint(std::vector<ContactManifold> &manifolds);
+
     void solveConstraint(ContactManifold &manifold, const Time &deltaTime);
+
     std::vector<ContactManifold> m_cachedManifolds;
 };
 
