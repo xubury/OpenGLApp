@@ -5,7 +5,7 @@
 
 namespace te {
 
-struct Rigidbody : public CollisionObject {
+class Rigidbody : public CollisionObject {
    public:
     Rigidbody(float mass, bool isKinematic);
 
