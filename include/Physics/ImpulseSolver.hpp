@@ -11,7 +11,7 @@ class ImpulseSolver : public Solver {
                const Time &deltaTime) override;
 
    private:
-    void initConstraint(std::vector<ContactManifold> &manifolds);
+    void initConstraints(std::vector<ContactManifold> &manifolds);
 
     void solveConstraint(ContactManifold &manifold, const Time &deltaTime);
 

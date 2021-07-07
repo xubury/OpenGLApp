@@ -3,7 +3,7 @@
 
 namespace te {
 
-void ImpulseSolver::initConstraint(std::vector<ContactManifold> &manifolds) {
+void ImpulseSolver::initConstraints(std::vector<ContactManifold> &manifolds) {
     for (ContactManifold &manifold : manifolds) {
         Rigidbody *bodyA = dynamic_cast<Rigidbody *>(manifold.objA);
         Rigidbody *bodyB = dynamic_cast<Rigidbody *>(manifold.objB);
@@ -142,7 +142,7 @@ void ImpulseSolver::solveConstraint(ContactManifold &manifold, const Time &) {
 
 void ImpulseSolver::solve(std::vector<ContactManifold> &manifolds,
                           const Time &deltaTime) {
-    initConstraint(manifolds);
+    initConstraints(manifolds);
     int iteration = 3;
     while (iteration-- > 0) {
         for (ContactManifold &manifold : manifolds) {
