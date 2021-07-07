@@ -64,11 +64,9 @@ void ImpulseSolver::solveConstraint(ContactManifold &manifold, const Time &) {
     glm::vec3 wB = bodyB ? bodyB->getAngularVelocity() : glm::vec3(0);
     for (uint8_t i = 0; i < manifold.pointCount; ++i) {
         const glm::vec3 rA =
-            manifold.points[i].positionA -
-            manifold.objA->owner()->toWorldSpace(bodyA->getCenterOfMass());
+            manifold.points[i].positionA - bodyA->getCenterOfMassWorld();
         const glm::vec3 rB =
-            manifold.points[i].positionB -
-            manifold.objB->owner()->toWorldSpace(bodyB->getCenterOfMass());
+            manifold.points[i].positionB - bodyB->getCenterOfMassWorld();
         const glm::vec3 &normal = manifold.points[i].normal;
         // compute friction
         {
